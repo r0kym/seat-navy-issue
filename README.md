@@ -3,6 +3,7 @@ SeAT Navy Issue
 
 *not affiliated with the original [SeAT](https://github.com/eveseat/seat)*
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/c96b3a343687b9a4a3fa/maintainability)](https://codeclimate.com/github/altaris/seat-navy-issue/maintainability)
 [![Documentation](https://badgen.net/badge/Documentation/here/green)](https://altaris.github.io/seat-navy-issue/)
 ![Python 3](https://badgen.net/badge/Python/3/blue)
 [![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
