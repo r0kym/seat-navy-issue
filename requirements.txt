@@ -1,0 +1,10 @@
+apscheduler
+dateutils
+fastapi
+passlib[bcrypt]
+pyjwt
+pyyaml
+redis
+requests
+sqlalchemy
+uvicorn

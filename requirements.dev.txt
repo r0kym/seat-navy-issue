@@ -1,0 +1,7 @@
+mypy
+pylint
+sphinx
+sphinxcontrib-napoleon
+sphinxcontrib-plantuml
+sphinxcontrib-openapi
+yapf
