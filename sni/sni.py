@@ -6,7 +6,9 @@ This module contains the entry point to SNI.
 
 import argparse
 import logging.config
+import sys
 import uvicorn
+import yaml
 
 import conf
 
@@ -16,14 +18,15 @@ def main():
     Entry point.
     """
     arguments = parse_command_line_arguments()
+
+    if arguments.openapi_spec:
+        print_openapi_spec()
+        sys.exit()
+
     conf.load_configuration_file(arguments.file)
     logging.config.dictConfig(conf.get('logging', {}))
-    uvicorn.run(
-        'apiserver:app',
-        host=conf.get('general.host'),
-        log_level='debug' if conf.get('general.debug') else 'info',
-        port=conf.get('general.port'),
-    )
+
+    start_api_server()
 
 
 def parse_command_line_arguments() -> argparse.Namespace:
@@ -41,7 +44,33 @@ def parse_command_line_arguments() -> argparse.Namespace:
         default='./sni.yml',
         help='Specify an alternate configuration file (default: ./sni.yml)',
     )
+    argument_parser.add_argument(
+        '--openapi-spec',
+        action='store_true',
+        default=False,
+        help='Prints the OpenAPI specification in YAML',
+    )
     return argument_parser.parse_args()
+
+
+def print_openapi_spec() -> None:
+    """
+    Print the OpenAPI specification of the server in YAML.
+    """
+    import apiserver  # pylint: disable=import-outside-toplevel
+    print(yaml.dump(apiserver.app.openapi()))
+
+
+def start_api_server() -> None:
+    """
+    Runs the API server.
+    """
+    uvicorn.run(
+        'apiserver:app',
+        host=conf.get('general.host'),
+        log_level='debug' if conf.get('general.debug') else 'info',
+        port=conf.get('general.port'),
+    )
 
 
 if __name__ == '__main__':

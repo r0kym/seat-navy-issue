@@ -15,6 +15,10 @@ docs: docs_uml
 docs_uml:
 	python -m plantuml docs/*.uml
 
+.PHONY: openapi-spec
+openapi-spec:
+	python3 $(SRC_PATH)/sni.py --openapi-spec > $(SPHINX_PATH)/openapi.yml
+
 .PHONY: format
 format:
 	yapf --in-place --recursive --style pep8 --verbose $(SRC_PATH)
