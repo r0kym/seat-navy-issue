@@ -10,8 +10,8 @@ jobs:
     - uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
-        pre-build-command: "pip install -r requirements.dev.txt"
-        build-command: "python -m plantuml docs/*.uml && sphinx-build -b html . _build"
+        pre-build-command: "pip install -r requirements.dev.txt && python -m plantuml docs/*.uml"
+        build-command: "sphinx-build -b html . _build"
     - name: Commit documentation changes
       run: |
         git clone https://github.com/altaris/seat-navy-issue.git --branch gh-pages --single-branch gh-pages
