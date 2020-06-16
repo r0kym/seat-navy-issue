@@ -1,5 +1,6 @@
 # Stuff
 out/
+docs/*.png
 
 # VSCode
 *.code-workspace

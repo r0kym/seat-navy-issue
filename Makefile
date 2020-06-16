@@ -7,9 +7,13 @@ RUN_ARGS	   ?=
 all: format typecheck lint
 
 .PHONY: docs
-docs:
+docs: docs_uml
 	sphinx-build -b html $(SPHINX_PATH)/ $(SPHINX_PATH)/_build
 	-@xdg-open $(SPHINX_PATH)/_build/html/index.html
+
+.PHONY: docs_uml
+docs_uml:
+	python -m plantuml docs/*.uml
 
 .PHONY: format
 format:

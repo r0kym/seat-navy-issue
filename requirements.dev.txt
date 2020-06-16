@@ -1,7 +1,7 @@
 mypy
+plantuml
 pylint
 sphinx
 sphinxcontrib-napoleon
-sphinxcontrib-plantuml
 sphinxcontrib-openapi
 yapf

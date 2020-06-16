@@ -40,7 +40,6 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinxcontrib.openapi',
-    'sphinxcontrib.plantuml',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -83,14 +82,6 @@ autodoc_default_options = {
 napoleon_include_init_with_doc = True
 napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
-
-
-# -- Plantuml settings --------------------------------------------------------
-
-# Reference:
-# https://pypi.org/project/sphinxcontrib-plantuml/
-
-plantuml = 'java -jar ./plantuml.jar'
 
 
 # -- Todo settings ------------------------------------------------------------

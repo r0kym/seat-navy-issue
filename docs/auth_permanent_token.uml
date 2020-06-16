@@ -1,0 +1,7 @@
+title Authentication with a permanent token
+
+actor Application
+participant SNI
+
+Application -> SNI : POST /auth + app token
+SNI -> Application : **200** + user token + metadatas
