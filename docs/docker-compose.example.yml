@@ -1,0 +1,33 @@
+version: '3.5'
+
+volumes:
+  mariadb-data:
+  redis-data:
+  sni-code:
+
+services:
+  mariadb:
+    container_name: mariadb
+    environment:
+      - MYSQL_DATABASE=sni
+      - MYSQL_PASSWORD=NBxd3gUT67apvnK2Q5u4
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_USER=sni
+    image: mariadb:latest
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+      - mariadb-data:/var/lib/mysql
+  redis:
+    container_name: redis
+    image: redis
+    volumes:
+      - redis-data:/data
+  seat-navy-issue:
+    container_name: seat-navy-issue
+    environment:
+      - GIT_URL=https://github.com/altaris/seat-navy-issue.git
+      - PYTHON_MAIN=sni/sni.py
+    image: altaris/pumba
+    volumes:
+      - sni-code:/usr/src/app/
+      - ./sni.yml:/usr/src/app/sni.yml

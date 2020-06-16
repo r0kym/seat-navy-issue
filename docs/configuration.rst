@@ -1,0 +1,42 @@
+.. _configuration-file-reference:
+
+Configuration file reference
+============================
+
+The configuration file is in `YAML <https://yaml.org/>`_ format, and named
+``sni.yml`` by default.
+
+* ``db``
+    * ``database`` (default: ``sni``)
+    * ``driver`` (default: ``default``)
+    * ``host``
+    * ``password``
+    * ``port``
+    * ``type``: A DBMS supported by SQLAlchemy, see `here <https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls>`_ (this parameter is called a "dialect" in the SQLAlchemy documentation).
+    * ``username``
+
+* ``esi``: Create an application at the `EVE Developer Portal <https://developers.eveonline.com/>`_
+    * ``client_id``
+    * ``client_secret``
+
+* ``general``
+    * ``debug`` (default: ``false``): Sets the app in debug mode.
+
+* ``jwt``
+    * ``algorithm`` (default: ``HS256``): A ``pyjwt`` supported algorithm, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
+    * ``secret``: Application secret. Generate with ``openssl rand -hex 32``.
+
+* ``logging``: Logging facility configuration, see the `logging.config documentation <https://docs.python.org/3/library/logging.config.html#dictionary-schema-details>`_.
+
+* ``redis``
+    * ``db`` (default: ``sni``)
+    * ``host``
+    * ``port`` (default: ``6379``)
+
+.. _configuration-file-reference-example:
+
+Example
+-------
+
+.. literalinclude:: sni.example.yml
+    :language: yaml

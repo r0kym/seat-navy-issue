@@ -1,0 +1,31 @@
+.. _user-management:
+
+User management
+===============
+
+.. uml::
+
+    title: User management
+
+    hide circle
+    skinparam linetype ortho
+
+    entity character {
+        id (from ESI)
+    }
+    entity group {
+        name: str
+    }
+    entity corporation {
+        id (from ESI)
+    }
+    entity alliance {
+        id (from ESI)
+    }
+    entity coalition {
+    }
+
+    character }|--|{ group
+    character }|--o| corporation
+    corporation }|--o| alliance
+    coalition }|--|{ alliance
