@@ -56,6 +56,7 @@ Module documentation
    sni
    configuration
    apiserver
+   esi
    rest
 
 
