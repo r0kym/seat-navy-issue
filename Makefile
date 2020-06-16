@@ -6,10 +6,6 @@ RUN_ARGS	   ?=
 
 all: format typecheck lint
 
-.PHONY: clean
-clean:
-	sudo docker-compose -f test/docker-compose.yml -p sni-test down
-
 .PHONY: docs
 docs: docs_uml
 	sphinx-build -b html $(SPHINX_PATH)/ $(SPHINX_PATH)/_build
@@ -30,9 +26,16 @@ lint:
 .PHONY: run
 run:
 	@set -a
+	@. ./venv/bin/activate
+	python3 $(SRC_PATH)/sni.py -f test/sni.yml $(RUN_ARGS)
+
+.PHONY: stack-down
+stack-down:
+	sudo docker-compose -f test/docker-compose.yml -p sni-test down
+
+.PHONY: stack-up
+stack-up:
 	sudo docker-compose -f test/docker-compose.yml -p sni-test up -d --remove-orphans
-	. ./venv/bin/activate
-	python3 $(SRC_PATH)/sni.py $(RUN_ARGS)
 
 .PHONY: typecheck
 typecheck:

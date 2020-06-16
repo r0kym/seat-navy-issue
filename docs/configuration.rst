@@ -1,7 +1,10 @@
+Configuration facility
+======================
+
 .. _configuration-file-reference:
 
-Configuration file reference
-============================
+Reference
+---------
 
 The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 ``sni.yml`` by default.
@@ -21,6 +24,8 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 
 * ``general``
     * ``debug`` (default: ``false``): Sets the app in debug mode.
+    * ``host`` (default: ``127.0.0.1``): API server host.
+    * ``port`` (default: ``5000``): API server port.
 
 * ``jwt``
     * ``algorithm`` (default: ``HS256``): A ``pyjwt`` supported algorithm, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
@@ -33,6 +38,7 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``host``
     * ``port`` (default: ``6379``)
 
+
 .. _configuration-file-reference-example:
 
 Example
@@ -40,3 +46,9 @@ Example
 
 .. literalinclude:: sni.example.yml
     :language: yaml
+
+
+Module documentation
+--------------------
+
+.. automodule:: config

@@ -54,6 +54,9 @@ Module documentation
    :maxdepth: 2
 
    sni
+   configuration
+   apiserver
+   rest
 
 
 Indices and tables

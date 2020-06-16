@@ -11,6 +11,8 @@ esi:
     client_secret: 702e1947f7b876e73b790cbc1f13c9ad8a3b94e6
 general:
     debug: true
+    host: 0.0.0.0
+    port: 80
 jwt:
     algorithm: HS256
     secret: 3f961d92a82060c4375de5683e1a7f4d94bd48e3ba861c49a40708e3c9976ea1
