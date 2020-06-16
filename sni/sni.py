@@ -8,7 +8,7 @@ import argparse
 import logging.config
 import uvicorn
 
-import config
+import conf
 
 
 def main():
@@ -16,13 +16,13 @@ def main():
     Entry point.
     """
     arguments = parse_command_line_arguments()
-    config.load_configuration_file(arguments.file)
-    logging.config.dictConfig(config.get('logging', {}))
+    conf.load_configuration_file(arguments.file)
+    logging.config.dictConfig(conf.get('logging', {}))
     uvicorn.run(
         'apiserver:app',
-        host=config.get('general.host'),
-        log_level='debug' if config.get('general.debug') else 'info',
-        port=config.get('general.port'),
+        host=conf.get('general.host'),
+        log_level='debug' if conf.get('general.debug') else 'info',
+        port=conf.get('general.port'),
     )
 
 

@@ -51,4 +51,4 @@ Example
 Module documentation
 --------------------
 
-.. automodule:: config
+.. automodule:: conf
