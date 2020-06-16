@@ -16,6 +16,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Server" href="apiserver.html" />
     <link rel="prev" title="Todo list" href="todos.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -25,8 +26,14 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="apiserver.html" title="API Server"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="todos.html" title="Todo list"
              accesskey="P">previous</a> |</li>
@@ -46,8 +53,29 @@
 <dl class="function">
 <dt id="sni.main">
 <code class="sig-prename descclassname">sni.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entrypoint</p>
-<p>Doesn’t do much for now.</p>
+<dd><p>Entry point.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.parse_command_line_arguments">
+<code class="sig-prename descclassname">sni.</code><code class="sig-name descname">parse_command_line_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; argparse.Namespace<a class="reference internal" href="_modules/sni.html#parse_command_line_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.parse_command_line_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses command line arguments</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/argparse.html">argparse documentation</a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.print_openapi_spec">
+<code class="sig-prename descclassname">sni.</code><code class="sig-name descname">print_openapi_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni.html#print_openapi_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.print_openapi_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the OpenAPI specification of the server in YAML.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.start_api_server">
+<code class="sig-prename descclassname">sni.</code><code class="sig-name descname">start_api_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni.html#start_api_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.start_api_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the API server.</p>
 </dd></dl>
 
 </div>
@@ -61,6 +89,9 @@
   <h4>Previous topic</h4>
   <p class="topless"><a href="todos.html"
                         title="previous chapter">Todo list</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="apiserver.html"
+                        title="next chapter">API Server</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -89,8 +120,14 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="apiserver.html" title="API Server"
+             >next</a> |</li>
         <li class="right" >
           <a href="todos.html" title="Todo list"
              >previous</a> |</li>

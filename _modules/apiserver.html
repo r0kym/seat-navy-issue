@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Overview: module code &#8212; SeAT Navy Issue alpha documentation</title>
+    <title>apiserver &#8212; SeAT Navy Issue alpha documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -29,7 +29,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -38,13 +39,23 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="apiserver.html">apiserver</a></li>
-<li><a href="conf.html">conf</a></li>
-<li><a href="esi.html">esi</a></li>
-<li><a href="rest.html">rest</a></li>
-<li><a href="sni.html">sni</a></li>
-</ul>
+  <h1>Source code for apiserver</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">API Server</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">fastapi</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">FastAPI</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="ping"><a class="viewcode-back" href="../apiserver.html#apiserver.ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/ping&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">ping</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns ``pong``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;pong&#39;</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -77,7 +88,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Configuration file reference &#8212; SeAT Navy Issue alpha documentation</title>
+    <title>Configuration facility &#8212; SeAT Navy Issue alpha documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Authentication" href="authentication.html" />
-    <link rel="prev" title="SeAT Navy Issue" href="index.html" /> 
+    <link rel="prev" title="OpenAPI specification" href="openapi.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,13 +26,16 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="authentication.html" title="Authentication"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="SeAT Navy Issue"
+          <a href="openapi.html" title="OpenAPI specification"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -43,8 +46,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="configuration-file-reference">
-<span id="id1"></span><h1>Configuration file reference<a class="headerlink" href="#configuration-file-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="configuration-facility">
+<h1>Configuration facility<a class="headerlink" href="#configuration-facility" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="reference">
+<span id="configuration-file-reference"></span><h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
 <p>The configuration file is in <a class="reference external" href="https://yaml.org/">YAML</a> format, and named
 <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code> by default.</p>
 <ul class="simple">
@@ -72,6 +77,8 @@
 <li><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">general</span></code></dt><dd><ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Sets the app in debug mode.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>): API server host.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">5000</span></code>): API server port.</p></li>
 </ul>
 </dd>
 </dl>
@@ -95,13 +102,14 @@
 </dl>
 </li>
 </ul>
+</div>
 <div class="section" id="example">
 <span id="configuration-file-reference-example"></span><h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">db</span><span class="p">:</span>
     <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
     <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
-    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.2.3.4</span>
-    <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">super_s3cr3t=)</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+    <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
     <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3306</span>
     <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
     <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
@@ -110,6 +118,8 @@
     <span class="nt">client_secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">702e1947f7b876e73b790cbc1f13c9ad8a3b94e6</span>
 <span class="nt">general</span><span class="p">:</span>
     <span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
 <span class="nt">jwt</span><span class="p">:</span>
     <span class="nt">algorithm</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HS256</span>
     <span class="nt">secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3f961d92a82060c4375de5683e1a7f4d94bd48e3ba861c49a40708e3c9976ea1</span>
@@ -129,14 +139,34 @@
         <span class="s">&quot;&quot;</span><span class="p p-Indicator">:</span>
             <span class="nt">handlers</span><span class="p">:</span>
                 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
-            <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">WARNING</span>
+            <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
             <span class="nt">propagate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">redis</span><span class="p">:</span>
     <span class="nt">db</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
-    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.2.3.4</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
     <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6379</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="module-conf">
+<span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-conf" title="Permalink to this headline">¶</a></h2>
+<p>Configuration facility</p>
+<dl class="function">
+<dt id="conf.get">
+<code class="sig-prename descclassname">conf.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">default: Any = None</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/conf.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conf.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a config value from a key. Nested keys are separated by dots. For
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_host</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db.host&#39;</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="conf.load_configuration_file">
+<code class="sig-prename descclassname">conf.</code><code class="sig-name descname">load_configuration_file</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/conf.html#load_configuration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conf.load_configuration_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the configuration from a YAML file.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -148,15 +178,17 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Configuration file reference</a><ul>
+<li><a class="reference internal" href="#">Configuration facility</a><ul>
+<li><a class="reference internal" href="#reference">Reference</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#module-conf">Module documentation</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">SeAT Navy Issue</a></p>
+  <p class="topless"><a href="openapi.html"
+                        title="previous chapter">OpenAPI specification</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="authentication.html"
                         title="next chapter">Authentication</a></p>
@@ -188,13 +220,16 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="authentication.html" title="Authentication"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="SeAT Navy Issue"
+          <a href="openapi.html" title="OpenAPI specification"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>

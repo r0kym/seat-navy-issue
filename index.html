@@ -16,7 +16,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Configuration file reference" href="configuration.html" /> 
+    <link rel="next" title="OpenAPI specification" href="openapi.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -25,10 +25,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="configuration.html" title="Configuration file reference"
+          <a href="openapi.html" title="OpenAPI specification"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -42,13 +45,17 @@
   <div class="section" id="seat-navy-issue">
 <h1>SeAT Navy Issue<a class="headerlink" href="#seat-navy-issue" title="Permalink to this headline">¶</a></h1>
 <p>not affiliated with the original <a class="reference external" href="https://github.com/eveseat/seat">SeAT</a>.</p>
+<a class="reference external image-reference" href="https://codeclimate.com/github/altaris/seat-navy-issue/maintainability"><img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/c96b3a343687b9a4a3fa/maintainability" /></a>
+<a class="reference external image-reference" href="https://github.com/altaris/seat-navy-issue"><img alt="Repository" src="https://badgen.net/badge/icon/GitHub?icon=github&amp;label" /></a>
+<img alt="Python 3" src="https://badgen.net/badge/Python/3/blue" />
+<a class="reference external image-reference" href="https://choosealicense.com/licenses/mit/"><img alt="MIT License" src="https://badgen.net/badge/license/MIT/blue" /></a>
 <div class="section" id="running-sni">
 <h2>Running SNI<a class="headerlink" href="#running-sni" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Register an application at the
 <a class="reference external" href="https://developers.eveonline.com/">EVE Developer Portal</a>. The SNI
 callback is <code class="docutils literal notranslate"><span class="pre">https://&lt;domain&gt;/callback/esi</span></code>.</p></li>
-<li><p>Create a configuration file (see <a class="reference internal" href="configuration.html#configuration-file-reference"><span class="std std-ref">Configuration file reference</span></a>).</p></li>
+<li><p>Create a configuration file (see <a class="reference internal" href="configuration.html#configuration-file-reference"><span class="std std-ref">Reference</span></a>).</p></li>
 <li><p>The easiest way to run SNI and all the required services is to use the
 following docker-compose file: (don’t forget to change the password to match
 that of your <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code>)</p></li>
@@ -93,8 +100,11 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <h2>High level documentation<a class="headerlink" href="#high-level-documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration file reference</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="openapi.html">OpenAPI specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration facility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#reference">Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#module-conf">Module documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
@@ -109,6 +119,15 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sni.html">Main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration facility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#reference">Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#module-conf">Module documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apiserver.html">API Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="esi.html">ESI requests layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">API requests layer</a></li>
 </ul>
 </div>
 </div>
@@ -140,8 +159,8 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="configuration.html"
-                        title="next chapter">Configuration file reference</a></p>
+  <p class="topless"><a href="openapi.html"
+                        title="next chapter">OpenAPI specification</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -170,10 +189,13 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="configuration.html" title="Configuration file reference"
+          <a href="openapi.html" title="OpenAPI specification"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
