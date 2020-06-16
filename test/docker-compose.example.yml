@@ -1,0 +1,60 @@
+version: '3.5'
+
+volumes:
+  mariadb-data:
+  redis-data:
+
+networks:
+  back:
+
+services:
+
+  mariadb:
+    container_name: mariadb
+    environment:
+      - MYSQL_DATABASE=sni
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=sni
+    hostname: mariadb
+    image: mariadb:latest
+    networks:
+      - back
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    depends_on:
+      - mariadb
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+    image: phpmyadmin/phpmyadmin
+    networks:
+      - back
+    ports:
+      - 9080:80
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+    networks:
+      - back
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    container_name: redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    image: rediscommander/redis-commander:latest
+    networks:
+      - back
+    ports:
+      - 9081:8081

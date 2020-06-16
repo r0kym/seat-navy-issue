@@ -1,6 +1,6 @@
 # Stuff
-out/
 docs/*.png
+out/
 
 # VSCode
 *.code-workspace

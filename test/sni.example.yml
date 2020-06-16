@@ -1,0 +1,38 @@
+db:
+    database: sni
+    driver: default
+    host: localhost
+    password: password
+    port: 3306
+    type: mysql
+    username: sni
+esi:
+    client_id: 299bd5a9f432a7b9a584e91801cb95a3
+    client_secret: 702e1947f7b876e73b790cbc1f13c9ad8a3b94e6
+general:
+    debug: true
+jwt:
+    algorithm: HS256
+    secret: 3f961d92a82060c4375de5683e1a7f4d94bd48e3ba861c49a40708e3c9976ea1
+logging:
+    version: 1
+    disable_existing_loggers: true
+    formatters:
+        standard:
+            format: '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+    handlers:
+        default:
+            level: INFO
+            formatter: standard
+            class: logging.StreamHandler
+            stream: 'ext://sys.stdout'
+    loggers:
+        "":
+            handlers:
+                - default
+            level: DEBUG
+            propagate: false
+redis:
+    db: sni
+    host: localhost
+    port: 6379
