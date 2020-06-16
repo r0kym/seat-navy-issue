@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>User Access Control &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Todo list" href="todos.html" />
+    <link rel="prev" title="User management" href="users.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="todos.html" title="Todo list"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="users.html" title="User management"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-access-control">
+<h1>User Access Control<a class="headerlink" href="#user-access-control" title="Permalink to this headline">¶</a></h1>
+<p>An <em>access</em> is comprised of the following.</p>
+<ul class="simple">
+<li><p>An <strong>actor</strong>, that wishes to perform a certain action. In the database,
+actors are represented as a string <code class="docutils literal notranslate"><span class="pre">type:id</span></code>, where <code class="docutils literal notranslate"><span class="pre">type</span></code> is either
+<code class="docutils literal notranslate"><span class="pre">all</span></code> (alliance), <code class="docutils literal notranslate"><span class="pre">chr</span></code> (character), <code class="docutils literal notranslate"><span class="pre">coa</span></code> (coalition), <code class="docutils literal notranslate"><span class="pre">crp</span></code>
+(corporation), <code class="docutils literal notranslate"><span class="pre">grp</span></code> (group), and where <code class="docutils literal notranslate"><span class="pre">id</span></code> is the id of the entity in
+the relevant table (see <a class="reference internal" href="users.html#user-management"><span class="std std-ref">User management</span></a>).</p></li>
+<li><p>An <strong>API endpoint</strong> whose access is controlled.</p></li>
+<li><p>A <strong>scope</strong>, within which the action can be performed by the actor. This is a
+tuple <code class="docutils literal notranslate"><span class="pre">type:id</span></code> as above.</p></li>
+</ul>
+<p>For example, the access</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 66%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">actor</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">scope</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grp:123</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/esi/characters/{character_id}/assets/</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">crp:456</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>means that all characters of group <code class="docutils literal notranslate"><span class="pre">123</span></code> can issue the
+<code class="docutils literal notranslate"><span class="pre">/esi/characters/{character_id}/assets/</span></code> request (which proxies to the
+<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/assets/</span></code> ESI request) against all characters of
+corporation <code class="docutils literal notranslate"><span class="pre">456</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Endpoint names are actually stored in a separate table, and referred to
+using their id.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="users.html"
+                        title="previous chapter">User management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="todos.html"
+                        title="next chapter">Todo list</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/uac.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="todos.html" title="Todo list"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="users.html" title="User management"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>
