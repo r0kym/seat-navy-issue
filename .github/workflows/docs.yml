@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "docs/"
+        pre-build-command: "pip install -r requirements.dev.txt"
+        build-command: "python -m plantuml docs/*.uml && sphinx-build -b html . _build"
+    - name: Commit documentation changes
+      run: |
+        git clone https://github.com/altaris/seat-navy-issue.git --branch gh-pages --single-branch gh-pages
+        cp -r docs/_build/* gh-pages/
+        cd gh-pages
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Updated documentation" -a || true
+    - name: Push documentation changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: gh-pages
+        directory: gh-pages
+        github_token: ${{ secrets.GITHUB_TOKEN }}

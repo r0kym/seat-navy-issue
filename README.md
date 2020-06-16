@@ -3,6 +3,7 @@ SeAT Navy Issue
 
 *not affiliated with the original [SeAT](https://github.com/eveseat/seat)*
 
+[![Documentation](https://badgen.net/badge/Documentation/here/green)](https://altaris.github.io/seat-navy-issue/)
 ![Python 3](https://badgen.net/badge/Python/3/blue)
 [![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
@@ -10,9 +11,9 @@ SeAT Navy Issue
 
 ## Dependencies
 
-* `python3.8`
-* `requirements.txt` for runtime dependencies
-* `requirements.dev.txt` for development dependencies
+* `python3.8`;
+* `requirements.txt` for runtime dependencies;
+* `requirements.dev.txt` for development dependencies.
 
 Simply run
 ```sh
