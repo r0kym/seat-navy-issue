@@ -7,7 +7,7 @@ RUN_ARGS	   ?=
 all: format typecheck lint
 
 .PHONY: docs
-docs: docs_uml
+docs: docs_uml openapi-spec
 	sphinx-build -b html $(SPHINX_PATH)/ $(SPHINX_PATH)/_build
 	-@xdg-open $(SPHINX_PATH)/_build/html/index.html
 
