@@ -1,4 +1,6 @@
 OpenAPI specification
 =====================
 
-.. openapi:: openapi.yml
+.. literalinclude:: openapi.yml
+    :language: yaml
+    :linenos:
