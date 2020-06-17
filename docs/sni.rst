@@ -1,4 +1,4 @@
 Main module
 ===========
 
-.. automodule:: sni
+.. automodule:: sni.sni

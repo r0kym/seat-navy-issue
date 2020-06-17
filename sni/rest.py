@@ -9,46 +9,30 @@ from typing import (Any, Callable, cast, Dict, Optional)
 import requests
 
 
-def delete(url: str, *args, **kwargs) -> Dict[str, Any]:
+def request_json(method: str, url: str, *args, **kwargs) -> Dict[str, Any]:
     """
-    Wrapper for :func:`requests.delete`.
-    """
-    return do_request('delete', url, *args, **kwargs)
-
-
-def do_request(method: str, url: str, *args, **kwargs) -> Dict[str, Any]:
-    """
-    Actually makes request.
+    Makes a request and expects a JSON response.
     """
     function = {
-        'delete': requests.delete,
         'get': requests.get,
         'post': requests.post,
-        'put': requests.put
-    }.get(method.lower())
+    }.get(method)
     function = cast(Optional[Callable[..., requests.Response]], function)
     if not function:
-        raise ValueError(f'Unknown HTTP method {method}')
+        raise ValueError(f'Unsupported HTTP method {method}')
     response = function(url, *args, **kwargs)
     return response.json()
 
 
-def get(url: str, *args, **kwargs) -> Dict[str, Any]:
+def get_json(url: str, *args, **kwargs) -> Dict[str, Any]:
     """
     Wrapper for :func:`requests.get`.
     """
-    return do_request('get', url, *args, **kwargs)
+    return request_json('get', url, *args, **kwargs)
 
 
-def post(url: str, *args, **kwargs) -> Dict[str, Any]:
+def post_json(url: str, *args, **kwargs) -> Dict[str, Any]:
     """
     Wrapper for :func:`requests.post`.
     """
-    return do_request('post', url, *args, **kwargs)
-
-
-def put(url: str, *args, **kwargs) -> Dict[str, Any]:
-    """
-    Wrapper for :func:`requests.put`.
-    """
-    return do_request('put', url, *args, **kwargs)
+    return request_json('post', url, *args, **kwargs)

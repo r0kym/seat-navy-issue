@@ -11,7 +11,7 @@ import sys
 import uvicorn
 import yaml
 
-import conf
+import sni.conf as conf
 
 
 def main():
@@ -67,8 +67,8 @@ def print_openapi_spec() -> None:
     """
     Print the OpenAPI specification of the server in YAML.
     """
-    import apiserver  # pylint: disable=import-outside-toplevel
-    print(yaml.dump(apiserver.app.openapi()))
+    from sni.apiserver import app  # pylint: disable=import-outside-toplevel
+    print(yaml.dump(app.openapi()))
 
 
 def start_api_server() -> None:
@@ -76,7 +76,7 @@ def start_api_server() -> None:
     Runs the API server.
     """
     uvicorn.run(
-        'apiserver:app',
+        'sni.apiserver:app',
         host=conf.get('general.host'),
         log_level='debug' if conf.get('general.debug') else 'info',
         port=conf.get('general.port'),

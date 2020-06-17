@@ -2,6 +2,8 @@ SRC_PATH 		= sni
 SPHINX_PATH 	= docs
 RUN_ARGS	   ?=
 
+SNI				= python3 -m sni
+
 .ONESHELL:
 
 all: format typecheck lint
@@ -17,7 +19,7 @@ docs_uml:
 
 .PHONY: openapi-spec
 openapi-spec:
-	python3 $(SRC_PATH)/sni.py --openapi-spec > $(SPHINX_PATH)/openapi.yml
+	$(SNI) --openapi-spec > $(SPHINX_PATH)/openapi.yml
 
 .PHONY: format
 format:
@@ -31,7 +33,7 @@ lint:
 run:
 	@set -a
 	@. ./venv/bin/activate
-	python3 $(SRC_PATH)/sni.py -f test/sni.yml $(RUN_ARGS)
+	$(SNI) -f test/sni.yml $(RUN_ARGS)
 
 .PHONY: stack-down
 stack-down:
@@ -39,7 +41,8 @@ stack-down:
 
 .PHONY: stack-up
 stack-up:
-	sudo docker-compose -f test/docker-compose.yml -p sni-test up -d --remove-orphans
+	sudo docker-compose -f test/docker-compose.yml -p sni-test up -d \
+		--remove-orphans
 
 .PHONY: typecheck
 typecheck:

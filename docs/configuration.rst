@@ -53,4 +53,4 @@ Example
 Module documentation
 --------------------
 
-.. automodule:: conf
+.. automodule:: sni.conf
