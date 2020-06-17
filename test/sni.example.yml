@@ -35,6 +35,6 @@ logging:
             level: DEBUG
             propagate: false
 redis:
-    db: sni
+    database: sni
     host: localhost
     port: 6379

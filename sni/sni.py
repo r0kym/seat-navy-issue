@@ -6,6 +6,7 @@ This module contains the entry point to SNI.
 
 import argparse
 import logging.config
+import pprint
 import sys
 import uvicorn
 import yaml
@@ -23,8 +24,17 @@ def main():
         print_openapi_spec()
         sys.exit()
 
-    conf.load_configuration_file(arguments.file)
+    try:
+        conf.load_configuration_file(arguments.file)
+    except RuntimeError as error:
+        logging.fatal(str(error))
+        sys.exit(-1)
+
     logging.config.dictConfig(conf.get('logging', {}))
+
+    if conf.get('general.debug'):
+        logging.debug('SNI running in debug mode, dumping configuration:')
+        pprint.pprint(conf.CONFIGURATION, depth=1)
 
     start_api_server()
 
