@@ -5,12 +5,16 @@ API Server
 import logging
 from uuid import uuid4
 
-import fastapi
+from fastapi import (
+    FastAPI,
+    HTTPException,
+    status,
+)
 
 import sni.apimodels as apimodels
 import sni.esi as esi
 
-app = fastapi.FastAPI()
+app = FastAPI()
 
 
 @app.get('/auth', response_model=apimodels.AuthOut)
@@ -26,14 +30,17 @@ async def auth(data: apimodels.AuthIn):
     }
 
 
-@app.get('/callback/esi')
+@app.get('/callback/esi', status_code=status.HTTP_200_OK)
 async def callback_esi(code: str, state: str):
     """
     ESI callback.
     """
     logging.info('Received callback from ESI for state %s', state)
-    esi.process_sso_authorization_code(code, state)
-    return {}
+    if not esi.process_sso_authorization_code(code, state):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Could not obtain or validate access token from ESI',
+        )
 
 
 @app.get('/ping')

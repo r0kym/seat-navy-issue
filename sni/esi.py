@@ -15,11 +15,45 @@ from typing import (
 from urllib.parse import urljoin
 
 import requests
+import jwt
 
 import sni.conf as conf
 import sni.rest as rest
 
-ESI_BASE_URL = 'https://esi.evetech.net/latest/'
+
+def esi_request(method: str,
+                endpoint: str,
+                token: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Makes a request to EVE ESI.
+    """
+    function = {
+        'get': rest.get_json,
+        'post': rest.post_json,
+    }.get(method)
+    function = cast(Optional[Callable[..., Dict[str, Any]]], function)
+    if not function:
+        raise ValueError(f'Unsupported HTTP method {method}')
+    headers = {
+        'Accept-Encoding': 'gzip',
+        'accept': 'application/json',
+        'User-Agent': 'seat-navy-issue',
+    }
+    if token:
+        headers['Authorization'] = 'Bearer ' + token
+    params = {'datasource': 'tranquility'}
+    return function(
+        'https://esi.evetech.net/v5' + endpoint,
+        headers=headers,
+        params=params,
+    )
+
+
+def get(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Issues a ``GET`` request to EVE ESI.
+    """
+    return esi_request('get', endpoint, token)
 
 
 def get_auth_url(esi_scopes: List[str] = ['publicData'],
@@ -56,68 +90,110 @@ def get_auth_url(esi_scopes: List[str] = ['publicData'],
     return url
 
 
-def process_sso_authorization_code(code: str, state: str):
+def get_basic_authorization_code() -> str:
+    """
+    Returns an authorization code derived from the ESI ``client_id`` and
+    ``client_secret``.
+
+    More precisely, it is::
+
+        urlsafe_b64encode('<client_id>:<client_secret>')
+
+    """
+    authorization = str(conf.get('esi.client_id')) + ':' + str(
+        conf.get('esi.client_secret'))
+    return urlsafe_b64encode(authorization.encode()).decode()
+
+
+def post(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Issues a ``POST`` request to EVE ESI.
+    """
+    return esi_request('post', endpoint, token)
+
+
+def process_sso_authorization_code(code: str, state: str) -> bool:
     """
     Gets an access token (along with its refresh token) from an EVE SSO
     authorization code.
 
+    A token document issued by the ESI looks like this::
+
+        {
+            "access_token": "jZOzkRtA8B...LQJg2",
+            "token_type": "Bearer",
+            "expires_in": 1199,
+            "refresh_token": "RGuc...w1"
+        }
+
+    Returns:
+        bool: Wether the authentication was successful.
+
     Reference:
-        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`
+        `esi-docs <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`
+
+    Todo:
+        Validate the ESI JWT token
     """
     data = {
         'code': code,
         'grant_type': 'authorization_code',
     }
-    authorization = str(conf.get('esi.client_id')) + ':' + str(
-        conf.get('esi.client_secret'))
-    authorization_b64 = urlsafe_b64encode(authorization.encode()).decode()
     headers = {
-        'Authorization': 'Basic ' + authorization_b64,
+        'Authorization': 'Basic ' + get_basic_authorization_code(),
         'Content-Type': 'application/x-www-form-urlencoded',
         'Host': 'login.eveonline.com',
     }
-    logging.debug(headers)
     response_json = rest.post_json(
         'https://login.eveonline.com/v2/oauth/token',
         headers=headers,
         data=data,
     )
-    from pprint import pprint
-    pprint(response_json)
+    if 'access_token' not in response_json:
+        return False
+    decoded = jwt.decode(response_json['access_token'], verify=False)
+    # pylint: disable=bad-str-strip-call
+    character_id = str(decoded['sub']).strip('CHARACTER:EVE:')
+    logging.info(
+        'Successfully obtained access token for character %s (%s)',
+        decoded['name'],
+        character_id,
+    )
+    return True
 
 
-def do_request(method: str, token: Optional[str] = None) -> Dict[str, Any]:
+def refresh_access_token(refresh_token: str) -> bool:
     """
-    Makes a request to EVE ESI.
+    Refreshes an access token.
+
+    Returns:
+        Wether the refresh was successful.
+
+    Reference:
+        `esi-docs <https://docs.esi.evetech.net/docs/sso/refreshing_access_tokens.html>`_
     """
-    function = {
-        'get': rest.get_json,
-        'post': rest.post_json,
-    }.get(method)
-    function = cast(Optional[Callable[..., Dict[str, Any]]], function)
-    if not function:
-        raise ValueError(f'Unsupported HTTP method {method}')
-    url = urljoin(ESI_BASE_URL, method)
-    headers = {
-        'Accept-Encoding': 'gzip',
-        'accept': 'application/json',
-        'User-Agent': 'seat-navy-issue'
+    data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
     }
-    params = {'datasource': 'tranquility'}
-    if token:
-        params['token'] = token
-    return function(url, headers=headers, params=params)
-
-
-def get(token: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Issues a ``GET`` request to EVE ESI.
-    """
-    return do_request('get', token)
-
-
-def post(token: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Issues a ``POST`` request to EVE ESI.
-    """
-    return do_request('post', token)
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Host': 'login.eveonline.com',
+        'Authorization': 'Basic ' + get_basic_authorization_code()
+    }
+    response_json = rest.post_json(
+        'https://login.eveonline.com/v2/oauth/token',
+        headers=headers,
+        data=data,
+    )
+    if 'access_token' not in response_json:
+        return False
+    decoded = jwt.decode(response_json['access_token'], verify=False)
+    # pylint: disable=bad-str-strip-call
+    character_id = str(decoded['sub']).strip('CHARACTER:EVE:')
+    logging.info(
+        'Successfully refreshed access token for character %s (%s)',
+        decoded['name'],
+        character_id,
+    )
+    return True
