@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.database &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.database</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Database layer</span>
+
+<span class="sd">Reference:</span>
+<span class="sd">    `MongoEngine User Documentation &lt;http://docs.org/index.html&gt;`_</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">from</span> <span class="nn">mongoengine</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CASCADE</span><span class="p">,</span>
+    <span class="n">connect</span><span class="p">,</span>
+    <span class="n">DateTimeField</span><span class="p">,</span>
+    <span class="n">DO_NOTHING</span><span class="p">,</span>
+    <span class="n">Document</span><span class="p">,</span>
+    <span class="n">IntField</span><span class="p">,</span>
+    <span class="n">ListField</span><span class="p">,</span>
+    <span class="n">ReferenceField</span><span class="p">,</span>
+    <span class="n">StringField</span><span class="p">,</span>
+    <span class="n">UUIDField</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="User"><a class="viewcode-back" href="../../database.html#sni.database.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User model.</span>
+
+<span class="sd">    A user corresponds to a single EVE character. A user can reference other</span>
+<span class="sd">    users as &quot;sub characters&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">character_id</span> <span class="o">=</span> <span class="n">IntField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">character_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">subcharacter_ids</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">IntField</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="Token"><a class="viewcode-back" href="../../database.html#sni.database.Token">[docs]</a><span class="k">class</span> <span class="nc">Token</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a token issued by SNI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TOKEN_TYPES</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;dyn&#39;</span><span class="p">,</span>  <span class="c1"># Dynamic app token</span>
+        <span class="s1">&#39;per&#39;</span><span class="p">,</span>  <span class="c1"># Permanent app token</span>
+        <span class="s1">&#39;use&#39;</span><span class="p">,</span>  <span class="c1"># User token</span>
+    <span class="p">]</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">token_type</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">TOKEN_TYPES</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">UUIDField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Token.to_jwt"><a class="viewcode-back" href="../../database.html#sni.database.Token.to_jwt">[docs]</a>    <span class="k">def</span> <span class="nf">to_jwt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Derives a JWT token byte array from the current token.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;created_on&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">created_on</span><span class="p">),</span>
+                <span class="s1">&#39;expires_on&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expires_on</span><span class="p">),</span>
+                <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+                <span class="s1">&#39;token_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
+                <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+            <span class="p">},</span>
+            <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
+            <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="EsiToken"><a class="viewcode-back" href="../../database.html#sni.database.EsiToken">[docs]</a><span class="k">class</span> <span class="nc">EsiToken</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
+<span class="sd">    relevant metadatas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">app_token</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">scopes</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">StringField</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../database.html#sni.database.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connects to the MongoDB instance.</span>
+
+<span class="sd">    Does not return anything. Any call to ``mongoengine`` will act on that</span>
+<span class="sd">    connection. It&#39;s magic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connect</span><span class="p">(</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">),</span>
+        <span class="n">authentication_source</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">),</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">),</span>
+        <span class="n">password</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">),</span>
+        <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">),</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">query_set</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">query_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created root user&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">query_set</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;per&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">root_per_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;per&#39;</span><span class="p">,</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">uuid4</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">root_per_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No permanent app token owned by root, created one: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                     <span class="n">root_per_token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;dyn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">root_dyn_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;dyn&#39;</span><span class="p">,</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">uuid4</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">root_dyn_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No dynamic app token owned by root, created one: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                     <span class="n">root_dyn_token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">())</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

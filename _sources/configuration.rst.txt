@@ -9,13 +9,12 @@ Reference
 The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 ``sni.yml`` by default.
 
-* ``db``
+* ``database``
+    * ``authentication_source`` (default: ``admin``)
     * ``database`` (default: ``sni``)
-    * ``driver`` (default: ``default``)
     * ``host``
     * ``password``
-    * ``port`` (default: ``3306``)
-    * ``type`` (default: ``mysql``): A DBMS supported by SQLAlchemy, see `here <https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls>`_ (this parameter is called a "dialect" in the SQLAlchemy documentation).
+    * ``port`` (default: ``27017``)
     * ``username`` (default: ``sni``)
 
 * ``esi``: Create an application at the `EVE Developer Portal <https://developers.eveonline.com/>`_

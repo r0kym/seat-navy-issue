@@ -59,6 +59,7 @@ Module documentation
    apiserver
    esi
    rest
+   database
 
 
 Indices and tables

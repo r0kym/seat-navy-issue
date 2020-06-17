@@ -51,13 +51,12 @@
 <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code> by default.</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">db</span></code></dt><dd><ul>
+<dt><code class="docutils literal notranslate"><span class="pre">database</span></code></dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">authentication_source</span></code> (default: <code class="docutils literal notranslate"><span class="pre">admin</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">driver</span></code> (default: <code class="docutils literal notranslate"><span class="pre">default</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">password</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">3306</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> (default: <code class="docutils literal notranslate"><span class="pre">mysql</span></code>): A DBMS supported by SQLAlchemy, see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls">here</a> (this parameter is called a “dialect” in the SQLAlchemy documentation).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">27017</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">username</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
 </ul>
 </dd>
@@ -104,13 +103,12 @@
 </div>
 <div class="section" id="example">
 <span id="configuration-file-reference-example"></span><h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">db</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">database</span><span class="p">:</span>
+    <span class="nt">authentication_source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
     <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
-    <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
     <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
-    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3306</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
+    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">27017</span>
     <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
 <span class="nt">esi</span><span class="p">:</span>
     <span class="nt">client_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">299bd5a9f432a7b9a584e91801cb95a3</span>
@@ -150,6 +148,11 @@
 <div class="section" id="module-sni.conf">
 <span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-sni.conf" title="Permalink to this headline">¶</a></h2>
 <p>Configuration facility</p>
+<dl class="data">
+<dt id="sni.conf.CONFIGURATION">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">CONFIGURATION</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.CONFIGURATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="function">
 <dt id="sni.conf.assert_set">
 <code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">assert_set</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#assert_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.assert_set" title="Permalink to this definition">¶</a></dt>

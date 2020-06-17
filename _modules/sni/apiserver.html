@@ -44,12 +44,16 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
 
-<span class="kn">import</span> <span class="nn">fastapi</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FastAPI</span><span class="p">,</span>
+    <span class="n">HTTPException</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">sni.apimodels</span> <span class="k">as</span> <span class="nn">apimodels</span>
 <span class="kn">import</span> <span class="nn">sni.esi</span> <span class="k">as</span> <span class="nn">esi</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="auth"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.auth">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/auth&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">apimodels</span><span class="o">.</span><span class="n">AuthOut</span><span class="p">)</span>
@@ -65,14 +69,17 @@
     <span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="callback_esi"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.callback_esi">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/callback/esi&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="callback_esi"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.callback_esi">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/callback/esi&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">callback_esi</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ESI callback.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
-    <span class="n">esi</span><span class="o">.</span><span class="n">process_sso_authorization_code</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{}</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">esi</span><span class="o">.</span><span class="n">process_sso_authorization_code</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;Could not obtain or validate access token from ESI&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ping"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/ping&#39;</span><span class="p">)</span>

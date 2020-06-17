@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>mongoengine.base.metaclasses &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mongoengine.base.metaclasses</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">mongoengine.base.common</span> <span class="kn">import</span> <span class="n">_document_registry</span>
+<span class="kn">from</span> <span class="nn">mongoengine.base.fields</span> <span class="kn">import</span> <span class="n">BaseField</span><span class="p">,</span> <span class="n">ComplexBaseField</span><span class="p">,</span> <span class="n">ObjectIdField</span>
+<span class="kn">from</span> <span class="nn">mongoengine.common</span> <span class="kn">import</span> <span class="n">_import_class</span>
+<span class="kn">from</span> <span class="nn">mongoengine.errors</span> <span class="kn">import</span> <span class="n">InvalidDocumentError</span>
+<span class="kn">from</span> <span class="nn">mongoengine.queryset</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DO_NOTHING</span><span class="p">,</span>
+    <span class="n">DoesNotExist</span><span class="p">,</span>
+    <span class="n">MultipleObjectsReturned</span><span class="p">,</span>
+    <span class="n">QuerySetManager</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DocumentMetaclass&quot;</span><span class="p">,</span> <span class="s2">&quot;TopLevelDocumentMetaclass&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">DocumentMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Metaclass for all documents.&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO lower complexity of this method</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="n">flattened_bases</span> <span class="o">=</span> <span class="n">mcs</span><span class="o">.</span><span class="n">_get_bases</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span>
+        <span class="n">super_new</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span>
+
+        <span class="c1"># If a base class just call super</span>
+        <span class="n">metaclass</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;my_metaclass&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metaclass</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">metaclass</span><span class="p">,</span> <span class="n">DocumentMetaclass</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">super_new</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_is_document&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_is_document&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_cached_reference_fields&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># EmbeddedDocuments could have meta data for inheritance</span>
+        <span class="k">if</span> <span class="s2">&quot;meta&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">)</span>
+
+        <span class="c1"># EmbeddedDocuments should inherit meta data</span>
+        <span class="k">if</span> <span class="s2">&quot;_meta&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">MetaDict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">flattened_bases</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="c1"># Add any mixin metadata from plain objects</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">):</span>
+                    <span class="n">meta</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">):</span>
+                    <span class="n">meta</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">][</span>
+                <span class="s2">&quot;abstract&quot;</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># 789: EmbeddedDocument shouldn&#39;t inherit abstract</span>
+
+        <span class="c1"># If allow_inheritance is True, add a &quot;_cls&quot; string field to the attrs</span>
+        <span class="k">if</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allow_inheritance&quot;</span><span class="p">):</span>
+            <span class="n">StringField</span> <span class="o">=</span> <span class="n">_import_class</span><span class="p">(</span><span class="s2">&quot;StringField&quot;</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_cls&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">()</span>
+
+        <span class="c1"># Handle document Fields</span>
+
+        <span class="c1"># Merge all fields from subclasses</span>
+        <span class="n">doc_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">flattened_bases</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>
+                <span class="n">doc_fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+
+            <span class="c1"># Standard object mixin - merge in any Fields</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">):</span>
+                <span class="n">base_fields</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_value</span><span class="p">,</span> <span class="n">BaseField</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="n">attr_value</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">attr_name</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_value</span><span class="o">.</span><span class="n">db_field</span><span class="p">:</span>
+                        <span class="n">attr_value</span><span class="o">.</span><span class="n">db_field</span> <span class="o">=</span> <span class="n">attr_name</span>
+                    <span class="n">base_fields</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
+
+                <span class="n">doc_fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base_fields</span><span class="p">)</span>
+
+        <span class="c1"># Discover any document fields</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_value</span><span class="p">,</span> <span class="n">BaseField</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">attr_value</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">attr_name</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_value</span><span class="o">.</span><span class="n">db_field</span><span class="p">:</span>
+                <span class="n">attr_value</span><span class="o">.</span><span class="n">db_field</span> <span class="o">=</span> <span class="n">attr_name</span>
+            <span class="n">doc_fields</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
+
+            <span class="c1"># Count names to ensure no db_field redefinitions</span>
+            <span class="n">field_names</span><span class="p">[</span><span class="n">attr_value</span><span class="o">.</span><span class="n">db_field</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">field_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr_value</span><span class="o">.</span><span class="n">db_field</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Ensure no duplicate db_fields</span>
+        <span class="n">duplicate_db_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">field_names</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">duplicate_db_fields</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Multiple db_fields defined for: </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">duplicate_db_fields</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidDocumentError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Set _fields and db_field maps</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_fields&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc_fields</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_db_field_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;db_field&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc_fields</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_reverse_db_field_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_db_field_map&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_fields_ordered&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">v</span><span class="o">.</span><span class="n">creation_counter</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc_fields</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Set document hierarchy</span>
+        <span class="c1">#</span>
+        <span class="n">superclasses</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">flattened_bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_is_base_cls&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">,</span> <span class="p">{}</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="c1"># Collate hierarchy for _cls and _subclasses</span>
+                <span class="n">class_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">):</span>
+                <span class="c1"># Warn if allow_inheritance isn&#39;t set and prevent</span>
+                <span class="c1"># inheritance of classes where inheritance is set to False</span>
+                <span class="n">allow_inheritance</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allow_inheritance&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_inheritance</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Document </span><span class="si">%s</span><span class="s2"> may not be subclassed. &quot;</span>
+                        <span class="s1">&#39;To enable inheritance, use the &quot;allow_inheritance&quot; meta attribute.&#39;</span>
+                        <span class="o">%</span> <span class="n">base</span><span class="o">.</span><span class="vm">__name__</span>
+                    <span class="p">)</span>
+
+        <span class="c1"># Get superclasses from last base superclass</span>
+        <span class="n">document_bases</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">flattened_bases</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s2">&quot;_class_name&quot;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">document_bases</span><span class="p">:</span>
+            <span class="n">superclasses</span> <span class="o">=</span> <span class="n">document_bases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_superclasses</span>
+            <span class="n">superclasses</span> <span class="o">+=</span> <span class="p">(</span><span class="n">document_bases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_class_name</span><span class="p">,)</span>
+
+        <span class="n">_cls</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">class_name</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_class_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_cls</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_superclasses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">superclasses</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_subclasses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_cls</span><span class="p">,)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_types&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_subclasses&quot;</span><span class="p">]</span>  <span class="c1"># TODO depreciate _types</span>
+
+        <span class="c1"># Create the new_class</span>
+        <span class="n">new_class</span> <span class="o">=</span> <span class="n">super_new</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="c1"># Set _subclasses</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">document_bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">_subclasses</span><span class="p">:</span>
+                <span class="n">base</span><span class="o">.</span><span class="n">_subclasses</span> <span class="o">+=</span> <span class="p">(</span><span class="n">_cls</span><span class="p">,)</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">_types</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">_subclasses</span>  <span class="c1"># TODO depreciate _types</span>
+
+        <span class="p">(</span>
+            <span class="n">Document</span><span class="p">,</span>
+            <span class="n">EmbeddedDocument</span><span class="p">,</span>
+            <span class="n">DictField</span><span class="p">,</span>
+            <span class="n">CachedReferenceField</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">mcs</span><span class="o">.</span><span class="n">_import_classes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">new_class</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_collection</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Add class to the _document_registry</span>
+        <span class="n">_document_registry</span><span class="p">[</span><span class="n">new_class</span><span class="o">.</span><span class="n">_class_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_class</span>
+
+        <span class="c1"># Handle delete rules</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">owner_document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">owner_document</span> <span class="o">=</span> <span class="n">new_class</span>
+            <span class="n">delete_rule</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;reverse_delete_rule&quot;</span><span class="p">,</span> <span class="n">DO_NOTHING</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">CachedReferenceField</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">new_class</span><span class="p">,</span> <span class="n">EmbeddedDocument</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">InvalidDocumentError</span><span class="p">(</span>
+                        <span class="s2">&quot;CachedReferenceFields is not allowed in EmbeddedDocuments&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">auto_sync</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">start_listener</span><span class="p">()</span>
+
+                <span class="n">f</span><span class="o">.</span><span class="n">document_type</span><span class="o">.</span><span class="n">_cached_reference_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ComplexBaseField</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">):</span>
+                <span class="n">delete_rule</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="s2">&quot;reverse_delete_rule&quot;</span><span class="p">,</span> <span class="n">DO_NOTHING</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">DictField</span><span class="p">)</span> <span class="ow">and</span> <span class="n">delete_rule</span> <span class="o">!=</span> <span class="n">DO_NOTHING</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;Reverse delete rules are not supported &quot;</span>
+                        <span class="s2">&quot;for </span><span class="si">%s</span><span class="s2"> (field: </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">InvalidDocumentError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+                <span class="n">f</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">field</span>
+
+            <span class="k">if</span> <span class="n">delete_rule</span> <span class="o">!=</span> <span class="n">DO_NOTHING</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">new_class</span><span class="p">,</span> <span class="n">EmbeddedDocument</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;Reverse delete rules are not supported for &quot;</span>
+                        <span class="s2">&quot;EmbeddedDocuments (field: </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span>
+                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">InvalidDocumentError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">document_type</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">new_class</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">delete_rule</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">name</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">EmbeddedDocument</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_class</span><span class="o">.</span><span class="n">mro</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is a document method and not a valid field name&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">raise</span> <span class="n">InvalidDocumentError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_class</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_bases</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">bases</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bases</span><span class="p">,</span> <span class="n">BasesTuple</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">bases</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bases</span> <span class="o">=</span> <span class="n">mcs</span><span class="o">.</span><span class="n">__get_bases</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span>
+        <span class="n">unique_bases</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bases</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">seen</span> <span class="ow">or</span> <span class="n">seen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">BasesTuple</span><span class="p">(</span><span class="n">unique_bases</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__get_bases</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">bases</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="nb">object</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">base</span>
+            <span class="k">yield from</span> <span class="n">mcs</span><span class="o">.</span><span class="n">__get_bases</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_import_classes</span><span class="p">(</span><span class="n">mcs</span><span class="p">):</span>
+        <span class="n">Document</span> <span class="o">=</span> <span class="n">_import_class</span><span class="p">(</span><span class="s2">&quot;Document&quot;</span><span class="p">)</span>
+        <span class="n">EmbeddedDocument</span> <span class="o">=</span> <span class="n">_import_class</span><span class="p">(</span><span class="s2">&quot;EmbeddedDocument&quot;</span><span class="p">)</span>
+        <span class="n">DictField</span> <span class="o">=</span> <span class="n">_import_class</span><span class="p">(</span><span class="s2">&quot;DictField&quot;</span><span class="p">)</span>
+        <span class="n">CachedReferenceField</span> <span class="o">=</span> <span class="n">_import_class</span><span class="p">(</span><span class="s2">&quot;CachedReferenceField&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Document</span><span class="p">,</span> <span class="n">EmbeddedDocument</span><span class="p">,</span> <span class="n">DictField</span><span class="p">,</span> <span class="n">CachedReferenceField</span>
+
+
+<span class="k">class</span> <span class="nc">TopLevelDocumentMetaclass</span><span class="p">(</span><span class="n">DocumentMetaclass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Metaclass for top-level documents (i.e. documents that have their own</span>
+<span class="sd">    collection in the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="n">flattened_bases</span> <span class="o">=</span> <span class="n">mcs</span><span class="o">.</span><span class="n">_get_bases</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span>
+        <span class="n">super_new</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span>
+
+        <span class="c1"># Set default _meta data if base class, otherwise get user defined meta</span>
+        <span class="k">if</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;my_metaclass&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">TopLevelDocumentMetaclass</span><span class="p">:</span>
+            <span class="c1"># defaults</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;max_documents&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;max_size&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;ordering&quot;</span><span class="p">:</span> <span class="p">[],</span>  <span class="c1"># default ordering applied at runtime</span>
+                <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[],</span>  <span class="c1"># indexes to be ensured at runtime</span>
+                <span class="s2">&quot;id_field&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;index_background&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;index_opts&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;delete_rules&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="c1"># allow_inheritance can be True, False, and None. True means</span>
+                <span class="c1"># &quot;allow inheritance&quot;, False means &quot;don&#39;t allow inheritance&quot;,</span>
+                <span class="c1"># None means &quot;do whatever your parent does, or don&#39;t allow</span>
+                <span class="c1"># inheritance if you&#39;re a top-level class&quot;.</span>
+                <span class="s2">&quot;allow_inheritance&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_is_base_cls&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="c1"># Explicitly set abstract to false unless set</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">][</span><span class="s2">&quot;abstract&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_is_base_cls&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Set flag marking as document class - as opposed to an object mixin</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_is_document&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Ensure queryset_class is inherited</span>
+        <span class="k">if</span> <span class="s2">&quot;objects&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">manager</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;objects&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="s2">&quot;queryset_class&quot;</span><span class="p">):</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">][</span><span class="s2">&quot;queryset_class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">queryset_class</span>
+
+        <span class="c1"># Clean up top level meta</span>
+        <span class="k">if</span> <span class="s2">&quot;meta&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Find the parent document class</span>
+        <span class="n">parent_doc_cls</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">flattened_bases</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">TopLevelDocumentMetaclass</span>
+        <span class="p">]</span>
+        <span class="n">parent_doc_cls</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">parent_doc_cls</span> <span class="k">else</span> <span class="n">parent_doc_cls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Prevent classes setting collection different to their parents</span>
+        <span class="c1"># If parent wasn&#39;t an abstract class</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">parent_doc_cls</span>
+            <span class="ow">and</span> <span class="s2">&quot;collection&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_meta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">parent_doc_cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Trying to set a collection on a subclass (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">name</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">SyntaxWarning</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">][</span><span class="s2">&quot;collection&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Ensure abstract documents have abstract bases</span>
+        <span class="k">if</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_is_base_cls&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">parent_doc_cls</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">parent_doc_cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Abstract document cannot have non-abstract base&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">super_new</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="c1"># Merge base class metas.</span>
+        <span class="c1"># Uses a special MetaDict that handles various merging rules</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">MetaDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">flattened_bases</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c1"># Add any mixin metadata from plain objects</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">):</span>
+                <span class="n">meta</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">):</span>
+                <span class="n">meta</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
+
+            <span class="c1"># Set collection in the meta if its callable</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_is_document&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">):</span>
+                <span class="n">collection</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;collection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+                    <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;collection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">collection</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+
+        <span class="n">meta</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_meta&quot;</span><span class="p">,</span> <span class="p">{}))</span>  <span class="c1"># Top level meta</span>
+
+        <span class="c1"># Only simple classes (i.e. direct subclasses of Document) may set</span>
+        <span class="c1"># allow_inheritance to False. If the base Document allows inheritance,</span>
+        <span class="c1"># none of its subclasses can override allow_inheritance to False.</span>
+        <span class="n">simple_class</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abstract&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">flattened_bases</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">simple_class</span>
+            <span class="ow">and</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;allow_inheritance&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;abstract&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Only direct subclasses of Document may set &quot;</span>
+                <span class="s1">&#39;&quot;allow_inheritance&quot; to False&#39;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Set default collection name</span>
+        <span class="k">if</span> <span class="s2">&quot;collection&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;collection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">c</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="k">else</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">name</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta</span>
+
+        <span class="c1"># Call super and get the new class</span>
+        <span class="n">new_class</span> <span class="o">=</span> <span class="n">super_new</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_meta</span>
+
+        <span class="c1"># Set index specifications</span>
+        <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;index_specs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_build_index_specs</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;indexes&quot;</span><span class="p">])</span>
+
+        <span class="c1"># If collection is a callable - call it and set the value</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;collection&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_meta</span><span class="p">[</span><span class="s2">&quot;collection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">collection</span><span class="p">(</span><span class="n">new_class</span><span class="p">)</span>
+
+        <span class="c1"># Provide a default queryset unless exists or one has been set</span>
+        <span class="k">if</span> <span class="s2">&quot;objects&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">new_class</span><span class="p">):</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="n">QuerySetManager</span><span class="p">()</span>
+
+        <span class="c1"># Validate the fields and set primary key if needed</span>
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">primary_key</span><span class="p">:</span>
+                <span class="c1"># Ensure only one primary key is set</span>
+                <span class="n">current_pk</span> <span class="o">=</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_field&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">current_pk</span> <span class="ow">and</span> <span class="n">current_pk</span> <span class="o">!=</span> <span class="n">field_name</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot override primary key field&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Set primary key</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">current_pk</span><span class="p">:</span>
+                    <span class="n">new_class</span><span class="o">.</span><span class="n">_meta</span><span class="p">[</span><span class="s2">&quot;id_field&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_name</span>
+                    <span class="n">new_class</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">field</span>
+
+        <span class="c1"># If the document doesn&#39;t explicitly define a primary key field, create</span>
+        <span class="c1"># one. Make it an ObjectIdField and give it a non-clashing name (&quot;id&quot;</span>
+        <span class="c1"># by default, but can be different if that one&#39;s taken).</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_field&quot;</span><span class="p">):</span>
+            <span class="n">id_name</span><span class="p">,</span> <span class="n">id_db_name</span> <span class="o">=</span> <span class="n">mcs</span><span class="o">.</span><span class="n">get_auto_id_names</span><span class="p">(</span><span class="n">new_class</span><span class="p">)</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_meta</span><span class="p">[</span><span class="s2">&quot;id_field&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_name</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">id_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ObjectIdField</span><span class="p">(</span><span class="n">db_field</span><span class="o">=</span><span class="n">id_db_name</span><span class="p">)</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">id_name</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">id_name</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">id_name</span><span class="p">]</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_db_field_map</span><span class="p">[</span><span class="n">id_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_db_name</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_reverse_db_field_map</span><span class="p">[</span><span class="n">id_db_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_name</span>
+
+            <span class="c1"># Prepend the ID field to _fields_ordered (so that it&#39;s *always*</span>
+            <span class="c1"># the first field).</span>
+            <span class="n">new_class</span><span class="o">.</span><span class="n">_fields_ordered</span> <span class="o">=</span> <span class="p">(</span><span class="n">id_name</span><span class="p">,)</span> <span class="o">+</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_fields_ordered</span>
+
+        <span class="c1"># Merge in exceptions with parent hierarchy.</span>
+        <span class="n">exceptions_to_merge</span> <span class="o">=</span> <span class="p">(</span><span class="n">DoesNotExist</span><span class="p">,</span> <span class="n">MultipleObjectsReturned</span><span class="p">)</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;__module__&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">exc</span> <span class="ow">in</span> <span class="n">exceptions_to_merge</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">parents</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">flattened_bases</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">exc</span><span class="p">,)</span>
+
+            <span class="c1"># Create a new exception and set it as an attribute on the new</span>
+            <span class="c1"># class.</span>
+            <span class="n">exception</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;__module__&quot;</span><span class="p">:</span> <span class="n">module</span><span class="p">})</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">new_class</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_class</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_auto_id_names</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">new_class</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find a name for the automatic ID field for the given new class.</span>
+
+<span class="sd">        Return a two-element tuple where the first item is the field name (i.e.</span>
+<span class="sd">        the attribute name on the object) and the second element is the DB</span>
+<span class="sd">        field name (i.e. the name of the key stored in MongoDB).</span>
+
+<span class="sd">        Defaults to (&#39;id&#39;, &#39;_id&#39;), or generates a non-clashing name in the form</span>
+<span class="sd">        of (&#39;auto_id_X&#39;, &#39;_auto_id_X&#39;) if the default name is already taken.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">id_name</span><span class="p">,</span> <span class="n">id_db_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">)</span>
+        <span class="n">existing_fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">field_name</span> <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="p">}</span>
+        <span class="n">existing_db_fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="o">.</span><span class="n">db_field</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_class</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="n">id_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_fields</span> <span class="ow">and</span> <span class="n">id_db_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_db_fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">id_name</span><span class="p">,</span> <span class="n">id_db_name</span>
+
+        <span class="n">id_basename</span><span class="p">,</span> <span class="n">id_db_basename</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;auto_id&quot;</span><span class="p">,</span> <span class="s2">&quot;_auto_id&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+            <span class="n">id_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_basename</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">id_db_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_db_basename</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">id_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_fields</span> <span class="ow">and</span> <span class="n">id_db_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_db_fields</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">id_name</span><span class="p">,</span> <span class="n">id_db_name</span>
+
+
+<span class="k">class</span> <span class="nc">MetaDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom dictionary for meta classes.</span>
+<span class="sd">    Handles the merging of set indexes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_merge_options</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;indexes&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_options</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_options</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">[])</span> <span class="o">+</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+
+<span class="k">class</span> <span class="nc">BasesTuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Special class to handle introspection of bases tuple in __new__&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

@@ -124,14 +124,14 @@
 <span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-sni.esi" title="Permalink to this headline">¶</a></h2>
 <p>EVE ESI module</p>
 <dl class="function">
-<dt id="sni.esi.do_request">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">do_request</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#do_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.do_request" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.esi_request">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">esi_request</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">endpoint: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#esi_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a request to EVE ESI.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.get">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">endpoint: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to EVE ESI.</p>
 </dd></dl>
 
@@ -153,18 +153,65 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.esi.get_basic_authorization_code">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get_basic_authorization_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/esi.html#get_basic_authorization_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get_basic_authorization_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an authorization code derived from the ESI <code class="docutils literal notranslate"><span class="pre">client_id</span></code> and
+<code class="docutils literal notranslate"><span class="pre">client_secret</span></code>.</p>
+<p>More precisely, it is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="s1">&#39;&lt;client_id&gt;:&lt;client_secret&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.esi.post">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">endpoint: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">POST</span></code> request to EVE ESI.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.process_sso_authorization_code">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">process_sso_authorization_code</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/esi.html#process_sso_authorization_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.process_sso_authorization_code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">process_sso_authorization_code</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/esi.html#process_sso_authorization_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.process_sso_authorization_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets an access token (along with its refresh token) from an EVE SSO
 authorization code.</p>
+<p>A token document issued by the ESI looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;access_token&quot;</span><span class="p">:</span> <span class="s2">&quot;jZOzkRtA8B...LQJg2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;token_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;expires_in&quot;</span><span class="p">:</span> <span class="mi">1199</span><span class="p">,</span>
+    <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="s2">&quot;RGuc...w1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Wether the authentication was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 <dl class="simple">
-<dt>Reference:</dt><dd><p><cite>OAuth 2.0 for Web Based Applications &lt;https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html&gt;</cite></p>
+<dt>Reference:</dt><dd><p><cite>esi-docs &lt;https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html&gt;</cite></p>
+</dd>
+</dl>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Validate the ESI JWT token</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.refresh_access_token">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">refresh_access_token</code><span class="sig-paren">(</span><em class="sig-param">refresh_token: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/esi.html#refresh_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.refresh_access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refreshes an access token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Wether the refresh was successful.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/refreshing_access_tokens.html">esi-docs</a></p>
 </dd>
 </dl>
 </dd></dl>

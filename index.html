@@ -60,22 +60,19 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.5&#39;</span>
 
 <span class="nt">volumes</span><span class="p">:</span>
-  <span class="nt">mariadb-data</span><span class="p">:</span>
+  <span class="nt">mongodb-data</span><span class="p">:</span>
   <span class="nt">redis-data</span><span class="p">:</span>
   <span class="nt">sni-code</span><span class="p">:</span>
 
 <span class="nt">services</span><span class="p">:</span>
-  <span class="nt">mariadb</span><span class="p">:</span>
-    <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mariadb</span>
+  <span class="nt">mongodb</span><span class="p">:</span>
+    <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongodb</span>
     <span class="nt">environment</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MYSQL_DATABASE=sni</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MYSQL_PASSWORD=NBxd3gUT67apvnK2Q5u4</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MYSQL_RANDOM_ROOT_PASSWORD=yes</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MYSQL_USER=sni</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mariadb:latest</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MONGO_INITDB_ROOT_USERNAME=root</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MONGO_INITDB_ROOT_PASSWORD=WMgHVNCrEtyck89D9VY5</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongo</span>
     <span class="nt">volumes</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./my.cnf:/etc/mysql/conf.d/my.cnf</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mariadb-data:/var/lib/mysql</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mongodb-data:/data/db</span>
   <span class="nt">redis</span><span class="p">:</span>
     <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
     <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
@@ -129,6 +126,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rest.html">API requests layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database layer</a></li>
 </ul>
 </div>
 </div>

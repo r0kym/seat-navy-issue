@@ -68,13 +68,12 @@
     <span class="k">global</span> <span class="n">CONFIGURATION</span>
     <span class="n">CONFIGURATION</span> <span class="o">=</span> <span class="n">flatten_dict</span><span class="p">(</span><span class="n">file_config</span><span class="p">)</span>
     <span class="n">CONFIGURATION</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.database&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
-    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.driver&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
-    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;db.host&#39;</span><span class="p">)</span>
-    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;db.password&#39;</span><span class="p">)</span>
-    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.port&#39;</span><span class="p">,</span> <span class="mi">3306</span><span class="p">)</span>
-    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.type&#39;</span><span class="p">,</span> <span class="s1">&#39;mysql&#39;</span><span class="p">)</span>
-    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.username&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">,</span> <span class="s1">&#39;admin&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">,</span> <span class="mi">27017</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
     <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;esi.client_id&#39;</span><span class="p">)</span>
     <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;esi.client_secret&#39;</span><span class="p">)</span>
     <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
