@@ -1,4 +1,4 @@
 API requests layer
 ==================
 
-.. automodule:: rest
+.. automodule:: sni.rest

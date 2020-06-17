@@ -26,9 +26,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
-        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
@@ -59,9 +56,9 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">driver</span></code> (default: <code class="docutils literal notranslate"><span class="pre">default</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">password</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: A DBMS supported by SQLAlchemy, see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls">here</a> (this parameter is called a “dialect” in the SQLAlchemy documentation).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">3306</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> (default: <code class="docutils literal notranslate"><span class="pre">mysql</span></code>): A DBMS supported by SQLAlchemy, see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls">here</a> (this parameter is called a “dialect” in the SQLAlchemy documentation).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -79,6 +76,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Sets the app in debug mode.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>): API server host.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">5000</span></code>): API server port.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">root_url</span></code>: HTTP URL at which the API root is located (e.g.
+<code class="docutils literal notranslate"><span class="pre">https://example.com/sni</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -94,7 +93,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">logging</span></code>: Logging facility configuration, see the <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#dictionary-schema-details">logging.config documentation</a>.</p></li>
 <li><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">redis</span></code></dt><dd><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">db</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">6379</span></code>)</p></li>
 </ul>
@@ -142,29 +141,52 @@
             <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
             <span class="nt">propagate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">redis</span><span class="p">:</span>
-    <span class="nt">db</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
+    <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
     <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6379</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="module-conf">
-<span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-conf" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sni.conf">
+<span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-sni.conf" title="Permalink to this headline">¶</a></h2>
 <p>Configuration facility</p>
 <dl class="function">
-<dt id="conf.get">
-<code class="sig-prename descclassname">conf.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">default: Any = None</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/conf.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conf.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a config value from a key. Nested keys are separated by dots. For
-example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_host</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db.host&#39;</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
+<dt id="sni.conf.assert_set">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">assert_set</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#assert_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.assert_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises an exception if the configuration dict does not have that key.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.conf.flatten_dict">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">flatten_dict</code><span class="sig-paren">(</span><em class="sig-param">nested_dict: MutableMapping[Any, Any], parent_key: str = '', separator: str = '.'</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/sni/conf.html#flatten_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.flatten_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flattens a dictionnary.</p>
+<p><a class="reference external" href="https://stackoverflow.com/a/6027615">Credits to Imran</a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flatten_dict</span><span class="p">({</span>
+<span class="go">    &#39;a&#39;: 1, &#39;c&#39;: {&#39;a&#39;: 2, &#39;b&#39;: {&#39;x&#39;: 5, &#39;y&#39; : 10}},</span>
+<span class="go">    &#39;d&#39;: [1, 2, 3],</span>
+<span class="go">})</span>
+<span class="go">{&#39;a&#39;: 1, &#39;c_a&#39;: 2, &#39;c_b_x&#39;: 5, &#39;d&#39;: [1, 2, 3], &#39;c_b_y&#39;: 10}</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
-<dt id="conf.load_configuration_file">
-<code class="sig-prename descclassname">conf.</code><code class="sig-name descname">load_configuration_file</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/conf.html#load_configuration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conf.load_configuration_file" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.conf.get">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">default: Any = None</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/sni/conf.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a config value from a key.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.conf.load_configuration_file">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">load_configuration_file</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#load_configuration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.load_configuration_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the configuration from a YAML file.</p>
+<p>Also sets default values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.conf.set_default">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">set_default</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">val: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#set_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.set_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a configuration value if none is present at the key.</p>
 </dd></dl>
 
 </div>
@@ -181,7 +203,7 @@ example:</p>
 <li><a class="reference internal" href="#">Configuration facility</a><ul>
 <li><a class="reference internal" href="#reference">Reference</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#module-conf">Module documentation</a></li>
+<li><a class="reference internal" href="#module-sni.conf">Module documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -219,9 +241,6 @@ example:</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>

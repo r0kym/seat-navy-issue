@@ -25,9 +25,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
-        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
@@ -42,38 +39,26 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-rest">
-<span id="api-requests-layer"></span><h1>API requests layer<a class="headerlink" href="#module-rest" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-sni.rest">
+<span id="api-requests-layer"></span><h1>API requests layer<a class="headerlink" href="#module-sni.rest" title="Permalink to this headline">¶</a></h1>
 <p>REST API module</p>
 <p>Declares various functions for <strong>issuing</strong> API calls returning JSON documents.</p>
 <dl class="function">
-<dt id="rest.delete">
-<code class="sig-prename descclassname">rest.</code><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/rest.html#delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">requests.delete()</span></code>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="rest.do_request">
-<code class="sig-prename descclassname">rest.</code><code class="sig-name descname">do_request</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/rest.html#do_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.do_request" title="Permalink to this definition">¶</a></dt>
-<dd><p>Actually makes request.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="rest.get">
-<code class="sig-prename descclassname">rest.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/rest.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.get" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.rest.get_json">
+<code class="sig-prename descclassname">sni.rest.</code><code class="sig-name descname">get_json</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/rest.html#get_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.rest.get_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">requests.get()</span></code>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="rest.post">
-<code class="sig-prename descclassname">rest.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/rest.html#post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.post" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.rest.post_json">
+<code class="sig-prename descclassname">sni.rest.</code><code class="sig-name descname">post_json</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/rest.html#post_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.rest.post_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">requests.post()</span></code>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="rest.put">
-<code class="sig-prename descclassname">rest.</code><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/rest.html#put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">requests.put()</span></code>.</p>
+<dt id="sni.rest.request_json">
+<code class="sig-prename descclassname">sni.rest.</code><code class="sig-name descname">request_json</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">url: str</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/rest.html#request_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.rest.request_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a request and expects a JSON response.</p>
 </dd></dl>
 
 </div>
@@ -114,9 +99,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>

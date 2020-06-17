@@ -26,9 +26,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
-        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
@@ -46,12 +43,24 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-apiserver">
-<span id="api-server"></span><h1>API Server<a class="headerlink" href="#module-apiserver" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-sni.apiserver">
+<span id="api-server"></span><h1>API Server<a class="headerlink" href="#module-sni.apiserver" title="Permalink to this headline">¶</a></h1>
 <p>API Server</p>
 <dl class="function">
-<dt id="apiserver.ping">
-<em class="property">async </em><code class="sig-prename descclassname">apiserver.</code><code class="sig-name descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/apiserver.html#ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apiserver.ping" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.apiserver.auth">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">auth</code><span class="sig-paren">(</span><em class="sig-param">data: sni.apimodels.AuthIn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates the user authentication process. Returns a user token.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.apiserver.callback_esi">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.callback_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>ESI callback.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.apiserver.ping">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">pong</span></code>.</p>
 </dd></dl>
 
@@ -96,9 +105,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>

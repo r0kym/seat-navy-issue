@@ -14,9 +14,9 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``driver`` (default: ``default``)
     * ``host``
     * ``password``
-    * ``port``
-    * ``type``: A DBMS supported by SQLAlchemy, see `here <https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls>`_ (this parameter is called a "dialect" in the SQLAlchemy documentation).
-    * ``username``
+    * ``port`` (default: ``3306``)
+    * ``type`` (default: ``mysql``): A DBMS supported by SQLAlchemy, see `here <https://docs.sqlalchemy.org/en/13/core/engines.html?=create_engine#database-urls>`_ (this parameter is called a "dialect" in the SQLAlchemy documentation).
+    * ``username`` (default: ``sni``)
 
 * ``esi``: Create an application at the `EVE Developer Portal <https://developers.eveonline.com/>`_
     * ``client_id``
@@ -26,6 +26,8 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``debug`` (default: ``false``): Sets the app in debug mode.
     * ``host`` (default: ``127.0.0.1``): API server host.
     * ``port`` (default: ``5000``): API server port.
+    * ``root_url``: HTTP URL at which the API root is located (e.g.
+      ``https://example.com/sni``)
 
 * ``jwt``
     * ``algorithm`` (default: ``HS256``): A ``pyjwt`` supported algorithm, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
@@ -34,7 +36,7 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 * ``logging``: Logging facility configuration, see the `logging.config documentation <https://docs.python.org/3/library/logging.config.html#dictionary-schema-details>`_.
 
 * ``redis``
-    * ``db`` (default: ``sni``)
+    * ``database`` (default: ``sni``)
     * ``host``
     * ``port`` (default: ``6379``)
 
@@ -51,4 +53,4 @@ Example
 Module documentation
 --------------------
 
-.. automodule:: conf
+.. automodule:: sni.conf

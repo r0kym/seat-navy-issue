@@ -25,9 +25,6 @@
           <a href="#" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
-        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
@@ -46,7 +43,7 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
- | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -58,7 +55,11 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apiserver.html#module-apiserver">apiserver (module)</a>
+      <li><a href="configuration.html#sni.conf.assert_set">assert_set() (in module sni.conf)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apiserver.html#sni.apiserver.auth">auth() (in module sni.apiserver)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -66,7 +67,7 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="configuration.html#module-conf">conf (module)</a>
+      <li><a href="apiserver.html#sni.apiserver.callback_esi">callback_esi() (in module sni.apiserver)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -74,27 +75,15 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#esi.delete">delete() (in module esi)</a>
-
-      <ul>
-        <li><a href="rest.html#rest.delete">(in module rest)</a>
+      <li><a href="esi.html#sni.esi.do_request">do_request() (in module sni.esi)</a>
 </li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#esi.do_request">do_request() (in module esi)</a>
-
-      <ul>
-        <li><a href="rest.html#rest.do_request">(in module rest)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
-<h2 id="E">E</h2>
+<h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#module-esi">esi (module)</a>
+      <li><a href="configuration.html#sni.conf.flatten_dict">flatten_dict() (in module sni.conf)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -102,21 +91,25 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="configuration.html#conf.get">get() (in module conf)</a>
+      <li><a href="configuration.html#sni.conf.get">get() (in module sni.conf)</a>
 
       <ul>
-        <li><a href="esi.html#esi.get">(in module esi)</a>
-</li>
-        <li><a href="rest.html#rest.get">(in module rest)</a>
+        <li><a href="esi.html#sni.esi.get">(in module sni.esi)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="esi.html#sni.esi.get_auth_url">get_auth_url() (in module sni.esi)</a>
+</li>
+      <li><a href="rest.html#sni.rest.get_json">get_json() (in module sni.rest)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="configuration.html#conf.load_configuration_file">load_configuration_file() (in module conf)</a>
+      <li><a href="configuration.html#sni.conf.load_configuration_file">load_configuration_file() (in module sni.conf)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -124,7 +117,7 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sni.html#sni.main">main() (in module sni)</a>
+      <li><a href="sni.html#sni.__main__.main">main() (in module sni.__main__)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -132,33 +125,27 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sni.html#sni.parse_command_line_arguments">parse_command_line_arguments() (in module sni)</a>
+      <li><a href="sni.html#sni.__main__.parse_command_line_arguments">parse_command_line_arguments() (in module sni.__main__)</a>
 </li>
-      <li><a href="apiserver.html#apiserver.ping">ping() (in module apiserver)</a>
+      <li><a href="apiserver.html#sni.apiserver.ping">ping() (in module sni.apiserver)</a>
 </li>
-      <li><a href="esi.html#esi.post">post() (in module esi)</a>
-
-      <ul>
-        <li><a href="rest.html#rest.post">(in module rest)</a>
+      <li><a href="esi.html#sni.esi.post">post() (in module sni.esi)</a>
 </li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sni.html#sni.print_openapi_spec">print_openapi_spec() (in module sni)</a>
+      <li><a href="rest.html#sni.rest.post_json">post_json() (in module sni.rest)</a>
 </li>
-      <li><a href="esi.html#esi.put">put() (in module esi)</a>
-
-      <ul>
-        <li><a href="rest.html#rest.put">(in module rest)</a>
+      <li><a href="sni.html#sni.__main__.print_openapi_spec">print_openapi_spec() (in module sni.__main__)</a>
 </li>
-      </ul></li>
+      <li><a href="esi.html#sni.esi.process_sso_authorization_code">process_sso_authorization_code() (in module sni.esi)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="rest.html#module-rest">rest (module)</a>
+      <li><a href="rest.html#sni.rest.request_json">request_json() (in module sni.rest)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -166,11 +153,21 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sni.html#module-sni">sni (module)</a>
+      <li><a href="configuration.html#sni.conf.set_default">set_default() (in module sni.conf)</a>
+</li>
+      <li><a href="sni.html#module-sni.__main__">sni.__main__ (module)</a>
+</li>
+      <li><a href="apiserver.html#module-sni.apiserver">sni.apiserver (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sni.html#sni.start_api_server">start_api_server() (in module sni)</a>
+      <li><a href="configuration.html#module-sni.conf">sni.conf (module)</a>
+</li>
+      <li><a href="esi.html#module-sni.esi">sni.esi (module)</a>
+</li>
+      <li><a href="rest.html#module-sni.rest">sni.rest (module)</a>
+</li>
+      <li><a href="sni.html#sni.__main__.start_api_server">start_api_server() (in module sni.__main__)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -202,9 +199,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="#" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>

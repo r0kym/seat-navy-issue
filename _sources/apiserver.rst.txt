@@ -1,4 +1,4 @@
 API Server
 ==========
 
-.. automodule:: apiserver
+.. automodule:: sni.apiserver

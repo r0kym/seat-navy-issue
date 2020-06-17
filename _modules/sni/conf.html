@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.conf &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.conf</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Configuration facility</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="n">CONFIGURATION</span><span class="p">:</span> <span class="nb">dict</span>
+
+
+<div class="viewcode-block" id="assert_set"><a class="viewcode-back" href="../../configuration.html#sni.conf.assert_set">[docs]</a><span class="k">def</span> <span class="nf">assert_set</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raises an exception if the configuration dict does not have that key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">CONFIGURATION</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Configuration key </span><span class="si">{key}</span><span class="s1"> not set&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_configuration_file"><a class="viewcode-back" href="../../configuration.html#sni.conf.load_configuration_file">[docs]</a><span class="k">def</span> <span class="nf">load_configuration_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the configuration from a YAML file.</span>
+
+<span class="sd">    Also sets default values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">global</span> <span class="n">CONFIGURATION</span>
+    <span class="n">CONFIGURATION</span> <span class="o">=</span> <span class="n">flatten_dict</span><span class="p">(</span><span class="n">file_config</span><span class="p">)</span>
+    <span class="n">CONFIGURATION</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.database&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.driver&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;db.host&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;db.password&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.port&#39;</span><span class="p">,</span> <span class="mi">3306</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.type&#39;</span><span class="p">,</span> <span class="s1">&#39;mysql&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;db.username&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;esi.client_id&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;esi.client_secret&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">,</span> <span class="s1">&#39;5000&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">,</span> <span class="s1">&#39;HS256&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;redis.database&#39;</span><span class="p">,</span> <span class="s1">&#39;sni&#39;</span><span class="p">)</span>
+    <span class="n">assert_set</span><span class="p">(</span><span class="s1">&#39;redis.host&#39;</span><span class="p">)</span>
+    <span class="n">set_default</span><span class="p">(</span><span class="s1">&#39;redis.port&#39;</span><span class="p">,</span> <span class="mi">6379</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../configuration.html#sni.conf.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                 <span class="n">parent_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flattens a dictionnary.</span>
+
+<span class="sd">    `Credits to Imran &lt;https://stackoverflow.com/a/6027615&gt;`_.</span>
+
+<span class="sd">    &gt;&gt;&gt; flatten_dict({</span>
+<span class="sd">        &#39;a&#39;: 1, &#39;c&#39;: {&#39;a&#39;: 2, &#39;b&#39;: {&#39;x&#39;: 5, &#39;y&#39; : 10}},</span>
+<span class="sd">        &#39;d&#39;: [1, 2, 3],</span>
+<span class="sd">    })</span>
+<span class="sd">    {&#39;a&#39;: 1, &#39;c_a&#39;: 2, &#39;c_b_x&#39;: 5, &#39;d&#39;: [1, 2, 3], &#39;c_b_y&#39;: 10}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">nested_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">new_key</span> <span class="o">=</span> <span class="n">parent_key</span> <span class="o">+</span> <span class="n">separator</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">parent_key</span> <span class="k">else</span> <span class="n">key</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+            <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">new_key</span><span class="p">,</span> <span class="n">separator</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">new_key</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../configuration.html#sni.conf.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets a config value from a key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">CONFIGURATION</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CONFIGURATION</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unknown configuration key </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">default</span></div>
+
+
+<div class="viewcode-block" id="set_default"><a class="viewcode-back" href="../../configuration.html#sni.conf.set_default">[docs]</a><span class="k">def</span> <span class="nf">set_default</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets a configuration value if none is present at the key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">CONFIGURATION</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">CONFIGURATION</span><span class="p">:</span>
+        <span class="n">CONFIGURATION</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

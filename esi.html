@@ -26,9 +26,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
-        <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
@@ -46,39 +43,133 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-esi">
-<span id="esi-requests-layer"></span><h1>ESI requests layer<a class="headerlink" href="#module-esi" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="esi-requests-layer">
+<h1>ESI requests layer<a class="headerlink" href="#esi-requests-layer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="esi-scopes">
+<h2>ESI scopes<a class="headerlink" href="#esi-scopes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">esi</span><span class="o">-</span><span class="n">alliances</span><span class="o">.</span><span class="n">read_contacts</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">assets</span><span class="o">.</span><span class="n">read_assets</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">assets</span><span class="o">.</span><span class="n">read_corporation_assets</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">bookmarks</span><span class="o">.</span><span class="n">read_character_bookmarks</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">bookmarks</span><span class="o">.</span><span class="n">read_corporation_bookmarks</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">calendar</span><span class="o">.</span><span class="n">read_calendar_events</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">calendar</span><span class="o">.</span><span class="n">respond_calendar_events</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_agents_research</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_blueprints</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_chat_channels</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_contacts</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_corporation_roles</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_fatigue</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_fw_stats</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_loyalty</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_medals</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_notifications</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_opportunities</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_standings</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">read_titles</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characters</span><span class="o">.</span><span class="n">write_contacts</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">characterstats</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">clones</span><span class="o">.</span><span class="n">read_clones</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">clones</span><span class="o">.</span><span class="n">read_implants</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">contracts</span><span class="o">.</span><span class="n">read_character_contracts</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">contracts</span><span class="o">.</span><span class="n">read_corporation_contracts</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_blueprints</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_contacts</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_container_logs</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_corporation_membership</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_divisions</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_facilities</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_fw_stats</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_medals</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_standings</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_starbases</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_structures</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">read_titles</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">corporations</span><span class="o">.</span><span class="n">track_members</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">fittings</span><span class="o">.</span><span class="n">read_fittings</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">fittings</span><span class="o">.</span><span class="n">write_fittings</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">fleets</span><span class="o">.</span><span class="n">read_fleet</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">fleets</span><span class="o">.</span><span class="n">write_fleet</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">industry</span><span class="o">.</span><span class="n">read_character_jobs</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">industry</span><span class="o">.</span><span class="n">read_character_mining</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">industry</span><span class="o">.</span><span class="n">read_corporation_jobs</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">industry</span><span class="o">.</span><span class="n">read_corporation_mining</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">killmails</span><span class="o">.</span><span class="n">read_corporation_killmails</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">killmails</span><span class="o">.</span><span class="n">read_killmails</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">location</span><span class="o">.</span><span class="n">read_location</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">location</span><span class="o">.</span><span class="n">read_online</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">location</span><span class="o">.</span><span class="n">read_ship_type</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">mail</span><span class="o">.</span><span class="n">organize_mail</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">mail</span><span class="o">.</span><span class="n">read_mail</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">mail</span><span class="o">.</span><span class="n">send_mail</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">markets</span><span class="o">.</span><span class="n">read_character_orders</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">markets</span><span class="o">.</span><span class="n">read_corporation_orders</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">markets</span><span class="o">.</span><span class="n">structure_markets</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">planets</span><span class="o">.</span><span class="n">manage_planets</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">planets</span><span class="o">.</span><span class="n">read_customs_offices</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">search</span><span class="o">.</span><span class="n">search_structures</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">skills</span><span class="o">.</span><span class="n">read_skillqueue</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">skills</span><span class="o">.</span><span class="n">read_skills</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">ui</span><span class="o">.</span><span class="n">open_window</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">ui</span><span class="o">.</span><span class="n">write_waypoint</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">universe</span><span class="o">.</span><span class="n">read_structures</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">wallet</span><span class="o">.</span><span class="n">read_character_wallet</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">wallet</span><span class="o">.</span><span class="n">read_corporation_wallet</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">esi</span><span class="o">-</span><span class="n">wallet</span><span class="o">.</span><span class="n">read_corporation_wallets</span><span class="o">.</span><span class="n">v1</span>
+<span class="n">publicData</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-sni.esi">
+<span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-sni.esi" title="Permalink to this headline">¶</a></h2>
 <p>EVE ESI module</p>
 <dl class="function">
-<dt id="esi.delete">
-<code class="sig-prename descclassname">esi.</code><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/esi.html#delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esi.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> request to EVE ESI.</p>
+<dt id="sni.esi.do_request">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">do_request</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#do_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.do_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a request to EVE ESI.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="esi.do_request">
-<code class="sig-prename descclassname">esi.</code><code class="sig-name descname">do_request</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/esi.html#do_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esi.do_request" title="Permalink to this definition">¶</a></dt>
-<dd><p>Actually makes request.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="esi.get">
-<code class="sig-prename descclassname">esi.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/esi.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esi.get" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.get">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to EVE ESI.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="esi.post">
-<code class="sig-prename descclassname">esi.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/esi.html#post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esi.post" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.get_auth_url">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get_auth_url</code><span class="sig-paren">(</span><em class="sig-param">esi_scopes: List[str] = ['publicData'], state: str = 'None'</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/esi.html#get_auth_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get_auth_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an EVE SSO login url based on the scopes passed in argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>esi_scopes</strong> – List of esi scope</p></li>
+<li><p><strong>state</strong> – A state string (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A url in string form</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.post">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">POST</span></code> request to EVE ESI.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="esi.put">
-<code class="sig-prename descclassname">esi.</code><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/esi.html#put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esi.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">PUT</span></code> request to EVE ESI.</p>
+<dt id="sni.esi.process_sso_authorization_code">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">process_sso_authorization_code</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/esi.html#process_sso_authorization_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.process_sso_authorization_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an access token (along with its refresh token) from an EVE SSO
+authorization code.</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><cite>OAuth 2.0 for Web Based Applications &lt;https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html&gt;</cite></p>
+</dd>
+</dl>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -87,6 +178,15 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ESI requests layer</a><ul>
+<li><a class="reference internal" href="#esi-scopes">ESI scopes</a></li>
+<li><a class="reference internal" href="#module-sni.esi">Module documentation</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="apiserver.html"
                         title="previous chapter">API Server</a></p>
@@ -120,9 +220,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="http-routingtable.html" title="HTTP Routing Table"
-             >routing table</a> |</li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
