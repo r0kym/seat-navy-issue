@@ -1,4 +1,4 @@
 Main module
 ===========
 
-.. automodule:: sni.sni
+.. automodule:: sni.__main__
