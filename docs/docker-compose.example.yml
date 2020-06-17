@@ -1,22 +1,19 @@
 version: '3.5'
 
 volumes:
-  mariadb-data:
+  mongodb-data:
   redis-data:
   sni-code:
 
 services:
-  mariadb:
-    container_name: mariadb
+  mongodb:
+    container_name: mongodb
     environment:
-      - MYSQL_DATABASE=sni
-      - MYSQL_PASSWORD=NBxd3gUT67apvnK2Q5u4
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_USER=sni
-    image: mariadb:latest
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=WMgHVNCrEtyck89D9VY5
+    image: mongo
     volumes:
-      - ./my.cnf:/etc/mysql/conf.d/my.cnf
-      - mariadb-data:/var/lib/mysql
+      - mongodb-data:/data/db
   redis:
     container_name: redis
     image: redis

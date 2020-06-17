@@ -1,7 +1,7 @@
 version: '3.5'
 
 volumes:
-  mariadb-data:
+  mongodb-data:
   redis-data:
 
 networks:
@@ -9,34 +9,27 @@ networks:
 
 services:
 
-  mariadb:
-    container_name: mariadb
+  mongodb:
+    container_name: mongodb
     environment:
-      - MYSQL_DATABASE=sni
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_USER=sni
-    hostname: mariadb
-    image: mariadb:latest
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=WMgHVNCrEtyck89D9VY5
+    image: mongo
     networks:
       - back
-    ports:
-      - 3306:3306
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - mongodb-data:/data/db
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    depends_on:
-      - mariadb
-    environment:
-      - PMA_HOST=mariadb
-      - PMA_PORT=3306
-    image: phpmyadmin/phpmyadmin
+  mongo-express:
+    container_name: mongodb
+    image: mongo-express
     networks:
       - back
     ports:
-      - 9080:80
+      - 9080:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=WMgHVNCrEtyck89D9VY5
 
   redis:
     container_name: redis

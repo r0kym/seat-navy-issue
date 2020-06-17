@@ -1,10 +1,10 @@
 apscheduler
 dateutils
 fastapi
+mongoengine
 passlib[bcrypt]
 pyjwt
 pyyaml
 redis
 requests
-sqlalchemy
 uvicorn

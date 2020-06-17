@@ -1,10 +1,9 @@
-db:
+database:
+    authentication_source: admin
     database: sni
-    driver: default
     host: localhost
     password: password
-    port: 3306
-    type: mysql
+    port: 27017
     username: sni
 esi:
     client_id: 299bd5a9f432a7b9a584e91801cb95a3
