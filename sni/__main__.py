@@ -12,6 +12,7 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
+import sni.database as database
 
 
 def main():
@@ -36,6 +37,12 @@ def main():
         logging.debug('SNI running in debug mode, dumping configuration:')
         pprint.pprint(conf.CONFIGURATION, depth=1)
 
+    database.init()
+    logging.info('Connected to database %s:%s', conf.get('database.host'),
+                 conf.get('database.port'))
+
+    logging.info('Starting API server on %s:%s', conf.get('general.host'),
+                 conf.get('general.port'))
     start_api_server()
 
 
