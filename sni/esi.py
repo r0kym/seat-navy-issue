@@ -153,8 +153,7 @@ def process_sso_authorization_code(code: str, state: str) -> bool:
     if 'access_token' not in response_json:
         return False
     decoded = jwt.decode(response_json['access_token'], verify=False)
-    # pylint: disable=bad-str-strip-call
-    character_id = str(decoded['sub']).strip('CHARACTER:EVE:')
+    character_id = str(decoded['sub'])[len('CHARACTER:EVE:'):]
     logging.info(
         'Successfully obtained access token for character %s (%s)',
         decoded['name'],
@@ -191,8 +190,7 @@ def refresh_access_token(refresh_token: str) -> bool:
     if 'access_token' not in response_json:
         return False
     decoded = jwt.decode(response_json['access_token'], verify=False)
-    # pylint: disable=bad-str-strip-call
-    character_id = str(decoded['sub']).strip('CHARACTER:EVE:')
+    character_id = str(decoded['sub'])[len('CHARACTER:EVE:'):]
     logging.info(
         'Successfully refreshed access token for character %s (%s)',
         decoded['name'],

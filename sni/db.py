@@ -17,7 +17,7 @@ from sni.dbmodels import (
 )
 import sni.conf as conf
 import sni.time as time
-import sni.jwt as jwt
+import sni.token as token
 
 
 def init():
@@ -78,14 +78,13 @@ def migrate_ensure_root_per_token() -> None:
         return
     root_per_token = Token(
         created_on=time.now(),
-        expires_on=time.now(),
         owner=root,
         token_type='per',
         uuid=uuid4(),
     )
     root_per_token.save()
-    jwt_string = jwt.to_jwt(root_per_token)
-    logging.info('No permanent app token owned by root, created one: %s',
+    jwt_string = token.to_jwt(root_per_token)
+    logging.info('No permanent app token owned by root, created one: %r',
                  jwt_string)
 
 
@@ -103,6 +102,6 @@ def migrate_ensure_root_dyn_token() -> None:
         uuid=uuid4(),
     )
     root_dyn_token.save()
-    jwt_string = jwt.to_jwt(root_dyn_token)
-    logging.info('No dynamic app token owned by root, created one: %s',
+    jwt_string = token.to_jwt(root_dyn_token)
+    logging.info('No dynamic app token owned by root, created one: %r',
                  jwt_string)

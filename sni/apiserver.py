@@ -6,13 +6,16 @@ import logging
 from uuid import uuid4
 
 from fastapi import (
+    Depends,
     FastAPI,
     HTTPException,
     status,
 )
 
 import sni.apimodels as apimodels
+from sni.dbmodels import Token
 import sni.esi as esi
+from sni.token import validate_header
 
 app = FastAPI()
 
@@ -22,10 +25,12 @@ app = FastAPI()
     response_model=apimodels.AuthOut,
     status_code=status.HTTP_200_OK,
 )
-async def auth(data: apimodels.AuthIn):
+async def auth(data: apimodels.AuthIn,
+               token: Token = Depends(validate_header)):
     """
     Initiates the user authentication process. Returns a user token.
     """
+    logging.debug('/auth request from user %s', token.owner.character_id)
     uuid = str(uuid4())
     return {
         'login_url': esi.get_auth_url(data.scopes, uuid),

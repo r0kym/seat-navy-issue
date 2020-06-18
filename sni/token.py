@@ -5,6 +5,11 @@ Manages the issuance and validation of JWT tokens
 import logging
 from typing import Optional
 
+from fastapi import (
+    Header,
+    HTTPException,
+    status,
+)
 import jwt
 import jwt.exceptions
 
@@ -17,15 +22,15 @@ def to_jwt(model: Token) -> str:
     Derives a JWT token byte array from the a token model.
     """
     payload = {
-        'iat': model.created_on.timestamp(),
+        'iat': int(model.created_on.timestamp()),
         'iss': conf.get('general.root_url'),
         'jti': str(model.uuid),
-        'nbf': model.created_on.timestamp(),
+        'nbf': int(model.created_on.timestamp()),
         'own': model.owner.character_id,
         'typ': model.token_type,
     }
     if model.expires_on:
-        payload['exp'] = model.expires_on.timestamp()
+        payload['exp'] = int(model.expires_on.timestamp())
     return jwt.encode(
         payload,
         conf.get('jwt.secret'),
@@ -33,14 +38,36 @@ def to_jwt(model: Token) -> str:
     ).decode()
 
 
-def validate(token: str) -> Optional[Token]:
+def validate_header(authorization: str = Header(None)) -> Token:
+    """
+    Validates an ``Authorization: Bearer`` header.
+
+    Should be used as a FastAPI dependency.
+    """
+    bearer = 'Bearer '
+    if not authorization or not authorization.startswith(bearer):
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    token_str = authorization[len(bearer):]
+    token = validate_token(token_str)
+    if not token:
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return token
+
+
+def validate_token(token_str: str) -> Optional[Token]:
     """
     Validates a token in string form, returns the model if successful, or
     ``None`` if not.
     """
     try:
         payload = jwt.decode(
-            token.encode(),
+            token_str,
             conf.get('jwt.secret'),
             algorithm=conf.get('jwt.algorithm'),
             issuer=conf.get('general.root_url'),
