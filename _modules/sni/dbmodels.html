@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.dbmodels &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.dbmodels</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Database models</span>
+
+<span class="sd">Reference:</span>
+<span class="sd">    `MongoEngine User Documentation &lt;http://docs.mongoengine.org/index.html&gt;`_</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span> <span class="nn">mongoengine</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CASCADE</span><span class="p">,</span>
+    <span class="n">DateTimeField</span><span class="p">,</span>
+    <span class="n">DO_NOTHING</span><span class="p">,</span>
+    <span class="n">Document</span><span class="p">,</span>
+    <span class="n">IntField</span><span class="p">,</span>
+    <span class="n">ListField</span><span class="p">,</span>
+    <span class="n">ReferenceField</span><span class="p">,</span>
+    <span class="n">StringField</span><span class="p">,</span>
+    <span class="n">URLField</span><span class="p">,</span>
+    <span class="n">UUIDField</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="User"><a class="viewcode-back" href="../../database.html#sni.dbmodels.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User model.</span>
+
+<span class="sd">    A user corresponds to a single EVE character. A user can reference other</span>
+<span class="sd">    users as &quot;sub characters&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">character_id</span> <span class="o">=</span> <span class="n">IntField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">character_name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">subcharacter_ids</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">IntField</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="Token"><a class="viewcode-back" href="../../database.html#sni.dbmodels.Token">[docs]</a><span class="k">class</span> <span class="nc">Token</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a token issued by SNI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Token.TokenType"><a class="viewcode-back" href="../../database.html#sni.dbmodels.Token.TokenType">[docs]</a>    <span class="k">class</span> <span class="nc">TokenType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enumeration containing the various token types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="s1">&#39;dyn&#39;</span>  <span class="c1"># Dynamic app token</span>
+        <span class="n">per</span> <span class="o">=</span> <span class="s1">&#39;per&#39;</span>  <span class="c1"># Permanent app token</span>
+        <span class="n">use</span> <span class="o">=</span> <span class="s1">&#39;use&#39;</span>  <span class="c1"># User token</span></div>
+
+    <span class="n">callback</span> <span class="o">=</span> <span class="n">URLField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
+                            <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">token_type</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">TokenType</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EsiToken"><a class="viewcode-back" href="../../database.html#sni.dbmodels.EsiToken">[docs]</a><span class="k">class</span> <span class="nc">EsiToken</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
+<span class="sd">    relevant metadatas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">app_token</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">scopes</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">StringField</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

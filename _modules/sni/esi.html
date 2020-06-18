@@ -57,7 +57,6 @@
 <span class="kn">import</span> <span class="nn">jwt</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
-<span class="kn">import</span> <span class="nn">sni.rest</span> <span class="k">as</span> <span class="nn">rest</span>
 
 
 <div class="viewcode-block" id="esi_request"><a class="viewcode-back" href="../../esi.html#sni.esi.esi_request">[docs]</a><span class="k">def</span> <span class="nf">esi_request</span><span class="p">(</span><span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -67,8 +66,8 @@
 <span class="sd">    Makes a request to EVE ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">function</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;get&#39;</span><span class="p">:</span> <span class="n">rest</span><span class="o">.</span><span class="n">get_json</span><span class="p">,</span>
-        <span class="s1">&#39;post&#39;</span><span class="p">:</span> <span class="n">rest</span><span class="o">.</span><span class="n">post_json</span><span class="p">,</span>
+        <span class="s1">&#39;get&#39;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
+        <span class="s1">&#39;post&#39;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">,</span>
     <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
     <span class="n">function</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]],</span> <span class="n">function</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">function</span><span class="p">:</span>
@@ -81,11 +80,12 @@
     <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
         <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">token</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;datasource&#39;</span><span class="p">:</span> <span class="s1">&#39;tranquility&#39;</span><span class="p">}</span>
-    <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span>
         <span class="s1">&#39;https://esi.evetech.net/v5&#39;</span> <span class="o">+</span> <span class="n">endpoint</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get"><a class="viewcode-back" href="../../esi.html#sni.esi.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -183,16 +183,16 @@
         <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Host&#39;</span><span class="p">:</span> <span class="s1">&#39;login.eveonline.com&#39;</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">response_json</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">post_json</span><span class="p">(</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="s1">&#39;https://login.eveonline.com/v2/oauth/token&#39;</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">response_json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">if</span> <span class="s1">&#39;access_token&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response_json</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="n">decoded</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">],</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="c1"># pylint: disable=bad-str-strip-call</span>
-    <span class="n">character_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">decoded</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;CHARACTER:EVE:&#39;</span><span class="p">)</span>
+    <span class="n">character_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">decoded</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">])[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;CHARACTER:EVE:&#39;</span><span class="p">):]</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;Successfully obtained access token for character </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span>
         <span class="n">decoded</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
@@ -220,16 +220,16 @@
         <span class="s1">&#39;Host&#39;</span><span class="p">:</span> <span class="s1">&#39;login.eveonline.com&#39;</span><span class="p">,</span>
         <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Basic &#39;</span> <span class="o">+</span> <span class="n">get_basic_authorization_code</span><span class="p">()</span>
     <span class="p">}</span>
-    <span class="n">response_json</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">post_json</span><span class="p">(</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="s1">&#39;https://login.eveonline.com/v2/oauth/token&#39;</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">response_json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">if</span> <span class="s1">&#39;access_token&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response_json</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="n">decoded</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">],</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="c1"># pylint: disable=bad-str-strip-call</span>
-    <span class="n">character_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">decoded</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;CHARACTER:EVE:&#39;</span><span class="p">)</span>
+    <span class="n">character_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">decoded</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">])[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;CHARACTER:EVE:&#39;</span><span class="p">):]</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;Successfully refreshed access token for character </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span>
         <span class="n">decoded</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>

@@ -47,21 +47,137 @@
 <span id="api-server"></span><h1>API Server<a class="headerlink" href="#module-sni.apiserver" title="Permalink to this headline">¶</a></h1>
 <p>API Server</p>
 <dl class="function">
-<dt id="sni.apiserver.auth">
-<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">auth</code><span class="sig-paren">(</span><em class="sig-param">data: sni.apimodels.AuthIn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.auth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates the user authentication process. Returns a user token.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.apiserver.callback_esi">
-<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.callback_esi" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.apiserver.get_callback_esi">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">get_callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#get_callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.get_callback_esi" title="Permalink to this definition">¶</a></dt>
 <dd><p>ESI callback.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.apiserver.ping">
-<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.ping" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.apiserver.get_ping">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">get_ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#get_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.get_ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">pong</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.apiserver.post_auth_dyn">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">post_auth_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.apimodels.PostAuthDynIn</em>, <em class="sig-param">app_token: sni.dbmodels.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#post_auth_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.post_auth_dyn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates an application dynamic token and returns a <cite>state code</cite> and
+an URL at which the user can authenticate to the EVE SSO. Once that is
+done, SNI issues a GET request to the app predefined callback, with that
+state code and the user token.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.apiserver.post_auth_per">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">post_auth_per</code><span class="sig-paren">(</span><em class="sig-param">app_token: sni.dbmodels.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#post_auth_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.post_auth_per" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates an application permanent token and returns a user token tied
+to the owner of that app token.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.apiserver.post_token">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">post_token</code><span class="sig-paren">(</span><em class="sig-param">data: sni.apimodels.PostTokenIn</em>, <em class="sig-param">app_token: sni.dbmodels.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#post_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.post_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new app token of any type.</p>
+<p>Must be called with a permanent app token.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.apimodels">
+<span id="api-models"></span><h1>API Models<a class="headerlink" href="#module-sni.apimodels" title="Permalink to this headline">¶</a></h1>
+<p>Body models for the API server</p>
+<dl class="class">
+<dt id="sni.apimodels.PostAuthDynIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">PostAuthDynIn</code><a class="reference internal" href="_modules/sni/apimodels.html#PostAuthDynIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.PostAuthDynIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/auth/dyn</span></code> requests.</p>
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthDynIn._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.apimodels.PostAuthDynIn._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthDynIn.scopes">
+<code class="sig-name descname">scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostAuthDynIn.scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.apimodels.PostAuthDynOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">PostAuthDynOut</code><a class="reference internal" href="_modules/sni/apimodels.html#PostAuthDynOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.PostAuthDynOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/auth/dyn</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthDynOut._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.apimodels.PostAuthDynOut._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthDynOut.login_url">
+<code class="sig-name descname">login_url</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostAuthDynOut.login_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthDynOut.state_code">
+<code class="sig-name descname">state_code</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostAuthDynOut.state_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.apimodels.PostAuthPerOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">PostAuthPerOut</code><a class="reference internal" href="_modules/sni/apimodels.html#PostAuthPerOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.PostAuthPerOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/auth/per</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthPerOut._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.apimodels.PostAuthPerOut._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostAuthPerOut.user_token">
+<code class="sig-name descname">user_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostAuthPerOut.user_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.apimodels.PostTokenIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">PostTokenIn</code><a class="reference internal" href="_modules/sni/apimodels.html#PostTokenIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.PostTokenIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token</span></code> requests.</p>
+<dl class="attribute">
+<dt id="sni.apimodels.PostTokenIn._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.apimodels.PostTokenIn._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostTokenIn.callback">
+<code class="sig-name descname">callback</code><em class="property">: pydantic.AnyHttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostTokenIn.callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostTokenIn.token_type">
+<code class="sig-name descname">token_type</code><em class="property">: dbmodels.Token.TokenType</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostTokenIn.token_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.apimodels.PostTokenOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">PostTokenOut</code><a class="reference internal" href="_modules/sni/apimodels.html#PostTokenOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.PostTokenOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.apimodels.PostTokenOut._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.apimodels.PostTokenOut._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.PostTokenOut.app_token">
+<code class="sig-name descname">app_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.PostTokenOut.app_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -72,6 +188,12 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Server</a></li>
+<li><a class="reference internal" href="#module-sni.apimodels">API Models</a></li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="sni.html"
                         title="previous chapter">Main module</a></p>

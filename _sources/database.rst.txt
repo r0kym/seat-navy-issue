@@ -1,4 +1,10 @@
 Database layer
 ==============
 
-.. automodule:: sni.database
+.. automodule:: sni.db
+
+
+Database models
+===============
+
+.. automodule:: sni.dbmodels

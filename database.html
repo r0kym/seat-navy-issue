@@ -16,7 +16,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="API requests layer" href="rest.html" /> 
+    <link rel="prev" title="ESI requests layer" href="esi.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -28,7 +28,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="rest.html" title="API requests layer"
+          <a href="esi.html" title="ESI requests layer"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -39,110 +39,151 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-sni.database">
-<span id="database-layer"></span><h1>Database layer<a class="headerlink" href="#module-sni.database" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-sni.db">
+<span id="database-layer"></span><h1>Database layer<a class="headerlink" href="#module-sni.db" title="Permalink to this headline">¶</a></h1>
 <p>Database layer</p>
 <dl class="simple">
 <dt>Reference:</dt><dd><p><a class="reference external" href="http://docs.org/index.html">MongoEngine User Documentation</a></p>
 </dd>
 </dl>
+<dl class="function">
+<dt id="sni.db.init">
+<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to the MongoDB instance.</p>
+<p>Does not return anything. Any call to <code class="docutils literal notranslate"><span class="pre">mongoengine</span></code> will act on that
+connection. It’s magic.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migrate">
+<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs various migration jobs on the database.</p>
+<p>Should be called immediately after initializing the connection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migrate_ensure_root">
+<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create root user if it does not exist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migrate_ensure_root_dyn_token">
+<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_root_dyn_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_root_dyn_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_root_dyn_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dynamic app token owned by root, if none exist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migrate_ensure_root_per_token">
+<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_root_per_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_root_per_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_root_per_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a permanent app token owned by root, if none exist.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.dbmodels">
+<span id="database-models"></span><h1>Database models<a class="headerlink" href="#module-sni.dbmodels" title="Permalink to this headline">¶</a></h1>
+<p>Database models</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="http://docs.mongoengine.org/index.html">MongoEngine User Documentation</a></p>
+</dd>
+</dl>
 <dl class="class">
-<dt id="sni.database.EsiToken">
-<em class="property">class </em><code class="sig-prename descclassname">sni.database.</code><code class="sig-name descname">EsiToken</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/database.html#EsiToken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.database.EsiToken" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken">
+<em class="property">class </em><code class="sig-prename descclassname">sni.dbmodels.</code><code class="sig-name descname">EsiToken</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/dbmodels.html#EsiToken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.dbmodels.EsiToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>A model representing an ESI access token, along with its refresh token and
 relevant metadatas.</p>
 <dl class="exception">
-<dt id="sni.database.EsiToken.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.database.EsiToken.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.dbmodels.EsiToken.DoesNotExist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="sni.database.EsiToken.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.database.EsiToken.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.dbmodels.EsiToken.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.__objects">
-<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.database.EsiToken.__objects" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.__objects">
+<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.dbmodels.EsiToken.__objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._cached_reference_fields">
-<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.database.EsiToken._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._cached_reference_fields">
+<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.dbmodels.EsiToken._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._class_name">
-<code class="sig-name descname">_class_name</code><em class="property"> = 'EsiToken'</em><a class="headerlink" href="#sni.database.EsiToken._class_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._class_name">
+<code class="sig-name descname">_class_name</code><em class="property"> = 'EsiToken'</em><a class="headerlink" href="#sni.dbmodels.EsiToken._class_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._collection">
-<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.database.EsiToken._collection" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._collection">
+<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.dbmodels.EsiToken._collection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._db_field_map">
-<code class="sig-name descname">_db_field_map</code><em class="property"> = {'access_token': 'access_token', 'app_token': 'app_token', 'created_on': 'created_on', 'expires_on': 'expires_on', 'id': '_id', 'owner': 'owner', 'refresh_token': 'refresh_token', 'scopes': 'scopes'}</em><a class="headerlink" href="#sni.database.EsiToken._db_field_map" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._db_field_map">
+<code class="sig-name descname">_db_field_map</code><em class="property"> = {'access_token': 'access_token', 'app_token': 'app_token', 'created_on': 'created_on', 'expires_on': 'expires_on', 'id': '_id', 'owner': 'owner', 'refresh_token': 'refresh_token', 'scopes': 'scopes'}</em><a class="headerlink" href="#sni.dbmodels.EsiToken._db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._fields">
-<code class="sig-name descname">_fields</code><em class="property"> = {'access_token': &lt;mongoengine.fields.StringField object&gt;, 'app_token': &lt;mongoengine.fields.ReferenceField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'expires_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'id': &lt;mongoengine.base.fields.ObjectIdField object&gt;, 'owner': &lt;mongoengine.fields.ReferenceField object&gt;, 'refresh_token': &lt;mongoengine.fields.StringField object&gt;, 'scopes': &lt;mongoengine.fields.ListField object&gt;}</em><a class="headerlink" href="#sni.database.EsiToken._fields" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._fields">
+<code class="sig-name descname">_fields</code><em class="property"> = {'access_token': &lt;mongoengine.fields.StringField object&gt;, 'app_token': &lt;mongoengine.fields.ReferenceField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'expires_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'id': &lt;mongoengine.base.fields.ObjectIdField object&gt;, 'owner': &lt;mongoengine.fields.ReferenceField object&gt;, 'refresh_token': &lt;mongoengine.fields.StringField object&gt;, 'scopes': &lt;mongoengine.fields.ListField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.EsiToken._fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._fields_ordered">
-<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('id', 'access_token', 'app_token', 'created_on', 'expires_on', 'owner', 'refresh_token', 'scopes')</em><a class="headerlink" href="#sni.database.EsiToken._fields_ordered" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._fields_ordered">
+<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('id', 'access_token', 'app_token', 'created_on', 'expires_on', 'owner', 'refresh_token', 'scopes')</em><a class="headerlink" href="#sni.dbmodels.EsiToken._fields_ordered" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._is_base_cls">
-<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.database.EsiToken._is_base_cls" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._is_base_cls">
+<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.dbmodels.EsiToken._is_base_cls" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._is_document">
-<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.database.EsiToken._is_document" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._is_document">
+<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.dbmodels.EsiToken._is_document" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._meta">
-<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'esi_token', 'delete_rules': None, 'id_field': 'id', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.database.EsiToken._meta" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._meta">
+<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'esi_token', 'delete_rules': None, 'id_field': 'id', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.EsiToken._meta" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._reverse_db_field_map">
-<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'id', 'access_token': 'access_token', 'app_token': 'app_token', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'refresh_token': 'refresh_token', 'scopes': 'scopes'}</em><a class="headerlink" href="#sni.database.EsiToken._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._reverse_db_field_map">
+<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'id', 'access_token': 'access_token', 'app_token': 'app_token', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'refresh_token': 'refresh_token', 'scopes': 'scopes'}</em><a class="headerlink" href="#sni.dbmodels.EsiToken._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._subclasses">
-<code class="sig-name descname">_subclasses</code><em class="property"> = ('EsiToken',)</em><a class="headerlink" href="#sni.database.EsiToken._subclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._subclasses">
+<code class="sig-name descname">_subclasses</code><em class="property"> = ('EsiToken',)</em><a class="headerlink" href="#sni.dbmodels.EsiToken._subclasses" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._superclasses">
-<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.database.EsiToken._superclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._superclasses">
+<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.dbmodels.EsiToken._superclasses" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken._types">
-<code class="sig-name descname">_types</code><em class="property"> = ('EsiToken',)</em><a class="headerlink" href="#sni.database.EsiToken._types" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken._types">
+<code class="sig-name descname">_types</code><em class="property"> = ('EsiToken',)</em><a class="headerlink" href="#sni.dbmodels.EsiToken._types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.access_token">
-<code class="sig-name descname">access_token</code><a class="headerlink" href="#sni.database.EsiToken.access_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.access_token">
+<code class="sig-name descname">access_token</code><a class="headerlink" href="#sni.dbmodels.EsiToken.access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.app_token">
-<code class="sig-name descname">app_token</code><a class="headerlink" href="#sni.database.EsiToken.app_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.app_token">
+<code class="sig-name descname">app_token</code><a class="headerlink" href="#sni.dbmodels.EsiToken.app_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to a document that will be automatically dereferenced on
 access (lazily).</p>
 <p>Note this means you will get a database I/O access everytime you access
@@ -184,8 +225,8 @@ bi-directional delete rules)</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.created_on">
-<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.database.EsiToken.created_on" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.dbmodels.EsiToken.created_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Datetime field.</p>
 <p>Uses the python-dateutil library if available alternatively use time.strptime
 to parse the dates.  Note: python-dateutil’s parser is fully featured and when
@@ -201,8 +242,8 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.expires_on">
-<code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.database.EsiToken.expires_on" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.expires_on">
+<code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.dbmodels.EsiToken.expires_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Datetime field.</p>
 <p>Uses the python-dateutil library if available alternatively use time.strptime
 to parse the dates.  Note: python-dateutil’s parser is fully featured and when
@@ -218,14 +259,14 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.database.EsiToken.id" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.dbmodels.EsiToken.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.database.EsiToken.objects" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.dbmodels.EsiToken.objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>The default QuerySet Manager.</p>
 <p>Custom QuerySet Manager functions can extend this class and users can
 add extra queryset functionality.  Any custom manager methods must accept a
@@ -236,8 +277,8 @@ add extra queryset functionality.  Any custom manager methods must accept a
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.owner">
-<code class="sig-name descname">owner</code><a class="headerlink" href="#sni.database.EsiToken.owner" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.owner">
+<code class="sig-name descname">owner</code><a class="headerlink" href="#sni.dbmodels.EsiToken.owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to a document that will be automatically dereferenced on
 access (lazily).</p>
 <p>Note this means you will get a database I/O access everytime you access
@@ -279,14 +320,14 @@ bi-directional delete rules)</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.refresh_token">
-<code class="sig-name descname">refresh_token</code><a class="headerlink" href="#sni.database.EsiToken.refresh_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.refresh_token">
+<code class="sig-name descname">refresh_token</code><a class="headerlink" href="#sni.dbmodels.EsiToken.refresh_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.EsiToken.scopes">
-<code class="sig-name descname">scopes</code><a class="headerlink" href="#sni.database.EsiToken.scopes" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.EsiToken.scopes">
+<code class="sig-name descname">scopes</code><a class="headerlink" href="#sni.dbmodels.EsiToken.scopes" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list field that wraps a standard field, allowing multiple instances
 of the field to be used as a list in the database.</p>
 <p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
@@ -299,100 +340,152 @@ of the field to be used as a list in the database.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="sni.database.Token">
-<em class="property">class </em><code class="sig-prename descclassname">sni.database.</code><code class="sig-name descname">Token</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/database.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.database.Token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token">
+<em class="property">class </em><code class="sig-prename descclassname">sni.dbmodels.</code><code class="sig-name descname">Token</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/dbmodels.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.dbmodels.Token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>Represents a token issued by SNI.</p>
 <dl class="exception">
-<dt id="sni.database.Token.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.database.Token.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.dbmodels.Token.DoesNotExist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="sni.database.Token.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.database.Token.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.dbmodels.Token.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="sni.database.Token.TOKEN_TYPES">
-<code class="sig-name descname">TOKEN_TYPES</code><em class="property"> = ['dyn', 'per', 'use']</em><a class="headerlink" href="#sni.database.Token.TOKEN_TYPES" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="sni.dbmodels.Token.TokenType">
+<em class="property">class </em><code class="sig-name descname">TokenType</code><a class="reference internal" href="_modules/sni/dbmodels.html#Token.TokenType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.dbmodels.Token.TokenType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enumeration containing the various token types.</p>
+<dl class="method">
+<dt id="sni.dbmodels.Token.TokenType._generate_next_value_">
+<code class="sig-name descname">_generate_next_value_</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">count</em>, <em class="sig-param">last_values</em><span class="sig-paren">)</span><a class="headerlink" href="#sni.dbmodels.Token.TokenType._generate_next_value_" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.__objects">
-<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.database.Token.__objects" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.TokenType._member_map_">
+<code class="sig-name descname">_member_map_</code><em class="property"> = {'dyn': &lt;TokenType.dyn: 'dyn'&gt;, 'per': &lt;TokenType.per: 'per'&gt;, 'use': &lt;TokenType.use: 'use'&gt;}</em><a class="headerlink" href="#sni.dbmodels.Token.TokenType._member_map_" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._cached_reference_fields">
-<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.database.Token._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.TokenType._member_names_">
+<code class="sig-name descname">_member_names_</code><em class="property"> = ['dyn', 'per', 'use']</em><a class="headerlink" href="#sni.dbmodels.Token.TokenType._member_names_" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._class_name">
-<code class="sig-name descname">_class_name</code><em class="property"> = 'Token'</em><a class="headerlink" href="#sni.database.Token._class_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.TokenType._member_type_">
+<code class="sig-name descname">_member_type_</code><a class="headerlink" href="#sni.dbmodels.Token.TokenType._member_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.str</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token.TokenType._value2member_map_">
+<code class="sig-name descname">_value2member_map_</code><em class="property"> = {'dyn': &lt;TokenType.dyn: 'dyn'&gt;, 'per': &lt;TokenType.per: 'per'&gt;, 'use': &lt;TokenType.use: 'use'&gt;}</em><a class="headerlink" href="#sni.dbmodels.Token.TokenType._value2member_map_" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._collection">
-<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.database.Token._collection" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.TokenType.dyn">
+<code class="sig-name descname">dyn</code><em class="property"> = 'dyn'</em><a class="headerlink" href="#sni.dbmodels.Token.TokenType.dyn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._db_field_map">
-<code class="sig-name descname">_db_field_map</code><em class="property"> = {'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'token_type': 'token_type', 'uuid': '_id'}</em><a class="headerlink" href="#sni.database.Token._db_field_map" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.TokenType.per">
+<code class="sig-name descname">per</code><em class="property"> = 'per'</em><a class="headerlink" href="#sni.dbmodels.Token.TokenType.per" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._fields">
-<code class="sig-name descname">_fields</code><em class="property"> = {'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'expires_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'owner': &lt;mongoengine.fields.ReferenceField object&gt;, 'token_type': &lt;mongoengine.fields.StringField object&gt;, 'uuid': &lt;mongoengine.fields.UUIDField object&gt;}</em><a class="headerlink" href="#sni.database.Token._fields" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.TokenType.use">
+<code class="sig-name descname">use</code><em class="property"> = 'use'</em><a class="headerlink" href="#sni.dbmodels.Token.TokenType.use" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token.__objects">
+<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.dbmodels.Token.__objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._fields_ordered">
-<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('uuid', 'created_on', 'expires_on', 'owner', 'token_type')</em><a class="headerlink" href="#sni.database.Token._fields_ordered" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._cached_reference_fields">
+<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.dbmodels.Token._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._is_base_cls">
-<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.database.Token._is_base_cls" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._class_name">
+<code class="sig-name descname">_class_name</code><em class="property"> = 'Token'</em><a class="headerlink" href="#sni.dbmodels.Token._class_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._is_document">
-<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.database.Token._is_document" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._collection">
+<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.dbmodels.Token._collection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._meta">
-<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'token', 'delete_rules': {(&lt;class 'sni.database.EsiToken'&gt;, 'app_token'): 2}, 'id_field': 'uuid', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.database.Token._meta" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._db_field_map">
+<code class="sig-name descname">_db_field_map</code><em class="property"> = {'callback': 'callback', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'parent': 'parent', 'token_type': 'token_type', 'uuid': '_id'}</em><a class="headerlink" href="#sni.dbmodels.Token._db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._reverse_db_field_map">
-<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'uuid', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'token_type': 'token_type'}</em><a class="headerlink" href="#sni.database.Token._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._fields">
+<code class="sig-name descname">_fields</code><em class="property"> = {'callback': &lt;mongoengine.fields.URLField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'expires_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'owner': &lt;mongoengine.fields.ReferenceField object&gt;, 'parent': &lt;mongoengine.fields.ReferenceField object&gt;, 'token_type': &lt;mongoengine.fields.StringField object&gt;, 'uuid': &lt;mongoengine.fields.UUIDField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.Token._fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._subclasses">
-<code class="sig-name descname">_subclasses</code><em class="property"> = ('Token',)</em><a class="headerlink" href="#sni.database.Token._subclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._fields_ordered">
+<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('uuid', 'callback', 'created_on', 'expires_on', 'owner', 'parent', 'token_type')</em><a class="headerlink" href="#sni.dbmodels.Token._fields_ordered" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._superclasses">
-<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.database.Token._superclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._is_base_cls">
+<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.dbmodels.Token._is_base_cls" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token._types">
-<code class="sig-name descname">_types</code><em class="property"> = ('Token',)</em><a class="headerlink" href="#sni.database.Token._types" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._is_document">
+<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.dbmodels.Token._is_document" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.created_on">
-<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.database.Token.created_on" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token._meta">
+<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'token', 'delete_rules': {(&lt;class 'sni.dbmodels.Token'&gt;, 'parent'): 2, (&lt;class 'sni.dbmodels.EsiToken'&gt;, 'app_token'): 2}, 'id_field': 'uuid', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.Token._meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token._reverse_db_field_map">
+<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'uuid', 'callback': 'callback', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'parent': 'parent', 'token_type': 'token_type'}</em><a class="headerlink" href="#sni.dbmodels.Token._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token._subclasses">
+<code class="sig-name descname">_subclasses</code><em class="property"> = ('Token',)</em><a class="headerlink" href="#sni.dbmodels.Token._subclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token._superclasses">
+<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.dbmodels.Token._superclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token._types">
+<code class="sig-name descname">_types</code><em class="property"> = ('Token',)</em><a class="headerlink" href="#sni.dbmodels.Token._types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token.callback">
+<code class="sig-name descname">callback</code><a class="headerlink" href="#sni.dbmodels.Token.callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field that validates input as an URL.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.dbmodels.Token.created_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Datetime field.</p>
 <p>Uses the python-dateutil library if available alternatively use time.strptime
 to parse the dates.  Note: python-dateutil’s parser is fully featured and when
@@ -408,8 +501,8 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.expires_on">
-<code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.database.Token.expires_on" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.expires_on">
+<code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.dbmodels.Token.expires_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Datetime field.</p>
 <p>Uses the python-dateutil library if available alternatively use time.strptime
 to parse the dates.  Note: python-dateutil’s parser is fully featured and when
@@ -425,8 +518,8 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.database.Token.id" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.dbmodels.Token.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>A UUID field.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.6.</span></p>
@@ -434,8 +527,8 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.database.Token.objects" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.dbmodels.Token.objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>The default QuerySet Manager.</p>
 <p>Custom QuerySet Manager functions can extend this class and users can
 add extra queryset functionality.  Any custom manager methods must accept a
@@ -446,8 +539,8 @@ add extra queryset functionality.  Any custom manager methods must accept a
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.owner">
-<code class="sig-name descname">owner</code><a class="headerlink" href="#sni.database.Token.owner" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.owner">
+<code class="sig-name descname">owner</code><a class="headerlink" href="#sni.dbmodels.Token.owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to a document that will be automatically dereferenced on
 access (lazily).</p>
 <p>Note this means you will get a database I/O access everytime you access
@@ -488,21 +581,58 @@ bi-directional delete rules)</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="sni.database.Token.to_jwt">
-<code class="sig-name descname">to_jwt</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/database.html#Token.to_jwt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.database.Token.to_jwt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derives a JWT token byte array from the current token.</p>
+<dl class="attribute">
+<dt id="sni.dbmodels.Token.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#sni.dbmodels.Token.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.token_type">
-<code class="sig-name descname">token_type</code><a class="headerlink" href="#sni.database.Token.token_type" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.token_type">
+<code class="sig-name descname">token_type</code><a class="headerlink" href="#sni.dbmodels.Token.token_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.Token.uuid">
-<code class="sig-name descname">uuid</code><a class="headerlink" href="#sni.database.Token.uuid" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.Token.uuid">
+<code class="sig-name descname">uuid</code><a class="headerlink" href="#sni.dbmodels.Token.uuid" title="Permalink to this definition">¶</a></dt>
 <dd><p>A UUID field.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.6.</span></p>
@@ -512,109 +642,109 @@ bi-directional delete rules)</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="sni.database.User">
-<em class="property">class </em><code class="sig-prename descclassname">sni.database.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/database.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.database.User" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User">
+<em class="property">class </em><code class="sig-prename descclassname">sni.dbmodels.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/dbmodels.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.dbmodels.User" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>User model.</p>
 <p>A user corresponds to a single EVE character. A user can reference other
 users as “sub characters”.</p>
 <dl class="exception">
-<dt id="sni.database.User.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.database.User.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.dbmodels.User.DoesNotExist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="sni.database.User.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.database.User.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.dbmodels.User.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.__objects">
-<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.database.User.__objects" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.__objects">
+<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.dbmodels.User.__objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._cached_reference_fields">
-<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.database.User._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._cached_reference_fields">
+<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.dbmodels.User._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._class_name">
-<code class="sig-name descname">_class_name</code><em class="property"> = 'User'</em><a class="headerlink" href="#sni.database.User._class_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._class_name">
+<code class="sig-name descname">_class_name</code><em class="property"> = 'User'</em><a class="headerlink" href="#sni.dbmodels.User._class_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._collection">
-<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.database.User._collection" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._collection">
+<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.dbmodels.User._collection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._db_field_map">
-<code class="sig-name descname">_db_field_map</code><em class="property"> = {'character_id': '_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.database.User._db_field_map" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._db_field_map">
+<code class="sig-name descname">_db_field_map</code><em class="property"> = {'character_id': '_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.dbmodels.User._db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._fields">
-<code class="sig-name descname">_fields</code><em class="property"> = {'character_id': &lt;mongoengine.fields.IntField object&gt;, 'character_name': &lt;mongoengine.fields.StringField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'subcharacter_ids': &lt;mongoengine.fields.ListField object&gt;}</em><a class="headerlink" href="#sni.database.User._fields" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._fields">
+<code class="sig-name descname">_fields</code><em class="property"> = {'character_id': &lt;mongoengine.fields.IntField object&gt;, 'character_name': &lt;mongoengine.fields.StringField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'subcharacter_ids': &lt;mongoengine.fields.ListField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.User._fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._fields_ordered">
-<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('character_id', 'character_name', 'created_on', 'subcharacter_ids')</em><a class="headerlink" href="#sni.database.User._fields_ordered" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._fields_ordered">
+<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('character_id', 'character_name', 'created_on', 'subcharacter_ids')</em><a class="headerlink" href="#sni.dbmodels.User._fields_ordered" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._is_base_cls">
-<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.database.User._is_base_cls" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._is_base_cls">
+<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.dbmodels.User._is_base_cls" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._is_document">
-<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.database.User._is_document" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._is_document">
+<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.dbmodels.User._is_document" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._meta">
-<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'user', 'delete_rules': {(&lt;class 'sni.database.Token'&gt;, 'owner'): 2}, 'id_field': 'character_id', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.database.User._meta" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._meta">
+<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'user', 'delete_rules': {(&lt;class 'sni.dbmodels.Token'&gt;, 'owner'): 2}, 'id_field': 'character_id', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.User._meta" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._reverse_db_field_map">
-<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'character_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.database.User._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._reverse_db_field_map">
+<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'character_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.dbmodels.User._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._subclasses">
-<code class="sig-name descname">_subclasses</code><em class="property"> = ('User',)</em><a class="headerlink" href="#sni.database.User._subclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._subclasses">
+<code class="sig-name descname">_subclasses</code><em class="property"> = ('User',)</em><a class="headerlink" href="#sni.dbmodels.User._subclasses" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._superclasses">
-<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.database.User._superclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._superclasses">
+<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.dbmodels.User._superclasses" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User._types">
-<code class="sig-name descname">_types</code><em class="property"> = ('User',)</em><a class="headerlink" href="#sni.database.User._types" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User._types">
+<code class="sig-name descname">_types</code><em class="property"> = ('User',)</em><a class="headerlink" href="#sni.dbmodels.User._types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.character_id">
-<code class="sig-name descname">character_id</code><a class="headerlink" href="#sni.database.User.character_id" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.character_id">
+<code class="sig-name descname">character_id</code><a class="headerlink" href="#sni.dbmodels.User.character_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>32-bit integer field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.character_name">
-<code class="sig-name descname">character_name</code><a class="headerlink" href="#sni.database.User.character_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.character_name">
+<code class="sig-name descname">character_name</code><a class="headerlink" href="#sni.dbmodels.User.character_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.created_on">
-<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.database.User.created_on" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.dbmodels.User.created_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Datetime field.</p>
 <p>Uses the python-dateutil library if available alternatively use time.strptime
 to parse the dates.  Note: python-dateutil’s parser is fully featured and when
@@ -630,14 +760,14 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.database.User.id" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.dbmodels.User.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>32-bit integer field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.database.User.objects" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.dbmodels.User.objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>The default QuerySet Manager.</p>
 <p>Custom QuerySet Manager functions can extend this class and users can
 add extra queryset functionality.  Any custom manager methods must accept a
@@ -648,8 +778,8 @@ add extra queryset functionality.  Any custom manager methods must accept a
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.database.User.subcharacter_ids">
-<code class="sig-name descname">subcharacter_ids</code><a class="headerlink" href="#sni.database.User.subcharacter_ids" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.dbmodels.User.subcharacter_ids">
+<code class="sig-name descname">subcharacter_ids</code><a class="headerlink" href="#sni.dbmodels.User.subcharacter_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list field that wraps a standard field, allowing multiple instances
 of the field to be used as a list in the database.</p>
 <p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
@@ -659,14 +789,6 @@ of the field to be used as a list in the database.</p>
 </div>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.database.init">
-<code class="sig-prename descclassname">sni.database.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/database.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.database.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connects to the MongoDB instance.</p>
-<p>Does not return anything. Any call to <code class="docutils literal notranslate"><span class="pre">mongoengine</span></code> will act on that
-connection. It’s magic.</p>
 </dd></dl>
 
 </div>
@@ -677,9 +799,15 @@ connection. It’s magic.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Database layer</a></li>
+<li><a class="reference internal" href="#module-sni.dbmodels">Database models</a></li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="rest.html"
-                        title="previous chapter">API requests layer</a></p>
+  <p class="topless"><a href="esi.html"
+                        title="previous chapter">ESI requests layer</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -711,7 +839,7 @@ connection. It’s magic.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="rest.html" title="API requests layer"
+          <a href="esi.html" title="ESI requests layer"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>

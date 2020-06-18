@@ -58,7 +58,6 @@ Module documentation
    configuration
    apiserver
    esi
-   rest
    database
 
 

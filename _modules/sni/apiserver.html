@@ -45,32 +45,73 @@
 <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Depends</span><span class="p">,</span>
     <span class="n">FastAPI</span><span class="p">,</span>
     <span class="n">HTTPException</span><span class="p">,</span>
     <span class="n">status</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">sni.apimodels</span> <span class="k">as</span> <span class="nn">apimodels</span>
+<span class="kn">from</span> <span class="nn">sni.apimodels</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PostAuthDynIn</span><span class="p">,</span>
+    <span class="n">PostAuthDynOut</span><span class="p">,</span>
+    <span class="n">PostAuthPerOut</span><span class="p">,</span>
+    <span class="n">PostTokenIn</span><span class="p">,</span>
+    <span class="n">PostTokenOut</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.dbmodels</span> <span class="kn">import</span> <span class="n">Token</span>
 <span class="kn">import</span> <span class="nn">sni.esi</span> <span class="k">as</span> <span class="nn">esi</span>
+<span class="kn">import</span> <span class="nn">sni.token</span> <span class="k">as</span> <span class="nn">token</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="auth"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.auth">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/auth&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">apimodels</span><span class="o">.</span><span class="n">AuthOut</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">auth</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">apimodels</span><span class="o">.</span><span class="n">AuthIn</span><span class="p">):</span>
+<div class="viewcode-block" id="post_auth_dyn"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.post_auth_dyn">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/auth/dyn&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostAuthDynOut</span><span class="p">,</span>
+    <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_auth_dyn</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">PostAuthDynIn</span><span class="p">,</span>
+                        <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initiates the user authentication process. Returns a user token.</span>
+<span class="sd">    Authenticates an application dynamic token and returns a `state code` and</span>
+<span class="sd">    an URL at which the user can authenticate to the EVE SSO. Once that is</span>
+<span class="sd">    done, SNI issues a GET request to the app predefined callback, with that</span>
+<span class="sd">    state code and the user token.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;login_url&#39;</span><span class="p">:</span> <span class="n">esi</span><span class="o">.</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="n">uuid</span><span class="p">),</span>
-        <span class="s1">&#39;user_token&#39;</span><span class="p">:</span> <span class="n">uuid</span><span class="p">,</span>
-        <span class="s1">&#39;user_token_valid&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">}</span></div>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
+    <span class="n">state_code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">PostAuthDynOut</span><span class="p">(</span>
+        <span class="n">login_url</span><span class="o">=</span><span class="n">esi</span><span class="o">.</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="n">state_code</span><span class="p">),</span>
+        <span class="n">state_code</span><span class="o">=</span><span class="n">state_code</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="callback_esi"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.callback_esi">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/callback/esi&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">callback_esi</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="post_auth_per"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.post_auth_per">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/auth/per&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostAuthPerOut</span><span class="p">,</span>
+    <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_auth_per</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Authenticates an application permanent token and returns a user token tied</span>
+<span class="sd">    to the owner of that app token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_user_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">)</span>
+    <span class="n">user_token_str</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PostAuthPerOut</span><span class="p">(</span><span class="n">user_token</span><span class="o">=</span><span class="n">user_token_str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_callback_esi"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_callback_esi">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/callback/esi&#39;</span><span class="p">,</span>
+    <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Callbacks&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_callback_esi</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ESI callback.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -82,12 +123,49 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ping"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/ping&#39;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">ping</span><span class="p">():</span>
+<div class="viewcode-block" id="get_ping"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/ping&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Testing&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_ping</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns ``pong``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;pong&#39;</span></div>
+
+
+<div class="viewcode-block" id="post_token"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.post_token">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/token&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication&#39;</span><span class="p">],</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostTokenOut</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">PostTokenIn</span><span class="p">,</span>
+                     <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new app token of any type.</span>
+
+<span class="sd">    Must be called with a permanent app token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_dynamic_app_token</span><span class="p">(</span>
+            <span class="n">app_token</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">PostTokenOut</span><span class="p">(</span>
+            <span class="n">app_token</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">new_token</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_permanent_app_token</span><span class="p">(</span>
+            <span class="n">app_token</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">PostTokenOut</span><span class="p">(</span>
+            <span class="n">app_token</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">new_token</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
+                        <span class="s1">&#39;This enpoint can only create app tokens.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
