@@ -18,7 +18,6 @@ import requests
 import jwt
 
 import sni.conf as conf
-import sni.rest as rest
 
 
 def esi_request(method: str,
@@ -28,8 +27,8 @@ def esi_request(method: str,
     Makes a request to EVE ESI.
     """
     function = {
-        'get': rest.get_json,
-        'post': rest.post_json,
+        'get': requests.get,
+        'post': requests.post,
     }.get(method)
     function = cast(Optional[Callable[..., Dict[str, Any]]], function)
     if not function:
@@ -42,11 +41,12 @@ def esi_request(method: str,
     if token:
         headers['Authorization'] = 'Bearer ' + token
     params = {'datasource': 'tranquility'}
-    return function(
+    response = function(
         'https://esi.evetech.net/v5' + endpoint,
         headers=headers,
         params=params,
     )
+    return response.json()
 
 
 def get(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
@@ -144,11 +144,12 @@ def process_sso_authorization_code(code: str, state: str) -> bool:
         'Content-Type': 'application/x-www-form-urlencoded',
         'Host': 'login.eveonline.com',
     }
-    response_json = rest.post_json(
+    response = requests.post(
         'https://login.eveonline.com/v2/oauth/token',
         headers=headers,
         data=data,
     )
+    response_json = response.json()
     if 'access_token' not in response_json:
         return False
     decoded = jwt.decode(response_json['access_token'], verify=False)
@@ -181,11 +182,12 @@ def refresh_access_token(refresh_token: str) -> bool:
         'Host': 'login.eveonline.com',
         'Authorization': 'Basic ' + get_basic_authorization_code()
     }
-    response_json = rest.post_json(
+    response = requests.post(
         'https://login.eveonline.com/v2/oauth/token',
         headers=headers,
         data=data,
     )
+    response_json = response.json()
     if 'access_token' not in response_json:
         return False
     decoded = jwt.decode(response_json['access_token'], verify=False)

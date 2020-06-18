@@ -17,7 +17,11 @@ import sni.esi as esi
 app = FastAPI()
 
 
-@app.get('/auth', response_model=apimodels.AuthOut)
+@app.get(
+    '/auth',
+    response_model=apimodels.AuthOut,
+    status_code=status.HTTP_200_OK,
+)
 async def auth(data: apimodels.AuthIn):
     """
     Initiates the user authentication process. Returns a user token.
@@ -30,7 +34,10 @@ async def auth(data: apimodels.AuthIn):
     }
 
 
-@app.get('/callback/esi', status_code=status.HTTP_200_OK)
+@app.get(
+    '/callback/esi',
+    status_code=status.HTTP_200_OK,
+)
 async def callback_esi(code: str, state: str):
     """
     ESI callback.

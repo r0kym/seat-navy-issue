@@ -43,6 +43,10 @@ class Token(Document):
     created_on = DateTimeField(required=True)
     expires_on = DateTimeField(null=True, default=None)
     owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
+    parent = ReferenceField('self',
+                            null=True,
+                            default=None,
+                            reverse_delete_rule=CASCADE)
     token_type = StringField(choices=TOKEN_TYPES, required=True)
     uuid = UUIDField(binary=False, primary_key=True)
 
