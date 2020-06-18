@@ -5,6 +5,7 @@ This module contains the entry point to SNI.
 """
 
 import argparse
+import logging
 import logging.config
 import pprint
 import sys
@@ -12,7 +13,7 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
-import sni.database as database
+import sni.db as db
 
 
 def main():
@@ -37,12 +38,8 @@ def main():
         logging.debug('SNI running in debug mode, dumping configuration:')
         pprint.pprint(conf.CONFIGURATION, depth=1)
 
-    database.init()
-    logging.info('Connected to database %s:%s', conf.get('database.host'),
-                 conf.get('database.port'))
-
-    logging.info('Starting API server on %s:%s', conf.get('general.host'),
-                 conf.get('general.port'))
+    db.init()
+    db.migrate()
     start_api_server()
 
 
@@ -82,6 +79,8 @@ def start_api_server() -> None:
     """
     Runs the API server.
     """
+    logging.info('Starting API server on %s:%s', conf.get('general.host'),
+                 conf.get('general.port'))
     uvicorn.run(
         'sni.apiserver:app',
         host=conf.get('general.host'),
