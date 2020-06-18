@@ -43,46 +43,77 @@
 <span class="sd">Body models for the API server</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
 
 <span class="kn">import</span> <span class="nn">pydantic</span>
 
 <span class="kn">import</span> <span class="nn">sni.dbmodels</span> <span class="k">as</span> <span class="nn">dbmodels</span>
 
 
-<div class="viewcode-block" id="PostAuthDynIn"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostAuthDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostAuthDynIn</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="GetTokenOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.GetTokenOut">[docs]</a><span class="k">class</span> <span class="nc">GetTokenOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for ``POST /auth/dyn`` requests.</span>
+<span class="sd">    Model for ``GET /token`` responses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pydantic</span><span class="o">.</span><span class="n">AnyHttpUrl</span><span class="p">]</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">expires_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="n">owner_character_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span>
+    <span class="n">token_type</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span>
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span></div>
+
+
+<div class="viewcode-block" id="PostTokenUseFromDynIn"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenUseFromDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynIn</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/use/from/dyn`` requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">Field</span><span class="p">([</span><span class="s1">&#39;publicData&#39;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="PostAuthDynOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostAuthDynOut">[docs]</a><span class="k">class</span> <span class="nc">PostAuthDynOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PostTokenUseFromDynOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenUseFromDynOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for ``POST /auth/dyn`` reponses.</span>
+<span class="sd">    Model for ``POST /token/use/from/dyn`` reponses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">login_url</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">state_code</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="PostAuthPerOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostAuthPerOut">[docs]</a><span class="k">class</span> <span class="nc">PostAuthPerOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PostUseFromPerOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostUseFromPerOut">[docs]</a><span class="k">class</span> <span class="nc">PostUseFromPerOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for ``POST /auth/per`` reponses.</span>
+<span class="sd">    Model for ``POST /token/use/from/per`` reponses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">user_token</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="PostTokenIn"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenIn</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PostTokenDynIn"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenDynIn</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for ``POST /token`` requests.</span>
+<span class="sd">    Model for ``POST /token/dyn`` requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">callback</span><span class="p">:</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">AnyHttpUrl</span>
-    <span class="n">token_type</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span></div>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="PostTokenOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PostTokenDynOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenDynOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenDynOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for ``POST /token`` reponses.</span>
+<span class="sd">    Model for ``POST /token/dyn`` reponses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app_token</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="PostTokenPerIn"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenPerIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenPerIn</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/per`` requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">AnyHttpUrl</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PostTokenPerOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostTokenPerOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenPerOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/per`` reponses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app_token</span><span class="p">:</span> <span class="nb">str</span></div>
 </pre></div>

@@ -113,12 +113,13 @@
 <span class="sd">    Create a permanent app token owned by root, if none exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;per&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">root_per_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+        <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;Primary token&#39;</span><span class="p">,</span>
         <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
         <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;per&#39;</span><span class="p">,</span>
+        <span class="n">token_type</span><span class="o">=</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">,</span>
         <span class="n">uuid</span><span class="o">=</span><span class="n">uuid4</span><span class="p">(),</span>
     <span class="p">)</span>
     <span class="n">root_per_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
@@ -132,12 +133,13 @@
 <span class="sd">    Create a dynamic app token owned by root, if none exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;dyn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">root_dyn_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+        <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;Primary token&#39;</span><span class="p">,</span>
         <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
         <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;dyn&#39;</span><span class="p">,</span>
+        <span class="n">token_type</span><span class="o">=</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">,</span>
         <span class="n">uuid</span><span class="o">=</span><span class="n">uuid4</span><span class="p">(),</span>
     <span class="p">)</span>
     <span class="n">root_dyn_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>

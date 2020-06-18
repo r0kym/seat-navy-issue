@@ -426,17 +426,17 @@ of the field to be used as a list in the database.</p>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.Token._db_field_map">
-<code class="sig-name descname">_db_field_map</code><em class="property"> = {'callback': 'callback', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'parent': 'parent', 'token_type': 'token_type', 'uuid': '_id'}</em><a class="headerlink" href="#sni.dbmodels.Token._db_field_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_db_field_map</code><em class="property"> = {'callback': 'callback', 'comments': 'comments', 'created_on': 'created_on', 'expires_on': 'expires_on', 'id': '_id', 'owner': 'owner', 'parent': 'parent', 'token_type': 'token_type', 'uuid': 'uuid'}</em><a class="headerlink" href="#sni.dbmodels.Token._db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.Token._fields">
-<code class="sig-name descname">_fields</code><em class="property"> = {'callback': &lt;mongoengine.fields.URLField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'expires_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'owner': &lt;mongoengine.fields.ReferenceField object&gt;, 'parent': &lt;mongoengine.fields.ReferenceField object&gt;, 'token_type': &lt;mongoengine.fields.StringField object&gt;, 'uuid': &lt;mongoengine.fields.UUIDField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.Token._fields" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_fields</code><em class="property"> = {'callback': &lt;mongoengine.fields.URLField object&gt;, 'comments': &lt;mongoengine.fields.StringField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'expires_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'id': &lt;mongoengine.base.fields.ObjectIdField object&gt;, 'owner': &lt;mongoengine.fields.ReferenceField object&gt;, 'parent': &lt;mongoengine.fields.ReferenceField object&gt;, 'token_type': &lt;mongoengine.fields.StringField object&gt;, 'uuid': &lt;mongoengine.fields.UUIDField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.Token._fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.Token._fields_ordered">
-<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('uuid', 'callback', 'created_on', 'expires_on', 'owner', 'parent', 'token_type')</em><a class="headerlink" href="#sni.dbmodels.Token._fields_ordered" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('id', 'callback', 'comments', 'created_on', 'expires_on', 'owner', 'parent', 'token_type', 'uuid')</em><a class="headerlink" href="#sni.dbmodels.Token._fields_ordered" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -451,12 +451,12 @@ of the field to be used as a list in the database.</p>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.Token._meta">
-<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'token', 'delete_rules': {(&lt;class 'sni.dbmodels.Token'&gt;, 'parent'): 2, (&lt;class 'sni.dbmodels.EsiToken'&gt;, 'app_token'): 2}, 'id_field': 'uuid', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.Token._meta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'token', 'delete_rules': {(&lt;class 'sni.dbmodels.Token'&gt;, 'parent'): 2, (&lt;class 'sni.dbmodels.EsiToken'&gt;, 'app_token'): 2}, 'id_field': 'id', 'index_background': False, 'index_opts': None, 'index_specs': [{'fields': [('uuid', 1)], 'unique': True, 'sparse': False}], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.Token._meta" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.Token._reverse_db_field_map">
-<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'uuid', 'callback': 'callback', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'parent': 'parent', 'token_type': 'token_type'}</em><a class="headerlink" href="#sni.dbmodels.Token._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'id', 'callback': 'callback', 'comments': 'comments', 'created_on': 'created_on', 'expires_on': 'expires_on', 'owner': 'owner', 'parent': 'parent', 'token_type': 'token_type', 'uuid': 'uuid'}</em><a class="headerlink" href="#sni.dbmodels.Token._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -481,6 +481,12 @@ of the field to be used as a list in the database.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.</span></p>
 </div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.Token.comments">
+<code class="sig-name descname">comments</code><a class="headerlink" href="#sni.dbmodels.Token.comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -520,10 +526,7 @@ need accurate microsecond support.</p>
 <dl class="attribute">
 <dt id="sni.dbmodels.Token.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#sni.dbmodels.Token.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>A UUID field.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.6.</span></p>
-</div>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -682,17 +685,17 @@ users as “sub characters”.</p>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.User._db_field_map">
-<code class="sig-name descname">_db_field_map</code><em class="property"> = {'character_id': '_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.dbmodels.User._db_field_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_db_field_map</code><em class="property"> = {'character_id': 'character_id', 'character_name': 'character_name', 'created_on': 'created_on', 'id': '_id', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.dbmodels.User._db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.User._fields">
-<code class="sig-name descname">_fields</code><em class="property"> = {'character_id': &lt;mongoengine.fields.IntField object&gt;, 'character_name': &lt;mongoengine.fields.StringField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'subcharacter_ids': &lt;mongoengine.fields.ListField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.User._fields" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_fields</code><em class="property"> = {'character_id': &lt;mongoengine.fields.IntField object&gt;, 'character_name': &lt;mongoengine.fields.StringField object&gt;, 'created_on': &lt;mongoengine.fields.DateTimeField object&gt;, 'id': &lt;mongoengine.base.fields.ObjectIdField object&gt;, 'subcharacter_ids': &lt;mongoengine.fields.ListField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.User._fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.User._fields_ordered">
-<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('character_id', 'character_name', 'created_on', 'subcharacter_ids')</em><a class="headerlink" href="#sni.dbmodels.User._fields_ordered" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('id', 'character_id', 'character_name', 'created_on', 'subcharacter_ids')</em><a class="headerlink" href="#sni.dbmodels.User._fields_ordered" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -707,12 +710,12 @@ users as “sub characters”.</p>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.User._meta">
-<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'user', 'delete_rules': {(&lt;class 'sni.dbmodels.Token'&gt;, 'owner'): 2}, 'id_field': 'character_id', 'index_background': False, 'index_opts': None, 'index_specs': [], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.User._meta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'user', 'delete_rules': {(&lt;class 'sni.dbmodels.Token'&gt;, 'owner'): 2}, 'id_field': 'id', 'index_background': False, 'index_opts': None, 'index_specs': [{'fields': [('character_id', 1)], 'unique': True, 'sparse': False}], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.User._meta" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.dbmodels.User._reverse_db_field_map">
-<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'character_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.dbmodels.User._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'id', 'character_id': 'character_id', 'character_name': 'character_name', 'created_on': 'created_on', 'subcharacter_ids': 'subcharacter_ids'}</em><a class="headerlink" href="#sni.dbmodels.User._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -762,7 +765,7 @@ need accurate microsecond support.</p>
 <dl class="attribute">
 <dt id="sni.dbmodels.User.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#sni.dbmodels.User.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>32-bit integer field.</p>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
 </dd></dl>
 
 <dl class="attribute">
