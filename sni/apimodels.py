@@ -9,17 +9,23 @@ from typing import List
 import pydantic
 
 
-class AuthIn(pydantic.BaseModel):
+class AuthDynIn(pydantic.BaseModel):
     """
-    Model for ``/auth`` requests.
+    Model for ``/auth/dyn`` requests.
     """
     scopes: List[str] = pydantic.Field(['publicData'])
 
 
-class AuthOut(pydantic.BaseModel):
+class AuthDynOut(pydantic.BaseModel):
     """
-    Model for ``/auth`` reponses.
+    Model for ``/auth/dyn`` reponses.
     """
     login_url: str
+    state_code: str
+
+
+class AuthPerOut(pydantic.BaseModel):
+    """
+    Model for ``/auth/per`` reponses.
+    """
     user_token: str
-    user_token_valid: bool

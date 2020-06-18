@@ -5,25 +5,16 @@ actor Application
 participant SNI
 participant "EVE SSO"
 
-Application -> SNI : POST /auth + app token
-SNI -> Application : **200** + EVE SSO URL + user token
-note left : The user token is invalid until the authentication is complete
+Application -> SNI : GET /auth/dyn + app token
+SNI -> Application : **200** + EVE SSO login URL + state code
 
-Application -> User : Application forwards login URL
+Application -> User : Forwards login URL
 
 group Standard EVE SSO authentication flow
     User -> "EVE SSO" : User logs in
     "EVE SSO" -> SNI : GET request to SNI auth callback + authorization code
     SNI -> "EVE SSO" : POST request with authentication code
     "EVE SSO" -> SNI : Access token + refresh token
-    note left : User token issued in is now valid
 end
 
-SNI -> Application : GET request to callback, notifying auth. status
-
-group Testing a user token
-    Application -> SNI : /auth + user token
-    SNI -> Application : **200** + metadatas
-else user token not valid (yet)
-    SNI -> Application : **401**
-end
+SNI -> Application : POST state code + user token

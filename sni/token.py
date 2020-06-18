@@ -4,6 +4,7 @@ Manages the issuance and validation of JWT tokens
 
 import logging
 from typing import Optional
+from uuid import uuid4
 
 from fastapi import (
     Header,
@@ -15,6 +16,35 @@ import jwt.exceptions
 
 import sni.conf as conf
 from sni.dbmodels import Token
+import sni.time as time
+
+
+def create_user_token(app_token: Token) -> Token:
+    """
+    Derives a new user token from an existing app token.
+    """
+    if app_token.token_type == 'dyn':
+        token = Token(
+            created_on=time.now(),
+            expires_on=time.now_plus(days=1),
+            owner=app_token.owner,
+            parent=app_token,
+            token_type='use',
+            uuid=str(uuid4()),
+        )
+        token.save()
+        return token
+    if app_token.token_type == 'per':
+        token = Token(
+            created_on=time.now(),
+            owner=app_token.owner,
+            parent=app_token,
+            token_type='use',
+            uuid=str(uuid4()),
+        )
+        token.save()
+        return token
+    raise ValueError('Expected an app token')
 
 
 def to_jwt(model: Token) -> str:
