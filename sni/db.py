@@ -78,6 +78,7 @@ def migrate_ensure_root_per_token() -> None:
         return
     root_per_token = Token(
         created_on=time.now(),
+        expires_on=time.now(),
         owner=root,
         token_type='per',
         uuid=uuid4(),

@@ -16,14 +16,18 @@ def to_jwt(model: Token) -> str:
     """
     Derives a JWT token byte array from the a token model.
     """
+    payload = {
+        'iat': model.created_on.timestamp(),
+        'iss': conf.get('general.root_url'),
+        'jti': str(model.uuid),
+        'nbf': model.created_on.timestamp(),
+        'own': model.owner.character_id,
+        'typ': model.token_type,
+    }
+    if model.expires_on:
+        payload['exp'] = model.expires_on.timestamp()
     return jwt.encode(
-        {
-            'created_on': str(model.created_on),
-            'expires_on': str(model.expires_on),
-            'owner': model.owner.character_id,
-            'token_type': model.token_type,
-            'uuid': str(model.uuid),
-        },
+        payload,
         conf.get('jwt.secret'),
         algorithm=conf.get('jwt.algorithm'),
     ).decode()
@@ -39,9 +43,12 @@ def validate(token: str) -> Optional[Token]:
             token.encode(),
             conf.get('jwt.secret'),
             algorithm=conf.get('jwt.algorithm'),
-            verify_signature=True,
+            issuer=conf.get('general.root_url'),
+            verify_exp=True,
+            verify_iss=True,
+            verify=True,
         )
-        token_uuid = payload['uuid']
+        token_uuid = payload['jti']
         return Token.objects(uuid=token_uuid).first()
     except (
             jwt.exceptions.InvalidTokenError,
