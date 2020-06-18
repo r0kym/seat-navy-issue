@@ -5,7 +5,7 @@ actor Application
 participant SNI
 participant "EVE SSO"
 
-Application -> SNI : GET /auth/dyn + app token
+Application -> SNI : POST /auth/dyn + app token
 SNI -> Application : **200** + EVE SSO login URL + state code
 
 Application -> User : Forwards login URL

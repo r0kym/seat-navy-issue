@@ -20,13 +20,13 @@ import sni.token as token
 app = FastAPI()
 
 
-@app.get(
+@app.post(
     '/auth/dyn',
     response_model=apimodels.GetAuthDynOut,
     status_code=status.HTTP_200_OK,
     tags=['Authentication'],
 )
-async def get_auth_dyn(data: apimodels.GetAuthDynIn,
+async def post_auth_dyn(data: apimodels.PostAuthDynIn,
                        app_token: Token = Depends(token.validate_header)):
     """
     Authenticates an application dynamic token and returns a `state code` and
@@ -37,19 +37,19 @@ async def get_auth_dyn(data: apimodels.GetAuthDynIn,
     if app_token.token_type != 'dyn':
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     state_code = str(uuid4())
-    return apimodels.GetAuthDynOut(
+    return apimodels.PostAuthDynOut(
         login_url=esi.get_auth_url(data.scopes, state_code),
         state_code=state_code,
     )
 
 
-@app.get(
+@app.post(
     '/auth/per',
-    response_model=apimodels.GetAuthPerOut,
+    response_model=apimodels.PostAuthPerOut,
     status_code=status.HTTP_200_OK,
     tags=['Authentication'],
 )
-async def get_auth_per(app_token: Token = Depends(token.validate_header)):
+async def post_auth_per(app_token: Token = Depends(token.validate_header)):
     """
     Authenticates an application permanent token and returns a user token tied
     to the owner of that app token.
@@ -58,7 +58,7 @@ async def get_auth_per(app_token: Token = Depends(token.validate_header)):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user_token = token.create_user_token(app_token)
     user_token_str = token.to_jwt(user_token)
-    return apimodels.GetAuthPerOut(user_token=user_token_str)
+    return apimodels.PostAuthPerOut(user_token=user_token_str)
 
 
 @app.get(
