@@ -137,6 +137,7 @@ def validate_header(authorization: str = Header(None)) -> Token:
             status.HTTP_401_UNAUTHORIZED,
             headers={"WWW-Authenticate": "Bearer"},
         )
+    logging.debug('Successfully validated token %s', token.uuid)
     return token
 
 

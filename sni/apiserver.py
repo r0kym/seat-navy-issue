@@ -1,3 +1,5 @@
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 API Server
 """
@@ -12,15 +14,7 @@ from fastapi import (
     status,
 )
 
-from sni.apimodels import (
-    PostTokenUseFromDynIn,
-    PostTokenUseFromDynOut,
-    PostUseFromPerOut,
-    PostTokenDynIn,
-    PostTokenDynOut,
-    PostTokenPerIn,
-    PostTokenPerOut,
-)
+from sni.apimodels import *
 from sni.dbmodels import Token
 import sni.esi as esi
 import sni.token as token
@@ -30,7 +24,6 @@ app = FastAPI()
 
 @app.get(
     '/callback/esi',
-    status_code=status.HTTP_200_OK,
     tags=['Callbacks'],
 )
 async def get_callback_esi(code: str, state: str):
@@ -54,6 +47,26 @@ async def get_ping():
     Returns ``pong``.
     """
     return 'pong'
+
+
+@app.get(
+    '/token',
+    response_model=GetTokenOut,
+)
+async def get_token(app_token: Token = Depends(token.validate_header)):
+    """
+    Returns informations about the token currently being used.
+    """
+    return GetTokenOut(
+        callback=app_token.callback,
+        comments=app_token.comments,
+        created_on=app_token.created_on,
+        expires_on=app_token.expires_on,
+        owner_character_id=app_token.owner.character_id,
+        parent=app_token.parent,
+        token_type=app_token.token_type,
+        uuid=app_token.uuid,
+    )
 
 
 @app.post(
@@ -109,7 +122,6 @@ async def post_token_per(
 @app.post(
     '/token/use/from/dyn',
     response_model=PostTokenUseFromDynOut,
-    status_code=status.HTTP_200_OK,
     tags=['Authentication'],
 )
 async def post_token_use_from_dyn(
@@ -134,7 +146,6 @@ async def post_token_use_from_dyn(
 @app.post(
     '/token/use/from/per',
     response_model=PostUseFromPerOut,
-    status_code=status.HTTP_200_OK,
     tags=['Authentication'],
 )
 async def post_token_use_from_per(app_token: Token = Depends(

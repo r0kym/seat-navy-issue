@@ -4,9 +4,27 @@
 Body models for the API server
 """
 
+from datetime import datetime
 from typing import List, Optional
+from uuid import UUID
 
 import pydantic
+
+import sni.dbmodels as dbmodels
+
+
+class GetTokenOut(pydantic.BaseModel):
+    """
+    Model for ``GET /token`` responses.
+    """
+    callback: Optional[pydantic.AnyHttpUrl]
+    comments: Optional[str]
+    created_on: datetime
+    expires_on: Optional[datetime]
+    owner_character_id: int
+    parent: Optional[UUID]
+    token_type: dbmodels.Token.TokenType
+    uuid: UUID
 
 
 class PostTokenUseFromDynIn(pydantic.BaseModel):
