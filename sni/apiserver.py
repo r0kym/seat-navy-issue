@@ -22,12 +22,12 @@ app = FastAPI()
 
 @app.get(
     '/auth/dyn',
-    response_model=apimodels.AuthDynOut,
+    response_model=apimodels.GetAuthDynOut,
     status_code=status.HTTP_200_OK,
     tags=['Authentication'],
 )
-async def auth_dyn(data: apimodels.AuthDynIn,
-                   app_token: Token = Depends(token.validate_header)):
+async def get_auth_dyn(data: apimodels.GetAuthDynIn,
+                       app_token: Token = Depends(token.validate_header)):
     """
     Authenticates an application dynamic token and returns a `state code` and
     an URL at which the user can authenticate to the EVE SSO. Once that is
@@ -37,7 +37,7 @@ async def auth_dyn(data: apimodels.AuthDynIn,
     if app_token.token_type != 'dyn':
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     state_code = str(uuid4())
-    return apimodels.AuthDynOut(
+    return apimodels.GetAuthDynOut(
         login_url=esi.get_auth_url(data.scopes, state_code),
         state_code=state_code,
     )
@@ -45,11 +45,11 @@ async def auth_dyn(data: apimodels.AuthDynIn,
 
 @app.get(
     '/auth/per',
-    response_model=apimodels.AuthPerOut,
+    response_model=apimodels.GetAuthPerOut,
     status_code=status.HTTP_200_OK,
     tags=['Authentication'],
 )
-async def auth_per(app_token: Token = Depends(token.validate_header)):
+async def get_auth_per(app_token: Token = Depends(token.validate_header)):
     """
     Authenticates an application permanent token and returns a user token tied
     to the owner of that app token.
@@ -58,7 +58,7 @@ async def auth_per(app_token: Token = Depends(token.validate_header)):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user_token = token.create_user_token(app_token)
     user_token_str = token.to_jwt(user_token)
-    return apimodels.AuthPerOut(user_token=user_token_str)
+    return apimodels.GetAuthPerOut(user_token=user_token_str)
 
 
 @app.get(
@@ -66,7 +66,7 @@ async def auth_per(app_token: Token = Depends(token.validate_header)):
     status_code=status.HTTP_200_OK,
     tags=['Callbacks'],
 )
-async def callback_esi(code: str, state: str):
+async def get_callback_esi(code: str, state: str):
     """
     ESI callback.
     """
@@ -79,7 +79,7 @@ async def callback_esi(code: str, state: str):
 
 
 @app.get('/ping', tags=['Testing'])
-async def ping():
+async def get_ping():
     """
     Returns ``pong``.
     """
