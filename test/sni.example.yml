@@ -2,7 +2,7 @@ database:
     authentication_source: admin
     database: sni
     host: localhost
-    password: password
+    password: snipassword
     port: 27017
     username: sni
 esi:

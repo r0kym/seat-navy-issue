@@ -30,8 +30,24 @@ Running SNI
    following docker-compose file: (don't forget to change the password to match
    that of your ``sni.yml``)
 
-.. literalinclude:: docker-compose.example.yml
-   :language: yaml
+   .. literalinclude:: docker-compose.example.yml
+      :language: yaml
+
+
+   Then, run::
+
+      (your shell) > docker container exec -it mongodb bash
+      (mongodb container) > mongo --username root --password rootpassword
+      (mongo shell) > db.createUser({
+         user: "sni",
+         pwd: "snipassword",
+         roles: [
+            {
+                  role: "readWrite",
+                  db: "sni"
+            }
+         ]
+      })
 
 
 High level documentation

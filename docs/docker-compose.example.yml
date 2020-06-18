@@ -10,7 +10,7 @@ services:
     container_name: mongodb
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=WMgHVNCrEtyck89D9VY5
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
     image: mongo
     volumes:
       - mongodb-data:/data/db
