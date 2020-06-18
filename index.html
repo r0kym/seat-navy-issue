@@ -48,15 +48,14 @@
 <a class="reference external image-reference" href="https://choosealicense.com/licenses/mit/"><img alt="MIT License" src="https://badgen.net/badge/license/MIT/blue" /></a>
 <div class="section" id="running-sni">
 <h2>Running SNI<a class="headerlink" href="#running-sni" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p>Register an application at the
 <a class="reference external" href="https://developers.eveonline.com/">EVE Developer Portal</a>. The SNI
 callback is <code class="docutils literal notranslate"><span class="pre">https://&lt;domain&gt;/callback/esi</span></code>.</p></li>
 <li><p>Create a configuration file (see <a class="reference internal" href="configuration.html#configuration-file-reference"><span class="std std-ref">Reference</span></a>).</p></li>
 <li><p>The easiest way to run SNI and all the required services is to use the
 following docker-compose file: (don’t forget to change the password to match
-that of your <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code>)</p></li>
-</ol>
+that of your <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code>)</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.5&#39;</span>
 
 <span class="nt">volumes</span><span class="p">:</span>
@@ -69,7 +68,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
     <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongodb</span>
     <span class="nt">environment</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MONGO_INITDB_ROOT_USERNAME=root</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MONGO_INITDB_ROOT_PASSWORD=WMgHVNCrEtyck89D9VY5</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">MONGO_INITDB_ROOT_PASSWORD=rootpassword</span>
     <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongo</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mongodb-data:/data/db</span>
@@ -89,6 +88,23 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./sni.yml:/usr/src/app/sni.yml</span>
 </pre></div>
 </div>
+<p>Then, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">your</span> <span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">docker</span> <span class="n">container</span> <span class="n">exec</span> <span class="o">-</span><span class="n">it</span> <span class="n">mongodb</span> <span class="n">bash</span>
+<span class="p">(</span><span class="n">mongodb</span> <span class="n">container</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">mongo</span> <span class="o">--</span><span class="n">username</span> <span class="n">root</span> <span class="o">--</span><span class="n">password</span> <span class="n">rootpassword</span>
+<span class="p">(</span><span class="n">mongo</span> <span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">createUser</span><span class="p">({</span>
+   <span class="n">user</span><span class="p">:</span> <span class="s2">&quot;sni&quot;</span><span class="p">,</span>
+   <span class="n">pwd</span><span class="p">:</span> <span class="s2">&quot;snipassword&quot;</span><span class="p">,</span>
+   <span class="n">roles</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+            <span class="n">role</span><span class="p">:</span> <span class="s2">&quot;readWrite&quot;</span><span class="p">,</span>
+            <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;sni&quot;</span>
+      <span class="p">}</span>
+   <span class="p">]</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</li>
+</ol>
 </div>
 <div class="section" id="high-level-documentation">
 <h2>High level documentation<a class="headerlink" href="#high-level-documentation" title="Permalink to this headline">¶</a></h2>
