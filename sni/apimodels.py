@@ -4,45 +4,58 @@
 Body models for the API server
 """
 
-from typing import List
+from typing import List, Optional
 
 import pydantic
 
-import sni.dbmodels as dbmodels
 
-
-class PostAuthDynIn(pydantic.BaseModel):
+class PostTokenUseFromDynIn(pydantic.BaseModel):
     """
-    Model for ``POST /auth/dyn`` requests.
+    Model for ``POST /token/use/from/dyn`` requests.
     """
     scopes: List[str] = pydantic.Field(['publicData'])
 
 
-class PostAuthDynOut(pydantic.BaseModel):
+class PostTokenUseFromDynOut(pydantic.BaseModel):
     """
-    Model for ``POST /auth/dyn`` reponses.
+    Model for ``POST /token/use/from/dyn`` reponses.
     """
     login_url: str
     state_code: str
 
 
-class PostAuthPerOut(pydantic.BaseModel):
+class PostUseFromPerOut(pydantic.BaseModel):
     """
-    Model for ``POST /auth/per`` reponses.
+    Model for ``POST /token/use/from/per`` reponses.
     """
     user_token: str
 
 
-class PostTokenIn(pydantic.BaseModel):
+class PostTokenDynIn(pydantic.BaseModel):
     """
-    Model for ``POST /token`` requests.
+    Model for ``POST /token/dyn`` requests.
     """
     callback: pydantic.AnyHttpUrl
-    token_type: dbmodels.Token.TokenType
+    comments: Optional[str]
 
 
-class PostTokenOut(pydantic.BaseModel):
+class PostTokenDynOut(pydantic.BaseModel):
     """
-    Model for ``POST /token`` reponses.
+    Model for ``POST /token/dyn`` reponses.
+    """
+    app_token: str
+
+
+class PostTokenPerIn(pydantic.BaseModel):
+    """
+    Model for ``POST /token/per`` requests.
+    """
+    callback: pydantic.AnyHttpUrl
+    comments: Optional[str]
+
+
+class PostTokenPerOut(pydantic.BaseModel):
+    """
+    Model for ``POST /token/per`` reponses.
     """
     app_token: str

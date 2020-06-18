@@ -74,12 +74,13 @@ def migrate_ensure_root_per_token() -> None:
     Create a permanent app token owned by root, if none exist.
     """
     root = User.objects(character_id=0).first()
-    if Token.objects(owner=root, token_type='per').count() > 0:
+    if Token.objects(owner=root, token_type=Token.TokenType.per).count() > 0:
         return
     root_per_token = Token(
+        comments='Primary token',
         created_on=time.now(),
         owner=root,
-        token_type='per',
+        token_type=Token.TokenType.per,
         uuid=uuid4(),
     )
     root_per_token.save()
@@ -93,12 +94,13 @@ def migrate_ensure_root_dyn_token() -> None:
     Create a dynamic app token owned by root, if none exist.
     """
     root = User.objects(character_id=0).first()
-    if Token.objects(owner=root, token_type='dyn').count() > 0:
+    if Token.objects(owner=root, token_type=Token.TokenType.dyn).count() > 0:
         return
     root_dyn_token = Token(
+        comments='Primary token',
         created_on=time.now(),
         owner=root,
-        token_type='dyn',
+        token_type=Token.TokenType.dyn,
         uuid=uuid4(),
     )
     root_dyn_token.save()

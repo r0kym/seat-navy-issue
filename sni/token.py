@@ -19,8 +19,13 @@ from sni.dbmodels import Token, User
 import sni.time as time
 
 
-def create_dynamic_app_token(owner: User,
-                             callback: Optional[str] = None) -> Token:
+def create_dynamic_app_token(
+    owner: User,
+    *,
+    callback: Optional[str] = None,
+    comments: Optional[str] = None,
+    parent: Optional[Token] = None,
+) -> Token:
     """
     Creates a new dynamic app token for that user.
 
@@ -28,17 +33,24 @@ def create_dynamic_app_token(owner: User,
     """
     new_token = Token(
         callback=callback,
+        comments=comments,
         created_on=time.now(),
         owner=owner,
-        token_type='dyn',
+        parent=parent,
+        token_type=Token.TokenType.dyn,
         uuid=str(uuid4()),
     )
     new_token.save()
     return new_token
 
 
-def create_permanent_app_token(owner: User,
-                               callback: Optional[str] = None) -> Token:
+def create_permanent_app_token(
+    owner: User,
+    *,
+    callback: Optional[str] = None,
+    comments: Optional[str] = None,
+    parent: Optional[Token] = None,
+) -> Token:
     """
     Creates a new permanent app token for that user.
 
@@ -46,9 +58,11 @@ def create_permanent_app_token(owner: User,
     """
     new_token = Token(
         callback=callback,
+        comments=comments,
         created_on=time.now(),
         owner=owner,
-        token_type='per',
+        parent=parent,
+        token_type=Token.TokenType.per,
         uuid=str(uuid4()),
     )
     new_token.save()
@@ -59,7 +73,7 @@ def create_user_token(app_token: Token) -> Token:
     """
     Derives a new user token from an existing app token.
     """
-    if app_token.token_type == 'dyn':
+    if app_token.token_type == Token.TokenType.dyn:
         new_token = Token(
             created_on=time.now(),
             expires_on=time.now_plus(days=1),
@@ -70,7 +84,7 @@ def create_user_token(app_token: Token) -> Token:
         )
         new_token.save()
         return new_token
-    if app_token.token_type == 'per':
+    if app_token.token_type == Token.TokenType.per:
         new_token = Token(
             created_on=time.now(),
             owner=app_token.owner,

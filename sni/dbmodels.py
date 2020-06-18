@@ -47,6 +47,7 @@ class Token(Document):
         use = 'use'  # User token
 
     callback = URLField(default=None)
+    comments = StringField()
     created_on = DateTimeField(required=True)
     expires_on = DateTimeField(null=True, default=None)
     owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)

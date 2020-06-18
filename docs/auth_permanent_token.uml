@@ -3,5 +3,5 @@ title Authentication with a permanent token
 actor Application
 participant SNI
 
-Application -> SNI : POST /auth/per + app token
+Application -> SNI : POST /token/use/from/per + app token
 SNI -> Application : **200** + user token + metadatas
