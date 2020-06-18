@@ -8,6 +8,8 @@ from typing import List
 
 import pydantic
 
+import sni.dbmodels as dbmodels
+
 
 class PostAuthDynIn(pydantic.BaseModel):
     """
@@ -29,3 +31,18 @@ class PostAuthPerOut(pydantic.BaseModel):
     Model for ``POST /auth/per`` reponses.
     """
     user_token: str
+
+
+class PostTokenIn(pydantic.BaseModel):
+    """
+    Model for ``POST /token`` requests.
+    """
+    callback: pydantic.AnyHttpUrl
+    token_type: dbmodels.Token.TokenType
+
+
+class PostTokenOut(pydantic.BaseModel):
+    """
+    Model for ``POST /token`` reponses.
+    """
+    app_token: str

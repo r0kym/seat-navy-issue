@@ -5,6 +5,8 @@ Reference:
     `MongoEngine User Documentation <http://docs.mongoengine.org/index.html>`_
 """
 
+from enum import Enum
+
 from mongoengine import (
     CASCADE,
     DateTimeField,
@@ -14,6 +16,7 @@ from mongoengine import (
     ListField,
     ReferenceField,
     StringField,
+    URLField,
     UUIDField,
 )
 
@@ -35,11 +38,15 @@ class Token(Document):
     """
     Represents a token issued by SNI.
     """
-    TOKEN_TYPES = [
-        'dyn',  # Dynamic app token
-        'per',  # Permanent app token
-        'use',  # User token
-    ]
+    class TokenType(str, Enum):
+        """
+        Enumeration containing the various token types.
+        """
+        dyn = 'dyn'  # Dynamic app token
+        per = 'per'  # Permanent app token
+        use = 'use'  # User token
+
+    callback = URLField(default=None)
     created_on = DateTimeField(required=True)
     expires_on = DateTimeField(null=True, default=None)
     owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
@@ -47,7 +54,7 @@ class Token(Document):
                             null=True,
                             default=None,
                             reverse_delete_rule=CASCADE)
-    token_type = StringField(choices=TOKEN_TYPES, required=True)
+    token_type = StringField(choices=TokenType, required=True)
     uuid = UUIDField(binary=False, primary_key=True)
 
 

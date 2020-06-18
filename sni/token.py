@@ -15,8 +15,44 @@ import jwt
 import jwt.exceptions
 
 import sni.conf as conf
-from sni.dbmodels import Token
+from sni.dbmodels import Token, User
 import sni.time as time
+
+
+def create_dynamic_app_token(owner: User,
+                             callback: Optional[str] = None) -> Token:
+    """
+    Creates a new dynamic app token for that user.
+
+    Warning: Does not check that the user is allowed to actually do that.
+    """
+    new_token = Token(
+        callback=callback,
+        created_on=time.now(),
+        owner=owner,
+        token_type='dyn',
+        uuid=str(uuid4()),
+    )
+    new_token.save()
+    return new_token
+
+
+def create_permanent_app_token(owner: User,
+                               callback: Optional[str] = None) -> Token:
+    """
+    Creates a new permanent app token for that user.
+
+    Warning: Does not check that the user is allowed to actually do that.
+    """
+    new_token = Token(
+        callback=callback,
+        created_on=time.now(),
+        owner=owner,
+        token_type='per',
+        uuid=str(uuid4()),
+    )
+    new_token.save()
+    return new_token
 
 
 def create_user_token(app_token: Token) -> Token:
@@ -24,7 +60,7 @@ def create_user_token(app_token: Token) -> Token:
     Derives a new user token from an existing app token.
     """
     if app_token.token_type == 'dyn':
-        token = Token(
+        new_token = Token(
             created_on=time.now(),
             expires_on=time.now_plus(days=1),
             owner=app_token.owner,
@@ -32,18 +68,18 @@ def create_user_token(app_token: Token) -> Token:
             token_type='use',
             uuid=str(uuid4()),
         )
-        token.save()
-        return token
+        new_token.save()
+        return new_token
     if app_token.token_type == 'per':
-        token = Token(
+        new_token = Token(
             created_on=time.now(),
             owner=app_token.owner,
             parent=app_token,
             token_type='use',
             uuid=str(uuid4()),
         )
-        token.save()
-        return token
+        new_token.save()
+        return new_token
     raise ValueError('Expected an app token')
 
 
