@@ -97,6 +97,21 @@ def create_user_token(app_token: Token) -> Token:
     raise ValueError('Expected an app token')
 
 
+def delete_token(uuid: str) -> bool:
+    """
+    Deletes a token by its uuid.
+
+    Returns:
+        Wether the deletion was successful.
+    """
+    to_delete = Token.objects(uuid=uuid).first()
+    if not to_delete:
+        return False
+    to_delete.delete()
+    logging.debug('Deleted token %s', uuid)
+    return True
+
+
 def to_jwt(model: Token) -> str:
     """
     Derives a JWT token byte array from the a token model.

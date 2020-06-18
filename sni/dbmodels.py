@@ -28,7 +28,7 @@ class User(Document):
     A user corresponds to a single EVE character. A user can reference other
     users as "sub characters".
     """
-    character_id = IntField(primary_key=True)
+    character_id = IntField(unique=True)
     character_name = StringField(required=True)
     created_on = DateTimeField(required=True)
     subcharacter_ids = ListField(IntField(), default=[])
@@ -56,7 +56,7 @@ class Token(Document):
                             default=None,
                             reverse_delete_rule=CASCADE)
     token_type = StringField(choices=TokenType, required=True)
-    uuid = UUIDField(binary=False, primary_key=True)
+    uuid = UUIDField(binary=False, unique=True)
 
 
 class EsiToken(Document):

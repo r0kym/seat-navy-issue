@@ -49,6 +49,21 @@ async def get_ping():
     return 'pong'
 
 
+@app.delete('/token')
+async def delete_token(
+        uuid: str,
+        app_token: Token = Depends(token.validate_header),
+):
+    """
+    Deletes a token
+    """
+    if not app_token.owner.character_id == 0:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+    if not token.delete_token(uuid):
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            detail='Token not found.')
+
+
 @app.get(
     '/token',
     response_model=GetTokenOut,
