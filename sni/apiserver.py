@@ -102,6 +102,50 @@ async def get_callback_esi(code: str, state: str):
     state_code.delete()
 
 
+@app.get('/esi/latest/{esi_path:path}', tags=['ESI'])
+async def get_esi_latest(
+        esi_path: str,
+        data: EsiRequestIn = EsiRequestIn(),
+        app_token: dbmodels.Token = Depends(token.validate_header),
+):
+    """
+    Forwards a GET request to the ESI.
+
+    See also:
+        :class:`sni.apimodels.EsiRequestIn`
+    """
+    headers = {
+        'Accept-Encoding': 'gzip',
+        'accept': 'application/json',
+        'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
+    }
+    if data.on_behalf_of:
+        user = dbmodels.User.objects(character_id=data.on_behalf_of).first()
+        if not user:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                detail=f'Character {data.on_behalf_of} not registered.'
+            )
+        esi_token = dbmodels.EsiToken.objects(
+            owner=user,
+            scopes='esi-assets.read_assets.v1',
+            expires_on__gt=time.now(),
+        ).first()
+        if not esi_token:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                detail=
+                f'Could not find a suitable token for character {data.on_behalf_of}.'
+            )
+        headers['Authorization'] = 'Bearer ' + esi_token.access_token
+    response_json = requests.get(
+        'https://esi.evetech.net/latest/' + esi_path,
+        headers=headers,
+        params=data.params,
+    ).json()
+    return response_json
+
+
 @app.get(
     '/ping',
     tags=['Testing'],

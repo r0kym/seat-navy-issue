@@ -4,14 +4,7 @@ EVE ESI module
 
 from base64 import urlsafe_b64encode
 import logging
-from typing import (
-    Any,
-    Callable,
-    cast,
-    Dict,
-    Optional,
-    List,
-)
+from typing import List
 from urllib.parse import urljoin
 
 import jwt
@@ -91,42 +84,6 @@ def decode_access_token(access_token: str) -> DecodedAccessToken:
     return DecodedAccessToken(**document)
 
 
-def esi_request(method: str,
-                endpoint: str,
-                token: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Makes a request to EVE ESI.
-    """
-    function = {
-        'get': requests.get,
-        'post': requests.post,
-    }.get(method)
-    function = cast(Optional[Callable[..., Dict[str, Any]]], function)
-    if not function:
-        raise ValueError(f'Unsupported HTTP method {method}')
-    headers = {
-        'Accept-Encoding': 'gzip',
-        'accept': 'application/json',
-        'User-Agent': 'seat-navy-issue',
-    }
-    if token:
-        headers['Authorization'] = 'Bearer ' + token
-    params = {'datasource': 'tranquility'}
-    response = function(
-        'https://esi.evetech.net/v5' + endpoint,
-        headers=headers,
-        params=params,
-    )
-    return response.json()
-
-
-def get(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Issues a ``GET`` request to EVE ESI.
-    """
-    return esi_request('get', endpoint, token)
-
-
 def get_auth_url(esi_scopes: List[str],
                  state: str = '00000000-0000-0000-0000-000000000000') -> str:
     """
@@ -174,13 +131,6 @@ def get_basic_authorization_code() -> str:
     authorization = str(conf.get('esi.client_id')) + ':' + str(
         conf.get('esi.client_secret'))
     return urlsafe_b64encode(authorization.encode()).decode()
-
-
-def post(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Issues a ``POST`` request to EVE ESI.
-    """
-    return esi_request('post', endpoint, token)
 
 
 def get_access_token(code: str) -> AuthorizationCodeResponse:

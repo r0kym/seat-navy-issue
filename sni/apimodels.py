@@ -13,6 +13,14 @@ import pydantic
 import sni.dbmodels as dbmodels
 
 
+class EsiRequestIn(pydantic.BaseModel):
+    """
+    Data to be forwarded to the ESI
+    """
+    on_behalf_of: Optional[int] = None
+    params: dict = {}
+
+
 class PostCallbackEsiOut(pydantic.BaseModel):
     """
     Notification model to the app when receiving a callback from the ESI.
