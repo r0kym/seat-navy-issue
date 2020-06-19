@@ -19,7 +19,6 @@ import pydantic
 import requests
 
 import sni.conf as conf
-import sni.dbmodels as dbmodels
 import sni.time as time
 
 
@@ -43,7 +42,7 @@ class AuthorizationCodeResponse(pydantic.BaseModel):
 
 
 # pylint: disable=no-member
-class DecodedAuthorizationCode(pydantic.BaseModel):
+class DecodedAccessToken(pydantic.BaseModel):
     """
     Decoded access token issued by the ESI. Should look like this::
 
@@ -81,6 +80,16 @@ class DecodedAuthorizationCode(pydantic.BaseModel):
         if not self.sub.startswith(prefix):
             raise ValueError('Unexpected "sub" field format: ' + self.sub)
         return int(self.sub[len(prefix):])
+
+
+def decode_access_token(access_token: str) -> Optional[DecodedAccessToken]:
+    """
+    Converts an access token in JWT form to a :class:`sni.esi.DecodedAccessToken`
+    """
+    document = jwt.decode(access_token, verify=False)
+    if isinstance(document['scp'], str):
+        document['scp'] = [document['scp']]
+    return DecodedAccessToken(**document)
 
 
 def esi_request(method: str,
@@ -173,50 +182,6 @@ def post(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
     Issues a ``POST`` request to EVE ESI.
     """
     return esi_request('post', endpoint, token)
-
-
-def process_esi_callback(code: str, state: str) -> bool:
-    """
-    Processes a callback from the ESI.
-
-    See also:
-        :func:`sni.esi.get_access_token`
-
-    Reference:
-        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
-    """
-    esi_response = get_access_token(code)
-    if not esi_response:
-        logging.error('Could not obtain or validate access token from ESI')
-        return False
-    state_code: dbmodels.StateCode = dbmodels.StateCode.objects(
-        uuid=state).first()
-    if not state_code:
-        logging.error('Unknown state code %s', state)
-        return False
-    jwt_json = jwt.decode(esi_response.access_token, verify=False)
-    if isinstance(jwt_json['scp'], str):
-        jwt_json['scp'] = [jwt_json['scp']]
-    decoded_jwt = DecodedAuthorizationCode(**jwt_json)
-    user = dbmodels.User.objects(character_id=decoded_jwt.character_id).first()
-    if not user:
-        user = dbmodels.User(
-            character_id=decoded_jwt.character_id,
-            character_name=decoded_jwt.name,
-            created_on=time.now(),
-        )
-        user.save()
-    esi_token = dbmodels.EsiToken(
-        access_token=esi_response.access_token,
-        app_token=state_code.app_token,
-        created_on=time.now(),
-        expires_on=time.from_timestamp(decoded_jwt.exp),
-        owner=user,
-        refresh_token=esi_response.refresh_token,
-        scopes=decoded_jwt.scp,
-    )
-    esi_token.save()
-    return True
 
 
 def get_access_token(code: str) -> Optional[AuthorizationCodeResponse]:

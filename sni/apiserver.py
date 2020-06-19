@@ -16,9 +16,10 @@ from fastapi import (
 import requests
 
 from sni.apimodels import *
-from sni.dbmodels import StateCode, Token
 import sni.conf as conf
+import sni.dbmodels as dbmodels
 import sni.esi as esi
+import sni.time as time
 import sni.token as token
 
 app = FastAPI()
@@ -52,27 +53,59 @@ async def get_callback_esi(code: str, state: str):
 
     Notifies the app with by issuing a POST request to the predefined app
     callback, using the :class:`sni.apimodels.PostCallbackEsiOut` model.
+
+    Reference:
+        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
     """
     logging.info('Received callback from ESI for state %s', state)
-    if not esi.process_esi_callback(code, state):
-        logging.error('Could not get ESI access token (state %s)', state)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    state_code: StateCode = StateCode.objects(uuid=state).first()
-    app_token: Token = state_code.app_token
-    user_token = token.create_user_token(app_token)
+    esi_response = esi.get_access_token(code)
+    if not esi_response:
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Could not obtain or validate access token from ESI.')
+    decoded_access_token = esi.decode_access_token(esi_response.access_token)
+    if not decoded_access_token:
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Could not obtain or validate access token from ESI.')
+    state_code: dbmodels.StateCode = dbmodels.StateCode.objects(
+        uuid=state).first()
+    if not state_code:
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            detail='Unknown state code ' + state)
+    user = dbmodels.User.objects(
+        character_id=decoded_access_token.character_id).first()
+    if not user:
+        user = dbmodels.User(
+            character_id=decoded_access_token.character_id,
+            character_name=decoded_access_token.name,
+            created_on=time.now(),
+        )
+        user.save()
+    esi_token = dbmodels.EsiToken(
+        access_token=esi_response.access_token,
+        app_token=state_code.app_token,
+        created_on=time.now(),
+        expires_on=time.from_timestamp(decoded_access_token.exp),
+        owner=user,
+        refresh_token=esi_response.refresh_token,
+        scopes=decoded_access_token.scp,
+    )
+    esi_token.save()
+    user_token = token.create_user_token(state_code.app_token)
     user_jwt_str = token.to_jwt(user_token)
     try:
         logging.info('Issuing token %s to app %s', user_jwt_str,
-                     app_token.uuid)
+                     state_code.app_token.uuid)
         requests.post(
-            app_token.callback,
+            state_code.app_token.callback,
             data=PostCallbackEsiOut(
                 state_code=str(state_code.uuid),
                 user_token=user_jwt_str,
             ),
         )
     except Exception as error:  # pylint: disable=broad-except
-        logging.error('Failed to notify app %s: %s', app_token.uuid,
+        logging.error('Failed to notify app %s: %s', state_code.app_token.uuid,
                       str(error))
     finally:
         state_code.delete()
@@ -92,7 +125,7 @@ async def get_ping():
 @app.delete('/token')
 async def delete_token(
         uuid: str,
-        app_token: Token = Depends(token.validate_header),
+        app_token: dbmodels.Token = Depends(token.validate_header),
 ):
     """
     Deletes a token
@@ -108,7 +141,8 @@ async def delete_token(
     '/token',
     response_model=GetTokenOut,
 )
-async def get_token(app_token: Token = Depends(token.validate_header)):
+async def get_token(app_token: dbmodels.Token = Depends(
+    token.validate_header)):
     """
     Returns informations about the token currently being used.
     """
@@ -131,14 +165,14 @@ async def get_token(app_token: Token = Depends(token.validate_header)):
 )
 async def post_token_dyn(
         data: PostTokenDynIn,
-        app_token: Token = Depends(token.validate_header),
+        app_token: dbmodels.Token = Depends(token.validate_header),
 ):
     """
     Creates a new dynamic app token.
 
     Must be called with a permanent app token.
     """
-    if app_token.token_type != Token.TokenType.per:
+    if app_token.token_type != dbmodels.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_dynamic_app_token(
         app_token.owner,
@@ -156,14 +190,14 @@ async def post_token_dyn(
 )
 async def post_token_per(
         data: PostTokenPerIn,
-        app_token: Token = Depends(token.validate_header),
+        app_token: dbmodels.Token = Depends(token.validate_header),
 ):
     """
     Creates a new permanent app token.
 
     Must be called with a permanent app token.
     """
-    if app_token.token_type != Token.TokenType.per:
+    if app_token.token_type != dbmodels.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_permanent_app_token(
         app_token.owner,
@@ -181,7 +215,7 @@ async def post_token_per(
 )
 async def post_token_use_from_dyn(
         data: PostTokenUseFromDynIn,
-        app_token: Token = Depends(token.validate_header),
+        app_token: dbmodels.Token = Depends(token.validate_header),
 ):
     """
     Authenticates an application dynamic token and returns a `state code` and
@@ -189,7 +223,7 @@ async def post_token_use_from_dyn(
     done, SNI issues a GET request to the app predefined callback, with that
     state code and the user token.
     """
-    if app_token.token_type != Token.TokenType.dyn:
+    if app_token.token_type != dbmodels.Token.TokenType.dyn:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     state_code = token.create_state_code(app_token)
     return PostTokenUseFromDynOut(
@@ -203,13 +237,13 @@ async def post_token_use_from_dyn(
     response_model=PostUseFromPerOut,
     tags=['Authentication'],
 )
-async def post_token_use_from_per(app_token: Token = Depends(
+async def post_token_use_from_per(app_token: dbmodels.Token = Depends(
     token.validate_header)):
     """
     Authenticates an application permanent token and returns a user token tied
     to the owner of that app token.
     """
-    if app_token.token_type != Token.TokenType.per:
+    if app_token.token_type != dbmodels.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user_token = token.create_user_token(app_token)
     user_token_str = token.to_jwt(user_token)
