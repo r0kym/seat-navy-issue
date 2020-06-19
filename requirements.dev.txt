@@ -1,6 +1,7 @@
 mypy
 plantuml
 pylint
+pylint-mongoengine
 sphinx
 sphinxcontrib-napoleon
 sphinxcontrib-openapi
