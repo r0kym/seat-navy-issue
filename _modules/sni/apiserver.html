@@ -55,9 +55,10 @@
 <span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="kn">from</span> <span class="nn">sni.apimodels</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">sni.dbmodels</span> <span class="kn">import</span> <span class="n">StateCode</span><span class="p">,</span> <span class="n">Token</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.dbmodels</span> <span class="k">as</span> <span class="nn">dbmodels</span>
 <span class="kn">import</span> <span class="nn">sni.esi</span> <span class="k">as</span> <span class="nn">esi</span>
+<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">sni.token</span> <span class="k">as</span> <span class="nn">token</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
@@ -91,30 +92,97 @@
 
 <span class="sd">    Notifies the app with by issuing a POST request to the predefined app</span>
 <span class="sd">    callback, using the :class:`sni.apimodels.PostCallbackEsiOut` model.</span>
+
+<span class="sd">    Reference:</span>
+<span class="sd">        `OAuth 2.0 for Web Based Applications &lt;https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">esi</span><span class="o">.</span><span class="n">process_esi_callback</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not get ESI access token (state </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
-    <span class="n">state_code</span><span class="p">:</span> <span class="n">StateCode</span> <span class="o">=</span> <span class="n">StateCode</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-    <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span>
-    <span class="n">user_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_user_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">)</span>
+    <span class="n">esi_response</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">decoded_access_token</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">decode_access_token</span><span class="p">(</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">StateCode</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">StateCode</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">state_code</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span>
+                            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;Unknown state code &#39;</span> <span class="o">+</span> <span class="n">state</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">User</span><span class="p">(</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">esi_token</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">EsiToken</span><span class="p">(</span>
+        <span class="n">access_token</span><span class="o">=</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
+        <span class="n">app_token</span><span class="o">=</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span>
+        <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">expires_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">from_timestamp</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">exp</span><span class="p">),</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+        <span class="n">refresh_token</span><span class="o">=</span><span class="n">esi_response</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">,</span>
+        <span class="n">scopes</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">esi_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_user_token</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">)</span>
     <span class="n">user_jwt_str</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Issuing token </span><span class="si">%s</span><span class="s1"> to app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span>
-                     <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+                     <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
         <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+            <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
             <span class="n">data</span><span class="o">=</span><span class="n">PostCallbackEsiOut</span><span class="p">(</span>
                 <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
                 <span class="n">user_token</span><span class="o">=</span><span class="n">user_jwt_str</span><span class="p">,</span>
             <span class="p">),</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to notify app </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to notify app </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
                       <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+    <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_esi_latest">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/esi/latest/{esi_path:path}&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ESI&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_esi_latest</span><span class="p">(</span>
+        <span class="n">esi_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">EsiRequestIn</span> <span class="o">=</span> <span class="n">EsiRequestIn</span><span class="p">(),</span>
+        <span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Forwards a GET request to the ESI.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        :class:`sni.apimodels.EsiRequestIn`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Accept-Encoding&#39;</span><span class="p">:</span> <span class="s1">&#39;gzip&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;SeAT Navy Issue @ &#39;</span> <span class="o">+</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span>
+                <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Character </span><span class="si">{data.on_behalf_of}</span><span class="s1"> not registered.&#39;</span>
+            <span class="p">)</span>
+        <span class="n">esi_token</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">EsiToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+            <span class="n">scopes</span><span class="o">=</span><span class="s1">&#39;esi-assets.read_assets.v1&#39;</span><span class="p">,</span>
+            <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_token</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span>
+                <span class="n">detail</span><span class="o">=</span>
+                <span class="sa">f</span><span class="s1">&#39;Could not find a suitable token for character </span><span class="si">{data.on_behalf_of}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
+        <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">esi_token</span><span class="o">.</span><span class="n">access_token</span>
+    <span class="n">response_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s1">&#39;https://esi.evetech.net/latest/&#39;</span> <span class="o">+</span> <span class="n">esi_path</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">response_json</span></div>
 
 
 <div class="viewcode-block" id="get_ping"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -131,7 +199,7 @@
 <div class="viewcode-block" id="delete_token"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.delete_token">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;/token&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_token</span><span class="p">(</span>
         <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
+        <span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes a token</span>
@@ -147,7 +215,8 @@
     <span class="s1">&#39;/token&#39;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetTokenOut</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">)):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span>
+    <span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns informations about the token currently being used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -170,14 +239,14 @@
 <span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_dyn</span><span class="p">(</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">PostTokenDynIn</span><span class="p">,</span>
-        <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
+        <span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a new dynamic app token.</span>
 
 <span class="sd">    Must be called with a permanent app token.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
     <span class="n">new_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_dynamic_app_token</span><span class="p">(</span>
         <span class="n">app_token</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
@@ -195,14 +264,14 @@
 <span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_per</span><span class="p">(</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">PostTokenPerIn</span><span class="p">,</span>
-        <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
+        <span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a new permanent app token.</span>
 
 <span class="sd">    Must be called with a permanent app token.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
     <span class="n">new_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_permanent_app_token</span><span class="p">(</span>
         <span class="n">app_token</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
@@ -220,7 +289,7 @@
 <span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_use_from_dyn</span><span class="p">(</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">PostTokenUseFromDynIn</span><span class="p">,</span>
-        <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
+        <span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Authenticates an application dynamic token and returns a `state code` and</span>
@@ -228,7 +297,7 @@
 <span class="sd">    done, SNI issues a GET request to the app predefined callback, with that</span>
 <span class="sd">    state code and the user token.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
     <span class="n">state_code</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_state_code</span><span class="p">(</span><span class="n">app_token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">PostTokenUseFromDynOut</span><span class="p">(</span>
@@ -242,13 +311,13 @@
     <span class="n">response_model</span><span class="o">=</span><span class="n">PostUseFromPerOut</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication&#39;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_use_from_per</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_use_from_per</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span>
     <span class="n">token</span><span class="o">.</span><span class="n">validate_header</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Authenticates an application permanent token and returns a user token tied</span>
 <span class="sd">    to the owner of that app token.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
     <span class="n">user_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_user_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">)</span>
     <span class="n">user_token_str</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>

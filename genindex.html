@@ -74,9 +74,11 @@
         <li><a href="database.html#sni.dbmodels.User.__objects">(sni.dbmodels.User attribute)</a>
 </li>
       </ul></li>
-      <li><a href="apiserver.html#sni.apimodels.GetTokenOut._abc_impl">_abc_impl (sni.apimodels.GetTokenOut attribute)</a>
+      <li><a href="apiserver.html#sni.apimodels.EsiRequestIn._abc_impl">_abc_impl (sni.apimodels.EsiRequestIn attribute)</a>
 
       <ul>
+        <li><a href="apiserver.html#sni.apimodels.GetTokenOut._abc_impl">(sni.apimodels.GetTokenOut attribute)</a>
+</li>
         <li><a href="apiserver.html#sni.apimodels.PostCallbackEsiOut._abc_impl">(sni.apimodels.PostCallbackEsiOut attribute)</a>
 </li>
         <li><a href="apiserver.html#sni.apimodels.PostTokenDynIn._abc_impl">(sni.apimodels.PostTokenDynIn attribute)</a>
@@ -95,7 +97,7 @@
 </li>
         <li><a href="esi.html#sni.esi.AuthorizationCodeResponse._abc_impl">(sni.esi.AuthorizationCodeResponse attribute)</a>
 </li>
-        <li><a href="esi.html#sni.esi.DecodedAuthorizationCode._abc_impl">(sni.esi.DecodedAuthorizationCode attribute)</a>
+        <li><a href="esi.html#sni.esi.DecodedAccessToken._abc_impl">(sni.esi.DecodedAccessToken attribute)</a>
 </li>
       </ul></li>
       <li><a href="database.html#sni.dbmodels.EsiToken._cached_reference_fields">_cached_reference_fields (sni.dbmodels.EsiToken attribute)</a>
@@ -148,6 +150,8 @@
         <li><a href="database.html#sni.dbmodels.User._fields">(sni.dbmodels.User attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="database.html#sni.dbmodels.EsiToken._fields_ordered">_fields_ordered (sni.dbmodels.EsiToken attribute)</a>
 
       <ul>
@@ -158,8 +162,6 @@
         <li><a href="database.html#sni.dbmodels.User._fields_ordered">(sni.dbmodels.User attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="database.html#sni.dbmodels.Token.TokenType._generate_next_value_">_generate_next_value_() (sni.dbmodels.Token.TokenType method)</a>
 </li>
       <li><a href="database.html#sni.dbmodels.EsiToken._is_base_cls">_is_base_cls (sni.dbmodels.EsiToken attribute)</a>
@@ -268,7 +270,7 @@
 </li>
       <li><a href="esi.html#sni.esi.AuthorizationCodeResponse">AuthorizationCodeResponse (class in sni.esi)</a>
 </li>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.azp">azp (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.azp">azp (sni.esi.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -288,7 +290,7 @@
       </ul></li>
       <li><a href="database.html#sni.dbmodels.User.character_id">character_id (sni.dbmodels.User attribute)</a>
 </li>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.character_id">character_id() (sni.esi.DecodedAuthorizationCode property)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.character_id">character_id() (sni.esi.DecodedAccessToken property)</a>
 </li>
       <li><a href="database.html#sni.dbmodels.User.character_name">character_name (sni.dbmodels.User attribute)</a>
 </li>
@@ -322,7 +324,9 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode">DecodedAuthorizationCode (class in sni.esi)</a>
+      <li><a href="esi.html#sni.esi.decode_access_token">decode_access_token() (in module sni.esi)</a>
+</li>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken">DecodedAccessToken (class in sni.esi)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -336,7 +340,7 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#sni.esi.esi_request">esi_request() (in module sni.esi)</a>
+      <li><a href="apiserver.html#sni.apimodels.EsiRequestIn">EsiRequestIn (class in sni.apimodels)</a>
 </li>
       <li><a href="database.html#sni.dbmodels.EsiToken">EsiToken (class in sni.dbmodels)</a>
 </li>
@@ -348,7 +352,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.exp">exp (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.exp">exp (sni.esi.DecodedAccessToken attribute)</a>
 </li>
       <li><a href="esi.html#sni.esi.AuthorizationCodeResponse.expires_in">expires_in (sni.esi.AuthorizationCodeResponse attribute)</a>
 </li>
@@ -375,20 +379,18 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="configuration.html#sni.conf.get">get() (in module sni.conf)</a>
-
-      <ul>
-        <li><a href="esi.html#sni.esi.get">(in module sni.esi)</a>
 </li>
-      </ul></li>
       <li><a href="esi.html#sni.esi.get_access_token">get_access_token() (in module sni.esi)</a>
 </li>
       <li><a href="esi.html#sni.esi.get_auth_url">get_auth_url() (in module sni.esi)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="esi.html#sni.esi.get_basic_authorization_code">get_basic_authorization_code() (in module sni.esi)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apiserver.html#sni.apiserver.get_callback_esi">get_callback_esi() (in module sni.apiserver)</a>
+</li>
+      <li><a href="apiserver.html#sni.apiserver.get_esi_latest">get_esi_latest() (in module sni.apiserver)</a>
 </li>
       <li><a href="apiserver.html#sni.apiserver.get_ping">get_ping() (in module sni.apiserver)</a>
 </li>
@@ -416,7 +418,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="database.html#sni.db.init">init() (in module sni.db)</a>
 </li>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.iss">iss (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.iss">iss (sni.esi.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -424,7 +426,7 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.jti">jti (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.jti">jti (sni.esi.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -432,7 +434,7 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.kid">kid (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.kid">kid (sni.esi.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -470,7 +472,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.name">name (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.name">name (sni.esi.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -490,12 +492,14 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apiserver.html#sni.apimodels.EsiRequestIn.on_behalf_of">on_behalf_of (sni.apimodels.EsiRequestIn attribute)</a>
+</li>
       <li><a href="database.html#sni.dbmodels.EsiToken.owner">owner (sni.dbmodels.EsiToken attribute)</a>
 
       <ul>
         <li><a href="database.html#sni.dbmodels.Token.owner">(sni.dbmodels.Token attribute)</a>
 </li>
-        <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.owner">(sni.esi.DecodedAuthorizationCode attribute)</a>
+        <li><a href="esi.html#sni.esi.DecodedAccessToken.owner">(sni.esi.DecodedAccessToken attribute)</a>
 </li>
       </ul></li>
       <li><a href="apiserver.html#sni.apimodels.GetTokenOut.owner_character_id">owner_character_id (sni.apimodels.GetTokenOut attribute)</a>
@@ -506,6 +510,8 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apiserver.html#sni.apimodels.EsiRequestIn.params">params (sni.apimodels.EsiRequestIn attribute)</a>
+</li>
       <li><a href="apiserver.html#sni.apimodels.GetTokenOut.parent">parent (sni.apimodels.GetTokenOut attribute)</a>
 
       <ul>
@@ -515,8 +521,6 @@
       <li><a href="sni.html#sni.__main__.parse_command_line_arguments">parse_command_line_arguments() (in module sni.__main__)</a>
 </li>
       <li><a href="database.html#sni.dbmodels.Token.TokenType.per">per (sni.dbmodels.Token.TokenType attribute)</a>
-</li>
-      <li><a href="esi.html#sni.esi.post">post() (in module sni.esi)</a>
 </li>
       <li><a href="apiserver.html#sni.apiserver.post_token_dyn">post_token_dyn() (in module sni.apiserver)</a>
 </li>
@@ -546,8 +550,6 @@
 </li>
       <li><a href="sni.html#sni.__main__.print_openapi_spec">print_openapi_spec() (in module sni.__main__)</a>
 </li>
-      <li><a href="esi.html#sni.esi.process_esi_callback">process_esi_callback() (in module sni.esi)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -576,7 +578,7 @@
         <li><a href="database.html#sni.dbmodels.EsiToken.scopes">(sni.dbmodels.EsiToken attribute)</a>
 </li>
       </ul></li>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.scp">scp (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.scp">scp (sni.esi.DecodedAccessToken attribute)</a>
 </li>
       <li><a href="sni.html#module-sni.__main__">sni.__main__ (module)</a>
 </li>
@@ -608,7 +610,7 @@
 </li>
       <li><a href="database.html#sni.dbmodels.StateCode.MultipleObjectsReturned">StateCode.MultipleObjectsReturned</a>
 </li>
-      <li><a href="esi.html#sni.esi.DecodedAuthorizationCode.sub">sub (sni.esi.DecodedAuthorizationCode attribute)</a>
+      <li><a href="esi.html#sni.esi.DecodedAccessToken.sub">sub (sni.esi.DecodedAccessToken attribute)</a>
 </li>
       <li><a href="database.html#sni.dbmodels.User.subcharacter_ids">subcharacter_ids (sni.dbmodels.User attribute)</a>
 </li>

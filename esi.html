@@ -164,8 +164,8 @@
 </dd></dl>
 
 <dl class="class">
-<dt id="sni.esi.DecodedAuthorizationCode">
-<em class="property">class </em><code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">DecodedAuthorizationCode</code><a class="reference internal" href="_modules/sni/esi.html#DecodedAuthorizationCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken">
+<em class="property">class </em><code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">DecodedAccessToken</code><a class="reference internal" href="_modules/sni/esi.html#DecodedAccessToken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.DecodedAccessToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Decoded access token issued by the ESI. Should look like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -185,78 +185,72 @@
 </pre></div>
 </div>
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.esi.DecodedAccessToken._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.azp">
-<code class="sig-name descname">azp</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.azp" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.azp">
+<code class="sig-name descname">azp</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.azp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="sni.esi.DecodedAuthorizationCode.character_id">
-<em class="property">property </em><code class="sig-name descname">character_id</code><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.character_id" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.character_id">
+<em class="property">property </em><code class="sig-name descname">character_id</code><a class="headerlink" href="#sni.esi.DecodedAccessToken.character_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts the character ID from the <code class="docutils literal notranslate"><span class="pre">sub</span></code> field.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.exp">
-<code class="sig-name descname">exp</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.exp" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.exp">
+<code class="sig-name descname">exp</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.exp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.iss">
-<code class="sig-name descname">iss</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.iss" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.iss">
+<code class="sig-name descname">iss</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.iss" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.jti">
-<code class="sig-name descname">jti</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.jti" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.jti">
+<code class="sig-name descname">jti</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.jti" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.kid">
-<code class="sig-name descname">kid</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.kid" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.kid">
+<code class="sig-name descname">kid</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.kid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.name">
-<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.owner">
-<code class="sig-name descname">owner</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.owner" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.owner">
+<code class="sig-name descname">owner</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.owner" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.scp">
-<code class="sig-name descname">scp</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.scp" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.scp">
+<code class="sig-name descname">scp</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.scp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.esi.DecodedAuthorizationCode.sub">
-<code class="sig-name descname">sub</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAuthorizationCode.sub" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.esi.DecodedAccessToken.sub">
+<code class="sig-name descname">sub</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.DecodedAccessToken.sub" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.esi.esi_request">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">esi_request</code><span class="sig-paren">(</span><em class="sig-param">method: str</em>, <em class="sig-param">endpoint: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#esi_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi_request" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a request to EVE ESI.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.esi.get">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">endpoint: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to EVE ESI.</p>
+<dt id="sni.esi.decode_access_token">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">decode_access_token</code><span class="sig-paren">(</span><em class="sig-param">access_token: str</em><span class="sig-paren">)</span> &#x2192; sni.esi.DecodedAccessToken<a class="reference internal" href="_modules/sni/esi.html#decode_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.decode_access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an access token in JWT form to a <a class="reference internal" href="#sni.esi.DecodedAccessToken" title="sni.esi.DecodedAccessToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.esi.DecodedAccessToken</span></code></a></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.get_access_token">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get_access_token</code><span class="sig-paren">(</span><em class="sig-param">code: str</em><span class="sig-paren">)</span> &#x2192; Optional[sni.esi.AuthorizationCodeResponse]<a class="reference internal" href="_modules/sni/esi.html#get_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get_access_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get_access_token</code><span class="sig-paren">(</span><em class="sig-param">code: str</em><span class="sig-paren">)</span> &#x2192; sni.esi.AuthorizationCodeResponse<a class="reference internal" href="_modules/sni/esi.html#get_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets an access token (along with its refresh token) from an EVE SSO
 authorization code.</p>
 <div class="admonition seealso">
@@ -307,32 +301,12 @@ authorization code.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.esi.post">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">endpoint: str</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sni/esi.html#post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.post" title="Permalink to this definition">¶</a></dt>
-<dd><p>Issues a <code class="docutils literal notranslate"><span class="pre">POST</span></code> request to EVE ESI.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.esi.process_esi_callback">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">process_esi_callback</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/esi.html#process_esi_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.process_esi_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Processes a callback from the ESI.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#sni.esi.get_access_token" title="sni.esi.get_access_token"><code class="xref py py-func docutils literal notranslate"><span class="pre">sni.esi.get_access_token()</span></code></a></p>
-</div>
-<dl class="simple">
-<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">OAuth 2.0 for Web Based Applications</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="sni.esi.refresh_access_token">
-<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">refresh_access_token</code><span class="sig-paren">(</span><em class="sig-param">refresh_token: str</em><span class="sig-paren">)</span> &#x2192; Optional[sni.esi.AuthorizationCodeResponse]<a class="reference internal" href="_modules/sni/esi.html#refresh_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.refresh_access_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">refresh_access_token</code><span class="sig-paren">(</span><em class="sig-param">refresh_token: str</em><span class="sig-paren">)</span> &#x2192; sni.esi.AuthorizationCodeResponse<a class="reference internal" href="_modules/sni/esi.html#refresh_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.refresh_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refreshes an access token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Wether the refresh was successful.</p>
+<dd class="field-odd"><p>The response in an <a class="reference internal" href="#sni.esi.AuthorizationCodeResponse" title="sni.esi.AuthorizationCodeResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.esi.AuthorizationCodeResponse</span></code></a></p>
 </dd>
 </dl>
 <dl class="simple">

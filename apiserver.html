@@ -65,6 +65,20 @@
 <dd><p>ESI callback.</p>
 <p>Notifies the app with by issuing a POST request to the predefined app
 callback, using the <a class="reference internal" href="#sni.apimodels.PostCallbackEsiOut" title="sni.apimodels.PostCallbackEsiOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.apimodels.PostCallbackEsiOut</span></code></a> model.</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">OAuth 2.0 for Web Based Applications</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.apiserver.get_esi_latest">
+<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.apimodels.EsiRequestIn = EsiRequestIn(on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">app_token: sni.dbmodels.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.get_esi_latest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forwards a GET request to the ESI.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#sni.apimodels.EsiRequestIn" title="sni.apimodels.EsiRequestIn"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.apimodels.EsiRequestIn</span></code></a></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -113,6 +127,28 @@ to the owner of that app token.</p>
 <div class="section" id="module-sni.apimodels">
 <span id="api-models"></span><h1>API Models<a class="headerlink" href="#module-sni.apimodels" title="Permalink to this headline">¶</a></h1>
 <p>Body models for the API server</p>
+<dl class="class">
+<dt id="sni.apimodels.EsiRequestIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">EsiRequestIn</code><a class="reference internal" href="_modules/sni/apimodels.html#EsiRequestIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.EsiRequestIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Data to be forwarded to the ESI</p>
+<dl class="attribute">
+<dt id="sni.apimodels.EsiRequestIn._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.apimodels.EsiRequestIn._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.EsiRequestIn.on_behalf_of">
+<code class="sig-name descname">on_behalf_of</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.EsiRequestIn.on_behalf_of" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.apimodels.EsiRequestIn.params">
+<code class="sig-name descname">params</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.apimodels.EsiRequestIn.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="sni.apimodels.GetTokenOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.apimodels.</code><code class="sig-name descname">GetTokenOut</code><a class="reference internal" href="_modules/sni/apimodels.html#GetTokenOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apimodels.GetTokenOut" title="Permalink to this definition">¶</a></dt>
