@@ -19,7 +19,6 @@ import pydantic
 import requests
 
 import sni.conf as conf
-import sni.time as time
 
 
 # pylint: disable=no-member
@@ -82,7 +81,7 @@ class DecodedAccessToken(pydantic.BaseModel):
         return int(self.sub[len(prefix):])
 
 
-def decode_access_token(access_token: str) -> Optional[DecodedAccessToken]:
+def decode_access_token(access_token: str) -> DecodedAccessToken:
     """
     Converts an access token in JWT form to a :class:`sni.esi.DecodedAccessToken`
     """
@@ -184,7 +183,7 @@ def post(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
     return esi_request('post', endpoint, token)
 
 
-def get_access_token(code: str) -> Optional[AuthorizationCodeResponse]:
+def get_access_token(code: str) -> AuthorizationCodeResponse:
     """
     Gets an access token (along with its refresh token) from an EVE SSO
     authorization code.
@@ -210,27 +209,20 @@ def get_access_token(code: str) -> Optional[AuthorizationCodeResponse]:
         'Content-Type': 'application/x-www-form-urlencoded',
         'Host': 'login.eveonline.com',
     }
-    try:
-        response = requests.post(
-            'https://login.eveonline.com/v2/oauth/token',
-            headers=headers,
-            data=data,
-        )
-        return AuthorizationCodeResponse(**response.json())
-    except requests.HTTPError as error:
-        logging.error('ESI request failed: %s', str(error))
-    except pydantic.ValidationError as error:
-        logging.error('Invalid response from ESI: %s', str(error))
-    return None
+    response = requests.post(
+        'https://login.eveonline.com/v2/oauth/token',
+        headers=headers,
+        data=data,
+    )
+    return AuthorizationCodeResponse(**response.json())
 
 
-def refresh_access_token(
-        refresh_token: str) -> Optional[AuthorizationCodeResponse]:
+def refresh_access_token(refresh_token: str) -> AuthorizationCodeResponse:
     """
     Refreshes an access token.
 
     Returns:
-        Wether the refresh was successful.
+        The response in an :class:`sni.esi.AuthorizationCodeResponse`
 
     Reference:
         `esi-docs <https://docs.esi.evetech.net/docs/sso/refreshing_access_tokens.html>`_
@@ -249,8 +241,4 @@ def refresh_access_token(
         headers=headers,
         data=data,
     )
-    try:
-        return AuthorizationCodeResponse(**response.json())
-    except pydantic.ValidationError as error:
-        logging.error('Invalid response from ESI %s', str(error))
-        return None
+    return AuthorizationCodeResponse(**response.json())

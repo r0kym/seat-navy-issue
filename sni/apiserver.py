@@ -59,15 +59,7 @@ async def get_callback_esi(code: str, state: str):
     """
     logging.info('Received callback from ESI for state %s', state)
     esi_response = esi.get_access_token(code)
-    if not esi_response:
-        raise HTTPException(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail='Could not obtain or validate access token from ESI.')
     decoded_access_token = esi.decode_access_token(esi_response.access_token)
-    if not decoded_access_token:
-        raise HTTPException(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail='Could not obtain or validate access token from ESI.')
     state_code: dbmodels.StateCode = dbmodels.StateCode.objects(
         uuid=state).first()
     if not state_code:
@@ -107,8 +99,7 @@ async def get_callback_esi(code: str, state: str):
     except Exception as error:  # pylint: disable=broad-except
         logging.error('Failed to notify app %s: %s', state_code.app_token.uuid,
                       str(error))
-    finally:
-        state_code.delete()
+    state_code.delete()
 
 
 @app.get(
