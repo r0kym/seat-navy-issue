@@ -98,18 +98,33 @@
     <span class="n">uuid</span> <span class="o">=</span> <span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="StateCode"><a class="viewcode-back" href="../../database.html#sni.dbmodels.StateCode">[docs]</a><span class="k">class</span> <span class="nc">StateCode</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a state code and related metadatas.</span>
+
+<span class="sd">    A state code is issued when a new user token is issued from a dynamic app</span>
+<span class="sd">    token, and is a way for SNI to remeber about the authentication while the</span>
+<span class="sd">    end user logs in to EVE SSO.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app_token</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="EsiToken"><a class="viewcode-back" href="../../database.html#sni.dbmodels.EsiToken">[docs]</a><span class="k">class</span> <span class="nc">EsiToken</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
 <span class="sd">    relevant metadatas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">access_token</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">app_token</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">app_token</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span>
+                               <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">expires_on</span> <span class="o">=</span> <span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">DO_NOTHING</span><span class="p">)</span>
     <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">scopes</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">StringField</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+    <span class="n">scopes</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">StringField</span><span class="p">(),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
 </pre></div>
 
           </div>

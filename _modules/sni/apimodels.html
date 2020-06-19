@@ -52,6 +52,14 @@
 <span class="kn">import</span> <span class="nn">sni.dbmodels</span> <span class="k">as</span> <span class="nn">dbmodels</span>
 
 
+<div class="viewcode-block" id="PostCallbackEsiOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.PostCallbackEsiOut">[docs]</a><span class="k">class</span> <span class="nc">PostCallbackEsiOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Notification model to the app when receiving a callback from the ESI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">user_token</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
 <div class="viewcode-block" id="GetTokenOut"><a class="viewcode-back" href="../../apiserver.html#sni.apimodels.GetTokenOut">[docs]</a><span class="k">class</span> <span class="nc">GetTokenOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for ``GET /token`` responses.</span>

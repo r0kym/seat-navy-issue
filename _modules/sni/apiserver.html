@@ -44,7 +44,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Depends</span><span class="p">,</span>
@@ -52,13 +52,33 @@
     <span class="n">HTTPException</span><span class="p">,</span>
     <span class="n">status</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="kn">from</span> <span class="nn">sni.apimodels</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">sni.dbmodels</span> <span class="kn">import</span> <span class="n">Token</span>
+<span class="kn">from</span> <span class="nn">sni.dbmodels</span> <span class="kn">import</span> <span class="n">StateCode</span><span class="p">,</span> <span class="n">Token</span>
+<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 <span class="kn">import</span> <span class="nn">sni.esi</span> <span class="k">as</span> <span class="nn">esi</span>
 <span class="kn">import</span> <span class="nn">sni.token</span> <span class="k">as</span> <span class="nn">token</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="exception_handler"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.exception_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">exception_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Global exception handler.</span>
+
+<span class="sd">    Forwards :class:`fastapi.HTTPException`, and prints trace for all others.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">error</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">):</span>
+        <span class="n">traceback_data</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
+            <span class="n">etype</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>
+            <span class="n">tb</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">__traceback__</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback_data</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="get_callback_esi"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_callback_esi">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -68,13 +88,33 @@
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_callback_esi</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ESI callback.</span>
+
+<span class="sd">    Notifies the app with by issuing a POST request to the predefined app</span>
+<span class="sd">    callback, using the :class:`sni.apimodels.PostCallbackEsiOut` model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">esi</span><span class="o">.</span><span class="n">process_sso_authorization_code</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;Could not obtain or validate access token from ESI&#39;</span><span class="p">,</span>
-        <span class="p">)</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">esi</span><span class="o">.</span><span class="n">process_esi_callback</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not get ESI access token (state </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="n">StateCode</span> <span class="o">=</span> <span class="n">StateCode</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_user_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">)</span>
+    <span class="n">user_jwt_str</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Issuing token </span><span class="si">%s</span><span class="s1"> to app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span>
+                     <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">PostCallbackEsiOut</span><span class="p">(</span>
+                <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+                <span class="n">user_token</span><span class="o">=</span><span class="n">user_jwt_str</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to notify app </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                      <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_ping"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -119,7 +159,7 @@
         <span class="n">owner_character_id</span><span class="o">=</span><span class="n">app_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
         <span class="n">parent</span><span class="o">=</span><span class="n">app_token</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
         <span class="n">token_type</span><span class="o">=</span><span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
-        <span class="n">uuid</span><span class="o">=</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -190,10 +230,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
-    <span class="n">state_code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">state_code</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_state_code</span><span class="p">(</span><span class="n">app_token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">PostTokenUseFromDynOut</span><span class="p">(</span>
-        <span class="n">login_url</span><span class="o">=</span><span class="n">esi</span><span class="o">.</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="n">state_code</span><span class="p">),</span>
-        <span class="n">state_code</span><span class="o">=</span><span class="n">state_code</span><span class="p">,</span>
+        <span class="n">login_url</span><span class="o">=</span><span class="n">esi</span><span class="o">.</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">)),</span>
+        <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 

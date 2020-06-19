@@ -148,14 +148,9 @@
 <div class="section" id="module-sni.conf">
 <span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-sni.conf" title="Permalink to this headline">¶</a></h2>
 <p>Configuration facility</p>
-<dl class="data">
-<dt id="sni.conf.CONFIGURATION">
-<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">CONFIGURATION</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.CONFIGURATION" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="function">
-<dt id="sni.conf.assert_set">
-<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">assert_set</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#assert_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.assert_set" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.conf.assert_is_set">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">assert_is_set</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#assert_is_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.assert_is_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raises an exception if the configuration dict does not have that key.</p>
 </dd></dl>
 
@@ -184,12 +179,6 @@
 <code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">load_configuration_file</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#load_configuration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.load_configuration_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the configuration from a YAML file.</p>
 <p>Also sets default values.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.conf.set_default">
-<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">set_default</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">val: Any</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#set_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.set_default" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets a configuration value if none is present at the key.</p>
 </dd></dl>
 
 </div>
