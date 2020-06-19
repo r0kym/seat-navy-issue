@@ -13,6 +13,14 @@ import pydantic
 import sni.dbmodels as dbmodels
 
 
+class PostCallbackEsiOut(pydantic.BaseModel):
+    """
+    Notification model to the app when receiving a callback from the ESI.
+    """
+    state_code: str
+    user_token: str
+
+
 class GetTokenOut(pydantic.BaseModel):
     """
     Model for ``GET /token`` responses.

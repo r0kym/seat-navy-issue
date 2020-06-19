@@ -14,10 +14,71 @@ from typing import (
 )
 from urllib.parse import urljoin
 
-import requests
 import jwt
+from pydantic import BaseModel, ValidationError
+import requests
 
 import sni.conf as conf
+import sni.dbmodels as dbmodels
+import sni.time as time
+
+
+# pylint: disable=too-few-public-methods
+class AuthorizationCodeResponse(BaseModel):
+    """
+    A token document issued by the ESI looks like this::
+
+        {
+            "access_token": "jZOzkRtA8B...LQJg2",
+            "token_type": "Bearer",
+            "expires_in": 1199,
+            "refresh_token": "RGuc...w1"
+        }
+    """
+    access_token: str
+    token_type: str
+    expires_in: int
+    refresh_token: str
+
+
+class DecodedAuthorizationCode(BaseModel):
+    """
+    Decoded access token issued by the ESI. Should look like this::
+
+        {
+            "scp": [
+                "esi-skills.read_skills.v1",
+                "esi-skills.read_skillqueue.v1"
+            ],
+            "jti": "998e12c7-3241-43c5-8355-2c48822e0a1b",
+            "kid": "JWT-Signature-Key",
+            "sub": "CHARACTER:EVE:123123",
+            "azp": "my3rdpartyclientid",
+            "name": "Some Bloke",
+            "owner": "8PmzCeTKb4VFUDrHLc/AeZXDSWM=",
+            "exp": 1534412504,
+            "iss": "login.eveonline.com"
+        }
+    """
+    azp: str
+    exp: int
+    iss: str
+    jti: str
+    kid: str
+    name: str
+    owner: str
+    scp: List[str]
+    sub: str
+
+    @property
+    def character_id(self) -> int:
+        """
+        Extracts the character ID from the ``sub`` field.
+        """
+        prefix = 'CHARACTER:EVE:'
+        if not self.sub.startswith(prefix):
+            raise ValueError('Unexpected "sub" field format: ' + self.sub)
+        return int(self.sub[len(prefix):])
 
 
 def esi_request(method: str,
@@ -112,25 +173,63 @@ def post(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
     return esi_request('post', endpoint, token)
 
 
-def process_sso_authorization_code(code: str, state: str) -> bool:
+def process_esi_callback(code: str, state: str) -> bool:
+    """
+    Processes a callback from the ESI.
+
+    See also:
+        :func:`sni.esi.get_access_token`
+
+    Reference:
+        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
+    """
+    esi_response = get_access_token(code)
+    if not esi_response:
+        logging.error('Could not obtain or validate access token from ESI')
+        return False
+    state_code: dbmodels.StateCode = dbmodels.StateCode.objects(
+        uuid=state).first()
+    if not state_code:
+        logging.error('Unknown state code %s', state)
+        return False
+    jwt_json = jwt.decode(esi_response.access_token, verify=False)
+    if isinstance(jwt_json['scp'], str):
+        jwt_json['scp'] = [jwt_json['scp']]
+    decoded_jwt = DecodedAuthorizationCode(**jwt_json)
+    user = dbmodels.User.objects(character_id=decoded_jwt.character_id).first()
+    if not user:
+        user = dbmodels.User(
+            character_id=decoded_jwt.character_id,
+            character_name=decoded_jwt.name,
+            created_on=time.now(),
+        )
+        user.save()
+    esi_token = dbmodels.EsiToken(
+        access_token=esi_response.access_token,
+        app_token=state_code.app_token,
+        created_on=time.now(),
+        expires_on=time.from_timestamp(decoded_jwt.exp),
+        owner=user,
+        refresh_token=esi_response.refresh_token,
+        scopes=decoded_jwt.scp,
+    )
+    esi_token.save()
+    return True
+
+
+def get_access_token(code: str) -> Optional[AuthorizationCodeResponse]:
     """
     Gets an access token (along with its refresh token) from an EVE SSO
     authorization code.
 
-    A token document issued by the ESI looks like this::
-
-        {
-            "access_token": "jZOzkRtA8B...LQJg2",
-            "token_type": "Bearer",
-            "expires_in": 1199,
-            "refresh_token": "RGuc...w1"
-        }
+    See also:
+        :class:`sni.esi.AuthorizationCodeResponse`
 
     Returns:
-        bool: Wether the authentication was successful.
+        The document issued by the ESI, or ``None``
 
     Reference:
-        `esi-docs <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`
+        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`
 
     Todo:
         Validate the ESI JWT token
@@ -144,25 +243,22 @@ def process_sso_authorization_code(code: str, state: str) -> bool:
         'Content-Type': 'application/x-www-form-urlencoded',
         'Host': 'login.eveonline.com',
     }
-    response = requests.post(
-        'https://login.eveonline.com/v2/oauth/token',
-        headers=headers,
-        data=data,
-    )
-    response_json = response.json()
-    if 'access_token' not in response_json:
-        return False
-    decoded = jwt.decode(response_json['access_token'], verify=False)
-    character_id = str(decoded['sub'])[len('CHARACTER:EVE:'):]
-    logging.info(
-        'Successfully obtained access token for character %s (%s)',
-        decoded['name'],
-        character_id,
-    )
-    return True
+    try:
+        response = requests.post(
+            'https://login.eveonline.com/v2/oauth/token',
+            headers=headers,
+            data=data,
+        )
+        return AuthorizationCodeResponse(**response.json())
+    except requests.HTTPError as error:
+        logging.error('ESI request failed: %s', str(error))
+    except ValidationError as error:
+        logging.error('Invalid response from ESI: %s', str(error))
+    return None
 
 
-def refresh_access_token(refresh_token: str) -> bool:
+def refresh_access_token(
+        refresh_token: str) -> Optional[AuthorizationCodeResponse]:
     """
     Refreshes an access token.
 
@@ -186,14 +282,8 @@ def refresh_access_token(refresh_token: str) -> bool:
         headers=headers,
         data=data,
     )
-    response_json = response.json()
-    if 'access_token' not in response_json:
-        return False
-    decoded = jwt.decode(response_json['access_token'], verify=False)
-    character_id = str(decoded['sub'])[len('CHARACTER:EVE:'):]
-    logging.info(
-        'Successfully refreshed access token for character %s (%s)',
-        decoded['name'],
-        character_id,
-    )
-    return True
+    try:
+        return AuthorizationCodeResponse(**response.json())
+    except ValidationError as error:
+        logging.error('Invalid response from ESI %s', str(error))
+        return None

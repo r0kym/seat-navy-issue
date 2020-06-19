@@ -5,7 +5,7 @@ API Server
 """
 
 import logging
-from uuid import uuid4
+import traceback
 
 from fastapi import (
     Depends,
@@ -13,13 +13,31 @@ from fastapi import (
     HTTPException,
     status,
 )
+import requests
 
 from sni.apimodels import *
-from sni.dbmodels import Token
+from sni.dbmodels import StateCode, Token
+import sni.conf as conf
 import sni.esi as esi
 import sni.token as token
 
 app = FastAPI()
+
+
+@app.exception_handler(Exception)
+def exception_handler(request: requests.Request, error: Exception):
+    """
+    Global exception handler.
+
+    Forwards :class:`fastapi.HTTPException`, and prints trace for all others.
+    """
+    if isinstance(error, HTTPException):
+        raise error
+    traceback_data = traceback.format_exception(etype=type(error),
+                                                value=error,
+                                                tb=error.__traceback__)
+    if conf.get('general.debug'):
+        logging.error(''.join(traceback_data))
 
 
 @app.get(
@@ -29,13 +47,33 @@ app = FastAPI()
 async def get_callback_esi(code: str, state: str):
     """
     ESI callback.
+
+    Notifies the app with by issuing a POST request to the predefined app
+    callback, using the :class:`sni.apimodels.PostCallbackEsiOut` model.
     """
     logging.info('Received callback from ESI for state %s', state)
-    if not esi.process_sso_authorization_code(code, state):
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail='Could not obtain or validate access token from ESI',
+    if not esi.process_esi_callback(code, state):
+        logging.error('Could not get ESI access token (state %s)', state)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    state_code: StateCode = StateCode.objects(uuid=state).first()
+    app_token: Token = state_code.app_token
+    user_token = token.create_user_token(app_token)
+    user_jwt_str = token.to_jwt(user_token)
+    try:
+        logging.info('Issuing token %s to app %s', user_jwt_str,
+                     app_token.uuid)
+        requests.post(
+            app_token.callback,
+            data=PostCallbackEsiOut(
+                state_code=str(state_code.uuid),
+                user_token=user_jwt_str,
+            ),
         )
+    except Exception as error:
+        logging.error('Failed to notify app %s: %s', app_token.uuid,
+                      str(error))
+    finally:
+        state_code.delete()
 
 
 @app.get(
@@ -80,7 +118,7 @@ async def get_token(app_token: Token = Depends(token.validate_header)):
         owner_character_id=app_token.owner.character_id,
         parent=app_token.parent,
         token_type=app_token.token_type,
-        uuid=app_token.uuid,
+        uuid=str(app_token.uuid),
     )
 
 
@@ -151,10 +189,10 @@ async def post_token_use_from_dyn(
     """
     if app_token.token_type != Token.TokenType.dyn:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-    state_code = str(uuid4())
+    state_code = token.create_state_code(app_token)
     return PostTokenUseFromDynOut(
-        login_url=esi.get_auth_url(data.scopes, state_code),
-        state_code=state_code,
+        login_url=esi.get_auth_url(data.scopes, str(state_code.uuid)),
+        state_code=str(state_code.uuid),
     )
 
 

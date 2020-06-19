@@ -6,6 +6,13 @@ from datetime import datetime, timedelta
 from pytz import utc
 
 
+def from_timestamp(timestamp: int) -> datetime:
+    """
+    Returns a UTC datetime from a UNIX timestamp.
+    """
+    return datetime.utcfromtimestamp(timestamp)
+
+
 def now() -> datetime:
     """
     Returns the current UTC datetime.

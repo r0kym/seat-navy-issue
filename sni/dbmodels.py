@@ -59,15 +59,30 @@ class Token(Document):
     uuid = UUIDField(binary=False, unique=True)
 
 
+class StateCode(Document):
+    """
+    Represents a state code and related metadatas.
+
+    A state code is issued when a new user token is issued from a dynamic app
+    token, and is a way for SNI to remeber about the authentication while the
+    end user logs in to EVE SSO.
+    """
+    app_token = ReferenceField(Token, required=True)
+    created_on = DateTimeField(required=True)
+    uuid = UUIDField(binary=False, unique=True)
+
+
 class EsiToken(Document):
     """
     A model representing an ESI access token, along with its refresh token and
     relevant metadatas.
     """
     access_token = StringField(required=True)
-    app_token = ReferenceField(Token, reverse_delete_rule=CASCADE)
+    app_token = ReferenceField(Token,
+                               required=True,
+                               reverse_delete_rule=CASCADE)
     created_on = DateTimeField(required=True)
     expires_on = DateTimeField(required=True)
     owner = ReferenceField(User, required=True, reverse_delete_rule=DO_NOTHING)
     refresh_token = StringField(required=True)
-    scopes = ListField(StringField, required=True, default=[])
+    scopes = ListField(StringField(), required=True, default=[])

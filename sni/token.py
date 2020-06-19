@@ -15,7 +15,7 @@ import jwt
 import jwt.exceptions
 
 import sni.conf as conf
-from sni.dbmodels import Token, User
+from sni.dbmodels import StateCode, Token, User
 import sni.time as time
 
 
@@ -41,6 +41,7 @@ def create_dynamic_app_token(
         uuid=str(uuid4()),
     )
     new_token.save()
+    logging.info('Created dynamic app token %s', new_token.uuid)
     return new_token
 
 
@@ -66,7 +67,26 @@ def create_permanent_app_token(
         uuid=str(uuid4()),
     )
     new_token.save()
+    logging.info('Created permanent app token %s', new_token.uuid)
     return new_token
+
+
+def create_state_code(app_token: Token) -> StateCode:
+    """
+    Creates a new state code.
+
+    See also:
+        :class:`sni.dbmodels.StateCode`
+    """
+    state_code = StateCode(
+        app_token=app_token,
+        created_on=time.now(),
+        uuid=str(uuid4()),
+    )
+    state_code.save()
+    logging.info('Created state code %s for app %s', state_code.uuid,
+                 app_token.uuid)
+    return state_code
 
 
 def create_user_token(app_token: Token) -> Token:
@@ -82,9 +102,7 @@ def create_user_token(app_token: Token) -> Token:
             token_type='use',
             uuid=str(uuid4()),
         )
-        new_token.save()
-        return new_token
-    if app_token.token_type == Token.TokenType.per:
+    elif app_token.token_type == Token.TokenType.per:
         new_token = Token(
             created_on=time.now(),
             owner=app_token.owner,
@@ -92,9 +110,12 @@ def create_user_token(app_token: Token) -> Token:
             token_type='use',
             uuid=str(uuid4()),
         )
-        new_token.save()
-        return new_token
-    raise ValueError('Expected an app token')
+    else:
+        raise ValueError('Expected an app token')
+    new_token.save()
+    logging.info('Created user token %s for app %s', new_token.uuid,
+                 app_token.uuid)
+    return new_token
 
 
 def delete_token(uuid: str) -> bool:
@@ -110,6 +131,40 @@ def delete_token(uuid: str) -> bool:
     to_delete.delete()
     logging.debug('Deleted token %s', uuid)
     return True
+
+
+def get_token_from_jwt(token_str: str) -> Optional[Token]:
+    """
+    Retrieves a token from its JWT string.
+    """
+    try:
+        payload = jwt.decode(
+            token_str,
+            conf.get('jwt.secret'),
+            algorithm=conf.get('jwt.algorithm'),
+            issuer=conf.get('general.root_url'),
+            verify_exp=True,
+            verify_iss=True,
+            verify=True,
+        )
+        token_uuid = payload['jti']
+        return Token.objects(uuid=token_uuid).first()
+    except (
+            jwt.exceptions.InvalidTokenError,
+            jwt.exceptions.DecodeError,
+            jwt.exceptions.InvalidSignatureError,
+            jwt.exceptions.ExpiredSignatureError,
+            jwt.exceptions.InvalidAudienceError,
+            jwt.exceptions.InvalidIssuerError,
+            jwt.exceptions.InvalidIssuedAtError,
+            jwt.exceptions.ImmatureSignatureError,
+            jwt.exceptions.InvalidKeyError,
+            jwt.exceptions.InvalidAlgorithmError,
+            jwt.exceptions.MissingRequiredClaimError,
+            KeyError,
+    ) as error:
+        logging.error('Failed validation of JWT token: %s', str(error))
+        return None
 
 
 def to_jwt(model: Token) -> str:
@@ -146,7 +201,7 @@ def validate_header(authorization: str = Header(None)) -> Token:
             headers={"WWW-Authenticate": "Bearer"},
         )
     token_str = authorization[len(bearer):]
-    token = validate_token(token_str)
+    token = get_token_from_jwt(token_str)
     if not token:
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
@@ -154,38 +209,3 @@ def validate_header(authorization: str = Header(None)) -> Token:
         )
     logging.debug('Successfully validated token %s', token.uuid)
     return token
-
-
-def validate_token(token_str: str) -> Optional[Token]:
-    """
-    Validates a token in string form, returns the model if successful, or
-    ``None`` if not.
-    """
-    try:
-        payload = jwt.decode(
-            token_str,
-            conf.get('jwt.secret'),
-            algorithm=conf.get('jwt.algorithm'),
-            issuer=conf.get('general.root_url'),
-            verify_exp=True,
-            verify_iss=True,
-            verify=True,
-        )
-        token_uuid = payload['jti']
-        return Token.objects(uuid=token_uuid).first()
-    except (
-            jwt.exceptions.InvalidTokenError,
-            jwt.exceptions.DecodeError,
-            jwt.exceptions.InvalidSignatureError,
-            jwt.exceptions.ExpiredSignatureError,
-            jwt.exceptions.InvalidAudienceError,
-            jwt.exceptions.InvalidIssuerError,
-            jwt.exceptions.InvalidIssuedAtError,
-            jwt.exceptions.ImmatureSignatureError,
-            jwt.exceptions.InvalidKeyError,
-            jwt.exceptions.InvalidAlgorithmError,
-            jwt.exceptions.MissingRequiredClaimError,
-            KeyError,
-    ) as error:
-        logging.error('Failed validation of JWT token: %s', str(error))
-        return None
