@@ -3,14 +3,25 @@ Configuration facility
 """
 
 import collections
-from typing import Any, List, MutableMapping, Tuple
+from typing import Any, Dict, List, MutableMapping, Tuple
 import logging
 import yaml
 
-CONFIGURATION: dict
+CONFIGURATION: Dict[str, Any] = {
+    'database.authentication_source': 'admin',
+    'database.database': 'sni',
+    'database.port': 27017,
+    'database.username': 'sni',
+    'general.debug': False,
+    'general.host': '127.0.0.1',
+    'general.port': '5000',
+    'jwt.algorithm': 'HS256',
+    'redis.database': 'sni',
+    'redis.port': 6379,
+}
 
 
-def assert_set(key: str) -> None:
+def assert_is_set(key: str) -> None:
     """
     Raises an exception if the configuration dict does not have that key.
     """
@@ -27,25 +38,15 @@ def load_configuration_file(path: str) -> None:
     with open(path, 'r') as file:
         file_config = yaml.safe_load(file.read())
     global CONFIGURATION
-    CONFIGURATION = flatten_dict(file_config)
+    CONFIGURATION.update(flatten_dict(file_config))
     CONFIGURATION['logging'] = file_config.get('logging', {})
-    set_default('database.authentication_source', 'admin')
-    set_default('database.database', 'sni')
-    assert_set('database.host')
-    assert_set('database.password')
-    set_default('database.port', 27017)
-    set_default('database.username', 'sni')
-    assert_set('esi.client_id')
-    assert_set('esi.client_secret')
-    set_default('general.debug', False)
-    set_default('general.host', '127.0.0.1')
-    set_default('general.port', '5000')
-    assert_set('general.root_url')
-    set_default('jwt.algorithm', 'HS256')
-    assert_set('jwt.secret')
-    set_default('redis.database', 'sni')
-    assert_set('redis.host')
-    set_default('redis.port', 6379)
+    assert_is_set('database.host')
+    assert_is_set('database.password')
+    assert_is_set('esi.client_id')
+    assert_is_set('esi.client_secret')
+    assert_is_set('general.root_url')
+    assert_is_set('jwt.secret')
+    assert_is_set('redis.host')
 
 
 def flatten_dict(nested_dict: MutableMapping[Any, Any],
@@ -81,12 +82,3 @@ def get(key: str, default: Any = None) -> Any:
         return CONFIGURATION[key]
     logging.warning('Unknown configuration key %s', key)
     return default
-
-
-def set_default(key: str, val: Any) -> None:
-    """
-    Sets a configuration value if none is present at the key.
-    """
-    global CONFIGURATION
-    if key not in CONFIGURATION:
-        CONFIGURATION[key] = val
