@@ -25,7 +25,7 @@ app = FastAPI()
 
 
 @app.exception_handler(Exception)
-def exception_handler(request: requests.Request, error: Exception):
+def exception_handler(_request: requests.Request, error: Exception):
     """
     Global exception handler.
 
@@ -33,10 +33,12 @@ def exception_handler(request: requests.Request, error: Exception):
     """
     if isinstance(error, HTTPException):
         raise error
-    traceback_data = traceback.format_exception(etype=type(error),
-                                                value=error,
-                                                tb=error.__traceback__)
     if conf.get('general.debug'):
+        traceback_data = traceback.format_exception(
+            etype=type(error),
+            value=error,
+            tb=error.__traceback__,
+        )
         logging.error(''.join(traceback_data))
 
 
@@ -69,7 +71,7 @@ async def get_callback_esi(code: str, state: str):
                 user_token=user_jwt_str,
             ),
         )
-    except Exception as error:
+    except Exception as error:  # pylint: disable=broad-except
         logging.error('Failed to notify app %s: %s', app_token.uuid,
                       str(error))
     finally:

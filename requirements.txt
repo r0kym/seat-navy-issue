@@ -3,6 +3,7 @@ dateutils
 fastapi
 mongoengine
 passlib[bcrypt]
+pydantic
 pyjwt
 pyyaml
 redis

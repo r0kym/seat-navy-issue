@@ -15,7 +15,7 @@ from typing import (
 from urllib.parse import urljoin
 
 import jwt
-from pydantic import BaseModel, ValidationError
+import pydantic
 import requests
 
 import sni.conf as conf
@@ -23,8 +23,9 @@ import sni.dbmodels as dbmodels
 import sni.time as time
 
 
+# pylint: disable=no-member
 # pylint: disable=too-few-public-methods
-class AuthorizationCodeResponse(BaseModel):
+class AuthorizationCodeResponse(pydantic.BaseModel):
     """
     A token document issued by the ESI looks like this::
 
@@ -41,7 +42,8 @@ class AuthorizationCodeResponse(BaseModel):
     refresh_token: str
 
 
-class DecodedAuthorizationCode(BaseModel):
+# pylint: disable=no-member
+class DecodedAuthorizationCode(pydantic.BaseModel):
     """
     Decoded access token issued by the ESI. Should look like this::
 
@@ -117,8 +119,8 @@ def get(endpoint: str, token: Optional[str] = None) -> Dict[str, Any]:
     return esi_request('get', endpoint, token)
 
 
-def get_auth_url(esi_scopes: List[str] = ['publicData'],
-                 state: str = 'None') -> str:
+def get_auth_url(esi_scopes: List[str],
+                 state: str = '00000000-0000-0000-0000-000000000000') -> str:
     """
     Returns an EVE SSO login url based on the scopes passed in argument.
 
@@ -252,7 +254,7 @@ def get_access_token(code: str) -> Optional[AuthorizationCodeResponse]:
         return AuthorizationCodeResponse(**response.json())
     except requests.HTTPError as error:
         logging.error('ESI request failed: %s', str(error))
-    except ValidationError as error:
+    except pydantic.ValidationError as error:
         logging.error('Invalid response from ESI: %s', str(error))
     return None
 
@@ -284,6 +286,6 @@ def refresh_access_token(
     )
     try:
         return AuthorizationCodeResponse(**response.json())
-    except ValidationError as error:
+    except pydantic.ValidationError as error:
         logging.error('Invalid response from ESI %s', str(error))
         return None
