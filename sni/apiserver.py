@@ -13,6 +13,8 @@ from fastapi import (
     HTTPException,
     status,
 )
+from fastapi.responses import JSONResponse
+import mongoengine
 import requests
 
 from sni.apimodels import *
@@ -25,15 +27,29 @@ import sni.token as token
 app = FastAPI()
 
 
+@app.exception_handler(mongoengine.DoesNotExist)
+def does_not_exist_exception_handler(_request: requests.Request,
+                                     error: Exception):
+    """
+    Catches :class:`mongoengine.DoesNotExist` exceptions and forwards them as
+    ``404``'s.
+    """
+    content = None
+    if conf.get('general.debug'):
+        content = {'details': str(error)}
+    return JSONResponse(
+        content=content,
+        status_code=status.HTTP_404_NOT_FOUND,
+    )
+
+
 @app.exception_handler(Exception)
 def exception_handler(_request: requests.Request, error: Exception):
     """
     Global exception handler.
 
-    Forwards :class:`fastapi.HTTPException`, and prints trace for all others.
+    Prints trace for all others.
     """
-    if isinstance(error, HTTPException):
-        raise error
     if conf.get('general.debug'):
         traceback_data = traceback.format_exception(
             etype=type(error),
@@ -60,35 +76,28 @@ async def get_callback_esi(code: str, state: str):
     logging.info('Received callback from ESI for state %s', state)
     esi_response = esi.get_access_token(code)
     decoded_access_token = esi.decode_access_token(esi_response.access_token)
-    state_code: dbmodels.StateCode = dbmodels.StateCode.objects(
-        uuid=state).first()
-    if not state_code:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,
-                            detail='Unknown state code ' + state)
-    user = dbmodels.User.objects(
-        character_id=decoded_access_token.character_id).first()
-    if not user:
+    state_code = dbmodels.StateCode.objects.get(uuid=state)
+    try:
+        user = dbmodels.User.objects.get(
+            character_id=decoded_access_token.character_id)
+    except mongoengine.DoesNotExist:
         user = dbmodels.User(
             character_id=decoded_access_token.character_id,
             character_name=decoded_access_token.name,
-            created_on=time.now(),
-        )
-        user.save()
-    esi_token = dbmodels.EsiToken(
+        ).save()
+    dbmodels.EsiToken(
         access_token=esi_response.access_token,
         app_token=state_code.app_token,
-        created_on=time.now(),
         expires_on=time.from_timestamp(decoded_access_token.exp),
         owner=user,
         refresh_token=esi_response.refresh_token,
         scopes=decoded_access_token.scp,
-    )
-    esi_token.save()
+    ).save()
     user_token = token.create_user_token(state_code.app_token)
     user_jwt_str = token.to_jwt(user_token)
+    logging.info('Issuing token %s to app %s', user_jwt_str,
+                 state_code.app_token.uuid)
     try:
-        logging.info('Issuing token %s to app %s', user_jwt_str,
-                     state_code.app_token.uuid)
         requests.post(
             state_code.app_token.callback,
             data=PostCallbackEsiOut(
@@ -120,23 +129,12 @@ async def get_esi_latest(
         'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
     }
     if data.on_behalf_of:
-        user = dbmodels.User.objects(character_id=data.on_behalf_of).first()
-        if not user:
-            raise HTTPException(
-                status.HTTP_404_NOT_FOUND,
-                detail=f'Character {data.on_behalf_of} not registered.'
-            )
-        esi_token = dbmodels.EsiToken.objects(
+        user = dbmodels.User.objects.get(character_id=data.on_behalf_of)
+        esi_token = dbmodels.EsiToken.objects.get(
             owner=user,
             scopes='esi-assets.read_assets.v1',
             expires_on__gt=time.now(),
-        ).first()
-        if not esi_token:
-            raise HTTPException(
-                status.HTTP_404_NOT_FOUND,
-                detail=
-                f'Could not find a suitable token for character {data.on_behalf_of}.'
-            )
+        )
         headers['Authorization'] = 'Bearer ' + esi_token.access_token
     response_json = requests.get(
         'https://esi.evetech.net/latest/' + esi_path,

@@ -1,5 +1,7 @@
 """
 EVE ESI module
+
+This module is reponsible for talking to the EVE ESI.
 """
 
 from base64 import urlsafe_b64encode

@@ -20,6 +20,8 @@ from mongoengine import (
     UUIDField,
 )
 
+import sni.time as time
+
 
 class User(Document):
     """
@@ -30,7 +32,7 @@ class User(Document):
     """
     character_id = IntField(unique=True)
     character_name = StringField(required=True)
-    created_on = DateTimeField(required=True)
+    created_on = DateTimeField(required=True, default=time.now)
     subcharacter_ids = ListField(IntField(), default=[])
 
 
@@ -48,7 +50,7 @@ class Token(Document):
 
     callback = URLField(default=None)
     comments = StringField()
-    created_on = DateTimeField(required=True)
+    created_on = DateTimeField(required=True, default=time.now)
     expires_on = DateTimeField(null=True, default=None)
     owner = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
     parent = ReferenceField('self',
@@ -68,7 +70,7 @@ class StateCode(Document):
     end user logs in to EVE SSO.
     """
     app_token = ReferenceField(Token, required=True)
-    created_on = DateTimeField(required=True)
+    created_on = DateTimeField(required=True, default=time.now)
     uuid = UUIDField(binary=False, unique=True)
 
 
@@ -81,7 +83,7 @@ class EsiToken(Document):
     app_token = ReferenceField(Token,
                                required=True,
                                reverse_delete_rule=CASCADE)
-    created_on = DateTimeField(required=True)
+    created_on = DateTimeField(required=True, default=time.now)
     expires_on = DateTimeField(required=True)
     owner = ReferenceField(User, required=True, reverse_delete_rule=DO_NOTHING)
     refresh_token = StringField(required=True)
