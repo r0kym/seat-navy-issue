@@ -57,6 +57,10 @@ def exception_handler(_request: requests.Request, error: Exception):
             tb=error.__traceback__,
         )
         logging.error(''.join(traceback_data))
+        return JSONResponse(
+            content=traceback_data,
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @app.get(
