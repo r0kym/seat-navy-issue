@@ -1,10 +1,17 @@
 API Server
 ==========
 
+Main module
+-----------
+
 .. automodule:: sni.apiserver
 
+ESI router
+----------
 
-API Models
-==========
+.. automodule:: sni.routers.esi
 
-.. automodule:: sni.apimodels
+Token router
+------------
+
+.. automodule:: sni.routers.token
