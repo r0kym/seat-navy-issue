@@ -45,6 +45,7 @@ class PostCallbackEsiOut(pydantic.BaseModel):
     """
     Notification model to the app when receiving a callback from the ESI.
     """
+    character_id: int
     state_code: str
     user_token: str
 
@@ -91,6 +92,7 @@ async def get_callback_esi(code: str, state: str):
         requests.post(
             state_code.app_token.callback,
             data=PostCallbackEsiOut(
+                character_id=user.character_id,
                 state_code=str(state_code.uuid),
                 user_token=user_jwt_str,
             ),
