@@ -23,7 +23,7 @@ def main():
     """
     arguments = parse_command_line_arguments()
 
-    if arguments.openapi_spec:
+    if arguments.print_openapi_spec:
         print_openapi_spec()
         sys.exit()
     if arguments.reload_esi_openapi_spec:
@@ -63,10 +63,10 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Specify an alternate configuration file (default: ./sni.yml)',
     )
     argument_parser.add_argument(
-        '--openapi-spec',
+        '--print-openapi-spec',
         action='store_true',
         default=False,
-        help='Prints the OpenAPI specification in YAML',
+        help='Prints the OpenAPI specification in YAML and exits',
     )
     argument_parser.add_argument(
         '--reload-esi-openapi-spec',

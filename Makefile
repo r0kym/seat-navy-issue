@@ -19,7 +19,7 @@ docs_uml:
 
 .PHONY: openapi-spec
 openapi-spec:
-	$(SNI) --openapi-spec > $(SPHINX_PATH)/openapi.yml
+	$(SNI) --print-openapi-spec > $(SPHINX_PATH)/openapi.yml
 
 .PHONY: format
 format:

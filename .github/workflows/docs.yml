@@ -13,7 +13,7 @@ jobs:
         pre-build-command: |
           pip install -r requirements.txt
           pip install -r requirements.dev.txt
-          python sni/sni.py --openapi-spec > docs/openapi.yml
+          python sni/sni.py --print-openapi-spec > docs/openapi.yml
           python -m plantuml docs/*.uml
         build-command: "sphinx-build -b html . _build"
     - name: Commit documentation changes
