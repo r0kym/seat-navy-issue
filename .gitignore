@@ -1,6 +1,6 @@
 # Stuff
 docs/*.png
-docs/openapi.yml
+# docs/openapi.yml
 
 # VSCode
 *.code-workspace
