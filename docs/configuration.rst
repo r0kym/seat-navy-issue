@@ -35,7 +35,7 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 * ``logging``: Logging facility configuration, see the `logging.config documentation <https://docs.python.org/3/library/logging.config.html#dictionary-schema-details>`_.
 
 * ``redis``
-    * ``database`` (default: ``sni``)
+    * ``database`` (default: ``0``)
     * ``host``
     * ``port`` (default: ``6379``)
 

@@ -16,7 +16,7 @@ CONFIGURATION: Dict[str, Any] = {
     'general.host': '127.0.0.1',
     'general.port': '5000',
     'jwt.algorithm': 'HS256',
-    'redis.database': 'sni',
+    'redis.database': 0,
     'redis.port': 6379,
 }
 

@@ -74,6 +74,21 @@ class StateCode(Document):
     uuid = UUIDField(binary=False, unique=True)
 
 
+class EsiPath(Document):
+    """
+    Represents a path in ESI's openapi specification.
+
+    See also:
+        `EVE Swagger Interface <https://esi.evetech.net/ui>`_
+        `EVE Swagger Interface (JSON) <https://esi.evetech.net/latest/swagger.json>`_
+    """
+    http_method = StringField(required=True)
+    path_re = StringField(required=True)
+    path = StringField(required=True, unique_with='http_method')
+    scope = StringField(required=False)
+    version = StringField(required=True)
+
+
 class EsiToken(Document):
     """
     A model representing an ESI access token, along with its refresh token and

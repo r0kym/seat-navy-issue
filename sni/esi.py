@@ -6,14 +6,19 @@ This module is reponsible for talking to the EVE ESI.
 
 from base64 import urlsafe_b64encode
 import logging
-from typing import List
+import re
+from typing import List, Optional
 from urllib.parse import urljoin
 
 import jwt
+import mongoengine
 import pydantic
 import requests
 
 import sni.conf as conf
+import sni.dbmodels as dbmodels
+
+ESI_SWAGGER = 'https://esi.evetech.net/latest/swagger.json'
 
 
 # pylint: disable=no-member
@@ -167,6 +172,61 @@ def get_access_token(code: str) -> AuthorizationCodeResponse:
         data=data,
     )
     return AuthorizationCodeResponse(**response.json())
+
+
+def get_path_scope(path: str) -> Optional[str]:
+    """
+    Returns the ESI scope that is required for a given ESI path.
+
+    Raises :class:`mongoengine.DoesNotExist` if no suitable path is found.
+
+    Examples:
+
+        >>> get_path_scope('latest/characters/0000000000/assets')
+        'esi-assets.read_assets.v1'
+
+        >>> get_path_scope('latest/alliances')
+        None
+    """
+    esi_path: dbmodels.EsiPath
+    for esi_path in dbmodels.EsiPath.objects:
+        if re.search(esi_path.path_re, path):
+            return esi_path.scope
+    raise mongoengine.DoesNotExist
+
+
+def load_esi_swagger() -> None:
+    """
+    Loads the ESI Swagger API into the database.
+
+    Should be called in the initialization stage.
+
+    See also:
+        :class:`sni.dbmodels.EsiPath`
+        `EVE Swagger Interface <https://esi.evetech.net/ui>`_
+        `EVE Swagger Interface (JSON) <https://esi.evetech.net/latest/swagger.json>`_
+    """
+    logging.info('Loading ESI swagger specifications %s', ESI_SWAGGER)
+    swagger = requests.get(ESI_SWAGGER).json()
+    base_path = swagger['basePath'][1:]
+    for path, path_data in swagger['paths'].items():
+        for method, method_data in path_data.items():
+            full_path = base_path + path
+            path_re = '^' + re.sub(r'{\w+_id}', '[^/]+', full_path) + '?$'
+            scope = None
+            for security in method_data.get('security', []):
+                scope = security.get('evesso', [scope])[0]
+            dbmodels.EsiPath.objects(
+                http_method=method,
+                path=full_path,
+            ).update(
+                set__http_method=method,
+                set__path_re=path_re,
+                set__path=full_path,
+                set__scope=scope,
+                set__version='latest',
+                upsert=True,
+            )
 
 
 def refresh_access_token(refresh_token: str) -> AuthorizationCodeResponse:

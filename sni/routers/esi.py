@@ -92,7 +92,7 @@ async def get_callback_esi(code: str, state: str):
     state_code.delete()
 
 
-@router.get('/esi/latest/{esi_path:path}', tags=['ESI'])
+@router.get('/esi/{esi_path:path}', tags=['ESI'])
 async def get_esi_latest(
         esi_path: str,
         data: EsiRequestIn = EsiRequestIn(),
@@ -111,14 +111,15 @@ async def get_esi_latest(
     }
     if data.on_behalf_of:
         user = dbmodels.User.objects.get(character_id=data.on_behalf_of)
+        scope = esi.get_path_scope(esi_path)
         esi_token = dbmodels.EsiToken.objects.get(
             owner=user,
-            scopes='esi-assets.read_assets.v1',
+            scopes=scope,
             expires_on__gt=time.now(),
         )
         headers['Authorization'] = 'Bearer ' + esi_token.access_token
     response_json = requests.get(
-        'https://esi.evetech.net/latest/' + esi_path,
+        'https://esi.evetech.net/' + esi_path,
         headers=headers,
         params=data.params,
     ).json()

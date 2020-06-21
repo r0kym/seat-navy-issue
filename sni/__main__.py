@@ -14,6 +14,7 @@ import yaml
 
 import sni.conf as conf
 import sni.db as db
+import sni.esi as esi
 
 
 def main():
@@ -40,6 +41,7 @@ def main():
 
     db.init()
     db.migrate()
+    esi.load_esi_swagger()
     start_api_server()
 
 
