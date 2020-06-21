@@ -26,6 +26,9 @@ def main():
     if arguments.openapi_spec:
         print_openapi_spec()
         sys.exit()
+    if arguments.reload_esi_openapi_spec:
+        esi.load_esi_openapi()
+        sys.exit()
 
     try:
         conf.load_configuration_file(arguments.file)
@@ -41,7 +44,6 @@ def main():
 
     db.init()
     db.migrate()
-    esi.load_esi_swagger()
     start_api_server()
 
 
@@ -65,6 +67,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         action='store_true',
         default=False,
         help='Prints the OpenAPI specification in YAML',
+    )
+    argument_parser.add_argument(
+        '--reload-esi-openapi-spec',
+        action='store_true',
+        default=False,
+        help='Reloads the ESI OpenAPI specification to the database and exits',
     )
     return argument_parser.parse_args()
 

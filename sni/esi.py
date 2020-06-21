@@ -195,7 +195,7 @@ def get_path_scope(path: str) -> Optional[str]:
     raise mongoengine.DoesNotExist
 
 
-def load_esi_swagger() -> None:
+def load_esi_openapi() -> None:
     """
     Loads the ESI Swagger API into the database.
 
