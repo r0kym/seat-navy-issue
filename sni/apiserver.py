@@ -74,6 +74,7 @@ async def get_ping():
     """
     return 'pong'
 
+
 def print_openapi_spec() -> None:
     """
     Print the OpenAPI specification of the server in YAML.

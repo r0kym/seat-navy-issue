@@ -9,8 +9,8 @@ import logging
 import logging.config
 import pprint
 import sys
+
 import uvicorn
-import yaml
 
 import sni.apiserver as apiserver
 import sni.conf as conf

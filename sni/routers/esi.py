@@ -5,7 +5,7 @@ ESI related paths
 """
 
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from fastapi import (
     APIRouter,
@@ -30,6 +30,15 @@ class EsiRequestIn(pydantic.BaseModel):
     """
     on_behalf_of: Optional[int] = None
     params: dict = {}
+
+
+class EsiRequestOut(pydantic.BaseModel):
+    """
+    SNI response to an ESI request
+    """
+    data: Any
+    headers: Optional[dict]
+    status_code: int
 
 
 class PostCallbackEsiOut(pydantic.BaseModel):
@@ -92,7 +101,11 @@ async def get_callback_esi(code: str, state: str):
     state_code.delete()
 
 
-@router.get('/esi/{esi_path:path}', tags=['ESI'])
+@router.get(
+    '/esi/{esi_path:path}',
+    tags=['ESI'],
+    response_model=EsiRequestOut,
+)
 async def get_esi_latest(
         esi_path: str,
         data: EsiRequestIn = EsiRequestIn(),
@@ -118,9 +131,13 @@ async def get_esi_latest(
             expires_on__gt=time.now(),
         )
         headers['Authorization'] = 'Bearer ' + esi_token.access_token
-    response_json = requests.get(
+    response = requests.get(
         'https://esi.evetech.net/' + esi_path,
         headers=headers,
         params=data.params,
-    ).json()
-    return response_json
+    )
+    return EsiRequestOut(
+        data=response.json(),
+        headers=response.headers,
+        status_code=response.status_code,
+    )
