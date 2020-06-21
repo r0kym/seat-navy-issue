@@ -14,6 +14,7 @@ from fastapi import (
 from fastapi.responses import JSONResponse
 import mongoengine
 import requests
+import yaml
 
 import sni.conf as conf
 
@@ -72,3 +73,9 @@ async def get_ping():
     Returns ``pong``.
     """
     return 'pong'
+
+def print_openapi_spec() -> None:
+    """
+    Print the OpenAPI specification of the server in YAML.
+    """
+    print(yaml.dump(app.openapi()))

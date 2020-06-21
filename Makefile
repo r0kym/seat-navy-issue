@@ -2,7 +2,7 @@ SRC_PATH 		= sni
 SPHINX_PATH 	= docs
 RUN_ARGS	   ?=
 
-SNI				= python3 -m sni
+SNI				= python3 -m sni -f test/sni.yml
 
 .ONESHELL:
 
@@ -33,7 +33,7 @@ lint:
 run:
 	@set -a
 	@. ./venv/bin/activate
-	$(SNI) -f test/sni.yml $(RUN_ARGS)
+	$(SNI) $(RUN_ARGS)
 
 .PHONY: stack-down
 stack-down:

@@ -12,6 +12,7 @@ import sys
 import uvicorn
 import yaml
 
+import sni.apiserver as apiserver
 import sni.conf as conf
 import sni.db as db
 import sni.esi as esi
@@ -23,20 +24,24 @@ def main():
     """
     arguments = parse_command_line_arguments()
 
-    if arguments.print_openapi_spec:
-        print_openapi_spec()
-        sys.exit()
-    if arguments.reload_esi_openapi_spec:
-        esi.load_esi_openapi()
-        sys.exit()
-
     try:
         conf.load_configuration_file(arguments.file)
     except RuntimeError as error:
         logging.fatal(str(error))
         sys.exit(-1)
-
     logging.config.dictConfig(conf.get('logging', {}))
+
+    if arguments.migrate_database:
+        db.init()
+        db.migrate()
+        sys.exit()
+    if arguments.print_openapi_spec:
+        apiserver.print_openapi_spec()
+        sys.exit()
+    if arguments.reload_esi_openapi_spec:
+        db.init()
+        esi.load_esi_openapi()
+        sys.exit()
 
     if conf.get('general.debug'):
         logging.debug('SNI running in debug mode, dumping configuration:')
@@ -63,6 +68,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Specify an alternate configuration file (default: ./sni.yml)',
     )
     argument_parser.add_argument(
+        '--migrate-database',
+        action='store_true',
+        default=False,
+        help='Runs database migration jobs and exits',
+    )
+    argument_parser.add_argument(
         '--print-openapi-spec',
         action='store_true',
         default=False,
@@ -75,14 +86,6 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Reloads the ESI OpenAPI specification to the database and exits',
     )
     return argument_parser.parse_args()
-
-
-def print_openapi_spec() -> None:
-    """
-    Print the OpenAPI specification of the server in YAML.
-    """
-    from sni.apiserver import app  # pylint: disable=import-outside-toplevel
-    print(yaml.dump(app.openapi()))
 
 
 def start_api_server() -> None:
