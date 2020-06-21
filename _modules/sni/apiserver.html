@@ -53,6 +53,7 @@
 <span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <span class="kn">import</span> <span class="nn">mongoengine</span>
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 
@@ -111,6 +112,13 @@
 <span class="sd">    Returns ``pong``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;pong&#39;</span></div>
+
+
+<div class="viewcode-block" id="print_openapi_spec"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.print_openapi_spec">[docs]</a><span class="k">def</span> <span class="nf">print_openapi_spec</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print the OpenAPI specification of the server in YAML.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">openapi</span><span class="p">()))</span></div>
 </pre></div>
 
           </div>

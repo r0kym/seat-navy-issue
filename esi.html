@@ -302,6 +302,35 @@ authorization code.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.esi.get_path_scope">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">get_path_scope</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="_modules/sni/esi.html#get_path_scope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.get_path_scope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ESI scope that is required for a given ESI path.</p>
+<p>Raises <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.DoesNotExist</span></code> if no suitable path is found.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_path_scope</span><span class="p">(</span><span class="s1">&#39;latest/characters/0000000000/assets&#39;</span><span class="p">)</span>
+<span class="go">&#39;esi-assets.read_assets.v1&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_path_scope</span><span class="p">(</span><span class="s1">&#39;latest/alliances&#39;</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.load_esi_openapi">
+<code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">load_esi_openapi</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/esi.html#load_esi_openapi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.load_esi_openapi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the ESI Swagger API into the database.</p>
+<p>Should be called in the initialization stage.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="database.html#sni.dbmodels.EsiPath" title="sni.dbmodels.EsiPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.dbmodels.EsiPath</span></code></a>
+<a class="reference external" href="https://esi.evetech.net/ui">EVE Swagger Interface</a>
+<a class="reference external" href="https://esi.evetech.net/latest/swagger.json">EVE Swagger Interface (JSON)</a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.esi.refresh_access_token">
 <code class="sig-prename descclassname">sni.esi.</code><code class="sig-name descname">refresh_access_token</code><span class="sig-paren">(</span><em class="sig-param">refresh_token: str</em><span class="sig-paren">)</span> &#x2192; sni.esi.AuthorizationCodeResponse<a class="reference internal" href="_modules/sni/esi.html#refresh_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.refresh_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refreshes an access token.</p>

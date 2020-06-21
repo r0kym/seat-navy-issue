@@ -45,14 +45,19 @@
 
 <span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">urlsafe_b64encode</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
 
 <span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">import</span> <span class="nn">mongoengine</span>
 <span class="kn">import</span> <span class="nn">pydantic</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.dbmodels</span> <span class="k">as</span> <span class="nn">dbmodels</span>
+
+<span class="n">ESI_SWAGGER</span> <span class="o">=</span> <span class="s1">&#39;https://esi.evetech.net/latest/swagger.json&#39;</span>
 
 
 <span class="c1"># pylint: disable=no-member</span>
@@ -206,6 +211,61 @@
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="get_path_scope"><a class="viewcode-back" href="../../esi.html#sni.esi.get_path_scope">[docs]</a><span class="k">def</span> <span class="nf">get_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the ESI scope that is required for a given ESI path.</span>
+
+<span class="sd">    Raises :class:`mongoengine.DoesNotExist` if no suitable path is found.</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; get_path_scope(&#39;latest/characters/0000000000/assets&#39;)</span>
+<span class="sd">        &#39;esi-assets.read_assets.v1&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; get_path_scope(&#39;latest/alliances&#39;)</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">esi_path</span><span class="p">:</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">EsiPath</span>
+    <span class="k">for</span> <span class="n">esi_path</span> <span class="ow">in</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">EsiPath</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">esi_path</span><span class="o">.</span><span class="n">path_re</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">esi_path</span><span class="o">.</span><span class="n">scope</span>
+    <span class="k">raise</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DoesNotExist</span></div>
+
+
+<div class="viewcode-block" id="load_esi_openapi"><a class="viewcode-back" href="../../esi.html#sni.esi.load_esi_openapi">[docs]</a><span class="k">def</span> <span class="nf">load_esi_openapi</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the ESI Swagger API into the database.</span>
+
+<span class="sd">    Should be called in the initialization stage.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        :class:`sni.dbmodels.EsiPath`</span>
+<span class="sd">        `EVE Swagger Interface &lt;https://esi.evetech.net/ui&gt;`_</span>
+<span class="sd">        `EVE Swagger Interface (JSON) &lt;https://esi.evetech.net/latest/swagger.json&gt;`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading ESI swagger specifications </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ESI_SWAGGER</span><span class="p">)</span>
+    <span class="n">swagger</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ESI_SWAGGER</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">base_path</span> <span class="o">=</span> <span class="n">swagger</span><span class="p">[</span><span class="s1">&#39;basePath&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">path_data</span> <span class="ow">in</span> <span class="n">swagger</span><span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="ow">in</span> <span class="n">path_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">full_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">+</span> <span class="n">path</span>
+            <span class="n">path_re</span> <span class="o">=</span> <span class="s1">&#39;^&#39;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;{\w+_id}&#39;</span><span class="p">,</span> <span class="s1">&#39;[^/]+&#39;</span><span class="p">,</span> <span class="n">full_path</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;?$&#39;</span>
+            <span class="n">scope</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">security</span> <span class="ow">in</span> <span class="n">method_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="n">scope</span> <span class="o">=</span> <span class="n">security</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;evesso&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">scope</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dbmodels</span><span class="o">.</span><span class="n">EsiPath</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+                <span class="n">http_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">full_path</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">set__http_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">set__path_re</span><span class="o">=</span><span class="n">path_re</span><span class="p">,</span>
+                <span class="n">set__path</span><span class="o">=</span><span class="n">full_path</span><span class="p">,</span>
+                <span class="n">set__scope</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
+                <span class="n">set__version</span><span class="o">=</span><span class="s1">&#39;latest&#39;</span><span class="p">,</span>
+                <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="refresh_access_token"><a class="viewcode-back" href="../../esi.html#sni.esi.refresh_access_token">[docs]</a><span class="k">def</span> <span class="nf">refresh_access_token</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationCodeResponse</span><span class="p">:</span>

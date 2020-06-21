@@ -68,6 +68,12 @@
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">pong</span></code>.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.apiserver.print_openapi_spec">
+<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">print_openapi_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/apiserver.html#print_openapi_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.print_openapi_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the OpenAPI specification of the server in YAML.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.routers.esi">
 <span id="esi-router"></span><h2>ESI router<a class="headerlink" href="#module-sni.routers.esi" title="Permalink to this headline">¶</a></h2>
@@ -90,6 +96,33 @@
 <dl class="attribute">
 <dt id="sni.routers.esi.EsiRequestIn.params">
 <code class="sig-name descname">params</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.EsiRequestIn.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.routers.esi.EsiRequestOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">EsiRequestOut</code><a class="reference internal" href="_modules/sni/routers/esi.html#EsiRequestOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.EsiRequestOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>SNI response to an ESI request</p>
+<dl class="attribute">
+<dt id="sni.routers.esi.EsiRequestOut._abc_impl">
+<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.esi.EsiRequestOut._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.esi.EsiRequestOut.data">
+<code class="sig-name descname">data</code><em class="property">: Any</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.EsiRequestOut.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.esi.EsiRequestOut.headers">
+<code class="sig-name descname">headers</code><em class="property">: Optional[dict]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.EsiRequestOut.headers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.esi.EsiRequestOut.status_code">
+<code class="sig-name descname">status_code</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.EsiRequestOut.status_code" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

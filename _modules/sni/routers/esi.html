@@ -44,7 +44,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">APIRouter</span><span class="p">,</span>
@@ -69,6 +69,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">on_behalf_of</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="EsiRequestOut"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.esi.EsiRequestOut">[docs]</a><span class="k">class</span> <span class="nc">EsiRequestOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SNI response to an ESI request</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+    <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span></div>
 
 
 <div class="viewcode-block" id="PostCallbackEsiOut"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.esi.PostCallbackEsiOut">[docs]</a><span class="k">class</span> <span class="nc">PostCallbackEsiOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -131,7 +140,11 @@
     <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.esi.get_esi_latest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/esi/latest/{esi_path:path}&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ESI&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.esi.get_esi_latest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/esi/{esi_path:path}&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ESI&#39;</span><span class="p">],</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">EsiRequestOut</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_esi_latest</span><span class="p">(</span>
         <span class="n">esi_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">EsiRequestIn</span> <span class="o">=</span> <span class="n">EsiRequestIn</span><span class="p">(),</span>
@@ -150,18 +163,23 @@
     <span class="p">}</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">:</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">)</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get_path_scope</span><span class="p">(</span><span class="n">esi_path</span><span class="p">)</span>
         <span class="n">esi_token</span> <span class="o">=</span> <span class="n">dbmodels</span><span class="o">.</span><span class="n">EsiToken</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">owner</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
-            <span class="n">scopes</span><span class="o">=</span><span class="s1">&#39;esi-assets.read_assets.v1&#39;</span><span class="p">,</span>
+            <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
             <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">esi_token</span><span class="o">.</span><span class="n">access_token</span>
-    <span class="n">response_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-        <span class="s1">&#39;https://esi.evetech.net/latest/&#39;</span> <span class="o">+</span> <span class="n">esi_path</span><span class="p">,</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s1">&#39;https://esi.evetech.net/&#39;</span> <span class="o">+</span> <span class="n">esi_path</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">response_json</span></div>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">EsiRequestOut</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span>
+        <span class="n">headers</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 
           </div>

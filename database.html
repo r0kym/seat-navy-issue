@@ -88,6 +88,148 @@ connection. It’s magic.</p>
 </dd>
 </dl>
 <dl class="class">
+<dt id="sni.dbmodels.EsiPath">
+<em class="property">class </em><code class="sig-prename descclassname">sni.dbmodels.</code><code class="sig-name descname">EsiPath</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/dbmodels.html#EsiPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.dbmodels.EsiPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a path in ESI’s openapi specification.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://esi.evetech.net/ui">EVE Swagger Interface</a>
+<a class="reference external" href="https://esi.evetech.net/latest/swagger.json">EVE Swagger Interface (JSON)</a></p>
+</div>
+<dl class="exception">
+<dt id="sni.dbmodels.EsiPath.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.dbmodels.EsiPath.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.dbmodels.EsiPath.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.dbmodels.EsiPath.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.__objects">
+<code class="sig-name descname">__objects</code><a class="headerlink" href="#sni.dbmodels.EsiPath.__objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._cached_reference_fields">
+<code class="sig-name descname">_cached_reference_fields</code><em class="property"> = []</em><a class="headerlink" href="#sni.dbmodels.EsiPath._cached_reference_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._class_name">
+<code class="sig-name descname">_class_name</code><em class="property"> = 'EsiPath'</em><a class="headerlink" href="#sni.dbmodels.EsiPath._class_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._collection">
+<code class="sig-name descname">_collection</code><em class="property"> = None</em><a class="headerlink" href="#sni.dbmodels.EsiPath._collection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._db_field_map">
+<code class="sig-name descname">_db_field_map</code><em class="property"> = {'http_method': 'http_method', 'id': '_id', 'path': 'path', 'path_re': 'path_re', 'scope': 'scope', 'version': 'version'}</em><a class="headerlink" href="#sni.dbmodels.EsiPath._db_field_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._fields">
+<code class="sig-name descname">_fields</code><em class="property"> = {'http_method': &lt;mongoengine.fields.StringField object&gt;, 'id': &lt;mongoengine.base.fields.ObjectIdField object&gt;, 'path': &lt;mongoengine.fields.StringField object&gt;, 'path_re': &lt;mongoengine.fields.StringField object&gt;, 'scope': &lt;mongoengine.fields.StringField object&gt;, 'version': &lt;mongoengine.fields.StringField object&gt;}</em><a class="headerlink" href="#sni.dbmodels.EsiPath._fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._fields_ordered">
+<code class="sig-name descname">_fields_ordered</code><em class="property"> = ('id', 'http_method', 'path_re', 'path', 'scope', 'version')</em><a class="headerlink" href="#sni.dbmodels.EsiPath._fields_ordered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._is_base_cls">
+<code class="sig-name descname">_is_base_cls</code><em class="property"> = False</em><a class="headerlink" href="#sni.dbmodels.EsiPath._is_base_cls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._is_document">
+<code class="sig-name descname">_is_document</code><em class="property"> = True</em><a class="headerlink" href="#sni.dbmodels.EsiPath._is_document" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._meta">
+<code class="sig-name descname">_meta</code><em class="property"> = {'abstract': False, 'allow_inheritance': None, 'collection': 'esi_path', 'delete_rules': None, 'id_field': 'id', 'index_background': False, 'index_opts': None, 'index_specs': [{'fields': [('path', 1), ('http_method', 1)], 'unique': True, 'sparse': False}], 'indexes': [], 'max_documents': None, 'max_size': None, 'ordering': []}</em><a class="headerlink" href="#sni.dbmodels.EsiPath._meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._reverse_db_field_map">
+<code class="sig-name descname">_reverse_db_field_map</code><em class="property"> = {'_id': 'id', 'http_method': 'http_method', 'path': 'path', 'path_re': 'path_re', 'scope': 'scope', 'version': 'version'}</em><a class="headerlink" href="#sni.dbmodels.EsiPath._reverse_db_field_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._subclasses">
+<code class="sig-name descname">_subclasses</code><em class="property"> = ('EsiPath',)</em><a class="headerlink" href="#sni.dbmodels.EsiPath._subclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._superclasses">
+<code class="sig-name descname">_superclasses</code><em class="property"> = ()</em><a class="headerlink" href="#sni.dbmodels.EsiPath._superclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath._types">
+<code class="sig-name descname">_types</code><em class="property"> = ('EsiPath',)</em><a class="headerlink" href="#sni.dbmodels.EsiPath._types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.http_method">
+<code class="sig-name descname">http_method</code><a class="headerlink" href="#sni.dbmodels.EsiPath.http_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.dbmodels.EsiPath.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.dbmodels.EsiPath.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.path">
+<code class="sig-name descname">path</code><a class="headerlink" href="#sni.dbmodels.EsiPath.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.path_re">
+<code class="sig-name descname">path_re</code><a class="headerlink" href="#sni.dbmodels.EsiPath.path_re" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.scope">
+<code class="sig-name descname">scope</code><a class="headerlink" href="#sni.dbmodels.EsiPath.scope" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.dbmodels.EsiPath.version">
+<code class="sig-name descname">version</code><a class="headerlink" href="#sni.dbmodels.EsiPath.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.dbmodels.EsiToken">
 <em class="property">class </em><code class="sig-prename descclassname">sni.dbmodels.</code><code class="sig-name descname">EsiToken</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/dbmodels.html#EsiToken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.dbmodels.EsiToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
