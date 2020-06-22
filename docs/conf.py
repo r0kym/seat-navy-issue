@@ -67,12 +67,36 @@ html_static_path = ['_static']
 
 # Reference: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
 
+exclude_members = [
+    '__objects',
+    '__weakref__',
+    '_abc_impl',
+    '_cached_reference_fields',
+    '_class_name',
+    '_collection',
+    '_db_field_map',
+    '_fields',
+    '_fields_ordered',
+    '_is_base_cls',
+    '_is_document',
+    '_meta',
+    '_reverse_db_field_map',
+    '_subclasses',
+    '_superclasses',
+    '_types',
+]
+
 autodoc_default_options = {
+    'exclude-members': ', '.join(exclude_members),
+    'member-order': 'alphabetical',
     'members': True,
     'private-members': False,
     'show-inheritance': False,
     'undoc-members': True,
 }
+autodoc_inherit_docstrings = False
+autodoc_typehints = 'signature'
+
 
 
 # -- Napoleon settings -------------------------------------------------------
