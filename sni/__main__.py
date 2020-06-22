@@ -15,7 +15,7 @@ import uvicorn
 import sni.apiserver as apiserver
 import sni.conf as conf
 import sni.db as db
-import sni.esi as esi
+import sni.esi.esi as esi
 
 
 def main():

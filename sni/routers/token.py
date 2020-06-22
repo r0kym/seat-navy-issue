@@ -17,7 +17,7 @@ from fastapi import (
 import pydantic
 
 import sni.dbmodels as dbmodels
-import sni.esi as esi
+import sni.esi.sso as sso
 import sni.token as token
 
 router = APIRouter()
@@ -194,7 +194,7 @@ async def post_token_use_from_dyn(
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     state_code = token.create_state_code(app_token)
     return PostTokenUseFromDynOut(
-        login_url=esi.get_auth_url(data.scopes, str(state_code.uuid)),
+        login_url=sso.get_auth_url(data.scopes, str(state_code.uuid)),
         state_code=str(state_code.uuid),
     )
 

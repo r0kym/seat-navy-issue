@@ -10,7 +10,6 @@ from enum import Enum
 from mongoengine import (
     CASCADE,
     DateTimeField,
-    DO_NOTHING,
     Document,
     IntField,
     ListField,
@@ -72,45 +71,3 @@ class StateCode(Document):
     app_token = ReferenceField(Token, required=True)
     created_on = DateTimeField(required=True, default=time.now)
     uuid = UUIDField(binary=False, unique=True)
-
-
-class EsiPath(Document):
-    """
-    Represents a path in ESI's openapi specification.
-
-    See also:
-        `EVE Swagger Interface <https://esi.evetech.net/ui>`_
-        `EVE Swagger Interface (JSON) <https://esi.evetech.net/latest/swagger.json>`_
-    """
-    http_method = StringField(required=True)
-    path_re = StringField(required=True)
-    path = StringField(required=True, unique_with='http_method')
-    scope = StringField(required=False)
-    version = StringField(required=True)
-
-
-class EsiAccessToken(Document):
-    """
-    A model representing an ESI access token, along with its refresh token and
-    relevant metadatas.
-    """
-    access_token = StringField(required=True)
-    created_on = DateTimeField(required=True, default=time.now)
-    expires_on = DateTimeField(required=True)
-    owner = ReferenceField(User, required=True, reverse_delete_rule=DO_NOTHING)
-    scopes = ListField(StringField(), required=True, default=[])
-
-
-class EsiRefreshToken(Document):
-    """
-    A model representing an ESI access token, along with its refresh token and
-    relevant metadatas.
-    """
-    created_on = DateTimeField(required=True, default=time.now)
-    updated_on = DateTimeField(required=True, default=time.now)
-    owner = ReferenceField(User,
-                           required=True,
-                           reverse_delete_rule=DO_NOTHING,
-                           unique_with='scopes')
-    refresh_token = StringField(required=True)
-    scopes = ListField(StringField(), required=True, default=[])

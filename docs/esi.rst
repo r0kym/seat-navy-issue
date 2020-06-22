@@ -78,7 +78,11 @@ ESI scopes
     publicData
 
 
-Module documentation
---------------------
+ESI modules documentation
+-------------------------
 
-.. automodule:: sni.esi
+.. automodule:: sni.esi.esi
+
+.. automodule:: sni.esi.sso
+
+.. automodule:: sni.esi.token

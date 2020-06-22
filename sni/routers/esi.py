@@ -11,15 +11,16 @@ from fastapi import (
     APIRouter,
     Depends,
 )
-import mongoengine
 import pydantic
 import requests
 
 import sni.conf as conf
 import sni.dbmodels as dbmodels
-import sni.esi as esi
-import sni.time as time
-import sni.token as token
+import sni.token as snitoken
+
+import sni.esi.esi as esi
+import sni.esi.sso as sso
+import sni.esi.token as token
 
 router = APIRouter()
 
@@ -45,7 +46,6 @@ class PostCallbackEsiOut(pydantic.BaseModel):
     """
     Notification model to the app when receiving a callback from the ESI.
     """
-    character_id: int
     state_code: str
     user_token: str
 
@@ -65,42 +65,17 @@ async def get_callback_esi(code: str, state: str):
         `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
     """
     logging.info('Received callback from ESI for state %s', state)
-    esi_response = esi.get_access_token(code)
-    decoded_access_token = esi.decode_access_token(esi_response.access_token)
+    esi_response = sso.get_access_token(code)
     state_code = dbmodels.StateCode.objects.get(uuid=state)
-    try:
-        user = dbmodels.User.objects.get(
-            character_id=decoded_access_token.character_id)
-    except mongoengine.DoesNotExist:
-        user = dbmodels.User(
-            character_id=decoded_access_token.character_id,
-            character_name=decoded_access_token.name,
-        ).save()
-    dbmodels.EsiAccessToken(
-        access_token=esi_response.access_token,
-        expires_on=time.from_timestamp(decoded_access_token.exp),
-        owner=user,
-        scopes=decoded_access_token.scp,
-    ).save()
-    dbmodels.EsiRefreshToken.objects(
-        owner=user,
-        scopes=decoded_access_token.scp,
-    ).update(
-        set__owner=user,
-        set__refresh_token=esi_response.refresh_token,
-        set__scopes=decoded_access_token.scp,
-        set__updated_on=time.now(),
-        upsert=True,
-    )
-    user_token = token.create_user_token(state_code.app_token)
-    user_jwt_str = token.to_jwt(user_token)
+    token.save_esi_tokens(esi_response)
+    user_token = snitoken.create_user_token(state_code.app_token)
+    user_jwt_str = snitoken.to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
     try:
         requests.post(
             state_code.app_token.callback,
             data=PostCallbackEsiOut(
-                character_id=user.character_id,
                 state_code=str(state_code.uuid),
                 user_token=user_jwt_str,
             ),
@@ -119,7 +94,7 @@ async def get_callback_esi(code: str, state: str):
 async def get_esi_latest(
         esi_path: str,
         data: EsiRequestIn = EsiRequestIn(),
-        app_token: dbmodels.Token = Depends(token.validate_header),
+        app_token: dbmodels.Token = Depends(snitoken.validate_header),
 ):
     """
     Forwards a GET request to the ESI.
@@ -133,12 +108,9 @@ async def get_esi_latest(
         'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
     }
     if data.on_behalf_of:
-        user = dbmodels.User.objects.get(character_id=data.on_behalf_of)
-        scope = esi.get_path_scope(esi_path)
-        esi_token = dbmodels.EsiAccessToken.objects.get(
-            owner=user,
-            scopes=scope,
-            expires_on__gt=time.now(),
+        esi_token = token.get_access_token(
+            data.on_behalf_of,
+            esi.get_path_scope(esi_path),
         )
         headers['Authorization'] = 'Bearer ' + esi_token.access_token
     response = requests.get(
