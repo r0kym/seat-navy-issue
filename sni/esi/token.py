@@ -6,10 +6,9 @@ from typing import Optional
 
 import mongoengine
 
-import sni.time as time
-from sni.dbmodels import User
-
 import sni.esi.sso as sso
+import sni.time as time
+import sni.uac.user as user
 
 
 class EsiAccessToken(mongoengine.Document):
@@ -21,7 +20,7 @@ class EsiAccessToken(mongoengine.Document):
     created_on = mongoengine.DateTimeField(required=True, default=time.now)
     expires_on = mongoengine.DateTimeField(required=True)
     owner = mongoengine.ReferenceField(
-        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
+        user.User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
     scopes = mongoengine.ListField(mongoengine.StringField(),
                                    required=True,
                                    default=[])
@@ -35,7 +34,7 @@ class EsiRefreshToken(mongoengine.Document):
     created_on = mongoengine.DateTimeField(required=True, default=time.now)
     updated_on = mongoengine.DateTimeField(required=True, default=time.now)
     owner = mongoengine.ReferenceField(
-        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
+        user.User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
     refresh_token = mongoengine.StringField(required=True)
     scopes = mongoengine.ListField(mongoengine.StringField(),
                                    required=True,
@@ -50,15 +49,15 @@ def get_access_token(character_id: int,
     Todo:
         Support multiple scopes.
     """
-    user: User = User.objects.get(character_id=character_id)
+    owner: user.User = user.User.objects.get(character_id=character_id)
     esi_access_token: EsiAccessToken = EsiAccessToken.objects(
-        owner=user,
+        owner=owner,
         scopes=scope,
         expires_on__gt=time.now(),
     ).first()
     if not esi_access_token:
         esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects.get(
-            owner=user,
+            owner=owner,
             scopes=scope,
         )
         esi_access_token = save_esi_tokens(
@@ -81,14 +80,15 @@ def save_esi_tokens(
     """
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
     try:
-        user = User.objects.get(character_id=decoded_access_token.character_id)
+        owner = user.User.objects.get(
+            character_id=decoded_access_token.character_id)
     except mongoengine.DoesNotExist:
-        user = User(
+        owner = user.User(
             character_id=decoded_access_token.character_id,
             character_name=decoded_access_token.name,
         ).save()
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
-        owner=user,
+        owner=owner,
         scopes__all=decoded_access_token.scp,
     ).first()
     if esi_refresh_token:
@@ -97,13 +97,13 @@ def save_esi_tokens(
         esi_refresh_token.save()
     else:
         EsiRefreshToken(
-            owner=user,
+            owner=owner,
             refresh_token=esi_response.refresh_token,
             scopes=decoded_access_token.scp,
         ).save()
     return EsiAccessToken(
         access_token=esi_response.access_token,
         expires_on=time.from_timestamp(decoded_access_token.exp),
-        owner=user,
+        owner=owner,
         scopes=decoded_access_token.scp,
     ).save()

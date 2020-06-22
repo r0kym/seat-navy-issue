@@ -1,26 +1,64 @@
 """
-Manages the issuance and validation of JWT tokens
+Token management
 """
 
+from enum import Enum
 import logging
 from typing import Optional
 from uuid import uuid4
 
-from fastapi import (
-    Header,
-    HTTPException,
-    status,
-)
+import fastapi
 import jwt
 import jwt.exceptions
+import mongoengine as me
 
 import sni.conf as conf
-from sni.dbmodels import StateCode, Token, User
 import sni.time as time
+import sni.uac.user as user
+
+
+class Token(me.Document):
+    """
+    Represents a token issued by SNI.
+    """
+    class TokenType(str, Enum):
+        """
+        Enumeration containing the various token types.
+        """
+        dyn = 'dyn'  # Dynamic app token
+        per = 'per'  # Permanent app token
+        use = 'use'  # User token
+
+    callback = me.URLField(default=None)
+    comments = me.StringField()
+    created_on = me.DateTimeField(required=True, default=time.now)
+    expires_on = me.DateTimeField(null=True, default=None)
+    owner = me.ReferenceField(user.User,
+                              required=True,
+                              reverse_delete_rule=me.CASCADE)
+    parent = me.ReferenceField('self',
+                               null=True,
+                               default=None,
+                               reverse_delete_rule=me.CASCADE)
+    token_type = me.StringField(choices=TokenType, required=True)
+    uuid = me.UUIDField(binary=False, unique=True)
+
+
+class StateCode(me.Document):
+    """
+    Represents a state code and related metadatas.
+
+    A state code is issued when a new user token is issued from a dynamic app
+    token, and is a way for SNI to remeber about the authentication while the
+    end user logs in to EVE SSO.
+    """
+    app_token = me.ReferenceField(Token, required=True)
+    created_on = me.DateTimeField(required=True, default=time.now)
+    uuid = me.UUIDField(binary=False, unique=True)
 
 
 def create_dynamic_app_token(
-    owner: User,
+    owner: user.User,
     *,
     callback: Optional[str] = None,
     comments: Optional[str] = None,
@@ -46,7 +84,7 @@ def create_dynamic_app_token(
 
 
 def create_permanent_app_token(
-    owner: User,
+    owner: user.User,
     *,
     callback: Optional[str] = None,
     comments: Optional[str] = None,
@@ -89,7 +127,7 @@ def create_state_code(app_token: Token) -> StateCode:
     return state_code
 
 
-def create_user_token(app_token: Token, user: User) -> Token:
+def create_user_token(app_token: Token, owner: user.User) -> Token:
     """
     Derives a new user token from an existing app token, and set the owner to
     be the user given in argument.
@@ -98,7 +136,7 @@ def create_user_token(app_token: Token, user: User) -> Token:
         new_token = Token(
             created_on=time.now(),
             expires_on=time.now_plus(days=1),
-            owner=user,
+            owner=owner,
             parent=app_token,
             token_type='use',
             uuid=str(uuid4()),
@@ -106,7 +144,7 @@ def create_user_token(app_token: Token, user: User) -> Token:
     elif app_token.token_type == Token.TokenType.per:
         new_token = Token(
             created_on=time.now(),
-            owner=user,
+            owner=owner,
             parent=app_token,
             token_type='use',
             uuid=str(uuid4()),
@@ -189,7 +227,7 @@ def to_jwt(model: Token) -> str:
     ).decode()
 
 
-def validate_header(authorization: str = Header(None)) -> Token:
+def validate_header(authorization: str = fastapi.Header(None)) -> Token:
     """
     Validates an ``Authorization: Bearer`` header.
 
@@ -197,15 +235,15 @@ def validate_header(authorization: str = Header(None)) -> Token:
     """
     bearer = 'Bearer '
     if not authorization or not authorization.startswith(bearer):
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
+        raise fastapi.HTTPException(
+            fastapi.status.HTTP_401_UNAUTHORIZED,
             headers={"WWW-Authenticate": "Bearer"},
         )
     token_str = authorization[len(bearer):]
     token = get_token_from_jwt(token_str)
     if not token:
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
+        raise fastapi.HTTPException(
+            fastapi.status.HTTP_401_UNAUTHORIZED,
             headers={"WWW-Authenticate": "Bearer"},
         )
     logging.debug('Successfully validated token %s', token.uuid)

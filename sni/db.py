@@ -11,13 +11,10 @@ from uuid import uuid4
 
 from mongoengine import connect
 
-from sni.dbmodels import (
-    Token,
-    User,
-)
 import sni.conf as conf
 import sni.time as time
-import sni.token as token
+import sni.uac.token as token
+import sni.uac.user as user
 
 
 def init():
@@ -59,8 +56,8 @@ def migrate_ensure_root() -> None:
     """
     Create root user if it does not exist.
     """
-    if User.objects(character_id=0).count() == 0:
-        root = User(
+    if user.User.objects(character_id=0).count() == 0:
+        root = user.User(
             character_id=0,
             character_name='root',
             created_on=time.now(),
@@ -73,14 +70,15 @@ def migrate_ensure_root_per_token() -> None:
     """
     Create a permanent app token owned by root, if none exist.
     """
-    root = User.objects(character_id=0).first()
-    if Token.objects(owner=root, token_type=Token.TokenType.per).count() > 0:
+    root = user.User.objects.get(character_id=0)
+    if token.Token.objects(owner=root,
+                           token_type=token.Token.TokenType.per).count() > 0:
         return
-    root_per_token = Token(
+    root_per_token = token.Token(
         comments='Primary token',
         created_on=time.now(),
         owner=root,
-        token_type=Token.TokenType.per,
+        token_type=token.Token.TokenType.per,
         uuid=uuid4(),
     )
     root_per_token.save()
@@ -93,14 +91,15 @@ def migrate_ensure_root_dyn_token() -> None:
     """
     Create a dynamic app token owned by root, if none exist.
     """
-    root = User.objects(character_id=0).first()
-    if Token.objects(owner=root, token_type=Token.TokenType.dyn).count() > 0:
+    root = user.User.objects.get(character_id=0)
+    if token.Token.objects(owner=root,
+                           token_type=token.Token.TokenType.dyn).count() > 0:
         return
-    root_dyn_token = Token(
+    root_dyn_token = token.Token(
         comments='Primary token',
         created_on=time.now(),
         owner=root,
-        token_type=Token.TokenType.dyn,
+        token_type=token.Token.TokenType.dyn,
         uuid=uuid4(),
     )
     root_dyn_token.save()

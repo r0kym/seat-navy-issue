@@ -15,12 +15,11 @@ import pydantic
 import requests
 
 import sni.conf as conf
-import sni.dbmodels as dbmodels
-import sni.token as snitoken
-
 import sni.esi.esi as esi
 import sni.esi.sso as sso
-import sni.esi.token as token
+import sni.esi.token as esitoken
+import sni.uac.token as snitoken
+import sni.uac.user as user
 
 router = APIRouter()
 
@@ -65,14 +64,13 @@ async def get_callback_esi(code: str, state: str):
         `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
     """
     logging.info('Received callback from ESI for state %s', state)
-    state_code = dbmodels.StateCode.objects.get(uuid=state)
+    state_code = snitoken.StateCode.objects.get(uuid=state)
     esi_response = sso.get_access_token(code)
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
-    token.save_esi_tokens(esi_response)
+    esitoken.save_esi_tokens(esi_response)
     user_token = snitoken.create_user_token(
         state_code.app_token,
-        dbmodels.User.objects.get(
-            character_id=decoded_access_token.character_id))
+        user.User.objects.get(character_id=decoded_access_token.character_id))
     user_jwt_str = snitoken.to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
@@ -98,7 +96,7 @@ async def get_callback_esi(code: str, state: str):
 async def get_esi_latest(
         esi_path: str,
         data: EsiRequestIn = EsiRequestIn(),
-        app_token: dbmodels.Token = Depends(snitoken.validate_header),
+        app_token: snitoken.Token = Depends(snitoken.validate_header),
 ):
     """
     Forwards a GET request to the ESI.
@@ -112,7 +110,7 @@ async def get_esi_latest(
         'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
     }
     if data.on_behalf_of:
-        esi_token = token.get_access_token(
+        esi_token = esitoken.get_access_token(
             data.on_behalf_of,
             esi.get_path_scope(esi_path),
         )

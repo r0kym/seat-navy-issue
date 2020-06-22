@@ -16,9 +16,9 @@ from fastapi import (
 )
 import pydantic
 
-import sni.dbmodels as dbmodels
 import sni.esi.sso as sso
-import sni.token as token
+import sni.uac.token as token
+import sni.uac.user as user
 
 router = APIRouter()
 
@@ -33,7 +33,7 @@ class GetTokenOut(pydantic.BaseModel):
     expires_on: Optional[datetime]
     owner_character_id: int
     parent: Optional[UUID]
-    token_type: dbmodels.Token.TokenType
+    token_type: token.Token.TokenType
     uuid: UUID
 
 
@@ -92,7 +92,7 @@ class PostTokenPerOut(pydantic.BaseModel):
 @router.delete('/token')
 async def delete_token(
         uuid: str,
-        app_token: dbmodels.Token = Depends(token.validate_header),
+        app_token: token.Token = Depends(token.validate_header),
 ):
     """
     Deletes a token
@@ -108,8 +108,7 @@ async def delete_token(
     '/token',
     response_model=GetTokenOut,
 )
-async def get_token(app_token: dbmodels.Token = Depends(
-    token.validate_header)):
+async def get_token(app_token: token.Token = Depends(token.validate_header)):
     """
     Returns informations about the token currently being used.
     """
@@ -132,14 +131,14 @@ async def get_token(app_token: dbmodels.Token = Depends(
 )
 async def post_token_dyn(
         data: PostTokenDynIn,
-        app_token: dbmodels.Token = Depends(token.validate_header),
+        app_token: token.Token = Depends(token.validate_header),
 ):
     """
     Creates a new dynamic app token.
 
     Must be called with a permanent app token.
     """
-    if app_token.token_type != dbmodels.Token.TokenType.per:
+    if app_token.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_dynamic_app_token(
         app_token.owner,
@@ -157,14 +156,14 @@ async def post_token_dyn(
 )
 async def post_token_per(
         data: PostTokenPerIn,
-        app_token: dbmodels.Token = Depends(token.validate_header),
+        app_token: token.Token = Depends(token.validate_header),
 ):
     """
     Creates a new permanent app token.
 
     Must be called with a permanent app token.
     """
-    if app_token.token_type != dbmodels.Token.TokenType.per:
+    if app_token.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_permanent_app_token(
         app_token.owner,
@@ -182,7 +181,7 @@ async def post_token_per(
 )
 async def post_token_use_from_dyn(
         data: PostTokenUseFromDynIn,
-        app_token: dbmodels.Token = Depends(token.validate_header),
+        app_token: token.Token = Depends(token.validate_header),
 ):
     """
     Authenticates an application dynamic token and returns a `state code` and
@@ -190,7 +189,7 @@ async def post_token_use_from_dyn(
     done, SNI issues a GET request to the app predefined callback, with that
     state code and the user token.
     """
-    if app_token.token_type != dbmodels.Token.TokenType.dyn:
+    if app_token.token_type != token.Token.TokenType.dyn:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     state_code = token.create_state_code(app_token)
     return PostTokenUseFromDynOut(
@@ -204,17 +203,17 @@ async def post_token_use_from_dyn(
     response_model=PostUseFromPerOut,
     tags=['Authentication'],
 )
-async def post_token_use_from_per(app_token: dbmodels.Token = Depends(
+async def post_token_use_from_per(app_token: token.Token = Depends(
     token.validate_header)):
     """
     Authenticates an application permanent token and returns a user token tied
     to the owner of that app token.
     """
-    if app_token.token_type != dbmodels.Token.TokenType.per:
+    if app_token.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user_token = token.create_user_token(
         app_token,
-        dbmodels.User.objects.get(character_id=0),
+        user.User.objects.get(character_id=0),
     )
     user_token_str = token.to_jwt(user_token)
     return PostUseFromPerOut(user_token=user_token_str)
