@@ -56,8 +56,8 @@ High level documentation
    :maxdepth: 2
 
    openapi
-   configuration
    authentication
+   configuration
    users
    uac
    todos

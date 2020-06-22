@@ -18,3 +18,4 @@ group Standard EVE SSO authentication flow
 end
 
 SNI -> Application : POST state code + user token
+note left: SNI notifies the application

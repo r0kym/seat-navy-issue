@@ -9,7 +9,7 @@ An application that wishes to use SNI must use an *app token* in order to get a
 
   .. image:: auth_permanent_token.png
 
-  See :class:`sni.apimodels.AuthPerOut` for the response model.
+  See :class:`sni.routers.token.PostUseFromPerOut` for the response model.
 
 
 * **Dynamic app token**: this token is tied to ``root``, and requires the user
@@ -18,7 +18,21 @@ An application that wishes to use SNI must use an *app token* in order to get a
 
   .. image:: auth_dynamic_token.png
 
-  See :class:`sni.apimodels.AuthDynOut` for the response model.
+  See :class:`sni.routers.token.PostTokenUseFromDynOut` for the response model.
+  The notification sent by SNI to the application looks like this (see also
+  :class:`sni.routers.esi.PostCallbackEsiOut`)
+
+  .. code-block:: json
+
+    {
+      "character_id": 0000000000,
+      "state_code": "dcbd81af-4df0-478b-a8b9-baee74e2d517",
+      "user_token": "eyJhbGciOiJIUzI1NiIsIn..."
+    }
+
+
+Once a user token is obtained, all subsequent requests (for that user) should
+be authenticated with it.
 
 App and user tokens take the form of a JWT bearer token, and must be included
 to requests under the ``Authorization`` header: ::
