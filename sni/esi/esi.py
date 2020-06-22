@@ -9,7 +9,8 @@ from typing import Optional
 import mongoengine
 import requests
 
-ESI_SWAGGER = 'https://esi.evetech.net/latest/swagger.json'
+ESI_BASE = 'https://esi.evetech.net/'
+ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
 
 
 class EsiPath(mongoengine.Document):
@@ -25,6 +26,46 @@ class EsiPath(mongoengine.Document):
     path = mongoengine.StringField(required=True, unique_with='http_method')
     scope = mongoengine.StringField(required=False)
     version = mongoengine.StringField(required=True)
+
+
+def delete(path: str, token: Optional[str], **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.request` for DELETE requests.
+    """
+    return request('delete', path, token, **kwargs)
+
+
+def get(path: str, token: Optional[str], **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.request` for GET requests.
+    """
+    return request('get', path, token, **kwargs)
+
+
+def post(path: str, token: Optional[str], **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.request` for POST requests.
+    """
+    return request('post', path, token, **kwargs)
+
+
+def put(path: str, token: Optional[str], **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.request` for PUT requests.
+    """
+    return request('put', path, token, **kwargs)
+
+
+def request(http_method: str, path: str, token: Optional[str],
+            **kwargs) -> requests.Response:
+    """
+    Makes an HTTP request to the ESI, and returns the response object.
+    """
+    if token:
+        if 'headers' not in kwargs:
+            kwargs['headers'] = {}
+        kwargs['headers']['Authorization'] = 'Bearer ' + token
+    return requests.request(http_method, ESI_BASE + path, **kwargs)
 
 
 def get_path_scope(path: str) -> Optional[str]:

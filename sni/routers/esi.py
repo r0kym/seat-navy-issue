@@ -109,14 +109,15 @@ async def get_esi_latest(
         'accept': 'application/json',
         'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
     }
+    esi_token: Optional[str] = None
     if data.on_behalf_of:
         esi_token = esitoken.get_access_token(
             data.on_behalf_of,
             esi.get_path_scope(esi_path),
-        )
-        headers['Authorization'] = 'Bearer ' + esi_token.access_token
-    response = requests.get(
-        'https://esi.evetech.net/' + esi_path,
+        ).access_token
+    response = esi.get(
+        esi_path,
+        esi_token,
         headers=headers,
         params=data.params,
     )
