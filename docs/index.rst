@@ -33,7 +33,6 @@ Running SNI
    .. literalinclude:: docker-compose.example.yml
       :language: yaml
 
-
    Then, run::
 
       (your shell) > docker container exec -it mongodb bash

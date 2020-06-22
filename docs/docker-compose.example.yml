@@ -6,6 +6,7 @@ volumes:
   sni-code:
 
 services:
+
   mongodb:
     container_name: mongodb
     environment:
@@ -14,17 +15,19 @@ services:
     image: mongo
     volumes:
       - mongodb-data:/data/db
+
   redis:
     container_name: redis
     image: redis
     volumes:
       - redis-data:/data
+
   seat-navy-issue:
     container_name: seat-navy-issue
     environment:
       - GIT_URL=https://github.com/altaris/seat-navy-issue.git
-      - PYTHON_MAIN=sni/sni.py
+      - PYTHON_MAIN_MODULE=sni -f /etc/sni/sni.yml
     image: altaris/pumba
     volumes:
       - sni-code:/usr/src/app/
-      - ./sni.yml:/usr/src/app/sni.yml
+      - ./sni.yml:/etc/sni/sni.yml

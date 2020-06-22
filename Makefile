@@ -35,6 +35,16 @@ run:
 	@. ./venv/bin/activate
 	$(SNI) $(RUN_ARGS)
 
+.PHONY: run-in-container
+run-in-container:
+	-docker volume create sni-code
+	docker run --rm														\
+		--env "GIT_URL=https://github.com/altaris/seat-navy-issue.git"	\
+		--env "PYTHON_MAIN_MODULE=sni -f /etc/sni/sni.yml"				\
+		--volume "sni-code:/usr/src/app/"					 			\
+		--volume "$$(pwd)/test/sni.yml:/etc/sni/sni.yml"				\
+		altaris/pumba
+
 .PHONY: stack-down
 stack-down:
 	sudo docker-compose -f test/docker-compose.yml -p sni-test down
