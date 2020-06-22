@@ -89,17 +89,28 @@ class EsiPath(Document):
     version = StringField(required=True)
 
 
-class EsiToken(Document):
+class EsiAccessToken(Document):
     """
     A model representing an ESI access token, along with its refresh token and
     relevant metadatas.
     """
     access_token = StringField(required=True)
-    app_token = ReferenceField(Token,
-                               required=True,
-                               reverse_delete_rule=CASCADE)
     created_on = DateTimeField(required=True, default=time.now)
     expires_on = DateTimeField(required=True)
     owner = ReferenceField(User, required=True, reverse_delete_rule=DO_NOTHING)
+    scopes = ListField(StringField(), required=True, default=[])
+
+
+class EsiRefreshToken(Document):
+    """
+    A model representing an ESI access token, along with its refresh token and
+    relevant metadatas.
+    """
+    created_on = DateTimeField(required=True, default=time.now)
+    updated_on = DateTimeField(required=True, default=time.now)
+    owner = ReferenceField(User,
+                           required=True,
+                           reverse_delete_rule=DO_NOTHING,
+                           unique_with='scopes')
     refresh_token = StringField(required=True)
     scopes = ListField(StringField(), required=True, default=[])

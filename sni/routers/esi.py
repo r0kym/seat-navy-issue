@@ -76,14 +76,22 @@ async def get_callback_esi(code: str, state: str):
             character_id=decoded_access_token.character_id,
             character_name=decoded_access_token.name,
         ).save()
-    dbmodels.EsiToken(
+    dbmodels.EsiAccessToken(
         access_token=esi_response.access_token,
-        app_token=state_code.app_token,
         expires_on=time.from_timestamp(decoded_access_token.exp),
         owner=user,
-        refresh_token=esi_response.refresh_token,
         scopes=decoded_access_token.scp,
     ).save()
+    dbmodels.EsiRefreshToken.objects(
+        owner=user,
+        scopes=decoded_access_token.scp,
+    ).update(
+        set__owner=user,
+        set__refresh_token=esi_response.refresh_token,
+        set__scopes=decoded_access_token.scp,
+        set__updated_on=time.now(),
+        upsert=True,
+    )
     user_token = token.create_user_token(state_code.app_token)
     user_jwt_str = token.to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
@@ -127,7 +135,7 @@ async def get_esi_latest(
     if data.on_behalf_of:
         user = dbmodels.User.objects.get(character_id=data.on_behalf_of)
         scope = esi.get_path_scope(esi_path)
-        esi_token = dbmodels.EsiToken.objects.get(
+        esi_token = dbmodels.EsiAccessToken.objects.get(
             owner=user,
             scopes=scope,
             expires_on__gt=time.now(),
