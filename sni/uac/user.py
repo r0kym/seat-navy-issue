@@ -21,6 +21,17 @@ class User(me.Document):
     subcharacter_ids = me.ListField(me.IntField(), default=[])
 
 
+class Group(me.Document):
+    """
+    Group model. A group is simply a collection of users.
+    """
+    created_on = me.DateTimeField(required=True, default=time.now)
+    description = me.StringField(default=str)
+    members = me.ListField(me.ReferenceField(User), required=True)
+    name = me.StringField(required=True, unique=True)
+    owner = me.ReferenceField(User, required=True)
+
+
 def get_user(character_id: int) -> User:
     """
     Fetches a user from the database. If the user does not exist, it is

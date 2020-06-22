@@ -8,7 +8,7 @@ Reference:
 import logging
 from typing import Callable, List
 
-from mongoengine import connect
+import mongoengine as me
 
 import sni.conf as conf
 import sni.time as time
@@ -25,7 +25,7 @@ def init():
     """
     logging.info('Connecting to database %s:%s', conf.get('database.host'),
                  conf.get('database.port'))
-    connect(
+    me.connect(
         conf.get('database.database'),
         authentication_source=conf.get('database.authentication_source'),
         host=conf.get('database.host'),
@@ -45,6 +45,7 @@ def migrate() -> None:
         migrate_ensure_root,
         migrate_ensure_root_per_token,
         migrate_ensure_root_dyn_token,
+        migrate_ensure_superuser_group,
     ]
     for task in migration_tasks:
         logging.info('Running database migration task %s', task.__name__)
@@ -56,12 +57,11 @@ def migrate_ensure_root() -> None:
     Create root user if it does not exist.
     """
     if user.User.objects(character_id=0).count() == 0:
-        root = user.User(
+        user.User(
             character_id=0,
             character_name='root',
             created_on=time.now(),
-        )
-        root.save()
+        ).save()
         logging.info('Created root user')
 
 
@@ -91,3 +91,24 @@ def migrate_ensure_root_dyn_token() -> None:
                                                     comments='Primary token')
     logging.info('No dynamic app token owned by root, created one: %r',
                  token.to_jwt(root_dyn_token))
+
+
+def migrate_ensure_superuser_group() -> None:
+    """
+    Create the ``superusers`` group and makes sure that root is the owner.
+    """
+    group_name = 'superusers'
+    root = user.get_user(character_id=0)
+    try:
+        superusers: user.Group = user.Group.objects.get(name=group_name)
+        superusers.owner = root
+        superusers.modify(add_to_set__members=root)
+        superusers.save()
+    except me.DoesNotExist:
+        user.Group(
+            description="Superuser group.",
+            members=[root],
+            name=group_name,
+            owner=root,
+        ).save()
+        logging.info('Created "%s" group', group_name)
