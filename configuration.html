@@ -16,8 +16,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Authentication" href="authentication.html" />
-    <link rel="prev" title="OpenAPI specification" href="openapi.html" /> 
+    <link rel="next" title="User management" href="users.html" />
+    <link rel="prev" title="Authentication" href="authentication.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,10 +29,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="authentication.html" title="Authentication"
+          <a href="users.html" title="User management"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="openapi.html" title="OpenAPI specification"
+          <a href="authentication.html" title="Authentication"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -106,20 +106,20 @@
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">database</span><span class="p">:</span>
     <span class="nt">authentication_source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
     <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
-    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongodb</span>
     <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">snipassword</span>
     <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">27017</span>
     <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
 <span class="nt">esi</span><span class="p">:</span>
-    <span class="nt">client_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">299bd5a9f432a7b9a584e91801cb95a3</span>
-    <span class="nt">client_secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">702e1947f7b876e73b790cbc1f13c9ad8a3b94e6</span>
+    <span class="nt">client_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">idididididididididididididididid</span>
+    <span class="nt">client_secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">secretsecretsecretsecretsecretsecret0000</span>
 <span class="nt">general</span><span class="p">:</span>
     <span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
     <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
 <span class="nt">jwt</span><span class="p">:</span>
     <span class="nt">algorithm</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HS256</span>
-    <span class="nt">secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3f961d92a82060c4375de5683e1a7f4d94bd48e3ba861c49a40708e3c9976ea1</span>
+    <span class="nt">secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">secretsecretsecretsecretsecretsecretsecretsecretsecretsecret0000</span>
 <span class="nt">logging</span><span class="p">:</span>
     <span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
     <span class="nt">disable_existing_loggers</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -139,8 +139,8 @@
             <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
             <span class="nt">propagate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">redis</span><span class="p">:</span>
-    <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
-    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+    <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
     <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6379</span>
 </pre></div>
 </div>
@@ -201,11 +201,11 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="openapi.html"
-                        title="previous chapter">OpenAPI specification</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="authentication.html"
-                        title="next chapter">Authentication</a></p>
+                        title="previous chapter">Authentication</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="users.html"
+                        title="next chapter">User management</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -237,10 +237,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="authentication.html" title="Authentication"
+          <a href="users.html" title="User management"
              >next</a> |</li>
         <li class="right" >
-          <a href="openapi.html" title="OpenAPI specification"
+          <a href="authentication.html" title="Authentication"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>

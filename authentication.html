@@ -16,8 +16,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="User management" href="users.html" />
-    <link rel="prev" title="Configuration facility" href="configuration.html" /> 
+    <link rel="next" title="Configuration facility" href="configuration.html" />
+    <link rel="prev" title="OpenAPI specification" href="openapi.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,10 +29,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="users.html" title="User management"
+          <a href="configuration.html" title="Configuration facility"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="configuration.html" title="Configuration facility"
+          <a href="openapi.html" title="OpenAPI specification"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -51,15 +51,26 @@
 <li><p><strong>Permanent app token</strong>: this token is tied to a user, and inherits the
 privileges of that user.</p>
 <img alt="_images/auth_permanent_token.png" src="_images/auth_permanent_token.png" />
-<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.apimodels.AuthPerOut</span></code> for the response model.</p>
+<p>See <a class="reference internal" href="apiserver.html#sni.routers.token.PostUseFromPerOut" title="sni.routers.token.PostUseFromPerOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.token.PostUseFromPerOut</span></code></a> for the response model.</p>
 </li>
 <li><p><strong>Dynamic app token</strong>: this token is tied to <code class="docutils literal notranslate"><span class="pre">root</span></code>, and requires the user
 to authenticate via the ESI SSO; the user token inherits the privileges of
 the user that logged in.</p>
 <img alt="_images/auth_dynamic_token.png" src="_images/auth_dynamic_token.png" />
-<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.apimodels.AuthDynOut</span></code> for the response model.</p>
+<p>See <a class="reference internal" href="apiserver.html#sni.routers.token.PostTokenUseFromDynOut" title="sni.routers.token.PostTokenUseFromDynOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.token.PostTokenUseFromDynOut</span></code></a> for the response model.
+The notification sent by SNI to the application looks like this (see also
+<a class="reference internal" href="apiserver.html#sni.routers.esi.PostCallbackEsiOut" title="sni.routers.esi.PostCallbackEsiOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.esi.PostCallbackEsiOut</span></code></a>)</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;character_id&quot;</span><span class="p">:</span> <span class="mi">0000000000</span><span class="p">,</span>
+  <span class="nt">&quot;state_code&quot;</span><span class="p">:</span> <span class="s2">&quot;dcbd81af-4df0-478b-a8b9-baee74e2d517&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;user_token&quot;</span><span class="p">:</span> <span class="s2">&quot;eyJhbGciOiJIUzI1NiIsIn...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </li>
 </ul>
+<p>Once a user token is obtained, all subsequent requests (for that user) should
+be authenticated with it.</p>
 <p>App and user tokens take the form of a JWT bearer token, and must be included
 to requests under the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Authorization</span><span class="p">:</span> <span class="n">Bearer</span> <span class="o">&lt;</span><span class="n">token</span><span class="o">&gt;</span>
@@ -78,11 +89,11 @@ app token is revoked, then user tokens deriving from it are also revoked.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="configuration.html"
-                        title="previous chapter">Configuration facility</a></p>
+  <p class="topless"><a href="openapi.html"
+                        title="previous chapter">OpenAPI specification</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="users.html"
-                        title="next chapter">User management</a></p>
+  <p class="topless"><a href="configuration.html"
+                        title="next chapter">Configuration facility</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -114,10 +125,10 @@ app token is revoked, then user tokens deriving from it are also revoked.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="users.html" title="User management"
+          <a href="configuration.html" title="Configuration facility"
              >next</a> |</li>
         <li class="right" >
-          <a href="configuration.html" title="Configuration facility"
+          <a href="openapi.html" title="OpenAPI specification"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>

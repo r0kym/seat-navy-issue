@@ -84,11 +84,6 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Data to be forwarded to the ESI</p>
 <dl class="attribute">
-<dt id="sni.routers.esi.EsiRequestIn._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.esi.EsiRequestIn._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="sni.routers.esi.EsiRequestIn.on_behalf_of">
 <code class="sig-name descname">on_behalf_of</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.EsiRequestIn.on_behalf_of" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -105,11 +100,6 @@
 <em class="property">class </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">EsiRequestOut</code><a class="reference internal" href="_modules/sni/routers/esi.html#EsiRequestOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.EsiRequestOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>SNI response to an ESI request</p>
-<dl class="attribute">
-<dt id="sni.routers.esi.EsiRequestOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.esi.EsiRequestOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="sni.routers.esi.EsiRequestOut.data">
 <code class="sig-name descname">data</code><em class="property">: Any</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.EsiRequestOut.data" title="Permalink to this definition">¶</a></dt>
@@ -132,11 +122,6 @@
 <em class="property">class </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">PostCallbackEsiOut</code><a class="reference internal" href="_modules/sni/routers/esi.html#PostCallbackEsiOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.PostCallbackEsiOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Notification model to the app when receiving a callback from the ESI.</p>
-<dl class="attribute">
-<dt id="sni.routers.esi.PostCallbackEsiOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.esi.PostCallbackEsiOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="sni.routers.esi.PostCallbackEsiOut.character_id">
 <code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.esi.PostCallbackEsiOut.character_id" title="Permalink to this definition">¶</a></dt>
@@ -186,11 +171,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/token</span></code> responses.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.GetTokenOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.GetTokenOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="sni.routers.token.GetTokenOut.callback">
 <code class="sig-name descname">callback</code><em class="property">: Optional[pydantic.AnyHttpUrl]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.GetTokenOut.callback" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -238,11 +218,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/dyn</span></code> requests.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.PostTokenDynIn._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostTokenDynIn._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="sni.routers.token.PostTokenDynIn.callback">
 <code class="sig-name descname">callback</code><em class="property">: pydantic.AnyHttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenDynIn.callback" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -260,11 +235,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/dyn</span></code> reponses.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.PostTokenDynOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostTokenDynOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="sni.routers.token.PostTokenDynOut.app_token">
 <code class="sig-name descname">app_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenDynOut.app_token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -276,11 +246,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <em class="property">class </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">PostTokenPerIn</code><a class="reference internal" href="_modules/sni/routers/token.html#PostTokenPerIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.PostTokenPerIn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/per</span></code> requests.</p>
-<dl class="attribute">
-<dt id="sni.routers.token.PostTokenPerIn._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostTokenPerIn._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="sni.routers.token.PostTokenPerIn.callback">
 <code class="sig-name descname">callback</code><em class="property">: pydantic.AnyHttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenPerIn.callback" title="Permalink to this definition">¶</a></dt>
@@ -299,11 +264,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/per</span></code> reponses.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.PostTokenPerOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostTokenPerOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="sni.routers.token.PostTokenPerOut.app_token">
 <code class="sig-name descname">app_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenPerOut.app_token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -316,11 +276,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/use/from/dyn</span></code> requests.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.PostTokenUseFromDynIn._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostTokenUseFromDynIn._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="sni.routers.token.PostTokenUseFromDynIn.scopes">
 <code class="sig-name descname">scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenUseFromDynIn.scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -332,11 +287,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <em class="property">class </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">PostTokenUseFromDynOut</code><a class="reference internal" href="_modules/sni/routers/token.html#PostTokenUseFromDynOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.PostTokenUseFromDynOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/use/from/dyn</span></code> reponses.</p>
-<dl class="attribute">
-<dt id="sni.routers.token.PostTokenUseFromDynOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostTokenUseFromDynOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="sni.routers.token.PostTokenUseFromDynOut.login_url">
 <code class="sig-name descname">login_url</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenUseFromDynOut.login_url" title="Permalink to this definition">¶</a></dt>
@@ -354,11 +304,6 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <em class="property">class </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">PostUseFromPerOut</code><a class="reference internal" href="_modules/sni/routers/token.html#PostUseFromPerOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.PostUseFromPerOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/use/from/per</span></code> reponses.</p>
-<dl class="attribute">
-<dt id="sni.routers.token.PostUseFromPerOut._abc_impl">
-<code class="sig-name descname">_abc_impl</code><em class="property"> = &lt;_abc_data object&gt;</em><a class="headerlink" href="#sni.routers.token.PostUseFromPerOut._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="sni.routers.token.PostUseFromPerOut.user_token">
 <code class="sig-name descname">user_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostUseFromPerOut.user_token" title="Permalink to this definition">¶</a></dt>

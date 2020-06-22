@@ -64,6 +64,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
   <span class="nt">sni-code</span><span class="p">:</span>
 
 <span class="nt">services</span><span class="p">:</span>
+
   <span class="nt">mongodb</span><span class="p">:</span>
     <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongodb</span>
     <span class="nt">environment</span><span class="p">:</span>
@@ -72,20 +73,22 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
     <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongo</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mongodb-data:/data/db</span>
+
   <span class="nt">redis</span><span class="p">:</span>
     <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
     <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">redis-data:/data</span>
+
   <span class="nt">seat-navy-issue</span><span class="p">:</span>
     <span class="nt">container_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">seat-navy-issue</span>
     <span class="nt">environment</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">GIT_URL=https://github.com/altaris/seat-navy-issue.git</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">PYTHON_MAIN=sni/sni.py</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">PYTHON_MAIN_MODULE=sni -f /etc/sni/sni.yml</span>
     <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">altaris/pumba</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">sni-code:/usr/src/app/</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./sni.yml:/usr/src/app/sni.yml</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./sni.yml:/etc/sni/sni.yml</span>
 </pre></div>
 </div>
 <p>Then, run:</p>
@@ -111,13 +114,13 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="openapi.html">OpenAPI specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration facility</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#reference">Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#example">Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#module-sni.conf">Module documentation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="users.html">User management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uac.html">User Access Control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="todos.html">Todo list</a></li>
