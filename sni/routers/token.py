@@ -87,7 +87,10 @@ class PostTokenPerOut(pdt.BaseModel):
     app_token: str
 
 
-@router.delete('/token')
+@router.delete(
+    '/token',
+    tags=['Token management'],
+)
 async def delete_token(
         uuid: str,
         app_token: token.Token = Depends(token.validate_header),
@@ -105,6 +108,7 @@ async def delete_token(
 @router.get(
     '/token',
     response_model=GetTokenOut,
+    tags=['Token management'],
 )
 async def get_token(app_token: token.Token = Depends(token.validate_header)):
     """
@@ -125,7 +129,7 @@ async def get_token(app_token: token.Token = Depends(token.validate_header)):
 @router.post(
     '/token/dyn',
     response_model=PostTokenDynOut,
-    tags=['Authentication'],
+    tags=['Token management'],
 )
 async def post_token_dyn(
         data: PostTokenDynIn,
@@ -150,7 +154,7 @@ async def post_token_dyn(
 @router.post(
     '/token/per',
     response_model=PostTokenPerOut,
-    tags=['Authentication'],
+    tags=['Token management'],
 )
 async def post_token_per(
         data: PostTokenPerIn,
@@ -175,7 +179,7 @@ async def post_token_per(
 @router.post(
     '/token/use/from/dyn',
     response_model=PostTokenUseFromDynOut,
-    tags=['Authentication'],
+    tags=['Token management'],
 )
 async def post_token_use_from_dyn(
         data: PostTokenUseFromDynIn,
@@ -199,7 +203,7 @@ async def post_token_use_from_dyn(
 @router.post(
     '/token/use/from/per',
     response_model=PostUseFromPerOut,
-    tags=['Authentication'],
+    tags=['Token management'],
 )
 async def post_token_use_from_per(app_token: token.Token = Depends(
     token.validate_header)):
