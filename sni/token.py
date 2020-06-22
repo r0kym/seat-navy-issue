@@ -89,15 +89,16 @@ def create_state_code(app_token: Token) -> StateCode:
     return state_code
 
 
-def create_user_token(app_token: Token) -> Token:
+def create_user_token(app_token: Token, user: User) -> Token:
     """
-    Derives a new user token from an existing app token.
+    Derives a new user token from an existing app token, and set the owner to
+    be the user given in argument.
     """
     if app_token.token_type == Token.TokenType.dyn:
         new_token = Token(
             created_on=time.now(),
             expires_on=time.now_plus(days=1),
-            owner=app_token.owner,
+            owner=user,
             parent=app_token,
             token_type='use',
             uuid=str(uuid4()),
@@ -105,7 +106,7 @@ def create_user_token(app_token: Token) -> Token:
     elif app_token.token_type == Token.TokenType.per:
         new_token = Token(
             created_on=time.now(),
-            owner=app_token.owner,
+            owner=user,
             parent=app_token,
             token_type='use',
             uuid=str(uuid4()),

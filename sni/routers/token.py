@@ -212,6 +212,9 @@ async def post_token_use_from_per(app_token: dbmodels.Token = Depends(
     """
     if app_token.token_type != dbmodels.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-    user_token = token.create_user_token(app_token)
+    user_token = token.create_user_token(
+        app_token,
+        dbmodels.User.objects.get(character_id=0),
+    )
     user_token_str = token.to_jwt(user_token)
     return PostUseFromPerOut(user_token=user_token_str)

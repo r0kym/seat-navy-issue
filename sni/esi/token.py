@@ -35,9 +35,7 @@ class EsiRefreshToken(mongoengine.Document):
     created_on = mongoengine.DateTimeField(required=True, default=time.now)
     updated_on = mongoengine.DateTimeField(required=True, default=time.now)
     owner = mongoengine.ReferenceField(
-        User,
-        required=True,
-        reverse_delete_rule=mongoengine.DO_NOTHING)
+        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
     refresh_token = mongoengine.StringField(required=True)
     scopes = mongoengine.ListField(mongoengine.StringField(),
                                    required=True,

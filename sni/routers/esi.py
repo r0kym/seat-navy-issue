@@ -65,10 +65,14 @@ async def get_callback_esi(code: str, state: str):
         `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
     """
     logging.info('Received callback from ESI for state %s', state)
-    esi_response = sso.get_access_token(code)
     state_code = dbmodels.StateCode.objects.get(uuid=state)
+    esi_response = sso.get_access_token(code)
+    decoded_access_token = sso.decode_access_token(esi_response.access_token)
     token.save_esi_tokens(esi_response)
-    user_token = snitoken.create_user_token(state_code.app_token)
+    user_token = snitoken.create_user_token(
+        state_code.app_token,
+        dbmodels.User.objects.get(
+            character_id=decoded_access_token.character_id))
     user_jwt_str = snitoken.to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
