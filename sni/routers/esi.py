@@ -102,7 +102,7 @@ async def get_esi_latest(
     Forwards a GET request to the ESI.
 
     See also:
-        :class:`sni.apimodels.EsiRequestIn`
+        :class:`sni.routers.esi.EsiRequestIn`
     """
     headers = {
         'Accept-Encoding': 'gzip',

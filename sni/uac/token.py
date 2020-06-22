@@ -114,7 +114,7 @@ def create_state_code(app_token: Token) -> StateCode:
     Creates a new state code.
 
     See also:
-        :class:`sni.dbmodels.StateCode`
+        :class:`sni.uac.token.StateCode`
     """
     state_code = StateCode(
         app_token=app_token,

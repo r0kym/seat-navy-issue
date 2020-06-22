@@ -230,7 +230,7 @@ paths:
       - ESI
   /esi/{esi_path}:
     get:
-      description: "Forwards a GET request to the ESI.\n\nSee also:\n    :class:`sni.apimodels.EsiRequestIn`"
+      description: "Forwards a GET request to the ESI.\n\nSee also:\n    :class:`sni.routers.esi.EsiRequestIn`"
       operationId: get_esi_latest_esi__esi_path__get
       parameters:
       - in: path

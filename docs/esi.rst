@@ -81,8 +81,17 @@ ESI scopes
 ESI modules documentation
 -------------------------
 
+``sni.esi.esi``
+~~~~~~~~~~~~~~~
+
 .. automodule:: sni.esi.esi
 
+``sni.esi.sso``
+~~~~~~~~~~~~~~~
+
 .. automodule:: sni.esi.sso
+
+``sni.esi.token``
+~~~~~~~~~~~~~~~~~
 
 .. automodule:: sni.esi.token

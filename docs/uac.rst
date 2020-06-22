@@ -30,3 +30,17 @@ corporation ``456``.
 .. warning::
     Endpoint names are actually stored in a separate table, and referred to
     using their id.
+
+
+UAC modules documentation
+-------------------------
+
+``sni.uac.token``
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: sni.uac.token
+
+``sni.uac.user``
+~~~~~~~~~~~~~~~~
+
+.. automodule:: sni.uac.user
