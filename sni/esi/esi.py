@@ -28,35 +28,41 @@ class EsiPath(mongoengine.Document):
     version = mongoengine.StringField(required=True)
 
 
-def delete(path: str, token: Optional[str], **kwargs) -> requests.Response:
+def delete(path: str,
+           token: Optional[str] = None,
+           **kwargs) -> requests.Response:
     """
     Wrapper for :meth:`sni.esi.esi.request` for DELETE requests.
     """
     return request('delete', path, token, **kwargs)
 
 
-def get(path: str, token: Optional[str], **kwargs) -> requests.Response:
+def get(path: str, token: Optional[str] = None, **kwargs) -> requests.Response:
     """
     Wrapper for :meth:`sni.esi.esi.request` for GET requests.
     """
     return request('get', path, token, **kwargs)
 
 
-def post(path: str, token: Optional[str], **kwargs) -> requests.Response:
+def post(path: str,
+         token: Optional[str] = None,
+         **kwargs) -> requests.Response:
     """
     Wrapper for :meth:`sni.esi.esi.request` for POST requests.
     """
     return request('post', path, token, **kwargs)
 
 
-def put(path: str, token: Optional[str], **kwargs) -> requests.Response:
+def put(path: str, token: Optional[str] = None, **kwargs) -> requests.Response:
     """
     Wrapper for :meth:`sni.esi.esi.request` for PUT requests.
     """
     return request('put', path, token, **kwargs)
 
 
-def request(http_method: str, path: str, token: Optional[str],
+def request(http_method: str,
+            path: str,
+            token: Optional[str] = None,
             **kwargs) -> requests.Response:
     """
     Makes an HTTP request to the ESI, and returns the response object.

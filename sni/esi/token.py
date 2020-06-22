@@ -74,19 +74,9 @@ def save_esi_tokens(
 
     Returns:
         The new ESI access token.
-
-    Todo:
-        This method shouldn't have to create user itself.
     """
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
-    try:
-        owner = user.User.objects.get(
-            character_id=decoded_access_token.character_id)
-    except mongoengine.DoesNotExist:
-        owner = user.User(
-            character_id=decoded_access_token.character_id,
-            character_name=decoded_access_token.name,
-        ).save()
+    owner = user.get_user(decoded_access_token.character_id)
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
         owner=owner,
         scopes__all=decoded_access_token.scp,
