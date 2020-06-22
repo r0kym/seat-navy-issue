@@ -23,7 +23,7 @@ class User(me.Document):
 
 def get_user(character_id: int) -> User:
     """
-    Fetches a user from the database. Uf the user does not exist, it is
+    Fetches a user from the database. If the user does not exist, it is
     created.
     """
     try:

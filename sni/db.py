@@ -7,7 +7,6 @@ Reference:
 
 import logging
 from typing import Callable, List
-from uuid import uuid4
 
 from mongoengine import connect
 
@@ -70,39 +69,25 @@ def migrate_ensure_root_per_token() -> None:
     """
     Create a permanent app token owned by root, if none exist.
     """
-    root = user.User.objects.get(character_id=0)
+    root = user.get_user(character_id=0)
     if token.Token.objects(owner=root,
                            token_type=token.Token.TokenType.per).count() > 0:
         return
-    root_per_token = token.Token(
-        comments='Primary token',
-        created_on=time.now(),
-        owner=root,
-        token_type=token.Token.TokenType.per,
-        uuid=uuid4(),
-    )
-    root_per_token.save()
-    jwt_string = token.to_jwt(root_per_token)
+    root_per_token = token.create_permanent_app_token(root,
+                                                      comments='Primary token')
     logging.info('No permanent app token owned by root, created one: %r',
-                 jwt_string)
+                 token.to_jwt(root_per_token))
 
 
 def migrate_ensure_root_dyn_token() -> None:
     """
     Create a dynamic app token owned by root, if none exist.
     """
-    root = user.User.objects.get(character_id=0)
+    root = user.get_user(character_id=0)
     if token.Token.objects(owner=root,
                            token_type=token.Token.TokenType.dyn).count() > 0:
         return
-    root_dyn_token = token.Token(
-        comments='Primary token',
-        created_on=time.now(),
-        owner=root,
-        token_type=token.Token.TokenType.dyn,
-        uuid=uuid4(),
-    )
-    root_dyn_token.save()
-    jwt_string = token.to_jwt(root_dyn_token)
+    root_dyn_token = token.create_dynamic_app_token(root,
+                                                    comments='Primary token')
     logging.info('No dynamic app token owned by root, created one: %r',
-                 jwt_string)
+                 token.to_jwt(root_dyn_token))
