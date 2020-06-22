@@ -1,13 +1,23 @@
 User Access Control
 ===================
 
+.. _users-groups-etc:
+
+Users, groups, etc.
+-------------------
+
+.. image:: users.png
+
+Access control
+--------------
+
 An *access* is comprised of the following.
 
 * An **actor**, that wishes to perform a certain action. In the database,
   actors are represented as a string ``type:id``, where ``type`` is either
   ``all`` (alliance), ``chr`` (character), ``coa`` (coalition), ``crp``
   (corporation), ``grp`` (group), and where ``id`` is the id of the entity in
-  the relevant table (see :ref:`user-management`).
+  the relevant table (see :ref:`users-groups-etc`).
 
 * An **API endpoint** whose access is controlled.
 
