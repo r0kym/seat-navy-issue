@@ -1,5 +1,3 @@
-# pylint: disable=no-member
-# pylint: disable=too-few-public-methods
 """
 ESI related paths
 """

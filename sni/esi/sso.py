@@ -14,8 +14,6 @@ import requests
 import sni.conf as conf
 
 
-# pylint: disable=no-member
-# pylint: disable=too-few-public-methods
 class AuthorizationCodeResponse(pydantic.BaseModel):
     """
     A token document issued by the ESI looks like this::
@@ -33,7 +31,6 @@ class AuthorizationCodeResponse(pydantic.BaseModel):
     refresh_token: str
 
 
-# pylint: disable=no-member
 class DecodedAccessToken(pydantic.BaseModel):
     """
     Decoded access token issued by the ESI. Should look like this::

@@ -1,5 +1,3 @@
-# pylint: disable=no-member
-# pylint: disable=too-few-public-methods
 """
 Token management paths
 """
@@ -14,7 +12,7 @@ from fastapi import (
     HTTPException,
     status,
 )
-import pydantic
+import pydantic as pdt
 
 import sni.esi.sso as sso
 import sni.uac.token as token
@@ -23,11 +21,11 @@ import sni.uac.user as user
 router = APIRouter()
 
 
-class GetTokenOut(pydantic.BaseModel):
+class GetTokenOut(pdt.BaseModel):
     """
     Model for ``GET /token`` responses.
     """
-    callback: Optional[pydantic.AnyHttpUrl]
+    callback: Optional[pdt.AnyHttpUrl]
     comments: Optional[str]
     created_on: datetime
     expires_on: Optional[datetime]
@@ -37,14 +35,14 @@ class GetTokenOut(pydantic.BaseModel):
     uuid: UUID
 
 
-class PostTokenUseFromDynIn(pydantic.BaseModel):
+class PostTokenUseFromDynIn(pdt.BaseModel):
     """
     Model for ``POST /token/use/from/dyn`` requests.
     """
-    scopes: List[str] = pydantic.Field(['publicData'])
+    scopes: List[str] = pdt.Field(['publicData'])
 
 
-class PostTokenUseFromDynOut(pydantic.BaseModel):
+class PostTokenUseFromDynOut(pdt.BaseModel):
     """
     Model for ``POST /token/use/from/dyn`` reponses.
     """
@@ -52,37 +50,37 @@ class PostTokenUseFromDynOut(pydantic.BaseModel):
     state_code: str
 
 
-class PostUseFromPerOut(pydantic.BaseModel):
+class PostUseFromPerOut(pdt.BaseModel):
     """
     Model for ``POST /token/use/from/per`` reponses.
     """
     user_token: str
 
 
-class PostTokenDynIn(pydantic.BaseModel):
+class PostTokenDynIn(pdt.BaseModel):
     """
     Model for ``POST /token/dyn`` requests.
     """
-    callback: pydantic.AnyHttpUrl
+    callback: pdt.AnyHttpUrl
     comments: Optional[str]
 
 
-class PostTokenDynOut(pydantic.BaseModel):
+class PostTokenDynOut(pdt.BaseModel):
     """
     Model for ``POST /token/dyn`` reponses.
     """
     app_token: str
 
 
-class PostTokenPerIn(pydantic.BaseModel):
+class PostTokenPerIn(pdt.BaseModel):
     """
     Model for ``POST /token/per`` requests.
     """
-    callback: pydantic.AnyHttpUrl
+    callback: pdt.AnyHttpUrl
     comments: Optional[str]
 
 
-class PostTokenPerOut(pydantic.BaseModel):
+class PostTokenPerOut(pdt.BaseModel):
     """
     Model for ``POST /token/per`` reponses.
     """
