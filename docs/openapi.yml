@@ -27,6 +27,70 @@ components:
       - status_code
       title: EsiRequestOut
       type: object
+    GetCoalitionOut:
+      description: Model for ``GET /coalition/{name}`` responses.
+      properties:
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        members:
+          items:
+            type: string
+          title: Members
+          type: array
+        name:
+          title: Name
+          type: string
+        ticker:
+          title: Ticker
+          type: string
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - created_on
+      - members
+      - name
+      - ticker
+      - updated_on
+      title: GetCoalitionOut
+      type: object
+    GetGroupOut:
+      description: Model for ``GET /group/{name}`` responses.
+      properties:
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        description:
+          title: Description
+          type: string
+        members:
+          items:
+            type: string
+          title: Members
+          type: array
+        name:
+          title: Name
+          type: string
+        owner:
+          title: Owner
+          type: string
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - created_on
+      - description
+      - members
+      - name
+      - owner
+      - updated_on
+      title: GetGroupOut
+      type: object
     GetTokenOut:
       description: Model for ``GET /token`` responses.
       properties:
@@ -80,6 +144,34 @@ components:
           title: Detail
           type: array
       title: HTTPValidationError
+      type: object
+    PostCoalitionIn:
+      description: Model for ``POST /coalition`` responses.
+      properties:
+        name:
+          title: Name
+          type: string
+        ticker:
+          title: Ticker
+          type: string
+      required:
+      - name
+      - ticker
+      title: PostCoalitionIn
+      type: object
+    PostGroupIn:
+      description: Model for ``POST /group`` responses.
+      properties:
+        description:
+          default: ''
+          title: Description
+          type: string
+        name:
+          title: Name
+          type: string
+      required:
+      - name
+      title: PostGroupIn
       type: object
     PostTokenDynIn:
       description: Model for ``POST /token/dyn`` requests.
@@ -169,6 +261,55 @@ components:
       - user_token
       title: PostUseFromPerOut
       type: object
+    PutCoalitionIn:
+      description: Model for ``POST /coalition`` responses.
+      properties:
+        add_members:
+          items:
+            type: string
+          title: Add Members
+          type: array
+        members:
+          items:
+            type: string
+          title: Members
+          type: array
+        remove_members:
+          items:
+            type: string
+          title: Remove Members
+          type: array
+        ticker:
+          title: Ticker
+          type: string
+      title: PutCoalitionIn
+      type: object
+    PutGroupIn:
+      description: Model for ``POST /group`` responses.
+      properties:
+        add_members:
+          items:
+            type: string
+          title: Add Members
+          type: array
+        description:
+          title: Description
+          type: string
+        members:
+          items:
+            type: string
+          title: Members
+          type: array
+        owner:
+          title: Owner
+          type: string
+        remove_members:
+          items:
+            type: string
+          title: Remove Members
+          type: array
+      title: PutGroupIn
+      type: object
     ValidationError:
       properties:
         loc:
@@ -228,6 +369,177 @@ paths:
       tags:
       - Callbacks
       - ESI
+  /coalition/:
+    get:
+      description: Lists all the coalition names.
+      operationId: get_coalition_coalition__get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                title: Response Get Coalition Coalition  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Coalition
+      tags:
+      - Coalition management
+    post:
+      description: Creates a coalition.
+      operationId: post_coalitions_coalition__post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCoalitionIn'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCoalitionOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Post Coalitions
+      tags:
+      - Coalition management
+  /coalition/{coalition_name}:
+    delete:
+      description: "Deletes a coalition.\n\nTodo:\n    Check authorization"
+      operationId: delete_coalition_coalition__coalition_name__delete
+      parameters:
+      - in: path
+        name: coalition_name
+        required: true
+        schema:
+          title: Coalition Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete Coalition
+      tags:
+      - Coalition management
+    get:
+      description: Returns details about a given coalition.
+      operationId: get_coalition_name_coalition__coalition_name__get
+      parameters:
+      - in: path
+        name: coalition_name
+        required: true
+        schema:
+          title: Coalition Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCoalitionOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Coalition Name
+      tags:
+      - Coalition management
+    put:
+      description: 'Updates a coalition. All fields in the request body are optional.
+        The
+
+        ``add_members`` and ``remove_members`` fields can be used together, but the
+
+        ``members`` cannot be used in conjunction with ``add_members`` and
+
+        ``remove_members``.'
+      operationId: put_coalition_coalition__coalition_name__put
+      parameters:
+      - in: path
+        name: coalition_name
+        required: true
+        schema:
+          title: Coalition Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutCoalitionIn'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCoalitionOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Put Coalition
+      tags:
+      - Coalition management
   /esi/{esi_path}:
     get:
       description: "Forwards a GET request to the ESI.\n\nSee also:\n    :class:`sni.routers.esi.EsiRequestIn`"
@@ -261,6 +573,177 @@ paths:
       summary: Get Esi Latest
       tags:
       - ESI
+  /group/:
+    get:
+      description: Lists all the group names.
+      operationId: get_group_group__get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                title: Response Get Group Group  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Group
+      tags:
+      - Group management
+    post:
+      description: Creates a group.
+      operationId: post_groups_group__post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostGroupIn'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGroupOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Post Groups
+      tags:
+      - Group management
+  /group/{group_name}:
+    delete:
+      description: "Deletes a group.\n\nTodo:\n    Check authorization"
+      operationId: delete_group_group__group_name__delete
+      parameters:
+      - in: path
+        name: group_name
+        required: true
+        schema:
+          title: Group Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete Group
+      tags:
+      - Group management
+    get:
+      description: Returns details about a given group.
+      operationId: get_group_name_group__group_name__get
+      parameters:
+      - in: path
+        name: group_name
+        required: true
+        schema:
+          title: Group Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGroupOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Group Name
+      tags:
+      - Group management
+    put:
+      description: 'Updates a group. All fields in the request body are optional.
+        The
+
+        ``add_members`` and ``remove_members`` fields can be used together, but the
+
+        ``members`` cannot be used in conjunction with ``add_members`` and
+
+        ``remove_members``.'
+      operationId: put_group_group__group_name__put
+      parameters:
+      - in: path
+        name: group_name
+        required: true
+        schema:
+          title: Group Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutGroupIn'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGroupOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Put Group
+      tags:
+      - Group management
   /ping:
     get:
       description: Returns ``pong``.
@@ -274,10 +757,10 @@ paths:
       summary: Get Ping
       tags:
       - Testing
-  /token:
+  /token/:
     delete:
       description: Deletes a token
-      operationId: delete_token_token_delete
+      operationId: delete_token_token__delete
       parameters:
       - in: query
         name: uuid
@@ -304,9 +787,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Delete Token
+      tags:
+      - Authentication & tokens
     get:
       description: Returns informations about the token currently being used.
-      operationId: get_token_token_get
+      operationId: get_token_token__get
       parameters:
       - in: header
         name: authorization
@@ -328,6 +813,8 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Get Token
+      tags:
+      - Authentication & tokens
   /token/dyn:
     post:
       description: 'Creates a new dynamic app token.
@@ -363,7 +850,7 @@ paths:
           description: Validation Error
       summary: Post Token Dyn
       tags:
-      - Authentication
+      - Authentication & tokens
   /token/per:
     post:
       description: 'Creates a new permanent app token.
@@ -399,7 +886,7 @@ paths:
           description: Validation Error
       summary: Post Token Per
       tags:
-      - Authentication
+      - Authentication & tokens
   /token/use/from/dyn:
     post:
       description: 'Authenticates an application dynamic token and returns a `state
@@ -439,7 +926,7 @@ paths:
           description: Validation Error
       summary: Post Token Use From Dyn
       tags:
-      - Authentication
+      - Authentication & tokens
   /token/use/from/per:
     post:
       description: 'Authenticates an application permanent token and returns a user
@@ -469,5 +956,5 @@ paths:
           description: Validation Error
       summary: Post Token Use From Per
       tags:
-      - Authentication
+      - Authentication & tokens
 
