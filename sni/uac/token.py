@@ -157,21 +157,6 @@ def create_user_token(app_token: Token, owner: user.User) -> Token:
     return new_token
 
 
-def delete_token(uuid: str) -> bool:
-    """
-    Deletes a token by its uuid.
-
-    Returns:
-        Wether the deletion was successful.
-    """
-    to_delete = Token.objects(uuid=uuid).first()
-    if not to_delete:
-        return False
-    to_delete.delete()
-    logging.debug('Deleted token %s', uuid)
-    return True
-
-
 def get_token_from_jwt(token_str: str) -> Optional[Token]:
     """
     Retrieves a token from its JWT string.

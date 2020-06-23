@@ -3,6 +3,7 @@ Token management paths
 """
 
 from datetime import datetime
+import logging
 from typing import List, Optional
 from uuid import UUID
 
@@ -95,11 +96,8 @@ async def delete_token(
     """
     Deletes a token
     """
-    if not app_token.owner.character_id == 0:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-    if not token.delete_token(uuid):
-        raise HTTPException(status.HTTP_404_NOT_FOUND,
-                            detail='Token not found.')
+    token.Token.objects.get(uuid=uuid).delete()
+    logging.debug('Deleted token %s', uuid)
 
 
 @router.get('/', response_model=GetTokenOut)
