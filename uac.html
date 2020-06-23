@@ -494,7 +494,281 @@ be the user given in argument.</p>
 </div>
 <div class="section" id="module-sni.uac.user">
 <span id="sni-uac-user"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.uac.user</span></code><a class="headerlink" href="#module-sni.uac.user" title="Permalink to this headline">¶</a></h3>
-<p>User management</p>
+<p>User (aka character), group, corporation, and alliance management</p>
+<dl class="class">
+<dt id="sni.uac.user.Alliance">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">Alliance</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/user.html#Alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.Alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>EVE alliance database model.</p>
+<dl class="exception">
+<dt id="sni.uac.user.Alliance.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.uac.user.Alliance.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.uac.user.Alliance.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.uac.user.Alliance.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Alliance.alliance_id">
+<code class="sig-name descname">alliance_id</code><a class="headerlink" href="#sni.uac.user.Alliance.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Alliance.alliance_name">
+<code class="sig-name descname">alliance_name</code><a class="headerlink" href="#sni.uac.user.Alliance.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.uac.user.Alliance.executor">
+<em class="property">property </em><code class="sig-name descname">executor</code><a class="headerlink" href="#sni.uac.user.Alliance.executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the alliance’s executor corporation as a
+<a class="reference internal" href="#sni.uac.user.Corporation" title="sni.uac.user.Corporation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.user.Corporation</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Alliance.executor_corporation_id">
+<code class="sig-name descname">executor_corporation_id</code><a class="headerlink" href="#sni.uac.user.Alliance.executor_corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Alliance.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.uac.user.Alliance.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Alliance.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.uac.user.Alliance.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Alliance.ticker">
+<code class="sig-name descname">ticker</code><a class="headerlink" href="#sni.uac.user.Alliance.ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.user.Coalition">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">Coalition</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/user.html#Coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.Coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>EVE coalition. Coalitions are not formally represented in EVE, so they have
+to be created manually. An alliance can be part of multiple coalitions.</p>
+<dl class="exception">
+<dt id="sni.uac.user.Coalition.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.uac.user.Coalition.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.uac.user.Coalition.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.uac.user.Coalition.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.uac.user.Coalition.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.uac.user.Coalition.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.members">
+<code class="sig-name descname">members</code><a class="headerlink" href="#sni.uac.user.Coalition.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list field that wraps a standard field, allowing multiple instances
+of the field to be used as a list in the database.</p>
+<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#sni.uac.user.Coalition.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.uac.user.Coalition.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.ticker">
+<code class="sig-name descname">ticker</code><a class="headerlink" href="#sni.uac.user.Coalition.ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Coalition.updated_on">
+<code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.uac.user.Coalition.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.user.Corporation">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">Corporation</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/user.html#Corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.Corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>EVE corporation database model.</p>
+<dl class="exception">
+<dt id="sni.uac.user.Corporation.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.uac.user.Corporation.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.uac.user.Corporation.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.uac.user.Corporation.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.alliance">
+<code class="sig-name descname">alliance</code><a class="headerlink" href="#sni.uac.user.Corporation.alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.uac.user.Corporation.ceo">
+<em class="property">property </em><code class="sig-name descname">ceo</code><a class="headerlink" href="#sni.uac.user.Corporation.ceo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the corporation’s ceo as a <a class="reference internal" href="#sni.uac.user.User" title="sni.uac.user.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.user.User</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.ceo_character_id">
+<code class="sig-name descname">ceo_character_id</code><a class="headerlink" href="#sni.uac.user.Corporation.ceo_character_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.corporation_id">
+<code class="sig-name descname">corporation_id</code><a class="headerlink" href="#sni.uac.user.Corporation.corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.corporation_name">
+<code class="sig-name descname">corporation_name</code><a class="headerlink" href="#sni.uac.user.Corporation.corporation_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.uac.user.Corporation.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.uac.user.Corporation.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.Corporation.ticker">
+<code class="sig-name descname">ticker</code><a class="headerlink" href="#sni.uac.user.Corporation.ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="sni.uac.user.Group">
 <em class="property">class </em><code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">Group</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/user.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.Group" title="Permalink to this definition">¶</a></dt>
@@ -665,6 +939,49 @@ users as “sub characters”.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="sni.uac.user.User.corporation">
+<code class="sig-name descname">corporation</code><a class="headerlink" href="#sni.uac.user.User.corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="sni.uac.user.User.created_on">
 <code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.uac.user.User.created_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Datetime field.</p>
@@ -699,32 +1016,43 @@ add extra queryset functionality.  Any custom manager methods must accept a
 , probably the same one that was passed in, but modified in some way.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="sni.uac.user.User.subcharacter_ids">
-<code class="sig-name descname">subcharacter_ids</code><a class="headerlink" href="#sni.uac.user.User.subcharacter_ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list field that wraps a standard field, allowing multiple instances
-of the field to be used as a list in the database.</p>
-<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.user.ensure_alliance">
+<code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">ensure_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.Alliance<a class="reference internal" href="_modules/sni/uac/user.html#ensure_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.ensure_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures that an alliance exists, and returns it. It it does not, creates
+it by fetching relevant data from the ESI.</p>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Maintain alliance user group.</p>
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.uac.user.ensure_auto_group">
+<code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">ensure_auto_group</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.Group<a class="reference internal" href="_modules/sni/uac/user.html#ensure_auto_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.ensure_auto_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensured that an automatically created group exists. Automatic groups are
+owned by root.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.uac.user.create_group">
-<code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">create_group</code><span class="sig-paren">(</span><em class="sig-param">owner: sni.uac.user.User</em>, <em class="sig-param">name: str</em>, <em class="sig-param">description: str = ''</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.Group<a class="reference internal" href="_modules/sni/uac/user.html#create_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.create_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a group. Sets the owner argument to be the owner as well as a
-member.</p>
+<dt id="sni.uac.user.ensure_corporation">
+<code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">ensure_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.Corporation<a class="reference internal" href="_modules/sni/uac/user.html#ensure_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.ensure_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures that a corporation exists, and returns it. It it does not, creates
+it by fetching relevant data from the ESI.</p>
+<div class="admonition-todo admonition" id="id3">
+<p class="admonition-title">Todo</p>
+<p>Maintain corporation user group.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.uac.user.get_user">
-<code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">get_user</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.User<a class="reference internal" href="_modules/sni/uac/user.html#get_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.get_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches a user from the database. If the user does not exist, it is
-created.</p>
+<dt id="sni.uac.user.ensure_user">
+<code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">ensure_user</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.User<a class="reference internal" href="_modules/sni/uac/user.html#ensure_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.ensure_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures that a user (with a valid ESI character ID) exists, and returns it.
+It it does not, creates it by fetching relevant data from the ESI. Also
+creates the character’s corporation and alliance (if applicable).</p>
 </dd></dl>
 
 </div>

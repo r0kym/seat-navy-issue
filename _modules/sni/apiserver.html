@@ -56,11 +56,17 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
-<span class="kn">import</span> <span class="nn">sni.routers.group</span>
+<span class="kn">import</span> <span class="nn">sni.routers.coalition</span>
 <span class="kn">import</span> <span class="nn">sni.routers.esi</span>
+<span class="kn">import</span> <span class="nn">sni.routers.group</span>
 <span class="kn">import</span> <span class="nn">sni.routers.token</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">coalition</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/coalition&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Coalition management&#39;</span><span class="p">],</span>
+<span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>

@@ -115,7 +115,7 @@
 <span class="sd">        The new ESI access token.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">decoded_access_token</span> <span class="o">=</span> <span class="n">sso</span><span class="o">.</span><span class="n">decode_access_token</span><span class="p">(</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">ensure_user</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
     <span class="n">esi_refresh_token</span><span class="p">:</span> <span class="n">EsiRefreshToken</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
         <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
         <span class="n">scopes__all</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>

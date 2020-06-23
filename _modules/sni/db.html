@@ -108,7 +108,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a permanent app token owned by root, if none exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
                            <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
@@ -122,7 +122,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a dynamic app token owned by root, if none exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
                            <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
@@ -137,7 +137,7 @@
 <span class="sd">    Create the ``superusers`` group and makes sure that root is the owner.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;superusers&#39;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">superusers</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">Group</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">group_name</span><span class="p">)</span>
         <span class="n">superusers</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">root</span>
