@@ -9,8 +9,8 @@ from typing import Optional
 import mongoengine
 import requests
 
-ESI_BASE = 'https://esi.evetech.net/'
-ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
+ESI_BASE = 'https://esi.evetech.net/latest/'
+ESI_SWAGGER = ESI_BASE + 'swagger.json'
 
 
 class EsiPath(mongoengine.Document):
@@ -71,7 +71,9 @@ def request(http_method: str,
         if 'headers' not in kwargs:
             kwargs['headers'] = {}
         kwargs['headers']['Authorization'] = 'Bearer ' + token
-    return requests.request(http_method, ESI_BASE + path, **kwargs)
+    response = requests.request(http_method, ESI_BASE + path, **kwargs)
+    response.raise_for_status()
+    return response
 
 
 def get_path_scope(path: str) -> Optional[str]:

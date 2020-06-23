@@ -76,7 +76,7 @@ def save_esi_tokens(
         The new ESI access token.
     """
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
-    owner = user.get_user(decoded_access_token.character_id)
+    owner = user.ensure_user(decoded_access_token.character_id)
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
         owner=owner,
         scopes__all=decoded_access_token.scp,

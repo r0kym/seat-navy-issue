@@ -69,7 +69,7 @@ def migrate_ensure_root_per_token() -> None:
     """
     Create a permanent app token owned by root, if none exist.
     """
-    root = user.get_user(character_id=0)
+    root = user.User.objects.get(character_id=0)
     if token.Token.objects(owner=root,
                            token_type=token.Token.TokenType.per).count() > 0:
         return
@@ -83,7 +83,7 @@ def migrate_ensure_root_dyn_token() -> None:
     """
     Create a dynamic app token owned by root, if none exist.
     """
-    root = user.get_user(character_id=0)
+    root = user.User.objects.get(character_id=0)
     if token.Token.objects(owner=root,
                            token_type=token.Token.TokenType.dyn).count() > 0:
         return
@@ -98,7 +98,7 @@ def migrate_ensure_superuser_group() -> None:
     Create the ``superusers`` group and makes sure that root is the owner.
     """
     group_name = 'superusers'
-    root = user.get_user(character_id=0)
+    root = user.User.objects.get(character_id=0)
     try:
         superusers: user.Group = user.Group.objects.get(name=group_name)
         superusers.owner = root

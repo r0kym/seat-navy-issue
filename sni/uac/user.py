@@ -8,6 +8,43 @@ import sni.time as time
 import sni.esi.esi as esi
 
 
+class Alliance(me.Document):
+    """
+    EVE alliance database model.
+    """
+    alliance_id = me.IntField(unique=True)
+    executor_corporation_id = me.IntField(required=True)
+    alliance_name = me.StringField(required=True)
+    ticker = me.StringField(required=True)
+
+    @property
+    def executor(self) -> 'Corporation':
+        """
+        Returns the alliance's executor corporation as a
+        :class:`sni.uac.user.Corporation` object.
+        """
+        return Corporation.objects.get(
+            corporation_id=self.executor_corporation_id)
+
+
+class Corporation(me.Document):
+    """
+    EVE corporation database model.
+    """
+    alliance = me.ReferenceField(Alliance, required=False, default=None)
+    ceo_character_id = me.IntField(required=True)
+    corporation_id = me.IntField(unique=True)
+    corporation_name = me.StringField(required=True)
+    ticker = me.StringField(required=True)
+
+    @property
+    def ceo(self) -> 'User':
+        """
+        Returns the corporation's ceo as a :class:`sni.uac.user.User` object.
+        """
+        return User.ojects.get(character_id=self.ceo_character_id)
+
+
 class User(me.Document):
     """
     User model.
@@ -18,7 +55,7 @@ class User(me.Document):
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
     created_on = me.DateTimeField(required=True, default=time.now)
-    subcharacter_ids = me.ListField(me.IntField(), default=[])
+    corporation = me.ReferenceField(Corporation, default=None)
 
 
 class Group(me.Document):
@@ -46,16 +83,52 @@ def create_group(owner: User, name: str, description: str = '') -> Group:
     ).save()
 
 
-def get_user(character_id: int) -> User:
+def ensure_alliance(alliance_id: int) -> Alliance:
     """
-    Fetches a user from the database. If the user does not exist, it is
-    created.
+    Ensures that an alliance exists, and returns it. It it does not, creates
+    it by fetching relevant data from the ESI.
+    """
+    try:
+        return Alliance.objects.get(alliance_id=alliance_id)
+    except me.DoesNotExist:
+        data = esi.get(f'alliances/{alliance_id}').json()
+        return Alliance(
+            alliance_id=alliance_id,
+            alliance_name=data['name'],
+            executor_corporation_id=int(data['executor_corporation_id']),
+            ticker=data['ticker'],
+        ).save()
+
+
+def ensure_corporation(corporation_id: int) -> Corporation:
+    """
+    Ensures that a corporation exists, and returns it. It it does not, creates
+    it by fetching relevant data from the ESI.
+    """
+    try:
+        return Corporation.objects.get(corporation_id=corporation_id)
+    except me.DoesNotExist:
+        data = esi.get(f'corporations/{corporation_id}').json()
+        return Corporation(
+            alliance=ensure_alliance(data['alliance_id']),
+            ceo_character_id=int(data['ceo_id']),
+            corporation_id=corporation_id,
+            corporation_name=data['name'],
+            ticker=data['ticker'],
+        ).save()
+
+
+def ensure_user(character_id: int) -> User:
+    """
+    Ensures that a user (with a valid ESI character ID) exists, and returns it.
+    It it does not, creates it by fetching relevant data from the ESI.
     """
     try:
         return User.objects.get(character_id=character_id)
     except me.DoesNotExist:
-        user_data = esi.get(f'characters/{character_id}').json()
+        data = esi.get(f'characters/{character_id}').json()
         return User(
             character_id=character_id,
-            character_name=user_data['name'],
-        )
+            character_name=data['name'],
+            corporation=ensure_corporation(data['corporation_id']),
+        ).save()
