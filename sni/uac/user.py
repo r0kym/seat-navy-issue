@@ -27,6 +27,18 @@ class Alliance(me.Document):
             corporation_id=self.executor_corporation_id)
 
 
+class Coalition(me.Document):
+    """
+    EVE coalition. Coalitions are not formally represented in EVE, so they have
+    to be created manually. An alliance can be part of multiple coalitions.
+    """
+    created_on = me.DateTimeField(required=True, default=time.now)
+    members = me.ListField(me.ReferenceField(Alliance), default=list)
+    name = me.StringField(required=True, unique=True)
+    ticker = me.StringField(default=str)
+    updated_on = me.DateTimeField(required=True, default=time.now)
+
+
 class Corporation(me.Document):
     """
     EVE corporation database model.
