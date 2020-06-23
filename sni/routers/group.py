@@ -110,7 +110,12 @@ def post_groups(
     """
     Creates a group.
     """
-    grp = user.create_group(app_token.owner, data.name, data.description)
+    grp = user.Group(
+        description=data.description,
+        members=[app_token.owner],
+        name=data.name,
+        owner=app_token.owner,
+    ).save()
     logging.debug('Created group %s owned by %s', data.name,
                   app_token.owner.character_name)
     return group_record_to_response(grp)
