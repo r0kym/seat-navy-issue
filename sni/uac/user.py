@@ -30,6 +30,20 @@ class Group(me.Document):
     members = me.ListField(me.ReferenceField(User), required=True)
     name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField(User, required=True)
+    updated_on = me.DateTimeField(required=True, default=time.now)
+
+
+def create_group(owner: User, name: str, description: str = '') -> Group:
+    """
+    Creates a group. Sets the owner argument to be the owner as well as a
+    member.
+    """
+    return Group(
+        description=description,
+        members=[owner],
+        name=name,
+        owner=owner,
+    ).save()
 
 
 def get_user(character_id: int) -> User:

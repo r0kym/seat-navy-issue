@@ -17,12 +17,17 @@ import requests
 import yaml
 
 import sni.conf as conf
-
+import sni.routers.group
 import sni.routers.esi
 import sni.routers.token
 
 app = FastAPI()
 app.include_router(sni.routers.esi.router)
+app.include_router(
+    sni.routers.group.router,
+    prefix='/group',
+    tags=['Group management'],
+)
 app.include_router(
     sni.routers.token.router,
     prefix='/token',
