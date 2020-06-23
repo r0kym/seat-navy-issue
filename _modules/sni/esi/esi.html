@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.esi.esi &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.esi.esi</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">EVE ESI (public API) layer</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">mongoengine</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">ESI_BASE</span> <span class="o">=</span> <span class="s1">&#39;https://esi.evetech.net/&#39;</span>
+<span class="n">ESI_SWAGGER</span> <span class="o">=</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="s1">&#39;latest/swagger.json&#39;</span>
+
+
+<div class="viewcode-block" id="EsiPath"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.EsiPath">[docs]</a><span class="k">class</span> <span class="nc">EsiPath</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a path in ESI&#39;s openapi specification.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        `EVE Swagger Interface &lt;https://esi.evetech.net/ui&gt;`_</span>
+<span class="sd">        `EVE Swagger Interface (JSON) &lt;https://esi.evetech.net/latest/swagger.json&gt;`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">http_method</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">path_re</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique_with</span><span class="o">=</span><span class="s1">&#39;http_method&#39;</span><span class="p">)</span>
+    <span class="n">scope</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.delete">[docs]</a><span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+           <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :meth:`sni.esi.esi.request` for DELETE requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">request</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :meth:`sni.esi.esi.request` for GET requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">request</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="post"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.post">[docs]</a><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+         <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :meth:`sni.esi.esi.request` for POST requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">request</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="put"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.put">[docs]</a><span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :meth:`sni.esi.esi.request` for PUT requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">request</span><span class="p">(</span><span class="s1">&#39;put&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="request"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.request">[docs]</a><span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="n">http_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an HTTP request to the ESI, and returns the response object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;headers&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">][</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">token</span>
+    <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">http_method</span><span class="p">,</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_path_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.get_path_scope">[docs]</a><span class="k">def</span> <span class="nf">get_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the ESI scope that is required for a given ESI path.</span>
+
+<span class="sd">    Raises :class:`mongoengine.DoesNotExist` if no suitable path is found.</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; get_path_scope(&#39;latest/characters/0000000000/assets&#39;)</span>
+<span class="sd">        &#39;esi-assets.read_assets.v1&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; get_path_scope(&#39;latest/alliances&#39;)</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">esi_path</span><span class="p">:</span> <span class="n">EsiPath</span>
+    <span class="k">for</span> <span class="n">esi_path</span> <span class="ow">in</span> <span class="n">EsiPath</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">esi_path</span><span class="o">.</span><span class="n">path_re</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">esi_path</span><span class="o">.</span><span class="n">scope</span>
+    <span class="k">raise</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DoesNotExist</span></div>
+
+
+<div class="viewcode-block" id="load_esi_openapi"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.load_esi_openapi">[docs]</a><span class="k">def</span> <span class="nf">load_esi_openapi</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the ESI Swagger API into the database.</span>
+
+<span class="sd">    Should be called in the initialization stage.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        :class:`sni.esi.esi.EsiPath`</span>
+<span class="sd">        `EVE Swagger Interface &lt;https://esi.evetech.net/ui&gt;`_</span>
+<span class="sd">        `EVE Swagger Interface (JSON) &lt;https://esi.evetech.net/latest/swagger.json&gt;`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading ESI swagger specifications </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ESI_SWAGGER</span><span class="p">)</span>
+    <span class="n">swagger</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ESI_SWAGGER</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">base_path</span> <span class="o">=</span> <span class="n">swagger</span><span class="p">[</span><span class="s1">&#39;basePath&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">path_data</span> <span class="ow">in</span> <span class="n">swagger</span><span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_data</span> <span class="ow">in</span> <span class="n">path_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">full_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">+</span> <span class="n">path</span>
+            <span class="n">path_re</span> <span class="o">=</span> <span class="s1">&#39;^&#39;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;{\w+_id}&#39;</span><span class="p">,</span> <span class="s1">&#39;[^/]+&#39;</span><span class="p">,</span> <span class="n">full_path</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;?$&#39;</span>
+            <span class="n">scope</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">security</span> <span class="ow">in</span> <span class="n">method_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="n">scope</span> <span class="o">=</span> <span class="n">security</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;evesso&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">scope</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">EsiPath</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+                <span class="n">http_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">full_path</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">set__http_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">set__path_re</span><span class="o">=</span><span class="n">path_re</span><span class="p">,</span>
+                <span class="n">set__path</span><span class="o">=</span><span class="n">full_path</span><span class="p">,</span>
+                <span class="n">set__scope</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
+                <span class="n">set__version</span><span class="o">=</span><span class="s1">&#39;latest&#39;</span><span class="p">,</span>
+                <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

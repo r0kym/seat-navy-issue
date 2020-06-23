@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.esi.token &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.esi.token</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">EVE token (access and refresh) management</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">mongoengine</span>
+
+<span class="kn">import</span> <span class="nn">sni.esi.sso</span> <span class="k">as</span> <span class="nn">sso</span>
+<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sni.uac.user</span> <span class="k">as</span> <span class="nn">user</span>
+
+
+<div class="viewcode-block" id="EsiAccessToken"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.EsiAccessToken">[docs]</a><span class="k">class</span> <span class="nc">EsiAccessToken</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
+<span class="sd">    relevant metadatas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">scopes</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(),</span>
+                                   <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="EsiRefreshToken"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.EsiRefreshToken">[docs]</a><span class="k">class</span> <span class="nc">EsiRefreshToken</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
+<span class="sd">    relevant metadatas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">scopes</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(),</span>
+                                   <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="get_access_token"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.get_access_token">[docs]</a><span class="k">def</span> <span class="nf">get_access_token</span><span class="p">(</span><span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                     <span class="n">scope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">EsiAccessToken</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an access token, refreshes if needed</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        Support multiple scopes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span>
+    <span class="n">esi_access_token</span><span class="p">:</span> <span class="n">EsiAccessToken</span> <span class="o">=</span> <span class="n">EsiAccessToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
+        <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_access_token</span><span class="p">:</span>
+        <span class="n">esi_refresh_token</span><span class="p">:</span> <span class="n">EsiRefreshToken</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">esi_access_token</span> <span class="o">=</span> <span class="n">save_esi_tokens</span><span class="p">(</span>
+            <span class="n">sso</span><span class="o">.</span><span class="n">refresh_access_token</span><span class="p">(</span><span class="n">esi_refresh_token</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">esi_access_token</span></div>
+
+
+<div class="viewcode-block" id="save_esi_tokens"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.save_esi_tokens">[docs]</a><span class="k">def</span> <span class="nf">save_esi_tokens</span><span class="p">(</span>
+        <span class="n">esi_response</span><span class="p">:</span> <span class="n">sso</span><span class="o">.</span><span class="n">AuthorizationCodeResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiAccessToken</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves the tokens contained in an SSO reponse into the database.</span>
+
+<span class="sd">    Create the owner user if necessary.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The new ESI access token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">decoded_access_token</span> <span class="o">=</span> <span class="n">sso</span><span class="o">.</span><span class="n">decode_access_token</span><span class="p">(</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
+    <span class="n">esi_refresh_token</span><span class="p">:</span> <span class="n">EsiRefreshToken</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">scopes__all</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">esi_refresh_token</span><span class="p">:</span>
+        <span class="n">esi_refresh_token</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">esi_response</span><span class="o">.</span><span class="n">refresh_token</span>
+        <span class="n">esi_refresh_token</span><span class="o">.</span><span class="n">updated_on</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">esi_refresh_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">EsiRefreshToken</span><span class="p">(</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">refresh_token</span><span class="o">=</span><span class="n">esi_response</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">,</span>
+            <span class="n">scopes</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">EsiAccessToken</span><span class="p">(</span>
+        <span class="n">access_token</span><span class="o">=</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
+        <span class="n">expires_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">from_timestamp</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">exp</span><span class="p">),</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">scopes</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

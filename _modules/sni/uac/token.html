@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.uac.token &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.uac.token</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Token management</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">import</span> <span class="nn">fastapi</span>
+<span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">import</span> <span class="nn">jwt.exceptions</span>
+<span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
+
+<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sni.uac.user</span> <span class="k">as</span> <span class="nn">user</span>
+
+
+<div class="viewcode-block" id="Token"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.Token">[docs]</a><span class="k">class</span> <span class="nc">Token</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a token issued by SNI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Token.TokenType"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.Token.TokenType">[docs]</a>    <span class="k">class</span> <span class="nc">TokenType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enumeration containing the various token types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="s1">&#39;dyn&#39;</span>  <span class="c1"># Dynamic app token</span>
+        <span class="n">per</span> <span class="o">=</span> <span class="s1">&#39;per&#39;</span>  <span class="c1"># Permanent app token</span>
+        <span class="n">use</span> <span class="o">=</span> <span class="s1">&#39;use&#39;</span>  <span class="c1"># User token</span></div>
+
+    <span class="n">callback</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+                              <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
+                               <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">token_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">TokenType</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StateCode"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.StateCode">[docs]</a><span class="k">class</span> <span class="nc">StateCode</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a state code and related metadatas.</span>
+
+<span class="sd">    A state code is issued when a new user token is issued from a dynamic app</span>
+<span class="sd">    token, and is a way for SNI to remeber about the authentication while the</span>
+<span class="sd">    end user logs in to EVE SSO.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_dynamic_app_token"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_dynamic_app_token">[docs]</a><span class="k">def</span> <span class="nf">create_dynamic_app_token</span><span class="p">(</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Token</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new dynamic app token for that user.</span>
+
+<span class="sd">    Warning: Does not check that the user is allowed to actually do that.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">,</span>
+        <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+        <span class="n">token_type</span><span class="o">=</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">,</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+    <span class="p">)</span>
+    <span class="n">new_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created dynamic app token </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">new_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_token</span></div>
+
+
+<div class="viewcode-block" id="create_permanent_app_token"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_permanent_app_token">[docs]</a><span class="k">def</span> <span class="nf">create_permanent_app_token</span><span class="p">(</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Token</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new permanent app token for that user.</span>
+
+<span class="sd">    Warning: Does not check that the user is allowed to actually do that.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">,</span>
+        <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+        <span class="n">token_type</span><span class="o">=</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">,</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+    <span class="p">)</span>
+    <span class="n">new_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created permanent app token </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">new_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_token</span></div>
+
+
+<div class="viewcode-block" id="create_state_code"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_state_code">[docs]</a><span class="k">def</span> <span class="nf">create_state_code</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StateCode</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new state code.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        :class:`sni.uac.token.StateCode`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state_code</span> <span class="o">=</span> <span class="n">StateCode</span><span class="p">(</span>
+        <span class="n">app_token</span><span class="o">=</span><span class="n">app_token</span><span class="p">,</span>
+        <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+    <span class="p">)</span>
+    <span class="n">state_code</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created state code </span><span class="si">%s</span><span class="s1"> for app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                 <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">state_code</span></div>
+
+
+<div class="viewcode-block" id="create_user_token"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_user_token">[docs]</a><span class="k">def</span> <span class="nf">create_user_token</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derives a new user token from an existing app token, and set the owner to</span>
+<span class="sd">    be the user given in argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">expires_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">parent</span><span class="o">=</span><span class="n">app_token</span><span class="p">,</span>
+            <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;use&#39;</span><span class="p">,</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">app_token</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">parent</span><span class="o">=</span><span class="n">app_token</span><span class="p">,</span>
+            <span class="n">token_type</span><span class="o">=</span><span class="s1">&#39;use&#39;</span><span class="p">,</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected an app token&#39;</span><span class="p">)</span>
+    <span class="n">new_token</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created user token </span><span class="si">%s</span><span class="s1"> for app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">new_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                 <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_token</span></div>
+
+
+<div class="viewcode-block" id="get_token_from_jwt"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.get_token_from_jwt">[docs]</a><span class="k">def</span> <span class="nf">get_token_from_jwt</span><span class="p">(</span><span class="n">token_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Token</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves a token from its JWT string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+            <span class="n">token_str</span><span class="p">,</span>
+            <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
+            <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
+            <span class="n">issuer</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
+            <span class="n">verify_exp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">verify_iss</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">token_uuid</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;jti&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">token_uuid</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidTokenError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ExpiredSignatureError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidAudienceError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidIssuerError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidIssuedAtError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ImmatureSignatureError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidKeyError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidAlgorithmError</span><span class="p">,</span>
+            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">MissingRequiredClaimError</span><span class="p">,</span>
+            <span class="ne">KeyError</span><span class="p">,</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed validation of JWT token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="to_jwt"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.to_jwt">[docs]</a><span class="k">def</span> <span class="nf">to_jwt</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Token</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derives a JWT token byte array from the a token model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;iat&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">created_on</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
+        <span class="s1">&#39;iss&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;jti&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="s1">&#39;nbf&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">created_on</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
+        <span class="s1">&#39;own&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+        <span class="s1">&#39;typ&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">expires_on</span><span class="p">:</span>
+        <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;exp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">expires_on</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">payload</span><span class="p">,</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="validate_header"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.validate_header">[docs]</a><span class="k">def</span> <span class="nf">validate_header</span><span class="p">(</span><span class="n">authorization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">Header</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates an ``Authorization: Bearer`` header.</span>
+
+<span class="sd">    Should be used as a FastAPI dependency.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bearer</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">authorization</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">authorization</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">bearer</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">fastapi</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="n">token_str</span> <span class="o">=</span> <span class="n">authorization</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bearer</span><span class="p">):]</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token_from_jwt</span><span class="p">(</span><span class="n">token_str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">fastapi</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully validated token </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>
