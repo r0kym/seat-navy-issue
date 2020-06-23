@@ -87,10 +87,7 @@ class PostTokenPerOut(pdt.BaseModel):
     app_token: str
 
 
-@router.delete(
-    '/token',
-    tags=['Token management'],
-)
+@router.delete('/')
 async def delete_token(
         uuid: str,
         app_token: token.Token = Depends(token.validate_header),
@@ -105,11 +102,7 @@ async def delete_token(
                             detail='Token not found.')
 
 
-@router.get(
-    '/token',
-    response_model=GetTokenOut,
-    tags=['Token management'],
-)
+@router.get('/', response_model=GetTokenOut)
 async def get_token(app_token: token.Token = Depends(token.validate_header)):
     """
     Returns informations about the token currently being used.
@@ -127,9 +120,8 @@ async def get_token(app_token: token.Token = Depends(token.validate_header)):
 
 
 @router.post(
-    '/token/dyn',
+    '/dyn',
     response_model=PostTokenDynOut,
-    tags=['Token management'],
 )
 async def post_token_dyn(
         data: PostTokenDynIn,
@@ -152,9 +144,8 @@ async def post_token_dyn(
 
 
 @router.post(
-    '/token/per',
+    '/per',
     response_model=PostTokenPerOut,
-    tags=['Token management'],
 )
 async def post_token_per(
         data: PostTokenPerIn,
@@ -177,9 +168,8 @@ async def post_token_per(
 
 
 @router.post(
-    '/token/use/from/dyn',
+    '/use/from/dyn',
     response_model=PostTokenUseFromDynOut,
-    tags=['Token management'],
 )
 async def post_token_use_from_dyn(
         data: PostTokenUseFromDynIn,
@@ -201,9 +191,8 @@ async def post_token_use_from_dyn(
 
 
 @router.post(
-    '/token/use/from/per',
+    '/use/from/per',
     response_model=PostUseFromPerOut,
-    tags=['Token management'],
 )
 async def post_token_use_from_per(app_token: token.Token = Depends(
     token.validate_header)):

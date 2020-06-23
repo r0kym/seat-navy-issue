@@ -23,7 +23,11 @@ import sni.routers.token
 
 app = FastAPI()
 app.include_router(sni.routers.esi.router)
-app.include_router(sni.routers.token.router)
+app.include_router(
+    sni.routers.token.router,
+    prefix='/token',
+    tags=['Authentication & tokens'],
+)
 
 
 @app.exception_handler(mongoengine.DoesNotExist)
