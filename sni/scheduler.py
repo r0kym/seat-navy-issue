@@ -1,5 +1,10 @@
 """
 Asyncronous / concurrent / schedules job management.
+
+Simply use the global member ``sni.scheduler.scheduler``.
+
+See also:
+    `APScheduler documentation <https://apscheduler.readthedocs.io/en/stable/>`_
 """
 
 from apscheduler.executors.pool import ProcessPoolExecutor
