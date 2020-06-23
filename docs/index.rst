@@ -74,6 +74,7 @@ Module documentation
    apiserver
    esi
    database
+   scheduler
 
 
 Indices and tables
