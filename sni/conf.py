@@ -15,6 +15,7 @@ CONFIGURATION: Dict[str, Any] = {
     'general.debug': False,
     'general.host': '127.0.0.1',
     'general.port': '5000',
+    'general.scheduler_process_count': 5,
     'jwt.algorithm': 'HS256',
     'redis.database': 0,
     'redis.port': 6379,

@@ -12,6 +12,7 @@ import sys
 
 import uvicorn
 
+from sni.scheduler import scheduler
 import sni.apiserver as apiserver
 import sni.conf as conf
 import sni.db as db
@@ -49,6 +50,7 @@ def main():
 
     db.init()
     db.migrate()
+    scheduler.start()
     start_api_server()
 
 
@@ -94,12 +96,15 @@ def start_api_server() -> None:
     """
     logging.info('Starting API server on %s:%s', conf.get('general.host'),
                  conf.get('general.port'))
-    uvicorn.run(
-        'sni.apiserver:app',
-        host=conf.get('general.host'),
-        log_level='debug' if conf.get('general.debug') else 'info',
-        port=conf.get('general.port'),
-    )
+    try:
+        uvicorn.run(
+            'sni.apiserver:app',
+            host=conf.get('general.host'),
+            log_level='debug' if conf.get('general.debug') else 'info',
+            port=conf.get('general.port'),
+        )
+    finally:
+        scheduler.shutdown()
 
 
 if __name__ == '__main__':

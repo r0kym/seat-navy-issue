@@ -27,6 +27,7 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``port`` (default: ``5000``): API server port.
     * ``root_url``: HTTP URL at which the API root is located (e.g.
       ``https://example.com/sni``)
+    * ``scheduler_process_count`` (default: ``5``)
 
 * ``jwt``
     * ``algorithm`` (default: ``HS256``): A ``pyjwt`` supported algorithm, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
