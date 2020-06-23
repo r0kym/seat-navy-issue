@@ -29,6 +29,7 @@ class GetGroupOut(pdt.BaseModel):
     members: List[str]
     name: str
     owner: str
+    updated_on: datetime
 
 
 class PostGroupIn(pdt.BaseModel):
@@ -60,6 +61,7 @@ def group_record_to_response(grp: user.Group) -> GetGroupOut:
         members=[member.character_name for member in grp.members],
         name=grp.name,
         owner=grp.owner.character_name,
+        updated_on=grp.updated_on,
     )
 
 
@@ -93,7 +95,7 @@ def get_group_name(
         app_token: token.Token = Depends(token.validate_header),
 ):
     """
-    Lists all the group names.
+    Returns details about a given group.
     """
     return group_record_to_response(user.Group.objects(name=group_name).get())
 
