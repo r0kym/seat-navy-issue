@@ -42,7 +42,7 @@ class Corporation(me.Document):
         """
         Returns the corporation's ceo as a :class:`sni.uac.user.User` object.
         """
-        return User.ojects.get(character_id=self.ceo_character_id)
+        return User.objects.get(character_id=self.ceo_character_id)
 
 
 class User(me.Document):
@@ -88,16 +88,15 @@ def ensure_alliance(alliance_id: int) -> Alliance:
     Ensures that an alliance exists, and returns it. It it does not, creates
     it by fetching relevant data from the ESI.
     """
-    try:
-        return Alliance.objects.get(alliance_id=alliance_id)
-    except me.DoesNotExist:
-        data = esi.get(f'alliances/{alliance_id}').json()
-        return Alliance(
-            alliance_id=alliance_id,
-            alliance_name=data['name'],
-            executor_corporation_id=int(data['executor_corporation_id']),
-            ticker=data['ticker'],
-        ).save()
+    data = esi.get(f'alliances/{alliance_id}').json()
+    return Alliance.objects(alliance_id=alliance_id).modify(
+        set__alliance_id=alliance_id,
+        set__alliance_name=data['name'],
+        set__executor_corporation_id=int(data['executor_corporation_id']),
+        set__ticker=data['ticker'],
+        new=True,
+        upsert=True
+    )
 
 
 def ensure_corporation(corporation_id: int) -> Corporation:
@@ -105,17 +104,18 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     Ensures that a corporation exists, and returns it. It it does not, creates
     it by fetching relevant data from the ESI.
     """
-    try:
-        return Corporation.objects.get(corporation_id=corporation_id)
-    except me.DoesNotExist:
-        data = esi.get(f'corporations/{corporation_id}').json()
-        return Corporation(
-            alliance=ensure_alliance(data['alliance_id']),
-            ceo_character_id=int(data['ceo_id']),
-            corporation_id=corporation_id,
-            corporation_name=data['name'],
-            ticker=data['ticker'],
-        ).save()
+    data = esi.get(f'corporations/{corporation_id}').json()
+    alliance = ensure_alliance(
+        data['alliance_id']) if 'alliance_id' in data else None
+    return Corporation.objects(corporation_id=corporation_id).modify(
+        set__alliance=alliance,
+        set__ceo_character_id=int(data['ceo_id']),
+        set__corporation_id=corporation_id,
+        set__corporation_name=data['name'],
+        set__ticker=data['ticker'],
+        new=True,
+        upsert=True,
+    )
 
 
 def ensure_user(character_id: int) -> User:
@@ -123,12 +123,11 @@ def ensure_user(character_id: int) -> User:
     Ensures that a user (with a valid ESI character ID) exists, and returns it.
     It it does not, creates it by fetching relevant data from the ESI.
     """
-    try:
-        return User.objects.get(character_id=character_id)
-    except me.DoesNotExist:
-        data = esi.get(f'characters/{character_id}').json()
-        return User(
-            character_id=character_id,
-            character_name=data['name'],
-            corporation=ensure_corporation(data['corporation_id']),
-        ).save()
+    data = esi.get(f'characters/{character_id}').json()
+    return User.objects(character_id=character_id).modify(
+        set__character_id=character_id,
+        set__character_name=data['name'],
+        set__corporation=ensure_corporation(data['corporation_id']),
+        new=True,
+        upsert=True,
+    )
