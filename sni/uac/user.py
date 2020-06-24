@@ -61,13 +61,13 @@ class User(me.Document):
     """
     User model.
 
-    A user corresponds to a single EVE character. A user can reference other
-    users as "sub characters".
+    A user corresponds to a single EVE character.
     """
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
-    created_on = me.DateTimeField(required=True, default=time.now)
+    clearance_level = me.IntField(required=True, default=0)
     corporation = me.ReferenceField(Corporation, default=None)
+    created_on = me.DateTimeField(required=True, default=time.now)
 
 
 class Group(me.Document):

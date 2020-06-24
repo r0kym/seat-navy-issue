@@ -8,38 +8,58 @@ Users, groups, etc.
 
 .. image:: users.png
 
-Access control
---------------
 
-An *access* is comprised of the following.
+Clearance levels
+----------------
 
-* An **actor**, that wishes to perform a certain action. In the database,
-  actors are represented as a string ``type:id``, where ``type`` is either
-  ``all`` (alliance), ``chr`` (character), ``coa`` (coalition), ``crp``
-  (corporation), ``grp`` (group), and where ``id`` is the id of the entity in
-  the relevant table (see :ref:`users-groups-etc`).
+Each user has a **clearance level**, which is an integer:
 
-* An **API endpoint** whose access is controlled.
+* Level 0: User only have access to public data and read-write access to its
+  own ESI.
 
-* A **scope**, within which the action can be performed by the actor. This is a
-  tuple ``type:id`` as above.
+* Level 1: User has access to read-only ESI (i.e. ``GET`` calls) of all members
+  of his corporation.
 
-For example, the access
+* Level 2: User has access to read-write ESI (i.e. all http methods) of all
+  members of his corporation.
 
-===========  ==========================================  ===========
-``actor``    ``endpoint``                                ``scope``
-===========  ==========================================  ===========
-``grp:123``  ``/esi/characters/{character_id}/assets/``  ``crp:456``
-===========  ==========================================  ===========
+* Level 3: User has access to read-only ESI (i.e. ``GET`` calls) of all members
+  of his alliance.
 
-means that all characters of group ``123`` can issue the
-``/esi/characters/{character_id}/assets/`` request (which proxies to the
-``/characters/{character_id}/assets/`` ESI request) against all characters of
-corporation ``456``.
+* Level 4: User has access to read-write ESI (i.e. all http methods) of all
+  members of his alliance.
 
-.. warning::
-    Endpoint names are actually stored in a separate table, and referred to
-    using their id.
+* Level 5: User has access to read-only ESI (i.e. ``GET`` calls) of all members
+  of his coalition.
+
+* Level 6: User has access to read-write ESI (i.e. all http methods) of all
+  members of his coalition.
+
+* Level 7: User has access to read-only ESI (i.e. ``GET`` calls) of all members
+  regisered on this SNI instance.
+
+* Level 8: User has access to read-write ESI (i.e. all http methods) of all
+  members regisered on this SNI instance.
+
+* Level 9: User has clearance level 8 and some administrative priviledges.
+
+* Level 10: Superuser.
+
+Furthermore, note that
+
+* Any user can raise any other to its own clearance level, provided they are in
+  the same corporation (for levels 1 and 2), alliance (for levels 3 and 4), or
+  coalition (for levels 5 and 6).
+
+* Demoting users is considered an administrative task and requires a clearance
+  of at least 9.
+
+* Clearance levels are public informations.
+
+
+See :meth:`sni.uac.clearance.has_clearance` for a precise specification of how
+clearance levels are checked, and :car:`sni.uac.clearance.SCOPE_LEVELS` for the
+declaration of all scopes.
 
 
 UAC modules documentation

@@ -60,6 +60,7 @@ def migrate_ensure_root() -> None:
         user.User(
             character_id=0,
             character_name='root',
+            clearance_level=10,
             created_on=time.now(),
         ).save()
         logging.info('Created root user')
