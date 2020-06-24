@@ -90,7 +90,7 @@ def ensure_alliance(alliance_id: int) -> Alliance:
     Todo:
         Maintain alliance user group.
     """
-    data = esi.get(f'alliances/{alliance_id}').json()
+    data = esi.get(f'latest/alliances/{alliance_id}').json()
     alliance = Alliance.objects(alliance_id=alliance_id).modify(
         new=True,
         set__alliance_id=alliance_id,
@@ -126,7 +126,7 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     Todo:
         Maintain corporation user group.
     """
-    data = esi.get(f'corporations/{corporation_id}').json()
+    data = esi.get(f'latest/corporations/{corporation_id}').json()
     alliance = ensure_alliance(
         data['alliance_id']) if 'alliance_id' in data else None
     corporation = Corporation.objects(corporation_id=corporation_id).modify(
@@ -148,7 +148,7 @@ def ensure_user(character_id: int) -> User:
     It it does not, creates it by fetching relevant data from the ESI. Also
     creates the character's corporation and alliance (if applicable).
     """
-    data = esi.get(f'characters/{character_id}').json()
+    data = esi.get(f'latest/characters/{character_id}').json()
     user = User.objects(character_id=character_id).modify(
         new=True,
         set__character_id=character_id,

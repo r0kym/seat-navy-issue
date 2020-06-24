@@ -9,8 +9,8 @@ from typing import Optional
 import mongoengine
 import requests
 
-ESI_BASE = 'https://esi.evetech.net/latest/'
-ESI_SWAGGER = ESI_BASE + 'swagger.json'
+ESI_BASE = 'https://esi.evetech.net/'
+ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
 
 
 class EsiPath(mongoengine.Document):
