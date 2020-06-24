@@ -57,6 +57,22 @@ def does_not_exist_exception_handler(_request: requests.Request,
     )
 
 
+@app.exception_handler(PermissionError)
+def permission_error_handler(_request: requests.Request,
+                             error: PermissionError):
+    """
+    Catches :class:`PermissionError` exceptions and forwards them as
+    ``403``'s.
+    """
+    content = None
+    if conf.get('general.debug'):
+        content = {'details': str(error)}
+    return JSONResponse(
+        content=content,
+        status_code=status.HTTP_401_UNAUTHORIZED,
+    )
+
+
 @app.exception_handler(Exception)
 def exception_handler(_request: requests.Request, error: Exception):
     """

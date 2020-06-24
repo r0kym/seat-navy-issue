@@ -14,6 +14,7 @@ from fastapi import (
 import pydantic as pdt
 
 import sni.time as time
+import sni.uac.clearance as clearance
 import sni.uac.token as token
 import sni.uac.user as user
 
@@ -72,10 +73,8 @@ def delete_group(
 ):
     """
     Deletes a group.
-
-    Todo:
-        Check authorization
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_group')
     grp: user.Group = user.Group.objects.get(name=group_name)
     logging.debug('Deleting group %s', group_name)
     grp.delete()
@@ -86,6 +85,7 @@ def get_group(app_token: token.Token = Depends(token.validate_header), ):
     """
     Lists all the group names.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.read_group')
     return [group.name for group in user.Group.objects()]
 
 
@@ -97,6 +97,7 @@ def get_group_name(
     """
     Returns details about a given group.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.read_group')
     return group_record_to_response(user.Group.objects(name=group_name).get())
 
 
@@ -112,6 +113,7 @@ def post_groups(
     """
     Creates a group.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_group')
     grp = user.Group(
         description=data.description,
         members=[app_token.owner],
@@ -135,6 +137,7 @@ def put_group(
     ``members`` cannot be used in conjunction with ``add_members`` and
     ``remove_members``.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_group')
     grp: user.Group = user.Group.objects.get(name=group_name)
     logging.debug('Updating group %s', group_name)
     if data.add_members is not None:

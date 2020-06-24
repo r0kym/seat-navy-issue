@@ -16,6 +16,7 @@ from fastapi import (
 import pydantic as pdt
 
 import sni.esi.sso as sso
+import sni.uac.clearance as clearance
 import sni.uac.token as token
 import sni.uac.user as user
 
@@ -96,7 +97,17 @@ async def delete_token(
     """
     Deletes a token
     """
-    token.Token.objects.get(uuid=uuid).delete()
+    tok: token.Token = token.Token.objects.get(uuid=uuid)
+    if tok.token_type == token.Token.TokenType.dyn:
+        clearance.assert_has_clearance(app_token.owner, 'sni.write_dyn_token')
+    elif tok.token_type == token.Token.TokenType.per:
+        clearance.assert_has_clearance(app_token.owner, 'sni.write_per_token')
+    elif tok.token_type == token.Token.TokenType.use:
+        clearance.assert_has_clearance(app_token.owner, 'sni.write_use_token')
+    else:
+        logging.error('Token %s has unknown type %s', tok.uuid, tok.token_type)
+        raise PermissionError
+    tok.delete()
     logging.debug('Deleted token %s', uuid)
 
 
@@ -105,6 +116,7 @@ async def get_token(app_token: token.Token = Depends(token.validate_header)):
     """
     Returns informations about the token currently being used.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.read_own_token')
     return GetTokenOut(
         callback=app_token.callback,
         comments=app_token.comments,
@@ -126,10 +138,9 @@ async def post_token_dyn(
         app_token: token.Token = Depends(token.validate_header),
 ):
     """
-    Creates a new dynamic app token.
-
-    Must be called with a permanent app token.
+    Creates a new dynamic app token. Must be called with a permanent app token.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_dyn_token')
     if app_token.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_dynamic_app_token(
@@ -150,10 +161,10 @@ async def post_token_per(
         app_token: token.Token = Depends(token.validate_header),
 ):
     """
-    Creates a new permanent app token.
-
-    Must be called with a permanent app token.
+    Creates a new permanent app token. Must be called with a permanent app
+    token.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_per_token')
     if app_token.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_permanent_app_token(
@@ -179,6 +190,7 @@ async def post_token_use_from_dyn(
     done, SNI issues a GET request to the app predefined callback, with that
     state code and the user token.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_use_token')
     if app_token.token_type != token.Token.TokenType.dyn:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     state_code = token.create_state_code(app_token)
@@ -198,6 +210,7 @@ async def post_token_use_from_per(app_token: token.Token = Depends(
     Authenticates an application permanent token and returns a user token tied
     to the owner of that app token.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_use_token')
     if app_token.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user_token = token.create_user_token(

@@ -433,7 +433,7 @@ paths:
       - Coalition management
   /coalition/{coalition_name}:
     delete:
-      description: "Deletes a coalition.\n\nTodo:\n    Check authorization"
+      description: Deletes a coalition.
       operationId: delete_coalition_coalition__coalition_name__delete
       parameters:
       - in: path
@@ -637,7 +637,7 @@ paths:
       - Group management
   /group/{group_name}:
     delete:
-      description: "Deletes a group.\n\nTodo:\n    Check authorization"
+      description: Deletes a group.
       operationId: delete_group_group__group_name__delete
       parameters:
       - in: path
@@ -817,10 +817,8 @@ paths:
       - Authentication & tokens
   /token/dyn:
     post:
-      description: 'Creates a new dynamic app token.
-
-
-        Must be called with a permanent app token.'
+      description: Creates a new dynamic app token. Must be called with a permanent
+        app token.
       operationId: post_token_dyn_token_dyn_post
       parameters:
       - in: header
@@ -853,10 +851,10 @@ paths:
       - Authentication & tokens
   /token/per:
     post:
-      description: 'Creates a new permanent app token.
+      description: 'Creates a new permanent app token. Must be called with a permanent
+        app
 
-
-        Must be called with a permanent app token.'
+        token.'
       operationId: post_token_per_token_per_post
       parameters:
       - in: header

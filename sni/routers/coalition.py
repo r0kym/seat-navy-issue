@@ -17,6 +17,7 @@ from fastapi import (
 import pydantic as pdt
 
 import sni.time as time
+import sni.uac.clearance as clearance
 import sni.uac.token as token
 import sni.uac.user as user
 
@@ -72,10 +73,8 @@ def delete_coalition(
 ):
     """
     Deletes a coalition.
-
-    Todo:
-        Check authorization
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
     logging.debug('Deleting coalition %s', coalition_name)
     coa.delete()
@@ -86,6 +85,7 @@ def get_coalition(app_token: token.Token = Depends(token.validate_header), ):
     """
     Lists all the coalition names.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.read_coalition')
     return [coalition.name for coalition in user.Coalition.objects()]
 
 
@@ -97,6 +97,7 @@ def get_coalition_name(
     """
     Returns details about a given coalition.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.read_coalition')
     return coalition_record_to_response(
         user.Coalition.objects(name=coalition_name).get())
 
@@ -113,6 +114,7 @@ def post_coalitions(
     """
     Creates a coalition.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_coalition')
     coa = user.Coalition(
         name=data.name,
         ticker=data.ticker,
@@ -133,6 +135,7 @@ def put_coalition(
     ``members`` cannot be used in conjunction with ``add_members`` and
     ``remove_members``.
     """
+    clearance.assert_has_clearance(app_token.owner, 'sni.write_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
     logging.debug('Updating coalition %s', coalition_name)
     if data.add_members is not None:

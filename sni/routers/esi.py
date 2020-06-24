@@ -16,6 +16,7 @@ import sni.conf as conf
 import sni.esi.esi as esi
 import sni.esi.sso as sso
 import sni.esi.token as esitoken
+import sni.uac.clearance as clearance
 import sni.uac.token as snitoken
 import sni.uac.user as user
 
@@ -102,17 +103,21 @@ async def get_esi_latest(
     See also:
         :class:`sni.routers.esi.EsiRequestIn`
     """
+    esi_token: Optional[str] = None
+    if data.on_behalf_of:
+        scope = esi.get_path_scope(esi_path)
+        if scope is not None:
+            target = user.User.objects.get(character_id=data.on_behalf_of)
+            clearance.assert_has_clearance(app_token.owner, scope, target)
+            esi_token = esitoken.get_access_token(
+                data.on_behalf_of,
+                scope,
+            ).access_token
     headers = {
         'Accept-Encoding': 'gzip',
         'accept': 'application/json',
         'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
     }
-    esi_token: Optional[str] = None
-    if data.on_behalf_of:
-        esi_token = esitoken.get_access_token(
-            data.on_behalf_of,
-            esi.get_path_scope(esi_path),
-        ).access_token
     response = esi.get(
         esi_path,
         esi_token,
