@@ -49,48 +49,43 @@
 <span id="id1"></span><h2>Users, groups, etc.<a class="headerlink" href="#users-groups-etc" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/users.png" src="_images/users.png" />
 </div>
-<div class="section" id="access-control">
-<h2>Access control<a class="headerlink" href="#access-control" title="Permalink to this headline">¶</a></h2>
-<p>An <em>access</em> is comprised of the following.</p>
+<div class="section" id="clearance-levels">
+<h2>Clearance levels<a class="headerlink" href="#clearance-levels" title="Permalink to this headline">¶</a></h2>
+<p>Each user has a <strong>clearance level</strong>, which is an integer:</p>
 <ul class="simple">
-<li><p>An <strong>actor</strong>, that wishes to perform a certain action. In the database,
-actors are represented as a string <code class="docutils literal notranslate"><span class="pre">type:id</span></code>, where <code class="docutils literal notranslate"><span class="pre">type</span></code> is either
-<code class="docutils literal notranslate"><span class="pre">all</span></code> (alliance), <code class="docutils literal notranslate"><span class="pre">chr</span></code> (character), <code class="docutils literal notranslate"><span class="pre">coa</span></code> (coalition), <code class="docutils literal notranslate"><span class="pre">crp</span></code>
-(corporation), <code class="docutils literal notranslate"><span class="pre">grp</span></code> (group), and where <code class="docutils literal notranslate"><span class="pre">id</span></code> is the id of the entity in
-the relevant table (see <a class="reference internal" href="#users-groups-etc"><span class="std std-ref">Users, groups, etc.</span></a>).</p></li>
-<li><p>An <strong>API endpoint</strong> whose access is controlled.</p></li>
-<li><p>A <strong>scope</strong>, within which the action can be performed by the actor. This is a
-tuple <code class="docutils literal notranslate"><span class="pre">type:id</span></code> as above.</p></li>
+<li><p>Level 0: User only have access to public data and read-write access to its
+own ESI.</p></li>
+<li><p>Level 1: User has access to read-only ESI (i.e. <code class="docutils literal notranslate"><span class="pre">GET</span></code> calls) of all members
+of his corporation.</p></li>
+<li><p>Level 2: User has access to read-write ESI (i.e. all http methods) of all
+members of his corporation.</p></li>
+<li><p>Level 3: User has access to read-only ESI (i.e. <code class="docutils literal notranslate"><span class="pre">GET</span></code> calls) of all members
+of his alliance.</p></li>
+<li><p>Level 4: User has access to read-write ESI (i.e. all http methods) of all
+members of his alliance.</p></li>
+<li><p>Level 5: User has access to read-only ESI (i.e. <code class="docutils literal notranslate"><span class="pre">GET</span></code> calls) of all members
+of his coalition.</p></li>
+<li><p>Level 6: User has access to read-write ESI (i.e. all http methods) of all
+members of his coalition.</p></li>
+<li><p>Level 7: User has access to read-only ESI (i.e. <code class="docutils literal notranslate"><span class="pre">GET</span></code> calls) of all members
+regisered on this SNI instance.</p></li>
+<li><p>Level 8: User has access to read-write ESI (i.e. all http methods) of all
+members regisered on this SNI instance.</p></li>
+<li><p>Level 9: User has clearance level 8 and some administrative priviledges.</p></li>
+<li><p>Level 10: Superuser.</p></li>
 </ul>
-<p>For example, the access</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 17%" />
-<col style="width: 66%" />
-<col style="width: 17%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">actor</span></code></p></th>
-<th class="head"><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code></p></th>
-<th class="head"><p><code class="docutils literal notranslate"><span class="pre">scope</span></code></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grp:123</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">/esi/characters/{character_id}/assets/</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">crp:456</span></code></p></td>
-</tr>
-</tbody>
-</table>
-<p>means that all characters of group <code class="docutils literal notranslate"><span class="pre">123</span></code> can issue the
-<code class="docutils literal notranslate"><span class="pre">/esi/characters/{character_id}/assets/</span></code> request (which proxies to the
-<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/assets/</span></code> ESI request) against all characters of
-corporation <code class="docutils literal notranslate"><span class="pre">456</span></code>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Endpoint names are actually stored in a separate table, and referred to
-using their id.</p>
-</div>
+<p>Furthermore, note that</p>
+<ul class="simple">
+<li><p>Any user can raise any other to its own clearance level, provided they are in
+the same corporation (for levels 1 and 2), alliance (for levels 3 and 4), or
+coalition (for levels 5 and 6).</p></li>
+<li><p>Demoting users is considered an administrative task and requires a clearance
+of at least 9.</p></li>
+<li><p>Clearance levels are public informations.</p></li>
+</ul>
+<p>See <a class="reference internal" href="#sni.uac.clearance.has_clearance" title="sni.uac.clearance.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.has_clearance()</span></code></a> for a precise specification of how
+clearance levels are checked, and <a href="#id2"><span class="problematic" id="id3">:car:`sni.uac.clearance.SCOPE_LEVELS`</span></a> for the
+declaration of all scopes.</p>
 </div>
 <div class="section" id="uac-modules-documentation">
 <h2>UAC modules documentation<a class="headerlink" href="#uac-modules-documentation" title="Permalink to this headline">¶</a></h2>
@@ -912,8 +907,7 @@ need accurate microsecond support.</p>
 <em class="property">class </em><code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/user.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.User" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>User model.</p>
-<p>A user corresponds to a single EVE character. A user can reference other
-users as “sub characters”.</p>
+<p>A user corresponds to a single EVE character.</p>
 <dl class="exception">
 <dt id="sni.uac.user.User.DoesNotExist">
 <em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.uac.user.User.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -936,6 +930,12 @@ users as “sub characters”.</p>
 <dt id="sni.uac.user.User.character_name">
 <code class="sig-name descname">character_name</code><a class="headerlink" href="#sni.uac.user.User.character_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.user.User.clearance_level">
+<code class="sig-name descname">clearance_level</code><a class="headerlink" href="#sni.uac.user.User.clearance_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1023,7 +1023,7 @@ add extra queryset functionality.  Any custom manager methods must accept a
 <code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">ensure_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.Alliance<a class="reference internal" href="_modules/sni/uac/user.html#ensure_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.ensure_alliance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensures that an alliance exists, and returns it. It it does not, creates
 it by fetching relevant data from the ESI.</p>
-<div class="admonition-todo admonition" id="id2">
+<div class="admonition-todo admonition" id="id4">
 <p class="admonition-title">Todo</p>
 <p>Maintain alliance user group.</p>
 </div>
@@ -1041,7 +1041,7 @@ owned by root.</p>
 <code class="sig-prename descclassname">sni.uac.user.</code><code class="sig-name descname">ensure_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em><span class="sig-paren">)</span> &#x2192; sni.uac.user.Corporation<a class="reference internal" href="_modules/sni/uac/user.html#ensure_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.user.ensure_corporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensures that a corporation exists, and returns it. It it does not, creates
 it by fetching relevant data from the ESI.</p>
-<div class="admonition-todo admonition" id="id3">
+<div class="admonition-todo admonition" id="id5">
 <p class="admonition-title">Todo</p>
 <p>Maintain corporation user group.</p>
 </div>
@@ -1053,6 +1053,82 @@ it by fetching relevant data from the ESI.</p>
 <dd><p>Ensures that a user (with a valid ESI character ID) exists, and returns it.
 It it does not, creates it by fetching relevant data from the ESI. Also
 creates the character’s corporation and alliance (if applicable).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.uac.clearance">
+<span id="sni-uac-clearance"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.uac.clearance</span></code><a class="headerlink" href="#module-sni.uac.clearance" title="Permalink to this headline">¶</a></h3>
+<p>Clearance management and verification</p>
+<div class="admonition-todo admonition" id="id6">
+<p class="admonition-title">Todo</p>
+<p>Safer implementation. Right now it is too prone to coding errors when
+calling <a class="reference internal" href="#sni.uac.clearance.assert_has_clearance" title="sni.uac.clearance.assert_has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.assert_has_clearance()</span></code></a>.</p>
+</div>
+<dl class="function">
+<dt id="sni.uac.clearance.are_in_same_alliance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_alliance</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.uac.user.User</em>, <em class="sig-param">user2: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether two users are in the same alliance. Users that have no
+alliance are considered in a different alliance as everyone else.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.are_in_same_coalition">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_coalition</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.uac.user.User</em>, <em class="sig-param">user2: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether two users have a coalition in common.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.are_in_same_corporation">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_corporation</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.uac.user.User</em>, <em class="sig-param">user2: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether two users are in the same corporation. Users that have no
+corporation are considered in different a corporation as everyone else.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.assert_has_clearance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">assert_has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User</em>, <em class="sig-param">scope: str</em>, <em class="sig-param">target: Optional[sni.uac.user.User] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/uac/clearance.html#assert_has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.assert_has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference internal" href="#sni.uac.clearance.has_clearance" title="sni.uac.clearance.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.has_clearance()</span></code></a> but raises a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionError</span></code> if the result is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.distance_penalty">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">distance_penalty</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User, target: Optional[sni.uac.user.User]</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/sni/uac/clearance.html#distance_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.distance_penalty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 0 if both users are the same user, of if the source has clearance
+level &gt;= 7, or if the target is <code class="docutils literal notranslate"><span class="pre">None</span></code>; returns 1 if they are not the
+same but in the same corporation; 3 if they are not in the same corporation
+but in the same alliance; 5 if they are not in the same alliance but in the
+same coalition; and otherwise, returns 10.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.has_clearance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User</em>, <em class="sig-param">scope: str</em>, <em class="sig-param">target: Optional[sni.uac.user.User] = None</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check wether the <em>source</em> user has sufficient clearance to perform a given
+action (or <em>scope</em>) against the <em>target</em> user. For actions regarding the
+SNI instance (like administrative and maintenance tasks), the target should
+be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>If the scope is not about changing clearance levels (so of the form
+<a href="#id7"><span class="problematic" id="id8">``</span></a>sni.set_clearance_level_X`), then the required clearance is calculated
+with the formula:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">required_clearance</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">distance_penalty</span> <span class="o">+</span> <span class="n">scope_level</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where</p>
+<ul class="simple">
+<li><p>the <strong>distance penalty</strong>, prepresent “how far” the source is the target
+(see <a class="reference internal" href="#sni.uac.clearance.distance_penalty" title="sni.uac.clearance.distance_penalty"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.distance_penalty()</span></code></a>);</p></li>
+<li><p>the <strong>scope level</strong>, is a factor that depends on the scope.</p></li>
+</ul>
+<p>If the scope <em>is</em> about changing clearance levels (so of the form
+<a href="#id9"><span class="problematic" id="id10">``</span></a>sni.set_clearance_level_X` where 0 &lt;= X &lt;= 10), and if t is the clearance
+level of the target, then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">required_clearance</span> <span class="o">=</span>
+    <span class="n">X</span>   <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">X</span><span class="p">,</span>
+    <span class="mi">9</span>   <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="n">X</span>
+</pre></div>
+</div>
+<p>Note that in the case, X is also the scope level of the scope.</p>
 </dd></dl>
 
 </div>
@@ -1069,10 +1145,11 @@ creates the character’s corporation and alliance (if applicable).</p>
   <ul>
 <li><a class="reference internal" href="#">User Access Control</a><ul>
 <li><a class="reference internal" href="#users-groups-etc">Users, groups, etc.</a></li>
-<li><a class="reference internal" href="#access-control">Access control</a></li>
+<li><a class="reference internal" href="#clearance-levels">Clearance levels</a></li>
 <li><a class="reference internal" href="#uac-modules-documentation">UAC modules documentation</a><ul>
 <li><a class="reference internal" href="#module-sni.uac.token"><code class="docutils literal notranslate"><span class="pre">sni.uac.token</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.uac.user"><code class="docutils literal notranslate"><span class="pre">sni.uac.user</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.uac.clearance"><code class="docutils literal notranslate"><span class="pre">sni.uac.clearance</span></code></a></li>
 </ul>
 </li>
 </ul>

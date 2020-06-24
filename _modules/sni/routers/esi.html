@@ -55,6 +55,7 @@
 <span class="kn">import</span> <span class="nn">sni.esi.esi</span> <span class="k">as</span> <span class="nn">esi</span>
 <span class="kn">import</span> <span class="nn">sni.esi.sso</span> <span class="k">as</span> <span class="nn">sso</span>
 <span class="kn">import</span> <span class="nn">sni.esi.token</span> <span class="k">as</span> <span class="nn">esitoken</span>
+<span class="kn">import</span> <span class="nn">sni.uac.clearance</span> <span class="k">as</span> <span class="nn">clearance</span>
 <span class="kn">import</span> <span class="nn">sni.uac.token</span> <span class="k">as</span> <span class="nn">snitoken</span>
 <span class="kn">import</span> <span class="nn">sni.uac.user</span> <span class="k">as</span> <span class="nn">user</span>
 
@@ -141,17 +142,21 @@
 <span class="sd">    See also:</span>
 <span class="sd">        :class:`sni.routers.esi.EsiRequestIn`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">esi_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">:</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get_path_scope</span><span class="p">(</span><span class="n">esi_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scope</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">)</span>
+            <span class="n">clearance</span><span class="o">.</span><span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">app_token</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="n">esi_token</span> <span class="o">=</span> <span class="n">esitoken</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">,</span>
+                <span class="n">scope</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;Accept-Encoding&#39;</span><span class="p">:</span> <span class="s1">&#39;gzip&#39;</span><span class="p">,</span>
         <span class="s1">&#39;accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
         <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;SeAT Navy Issue @ &#39;</span> <span class="o">+</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
     <span class="p">}</span>
-    <span class="n">esi_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">:</span>
-        <span class="n">esi_token</span> <span class="o">=</span> <span class="n">esitoken</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">,</span>
-            <span class="n">esi</span><span class="o">.</span><span class="n">get_path_scope</span><span class="p">(</span><span class="n">esi_path</span><span class="p">),</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="n">esi_path</span><span class="p">,</span>
         <span class="n">esi_token</span><span class="p">,</span>

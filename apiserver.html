@@ -70,6 +70,13 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.apiserver.permission_error_handler">
+<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">permission_error_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: PermissionError</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#permission_error_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.permission_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionError</span></code> exceptions and forwards them as
+<code class="docutils literal notranslate"><span class="pre">403</span></code>’s.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.apiserver.print_openapi_spec">
 <code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">print_openapi_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/apiserver.html#print_openapi_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.print_openapi_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the OpenAPI specification of the server in YAML.</p>
@@ -324,15 +331,14 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dl class="function">
 <dt id="sni.routers.token.post_token_dyn">
 <em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenDynIn</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_dyn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a new dynamic app token.</p>
-<p>Must be called with a permanent app token.</p>
+<dd><p>Creates a new dynamic app token. Must be called with a permanent app token.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.routers.token.post_token_per">
 <em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_per</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenPerIn</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_per" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a new permanent app token.</p>
-<p>Must be called with a permanent app token.</p>
+<dd><p>Creates a new permanent app token. Must be called with a permanent app
+token.</p>
 </dd></dl>
 
 <dl class="function">

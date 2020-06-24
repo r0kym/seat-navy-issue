@@ -100,8 +100,6 @@
 </li>
       <li><a href="uac.html#sni.uac.user.Alliance.alliance_id">alliance_id (sni.uac.user.Alliance attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="uac.html#sni.uac.user.Alliance.alliance_name">alliance_name (sni.uac.user.Alliance attribute)</a>
 </li>
       <li><a href="apiserver.html#sni.routers.token.PostTokenDynOut.app_token">app_token (sni.routers.token.PostTokenDynOut attribute)</a>
@@ -112,6 +110,16 @@
         <li><a href="uac.html#sni.uac.token.StateCode.app_token">(sni.uac.token.StateCode attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="uac.html#sni.uac.clearance.are_in_same_alliance">are_in_same_alliance() (in module sni.uac.clearance)</a>
+</li>
+      <li><a href="uac.html#sni.uac.clearance.are_in_same_coalition">are_in_same_coalition() (in module sni.uac.clearance)</a>
+</li>
+      <li><a href="uac.html#sni.uac.clearance.are_in_same_corporation">are_in_same_corporation() (in module sni.uac.clearance)</a>
+</li>
+      <li><a href="uac.html#sni.uac.clearance.assert_has_clearance">assert_has_clearance() (in module sni.uac.clearance)</a>
+</li>
       <li><a href="configuration.html#sni.conf.assert_is_set">assert_is_set() (in module sni.conf)</a>
 </li>
       <li><a href="esi.html#sni.esi.sso.AuthorizationCodeResponse">AuthorizationCodeResponse (class in sni.esi.sso)</a>
@@ -144,6 +152,8 @@
 </li>
       <li><a href="uac.html#sni.uac.user.User.character_name">character_name (sni.uac.user.User attribute)</a>
 </li>
+      <li><a href="uac.html#sni.uac.user.User.clearance_level">clearance_level (sni.uac.user.User attribute)</a>
+</li>
       <li><a href="uac.html#sni.uac.user.Coalition">Coalition (class in sni.uac.user)</a>
 </li>
       <li><a href="uac.html#sni.uac.user.Coalition.DoesNotExist">Coalition.DoesNotExist</a>
@@ -160,10 +170,10 @@
         <li><a href="uac.html#sni.uac.token.Token.comments">(sni.uac.token.Token attribute)</a>
 </li>
       </ul></li>
-      <li><a href="uac.html#sni.uac.user.Corporation">Corporation (class in sni.uac.user)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="uac.html#sni.uac.user.Corporation">Corporation (class in sni.uac.user)</a>
+</li>
       <li><a href="uac.html#sni.uac.user.User.corporation">corporation (sni.uac.user.User attribute)</a>
 </li>
       <li><a href="uac.html#sni.uac.user.Corporation.DoesNotExist">Corporation.DoesNotExist</a>
@@ -219,6 +229,8 @@
       <li><a href="apiserver.html#sni.routers.token.delete_token">delete_token() (in module sni.routers.token)</a>
 </li>
       <li><a href="uac.html#sni.uac.user.Group.description">description (sni.uac.user.Group attribute)</a>
+</li>
+      <li><a href="uac.html#sni.uac.clearance.distance_penalty">distance_penalty() (in module sni.uac.clearance)</a>
 </li>
       <li><a href="apiserver.html#sni.apiserver.does_not_exist_exception_handler">does_not_exist_exception_handler() (in module sni.apiserver)</a>
 </li>
@@ -338,10 +350,12 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apiserver.html#sni.routers.esi.EsiRequestOut.headers">headers (sni.routers.esi.EsiRequestOut attribute)</a>
+      <li><a href="uac.html#sni.uac.clearance.has_clearance">has_clearance() (in module sni.uac.clearance)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apiserver.html#sni.routers.esi.EsiRequestOut.headers">headers (sni.routers.esi.EsiRequestOut attribute)</a>
+</li>
       <li><a href="esi.html#sni.esi.esi.EsiPath.http_method">http_method (sni.esi.esi.EsiPath attribute)</a>
 </li>
   </ul></td>
@@ -516,16 +530,18 @@
 </li>
       <li><a href="uac.html#sni.uac.token.Token.TokenType.per">per (sni.uac.token.Token.TokenType attribute)</a>
 </li>
+      <li><a href="apiserver.html#sni.apiserver.permission_error_handler">permission_error_handler() (in module sni.apiserver)</a>
+</li>
       <li><a href="esi.html#sni.esi.esi.post">post() (in module sni.esi.esi)</a>
 </li>
       <li><a href="apiserver.html#sni.routers.token.post_token_dyn">post_token_dyn() (in module sni.routers.token)</a>
 </li>
       <li><a href="apiserver.html#sni.routers.token.post_token_per">post_token_per() (in module sni.routers.token)</a>
 </li>
-      <li><a href="apiserver.html#sni.routers.token.post_token_use_from_dyn">post_token_use_from_dyn() (in module sni.routers.token)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apiserver.html#sni.routers.token.post_token_use_from_dyn">post_token_use_from_dyn() (in module sni.routers.token)</a>
+</li>
       <li><a href="apiserver.html#sni.routers.token.post_token_use_from_per">post_token_use_from_per() (in module sni.routers.token)</a>
 </li>
       <li><a href="apiserver.html#sni.routers.esi.PostCallbackEsiOut">PostCallbackEsiOut (class in sni.routers.esi)</a>
@@ -607,6 +623,8 @@
       <li><a href="apiserver.html#module-sni.routers.token">sni.routers.token (module)</a>
 </li>
       <li><a href="scheduler.html#module-sni.scheduler">sni.scheduler (module)</a>
+</li>
+      <li><a href="uac.html#module-sni.uac.clearance">sni.uac.clearance (module)</a>
 </li>
       <li><a href="uac.html#module-sni.uac.token">sni.uac.token (module)</a>
 </li>

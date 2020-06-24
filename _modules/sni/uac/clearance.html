@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.uac.clearance &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.uac.clearance</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Clearance management and verification</span>
+
+<span class="sd">Todo:</span>
+<span class="sd">    Safer implementation. Right now it is too prone to coding errors when</span>
+<span class="sd">    calling :meth:`sni.uac.clearance.assert_has_clearance`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">sni.uac.user</span> <span class="k">as</span> <span class="nn">user</span>
+
+<span class="n">SCOPE_LEVELS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;esi-alliances.read_contacts.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-assets.read_assets.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-assets.read_corporation_assets.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-bookmarks.read_character_bookmarks.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-bookmarks.read_corporation_bookmarks.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-calendar.read_calendar_events.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-calendar.respond_calendar_events.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_agents_research.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_blueprints.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_chat_channels.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_contacts.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_corporation_roles.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_fatigue.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_fw_stats.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_loyalty.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_medals.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_notifications.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_opportunities.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_standings.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.read_titles.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characters.write_contacts.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-characterstats.read.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-clones.read_clones.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-clones.read_implants.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-contracts.read_character_contracts.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-contracts.read_corporation_contracts.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_blueprints.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_contacts.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_container_logs.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_corporation_membership.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_divisions.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_facilities.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_fw_stats.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_medals.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_standings.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_starbases.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_structures.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.read_titles.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-corporations.track_members.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-fittings.read_fittings.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-fittings.write_fittings.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-fleets.read_fleet.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-fleets.write_fleet.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-industry.read_character_jobs.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-industry.read_character_mining.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-industry.read_corporation_jobs.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-industry.read_corporation_mining.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-killmails.read_corporation_killmails.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-killmails.read_killmails.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-location.read_location.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-location.read_online.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-location.read_ship_type.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-mail.organize_mail.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-mail.read_mail.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-mail.send_mail.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-markets.read_character_orders.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-markets.read_corporation_orders.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-markets.structure_markets.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-planets.manage_planets.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-planets.read_customs_offices.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-search.search_structures.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-skills.read_skillqueue.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-skills.read_skills.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-ui.open_window.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-ui.write_waypoint.v1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;esi-universe.read_structures.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-wallet.read_character_wallet.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-wallet.read_corporation_wallet.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;esi-wallet.read_corporation_wallets.v1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;publicData&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;sni.delete_user&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s1">&#39;sni.read_coalition&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;sni.read_group&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;sni.write_coalition&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s1">&#39;sni.write_group&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s1">&#39;sni.read_own_token&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;sni.write_dyn_token&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s1">&#39;sni.write_per_token&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s1">&#39;sni.write_use_token&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_0&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_2&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_3&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_4&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_5&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_6&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_7&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_8&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_9&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s1">&#39;sni.set_clearance_level_10&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="are_in_same_alliance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_alliance">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_alliance</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tells wether two users are in the same alliance. Users that have no</span>
+<span class="sd">    alliance are considered in a different alliance as everyone else.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">==</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span></div>
+
+
+<div class="viewcode-block" id="are_in_same_coalition"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_coalition">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_coalition</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tells wether two users have a coalition in common.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">coa</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">in</span> <span class="n">coa</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="are_in_same_corporation"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_corporation">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_corporation</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tells wether two users are in the same corporation. Users that have no</span>
+<span class="sd">    corporation are considered in different a corporation as everyone else.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="o">==</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span></div>
+
+
+<div class="viewcode-block" id="assert_has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.assert_has_clearance">[docs]</a><span class="k">def</span> <span class="nf">assert_has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+                         <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Like :meth:`sni.uac.clearance.has_clearance` but raises a</span>
+<span class="sd">    :class:`PermissionError` if the result is ``False``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">PermissionError</span></div>
+
+
+<div class="viewcode-block" id="distance_penalty"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.distance_penalty">[docs]</a><span class="k">def</span> <span class="nf">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns 0 if both users are the same user, of if the source has clearance</span>
+<span class="sd">    level &gt;= 7, or if the target is ``None``; returns 1 if they are not the</span>
+<span class="sd">    same but in the same corporation; 3 if they are not in the same corporation</span>
+<span class="sd">    but in the same alliance; 5 if they are not in the same alliance but in the</span>
+<span class="sd">    same coalition; and otherwise, returns 10.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="mi">7</span> <span class="ow">or</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">source</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">are_in_same_corporation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">are_in_same_alliance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">3</span>
+    <span class="k">if</span> <span class="n">are_in_same_coalition</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="k">return</span> <span class="mi">10</span></div>
+
+
+<div class="viewcode-block" id="has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.has_clearance">[docs]</a><span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+                  <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check wether the *source* user has sufficient clearance to perform a given</span>
+<span class="sd">    action (or *scope*) against the *target* user. For actions regarding the</span>
+<span class="sd">    SNI instance (like administrative and maintenance tasks), the target should</span>
+<span class="sd">    be ``None``.</span>
+
+<span class="sd">    If the scope is not about changing clearance levels (so of the form</span>
+<span class="sd">    ``sni.set_clearance_level_X`), then the required clearance is calculated</span>
+<span class="sd">    with the formula::</span>
+
+<span class="sd">        required_clearance = min(distance_penalty + scope_level, 10)</span>
+
+<span class="sd">    where</span>
+
+<span class="sd">    * the **distance penalty**, prepresent &quot;how far&quot; the source is the target</span>
+<span class="sd">      (see :meth:`sni.uac.clearance.distance_penalty`);</span>
+
+<span class="sd">    * the **scope level**, is a factor that depends on the scope.</span>
+
+<span class="sd">    If the scope *is* about changing clearance levels (so of the form</span>
+<span class="sd">    ``sni.set_clearance_level_X` where 0 &lt;= X &lt;= 10), and if t is the clearance</span>
+<span class="sd">    level of the target, then::</span>
+
+<span class="sd">        required_clearance =</span>
+<span class="sd">            X   if t &lt;= X,</span>
+<span class="sd">            9   if t &gt; X</span>
+
+<span class="sd">    Note that in the case, X is also the scope level of the scope.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">scope</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SCOPE_LEVELS</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unknown scope </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">PermissionError</span>
+    <span class="n">scope_level</span> <span class="o">=</span> <span class="n">SCOPE_LEVELS</span><span class="p">[</span><span class="n">scope</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;sni.set_clearance_level_&#39;</span><span class="p">):</span>  <span class="c1"># Clearance scopes</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Clearance scopes must have a valid target&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&lt;=</span> <span class="n">scope_level</span><span class="p">:</span>
+            <span class="n">required_clearance</span> <span class="o">=</span> <span class="n">scope_level</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">required_clearance</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Other scopes</span>
+        <span class="n">required_clearance</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="n">scope_level</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s1">&#39;Access </span><span class="si">%s</span><span class="s1"> --[</span><span class="si">%s</span><span class="s1">]--&gt; </span><span class="si">%s</span><span class="s1"> requires a clearance of </span><span class="si">%d</span><span class="s1">, source has </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+        <span class="n">scope</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">character_name</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+        <span class="n">required_clearance</span><span class="p">,</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="n">required_clearance</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

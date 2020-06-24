@@ -96,6 +96,22 @@
     <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="permission_error_handler"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.permission_error_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">PermissionError</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">permission_error_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span>
+                             <span class="n">error</span><span class="p">:</span> <span class="ne">PermissionError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Catches :class:`PermissionError` exceptions and forwards them as</span>
+<span class="sd">    ``403``&#39;s.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">):</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;details&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)}</span>
+    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="exception_handler"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.exception_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exception_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
