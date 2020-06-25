@@ -21,6 +21,7 @@ import sni.routers.coalition
 import sni.routers.esi
 import sni.routers.group
 import sni.routers.token
+import sni.routers.user
 
 app = FastAPI()
 app.include_router(
@@ -38,6 +39,11 @@ app.include_router(
     sni.routers.token.router,
     prefix='/token',
     tags=['Authentication & tokens'],
+)
+app.include_router(
+    sni.routers.user.router,
+    prefix='/user',
+    tags=['User management'],
 )
 
 
@@ -64,12 +70,13 @@ def permission_error_handler(_request: requests.Request,
     Catches :class:`PermissionError` exceptions and forwards them as
     ``403``'s.
     """
-    content = None
     if conf.get('general.debug'):
-        content = {'details': str(error)}
+        content = {'details': 'Insufficient clearance level: ' + str(error)}
+    else:
+        content = {'details': 'Insufficient clearance level'}
     return JSONResponse(
         content=content,
-        status_code=status.HTTP_401_UNAUTHORIZED,
+        status_code=status.HTTP_403_FORBIDDEN,
     )
 
 
