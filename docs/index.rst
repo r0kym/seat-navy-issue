@@ -58,7 +58,6 @@ High level documentation
    openapi
    authentication
    configuration
-   users
    uac
    todos
 

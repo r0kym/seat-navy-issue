@@ -2,6 +2,8 @@
 User (aka character), group, corporation, and alliance management
 """
 
+from typing import List
+
 import mongoengine as me
 
 import sni.time as time
@@ -17,6 +19,12 @@ class Alliance(me.Document):
     alliance_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
     updated_on = me.DateTimeField(required=True, default=time.now)
+
+    def coalitions(self) -> List['Coalition']:
+        """
+        Returns the list of coalition this alliance is part of.
+        """
+        return list(Coalition.objects(members=self))
 
     @property
     def executor(self) -> 'Corporation':

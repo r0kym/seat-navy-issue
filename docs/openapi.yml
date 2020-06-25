@@ -136,6 +136,54 @@ components:
       - uuid
       title: GetTokenOut
       type: object
+    GetUserOut:
+      description: Model for ``GET /user/{character_name}`` requests
+      properties:
+        alliance:
+          title: Alliance
+          type: string
+        character_id:
+          title: Character Id
+          type: integer
+        character_name:
+          title: Character Name
+          type: string
+        clearance_level:
+          title: Clearance Level
+          type: integer
+        coalitions:
+          items:
+            type: string
+          title: Coalitions
+          type: array
+        corporation:
+          title: Corporation
+          type: string
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        is_ceo_of_alliance:
+          title: Is Ceo Of Alliance
+          type: boolean
+        is_ceo_of_corporation:
+          title: Is Ceo Of Corporation
+          type: boolean
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - character_id
+      - character_name
+      - clearance_level
+      - coalitions
+      - created_on
+      - is_ceo_of_alliance
+      - is_ceo_of_corporation
+      - updated_on
+      title: GetUserOut
+      type: object
     HTTPValidationError:
       properties:
         detail:
@@ -309,6 +357,14 @@ components:
           title: Remove Members
           type: array
       title: PutGroupIn
+      type: object
+    PutUserIn:
+      description: Model for ``PUT /user/{character_name}`` requests
+      properties:
+        clearance_level:
+          title: Clearance Level
+          type: integer
+      title: PutUserIn
       type: object
     ValidationError:
       properties:
@@ -955,4 +1011,136 @@ paths:
       summary: Post Token Use From Per
       tags:
       - Authentication & tokens
+  /user/:
+    get:
+      description: Returns the list of all user names.
+      operationId: get_user_user__get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                title: Response Get User User  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get User
+      tags:
+      - User management
+  /user/{character_name}:
+    delete:
+      description: Deletes a user.
+      operationId: delete_user_user__character_name__delete
+      parameters:
+      - in: path
+        name: character_name
+        required: true
+        schema:
+          title: Character Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete User
+      tags:
+      - User management
+    get:
+      description: "Returns details about a character\n\nTodo:\n    Cleck clearance"
+      operationId: get_user_name_user__character_name__get
+      parameters:
+      - in: path
+        name: character_name
+        required: true
+        schema:
+          title: Character Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get User Name
+      tags:
+      - User management
+    put:
+      description: Returns details about a character
+      operationId: put_user_me_user__character_name__put
+      parameters:
+      - in: path
+        name: character_name
+        required: true
+        schema:
+          title: Character Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutUserIn'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Put User Me
+      tags:
+      - User management
 
