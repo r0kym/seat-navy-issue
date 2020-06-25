@@ -99,7 +99,7 @@ def ensure_alliance(alliance_id: int) -> Alliance:
         set__ticker=data['ticker'],
         upsert=True,
     )
-    ensure_auto_group(data['name'])
+    # ensure_auto_group(data['name'])
     return alliance
 
 
@@ -138,7 +138,7 @@ def ensure_corporation(corporation_id: int) -> Corporation:
         set__ticker=data['ticker'],
         upsert=True,
     )
-    ensure_auto_group(data['name'])
+    # ensure_auto_group(data['name'])
     return corporation
 
 
@@ -156,7 +156,7 @@ def ensure_user(character_id: int) -> User:
         set__corporation=ensure_corporation(data['corporation_id']),
         upsert=True,
     )
-    grp = ensure_auto_group(data['name'])
-    grp.modify(add_to_set__members=user)
-    grp.save()
+    # grp = ensure_auto_group(data['name'])
+    # grp.modify(add_to_set__members=user)
+    # grp.save()
     return user
