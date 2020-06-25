@@ -18,11 +18,14 @@ class Alliance(me.Document):
     executor_corporation_id = me.IntField(required=True)
     alliance_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
-    updated_on = me.DateTimeField(required=True, default=time.now)
+    updated_on = me.DateTimeField(default=time.now, required=True)
 
     def coalitions(self) -> List['Coalition']:
         """
         Returns the list of coalition this alliance is part of.
+
+        Todo:
+            Paginate the results
         """
         return list(Coalition.objects(members=self))
 
@@ -41,23 +44,23 @@ class Coalition(me.Document):
     EVE coalition. Coalitions are not formally represented in EVE, so they have
     to be created manually. An alliance can be part of multiple coalitions.
     """
-    created_on = me.DateTimeField(required=True, default=time.now)
+    created_on = me.DateTimeField(default=time.now, required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     name = me.StringField(required=True, unique=True)
     ticker = me.StringField(default=str)
-    updated_on = me.DateTimeField(required=True, default=time.now)
+    updated_on = me.DateTimeField(default=time.now, required=True)
 
 
 class Corporation(me.Document):
     """
     EVE corporation database model.
     """
-    alliance = me.ReferenceField(Alliance, required=False, default=None)
+    alliance = me.ReferenceField(Alliance, default=None, null=True, required=False)
     ceo_character_id = me.IntField(required=True)
     corporation_id = me.IntField(unique=True)
     corporation_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
-    updated_on = me.DateTimeField(required=True, default=time.now)
+    updated_on = me.DateTimeField(default=time.now, required=True)
 
     @property
     def ceo(self) -> 'User':
@@ -75,10 +78,10 @@ class User(me.Document):
     """
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
-    clearance_level = me.IntField(required=True, default=0)
-    corporation = me.ReferenceField(Corporation, default=None)
-    created_on = me.DateTimeField(required=True, default=time.now)
-    updated_on = me.DateTimeField(required=True, default=time.now)
+    clearance_level = me.IntField(default=0, required=True)
+    corporation = me.ReferenceField(Corporation, default=None, null=True)
+    created_on = me.DateTimeField(default=time.now, required=True)
+    updated_on = me.DateTimeField(default=time.now, required=True)
 
     def is_ceo_of_alliance(self) -> bool:
         """
@@ -101,12 +104,12 @@ class Group(me.Document):
     """
     Group model. A group is simply a collection of users.
     """
-    created_on = me.DateTimeField(required=True, default=time.now)
+    created_on = me.DateTimeField(default=time.now, required=True)
     description = me.StringField(default=str)
     members = me.ListField(me.ReferenceField(User), required=True)
     name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField(User, required=True)
-    updated_on = me.DateTimeField(required=True, default=time.now)
+    updated_on = me.DateTimeField(default=time.now, required=True)
 
 
 def ensure_alliance(alliance_id: int) -> Alliance:

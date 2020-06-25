@@ -29,19 +29,27 @@ class Token(me.Document):
         per = 'per'  # Permanent app token
         use = 'use'  # User token
 
-    callback = me.URLField(default=None)
-    comments = me.StringField()
-    created_on = me.DateTimeField(required=True, default=time.now)
-    expires_on = me.DateTimeField(null=True, default=None)
+    callback = me.URLField(default=None, null=True)
+    comments = me.StringField(default=str)
+    created_on = me.DateTimeField(default=time.now, required=True)
+    expires_on = me.DateTimeField(default=None, null=True)
     owner = me.ReferenceField(user.User,
                               required=True,
                               reverse_delete_rule=me.CASCADE)
     parent = me.ReferenceField('self',
-                               null=True,
                                default=None,
+                               null=True,
                                reverse_delete_rule=me.CASCADE)
     token_type = me.StringField(choices=TokenType, required=True)
     uuid = me.UUIDField(binary=False, unique=True)
+    meta = {
+        'indexes': [
+            {
+                'fields': ['expires_on'],
+                'expireAfterSeconds': 0,
+            },
+        ],
+    }
 
 
 class StateCode(me.Document):
@@ -53,7 +61,7 @@ class StateCode(me.Document):
     end user logs in to EVE SSO.
     """
     app_token = me.ReferenceField(Token, required=True)
-    created_on = me.DateTimeField(required=True, default=time.now)
+    created_on = me.DateTimeField(default=time.now, required=True)
     uuid = me.UUIDField(binary=False, unique=True)
     meta = {
         'indexes': [
