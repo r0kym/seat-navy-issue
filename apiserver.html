@@ -46,42 +46,8 @@
   <div class="section" id="api-server">
 <h1>API Server<a class="headerlink" href="#api-server" title="Permalink to this headline">¶</a></h1>
 <p>API server modules documentation</p>
-<div class="section" id="module-sni.apiserver">
-<span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.apiserver" title="Permalink to this headline">¶</a></h2>
-<p>API Server</p>
-<dl class="function">
-<dt id="sni.apiserver.does_not_exist_exception_handler">
-<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">does_not_exist_exception_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: Exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#does_not_exist_exception_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.does_not_exist_exception_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.DoesNotExist</span></code> exceptions and forwards them as
-<code class="docutils literal notranslate"><span class="pre">404</span></code>’s.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.apiserver.exception_handler">
-<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">exception_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: Exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#exception_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.exception_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Global exception handler.</p>
-<p>Prints trace for all others.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.apiserver.get_ping">
-<em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">get_ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#get_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.get_ping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">pong</span></code>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.apiserver.permission_error_handler">
-<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">permission_error_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: PermissionError</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#permission_error_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.permission_error_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionError</span></code> exceptions and forwards them as
-<code class="docutils literal notranslate"><span class="pre">403</span></code>’s.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.apiserver.print_openapi_spec">
-<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">print_openapi_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/apiserver.html#print_openapi_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.print_openapi_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the OpenAPI specification of the server in YAML.</p>
-</dd></dl>
-
+<div class="section" id="main-module">
+<h2>Main module<a class="headerlink" href="#main-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="routers">
 <h2>Routers<a class="headerlink" href="#routers" title="Permalink to this headline">¶</a></h2>
@@ -370,7 +336,7 @@ to the owner of that app token.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">API Server</a><ul>
-<li><a class="reference internal" href="#module-sni.apiserver">Main module</a></li>
+<li><a class="reference internal" href="#main-module">Main module</a></li>
 <li><a class="reference internal" href="#routers">Routers</a><ul>
 <li><a class="reference internal" href="#module-sni.routers.esi"><code class="docutils literal notranslate"><span class="pre">sni.routers.esi</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.routers.token"><code class="docutils literal notranslate"><span class="pre">sni.routers.token</span></code></a></li>

@@ -58,8 +58,8 @@ Furthermore, note that
 
 
 See :meth:`sni.uac.clearance.has_clearance` for a precise specification of how
-clearance levels are checked, and :car:`sni.uac.clearance.SCOPE_LEVELS` for the
-declaration of all scopes.
+clearance levels are checked, and :const:`sni.uac.clearance.SCOPE_LEVELS` for
+the declaration of all scopes.
 
 
 UAC modules documentation

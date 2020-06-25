@@ -41,8 +41,10 @@
 <span class="sd">Clearance management and verification</span>
 
 <span class="sd">Todo:</span>
-<span class="sd">    Safer implementation. Right now it is too prone to coding errors when</span>
-<span class="sd">    calling :meth:`sni.uac.clearance.assert_has_clearance`.</span>
+<span class="sd">    * Safer implementation. Right now it is too prone to coding errors when</span>
+<span class="sd">      calling :meth:`sni.uac.clearance.assert_has_clearance`.</span>
+
+<span class="sd">    * Refactor that mess.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -263,6 +265,30 @@
         <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="n">required_clearance</span></div>
+
+
+<div class="viewcode-block" id="reset_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.reset_clearance">[docs]</a><span class="k">def</span> <span class="nf">reset_clearance</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resets a user&#39;s clearance.</span>
+
+<span class="sd">    If a user is the CEO of its corporation, then a clearance level of 2 is</span>
+<span class="sd">    granted. If its corporation is the executor of the alliance, then a level</span>
+<span class="sd">    of 4 is granted instead. If the user is root or has a clearance level of</span>
+<span class="sd">    10, then a level of 10 is applied (so that superusers are preserved no</span>
+<span class="sd">    matter what). Otherwise, the user&#39;s clearance level is set to 0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">elif</span> <span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_alliance</span><span class="p">():</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">elif</span> <span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">():</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Reset clearance level of </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+                  <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 </pre></div>
 
           </div>

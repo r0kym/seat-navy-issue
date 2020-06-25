@@ -68,19 +68,27 @@
         <span class="n">per</span> <span class="o">=</span> <span class="s1">&#39;per&#39;</span>  <span class="c1"># Permanent app token</span>
         <span class="n">use</span> <span class="o">=</span> <span class="s1">&#39;use&#39;</span>  <span class="c1"># User token</span></div>
 
-    <span class="n">callback</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">comments</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
-    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">callback</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
                               <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
     <span class="n">parent</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
-                               <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
     <span class="n">token_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">TokenType</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;expires_on&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="StateCode"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.StateCode">[docs]</a><span class="k">class</span> <span class="nc">StateCode</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -92,8 +100,16 @@
 <span class="sd">    end user logs in to EVE SSO.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
-    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;created_on&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="create_dynamic_app_token"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_dynamic_app_token">[docs]</a><span class="k">def</span> <span class="nf">create_dynamic_app_token</span><span class="p">(</span>
