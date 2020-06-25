@@ -16,6 +16,7 @@ class Alliance(me.Document):
     executor_corporation_id = me.IntField(required=True)
     alliance_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
+    updated_on = me.DateTimeField(required=True, default=time.now)
 
     @property
     def executor(self) -> 'Corporation':
@@ -48,6 +49,7 @@ class Corporation(me.Document):
     corporation_id = me.IntField(unique=True)
     corporation_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
+    updated_on = me.DateTimeField(required=True, default=time.now)
 
     @property
     def ceo(self) -> 'User':
@@ -68,6 +70,7 @@ class User(me.Document):
     clearance_level = me.IntField(required=True, default=0)
     corporation = me.ReferenceField(Corporation, default=None)
     created_on = me.DateTimeField(required=True, default=time.now)
+    updated_on = me.DateTimeField(required=True, default=time.now)
 
 
 class Group(me.Document):

@@ -17,6 +17,7 @@ import sni.apiserver as apiserver
 import sni.conf as conf
 import sni.db as db
 import sni.esi.esi as esi
+import sni.esi.jobs as esijobs
 
 
 def main():
@@ -50,7 +51,17 @@ def main():
 
     db.init()
     db.migrate()
+
+    if arguments.run_job:
+        module_name, function_name = arguments.run_job.split(':')
+        logging.info('Manually running job %s (%s)', function_name, module_name)
+        module = __import__(module_name, fromlist=[None])
+        function = getattr(module, function_name)
+        function()
+        sys.exit()
+
     scheduler.start()
+    esijobs.schedule_jobs()
     start_api_server()
 
 
@@ -86,6 +97,10 @@ def parse_command_line_arguments() -> argparse.Namespace:
         action='store_true',
         default=False,
         help='Reloads the ESI OpenAPI specification to the database and exits',
+    )
+    argument_parser.add_argument(
+        '--run-job',
+        help='Runs a job and exists',
     )
     return argument_parser.parse_args()
 

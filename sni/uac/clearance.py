@@ -2,8 +2,9 @@
 Clearance management and verification
 
 Todo:
-    Safer implementation. Right now it is too prone to coding errors when
-    calling :meth:`sni.uac.clearance.assert_has_clearance`.
+    * Safer implementation. Right now it is too prone to coding errors when
+      calling :meth:`sni.uac.clearance.assert_has_clearance`.
+    * Refactor that mess.
 """
 
 import logging
