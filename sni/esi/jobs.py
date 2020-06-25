@@ -16,6 +16,7 @@ def schedule_jobs():
     """
     Schedules all the jobs of this module.
     """
+    logging.info('Scheduling ESI jobs')
     scheduler.add_job(update_alliances, 'interval', minutes=60)
     scheduler.add_job(update_corporations, 'interval', minutes=60)
     scheduler.add_job(update_users, 'interval', minutes=60)
@@ -64,7 +65,6 @@ def update_users():
         usr.corporation = user.ensure_corporation(data['corporation_id'])
         usr.updated_on = time.now()
         if usr.corporation != old_corporation:
-            logging.debug('Corporation of user %s changed',
-                          usr.character_name)
+            logging.debug('Corporation of user %s changed', usr.character_name)
             clearance.reset_clearance(usr)
         usr.save()

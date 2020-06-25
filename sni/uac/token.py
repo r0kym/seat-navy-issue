@@ -55,6 +55,14 @@ class StateCode(me.Document):
     app_token = me.ReferenceField(Token, required=True)
     created_on = me.DateTimeField(required=True, default=time.now)
     uuid = me.UUIDField(binary=False, unique=True)
+    meta = {
+        'indexes': [
+            {
+                'fields': ['created_on'],
+                'expireAfterSeconds': 600,
+            },
+        ],
+    }
 
 
 def create_dynamic_app_token(

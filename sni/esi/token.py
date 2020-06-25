@@ -25,6 +25,14 @@ class EsiAccessToken(mongoengine.Document):
     scopes = mongoengine.ListField(mongoengine.StringField(),
                                    required=True,
                                    default=[])
+    meta = {
+        'indexes': [
+            {
+                'fields': ['expires_on'],
+                'expireAfterSeconds': 0,
+            },
+        ],
+    }
 
 
 class EsiRefreshToken(mongoengine.Document):
