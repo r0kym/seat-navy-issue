@@ -3,8 +3,11 @@ Some jobs to he scheduled, regarding the state of the database (e.g. making
 sure all users are in the good corp, etc.)
 """
 
+import logging
+
 from sni.scheduler import scheduler
 import sni.esi.esi as esi
+import sni.uac.clearance as clearance
 import sni.uac.user as user
 import sni.time as time
 
@@ -37,11 +40,17 @@ def update_corporations():
     for corporation in user.Corporation.objects():
         data = esi.get(
             f'latest/corporations/{corporation.corporation_id}').json()
+        old_alliance = corporation.alliance
         if 'alliance_id' in data['alliance_id']:
             corporation.alliance = user.ensure_alliance(data['alliance_id'])
         corporation.ceo_character_id = int(data['ceo_id'])
         corporation.ticker = data['ticker']
         corporation.updated_on = time.now()
+        if corporation.alliance != old_alliance:
+            logging.debug('Alliance of corporation %s changed',
+                          corporation.corporation_name)
+            for usr in user.User.objects(corporation=corporation):
+                clearance.reset_clearance(usr, save=True)
         corporation.save()
 
 
@@ -51,6 +60,11 @@ def update_users():
     """
     for usr in user.User.objects(character_id__gt=0):
         data = esi.get(f'latest/characters/{usr.character_id}').json()
+        old_corporation = usr.corporation
         usr.corporation = user.ensure_corporation(data['corporation_id'])
         usr.updated_on = time.now()
+        if usr.corporation != old_corporation:
+            logging.debug('Corporation of user %s changed',
+                          usr.character_name)
+            clearance.reset_clearance(usr)
         usr.save()

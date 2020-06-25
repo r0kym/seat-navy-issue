@@ -54,7 +54,8 @@ def main():
 
     if arguments.run_job:
         module_name, function_name = arguments.run_job.split(':')
-        logging.info('Manually running job %s (%s)', function_name, module_name)
+        logging.info('Manually running job %s (%s)', function_name,
+                     module_name)
         module = __import__(module_name, fromlist=[None])
         function = getattr(module, function_name)
         function()

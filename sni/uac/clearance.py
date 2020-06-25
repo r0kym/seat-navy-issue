@@ -225,3 +225,27 @@ def has_clearance(source: user.User,
         source.clearance_level,
     )
     return source.clearance_level >= required_clearance
+
+
+def reset_clearance(usr: user.User, save: bool = False):
+    """
+    Resets a user's clearance.
+
+    If a user is the CEO of its corporation, then a clearance level of 2 is
+    granted. If its corporation is the executor of the alliance, then a level
+    of 4 is granted instead. If the user is root or has a clearance level of
+    10, then a level of 10 is applied (so that superusers are preserved no
+    matter what). Otherwise, the user's clearance level is set to 0.
+    """
+    if usr.character_id == 0 or usr.clearance_level == 10:
+        usr.clearance_level = 10
+    elif usr.is_ceo_of_alliance():
+        usr.clearance_level = 4
+    elif usr.is_ceo_of_corporation():
+        usr.clearance_level = 2
+    else:
+        usr.clearance_level = 0
+    logging.debug('Reset clearance level of %s to %d', usr.character_name,
+                  usr.clearance_level)
+    if save:
+        usr.save()

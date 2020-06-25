@@ -72,6 +72,22 @@ class User(me.Document):
     created_on = me.DateTimeField(required=True, default=time.now)
     updated_on = me.DateTimeField(required=True, default=time.now)
 
+    def is_ceo_of_alliance(self) -> bool:
+        """
+        Tells wether the user is the ceo of its corporation.
+        """
+        return (self.is_ceo_of_corporation()
+                and self.corporation.alliance is not None
+                and self.corporation.alliance.executor_corporation_id
+                == self.corporation.corporation_id)
+
+    def is_ceo_of_corporation(self) -> bool:
+        """
+        Tells wether the user is the ceo of its corporation.
+        """
+        return (self.corporation is not None
+                and self.corporation.ceo_character_id == self.character_id)
+
 
 class Group(me.Document):
     """
