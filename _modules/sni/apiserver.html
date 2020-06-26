@@ -60,6 +60,7 @@
 <span class="kn">import</span> <span class="nn">sni.routers.esi</span>
 <span class="kn">import</span> <span class="nn">sni.routers.group</span>
 <span class="kn">import</span> <span class="nn">sni.routers.token</span>
+<span class="kn">import</span> <span class="nn">sni.routers.user</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
@@ -77,6 +78,11 @@
     <span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/token&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication &amp; tokens&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/user&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;User management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 
@@ -103,12 +109,13 @@
 <span class="sd">    Catches :class:`PermissionError` exceptions and forwards them as</span>
 <span class="sd">    ``403``&#39;s.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">):</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;details&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)}</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;details&#39;</span><span class="p">:</span> <span class="s1">&#39;Insufficient clearance level: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;details&#39;</span><span class="p">:</span> <span class="s1">&#39;Insufficient clearance level&#39;</span><span class="p">}</span>
     <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
         <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
-        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
