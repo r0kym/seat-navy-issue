@@ -76,7 +76,8 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
 
 
 @router.get('/', response_model=List[str])
-def get_user(app_token: token.Token = Depends(token.validate_header)):
+def get_user(tkn: token.Token = Depends(
+    token.from_authotization_header_nondyn)):
     """
     Returns the list of all user names.
     """
@@ -85,18 +86,20 @@ def get_user(app_token: token.Token = Depends(token.validate_header)):
 
 @router.delete('/{character_name}')
 def delete_user(character_name: str,
-                app_token: token.Token = Depends(token.validate_header)):
+                tkn: token.Token = Depends(
+                    token.from_authotization_header_nondyn)):
     """
     Deletes a user.
     """
     usr: user.User = user.User.objects.get(character_name=character_name)
-    clearance.assert_has_clearance(app_token.owner, 'sni.delete_user')
+    clearance.assert_has_clearance(tkn.owner, 'sni.delete_user')
     usr.delete()
 
 
 @router.get('/{character_name}', response_model=GetUserOut)
 def get_user_name(character_name: str,
-                  app_token: token.Token = Depends(token.validate_header)):
+                  tkn: token.Token = Depends(
+                      token.from_authotization_header_nondyn)):
     """
     Returns details about a character
 
@@ -110,7 +113,8 @@ def get_user_name(character_name: str,
 @router.put('/{character_name}', response_model=GetUserOut)
 def put_user_me(character_name: str,
                 data: PutUserIn,
-                app_token: token.Token = Depends(token.validate_header)):
+                tkn: token.Token = Depends(
+                    token.from_authotization_header_nondyn)):
     """
     Returns details about a character
     """
@@ -122,7 +126,7 @@ def put_user_me(character_name: str,
                 detail=
                 'Field clearance_level must be between 0 and 10 (inclusive).')
         scope = f'sni.set_clearance_level_{data.clearance_level}'
-        clearance.assert_has_clearance(app_token.owner, scope, usr)
+        clearance.assert_has_clearance(tkn.owner, scope, usr)
         usr.clearance_level = data.clearance_level
     usr.updated_on = time.now()
     usr.save()

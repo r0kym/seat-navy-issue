@@ -69,35 +69,36 @@ def group_record_to_response(grp: user.Group) -> GetGroupOut:
 @router.delete('/{group_name}')
 def delete_group(
         group_name: str,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Deletes a group.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.write_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.write_group')
     grp: user.Group = user.Group.objects.get(name=group_name)
     logging.debug('Deleting group %s', group_name)
     grp.delete()
 
 
 @router.get('/', response_model=List[str])
-def get_group(app_token: token.Token = Depends(token.validate_header), ):
+def get_group(
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn), ):
     """
     Lists all the group names.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.read_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return [group.name for group in user.Group.objects()]
 
 
 @router.get('/{group_name}', response_model=GetGroupOut)
 def get_group_name(
         group_name: str,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Returns details about a given group.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.read_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return group_record_to_response(user.Group.objects(name=group_name).get())
 
 
@@ -108,20 +109,20 @@ def get_group_name(
 )
 def post_groups(
         data: PostGroupIn,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Creates a group.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.write_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.write_group')
     grp = user.Group(
         description=data.description,
-        members=[app_token.owner],
+        members=[tkn.owner],
         name=data.name,
-        owner=app_token.owner,
+        owner=tkn.owner,
     ).save()
     logging.debug('Created group %s owned by %s', data.name,
-                  app_token.owner.character_name)
+                  tkn.owner.character_name)
     return group_record_to_response(grp)
 
 
@@ -129,7 +130,7 @@ def post_groups(
 def put_group(
         group_name: str,
         data: PutGroupIn,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Updates a group. All fields in the request body are optional. The
@@ -137,7 +138,7 @@ def put_group(
     ``members`` cannot be used in conjunction with ``add_members`` and
     ``remove_members``.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.write_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.write_group')
     grp: user.Group = user.Group.objects.get(name=group_name)
     logging.debug('Updating group %s', group_name)
     if data.add_members is not None:

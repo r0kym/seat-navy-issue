@@ -55,7 +55,10 @@ class Corporation(me.Document):
     """
     EVE corporation database model.
     """
-    alliance = me.ReferenceField(Alliance, default=None, null=True, required=False)
+    alliance = me.ReferenceField(Alliance,
+                                 default=None,
+                                 null=True,
+                                 required=False)
     ceo_character_id = me.IntField(required=True)
     corporation_id = me.IntField(unique=True)
     corporation_name = me.StringField(required=True)

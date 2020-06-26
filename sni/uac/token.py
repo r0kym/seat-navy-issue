@@ -173,6 +173,44 @@ def create_user_token(app_token: Token, owner: user.User) -> Token:
     return new_token
 
 
+def from_authotization_header(authorization: str = fastapi.Header(
+    None)) -> Token:
+    """
+    Validates an ``Authorization: Bearer`` header and returns a
+    :class:`sni.uac.token.Token`. If the token string is invalid, raises a
+    ``401``. Should be used as a FastAPI dependency.
+    """
+    bearer = 'Bearer '
+    if not authorization or not authorization.startswith(bearer):
+        raise fastapi.HTTPException(
+            fastapi.status.HTTP_401_UNAUTHORIZED,
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    token_str = authorization[len(bearer):]
+    token = get_token_from_jwt(token_str)
+    if not token:
+        raise fastapi.HTTPException(
+            fastapi.status.HTTP_401_UNAUTHORIZED,
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    logging.debug('Successfully validated token %s', token.uuid)
+    return token
+
+
+def from_authotization_header_nondyn(tkn: Token = fastapi.Depends(
+    from_authotization_header)) -> Token:
+    """
+    Validates an ``Authorization: Bearer`` header and returns a
+    :class:`sni.uac.token.Token`. If the token string is invalid, or if the
+    token is dynamic, raises a ``401``. Should be used as a FastAPI dependency.
+    """
+    if tkn.token_type == Token.TokenType.dyn:
+        raise fastapi.HTTPException(
+            fastapi.status.HTTP_401_UNAUTHORIZED,
+            detail='Cannot use a dynamic app token for this path.')
+    return tkn
+
+
 def get_token_from_jwt(token_str: str) -> Optional[Token]:
     """
     Retrieves a token from its JWT string.
@@ -226,26 +264,3 @@ def to_jwt(model: Token) -> str:
         conf.get('jwt.secret'),
         algorithm=conf.get('jwt.algorithm'),
     ).decode()
-
-
-def validate_header(authorization: str = fastapi.Header(None)) -> Token:
-    """
-    Validates an ``Authorization: Bearer`` header.
-
-    Should be used as a FastAPI dependency.
-    """
-    bearer = 'Bearer '
-    if not authorization or not authorization.startswith(bearer):
-        raise fastapi.HTTPException(
-            fastapi.status.HTTP_401_UNAUTHORIZED,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    token_str = authorization[len(bearer):]
-    token = get_token_from_jwt(token_str)
-    if not token:
-        raise fastapi.HTTPException(
-            fastapi.status.HTTP_401_UNAUTHORIZED,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    logging.debug('Successfully validated token %s', token.uuid)
-    return token

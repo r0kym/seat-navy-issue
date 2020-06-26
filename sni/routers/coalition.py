@@ -69,35 +69,36 @@ def coalition_record_to_response(coa: user.Coalition) -> GetCoalitionOut:
 @router.delete('/{coalition_name}')
 def delete_coalition(
         coalition_name: str,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Deletes a coalition.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.write_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.write_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
     logging.debug('Deleting coalition %s', coalition_name)
     coa.delete()
 
 
 @router.get('/', response_model=List[str])
-def get_coalition(app_token: token.Token = Depends(token.validate_header), ):
+def get_coalition(tkn: token.Token = Depends(
+    token.from_authotization_header_nondyn)):
     """
     Lists all the coalition names.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.read_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return [coalition.name for coalition in user.Coalition.objects()]
 
 
 @router.get('/{coalition_name}', response_model=GetCoalitionOut)
 def get_coalition_name(
         coalition_name: str,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Returns details about a given coalition.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.read_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return coalition_record_to_response(
         user.Coalition.objects(name=coalition_name).get())
 
@@ -109,12 +110,12 @@ def get_coalition_name(
 )
 def post_coalitions(
         data: PostCoalitionIn,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Creates a coalition.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.write_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.write_coalition')
     coa = user.Coalition(
         name=data.name,
         ticker=data.ticker,
@@ -127,7 +128,7 @@ def post_coalitions(
 def put_coalition(
         coalition_name: str,
         data: PutCoalitionIn,
-        app_token: token.Token = Depends(token.validate_header),
+        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Updates a coalition. All fields in the request body are optional. The
@@ -135,7 +136,7 @@ def put_coalition(
     ``members`` cannot be used in conjunction with ``add_members`` and
     ``remove_members``.
     """
-    clearance.assert_has_clearance(app_token.owner, 'sni.write_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.write_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
     logging.debug('Updating coalition %s', coalition_name)
     if data.add_members is not None:

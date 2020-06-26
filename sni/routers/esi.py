@@ -63,7 +63,7 @@ async def get_callback_esi(code: str, state: str):
         `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
     """
     logging.info('Received callback from ESI for state %s', state)
-    state_code = snitoken.StateCode.objects.get(uuid=state)
+    state_code: snitoken.StateCode = snitoken.StateCode.objects.get(uuid=state)
     esi_response = sso.get_access_token(code)
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
     esitoken.save_esi_tokens(esi_response)
@@ -93,9 +93,9 @@ async def get_callback_esi(code: str, state: str):
     response_model=EsiRequestOut,
 )
 async def get_esi_latest(
-        esi_path: str,
-        data: EsiRequestIn = EsiRequestIn(),
-        app_token: snitoken.Token = Depends(snitoken.validate_header),
+    esi_path: str,
+    data: EsiRequestIn = EsiRequestIn(),
+    tkn: snitoken.Token = Depends(snitoken.from_authotization_header_nondyn),
 ):
     """
     Forwards a GET request to the ESI.
@@ -108,7 +108,7 @@ async def get_esi_latest(
         scope = esi.get_path_scope(esi_path)
         if scope is not None:
             target = user.User.objects.get(character_id=data.on_behalf_of)
-            clearance.assert_has_clearance(app_token.owner, scope, target)
+            clearance.assert_has_clearance(tkn.owner, scope, target)
             esi_token = esitoken.get_access_token(
                 data.on_behalf_of,
                 scope,
