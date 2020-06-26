@@ -1,5 +1,3 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
 API Server
 """
@@ -14,6 +12,7 @@ from fastapi import (
 from fastapi.responses import JSONResponse
 import mongoengine
 import requests
+import requests.exceptions
 import yaml
 
 import sni.conf as conf
@@ -77,6 +76,25 @@ def permission_error_handler(_request: requests.Request,
     return JSONResponse(
         content=content,
         status_code=status.HTTP_403_FORBIDDEN,
+    )
+
+
+@app.exception_handler(requests.exceptions.HTTPError)
+def requests_httperror_handler(_request: requests.Request,
+                               error: requests.exceptions.HTTPError):
+    """
+    Catches :class:`requests.exceptions.HTTPError` exceptions and forwards them
+    as ``500``'s.
+    """
+    if conf.get('general.debug') and error.request is not None:
+        req: requests.Request = error.request
+        content = {
+            'details':
+            f'Failed to issue {req.method} to "{req.url}": {str(error)}'
+        }
+    return JSONResponse(
+        content=content,
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )
 
 
