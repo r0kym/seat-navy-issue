@@ -7,7 +7,7 @@ See also:
     `APScheduler documentation <https://apscheduler.readthedocs.io/en/stable/>`_
 """
 
-from apscheduler.executors.pool import ProcessPoolExecutor
+from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -17,7 +17,7 @@ import sni.time as time
 scheduler = BackgroundScheduler(
     executors={
         'default':
-        ProcessPoolExecutor(conf.get('general.scheduler_process_count')),
+        ThreadPoolExecutor(conf.get('general.scheduler_thread_count')),
     },
     job_defaults={
         'coalesce': False,
