@@ -72,9 +72,9 @@ def delete_coalition(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Deletes a coalition.
+    Deletes a coalition. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.delete_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
     logging.debug('Deleting coalition %s', coalition_name)
     coa.delete()
@@ -84,7 +84,7 @@ def delete_coalition(
 def get_coalition(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """
-    Lists all the coalition names.
+    Lists all the coalition names. Requires a clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return [coalition.name for coalition in user.Coalition.objects()]
@@ -96,7 +96,8 @@ def get_coalition_name(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Returns details about a given coalition.
+    Returns details about a given coalition. Requires a clearance level of 0 or
+    more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return coalition_record_to_response(
@@ -113,9 +114,9 @@ def post_coalitions(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Creates a coalition.
+    Creates a coalition. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.create_coalition')
     coa = user.Coalition(
         name=data.name,
         ticker=data.ticker,
@@ -135,8 +136,10 @@ def put_coalition(
     ``add_members`` and ``remove_members`` fields can be used together, but the
     ``members`` cannot be used in conjunction with ``add_members`` and
     ``remove_members``.
+
+    Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_coalition')
+    clearance.assert_has_clearance(tkn.owner, 'sni.update_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
     logging.debug('Updating coalition %s', coalition_name)
     if data.add_members is not None:

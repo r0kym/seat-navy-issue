@@ -72,9 +72,9 @@ def delete_group(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Deletes a group.
+    Deletes a group. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.delete_group')
     grp: user.Group = user.Group.objects.get(name=group_name)
     logging.debug('Deleting group %s', group_name)
     grp.delete()
@@ -84,7 +84,7 @@ def delete_group(
 def get_group(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn), ):
     """
-    Lists all the group names.
+    Lists all the group names. Requires a clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return [group.name for group in user.Group.objects()]
@@ -96,7 +96,8 @@ def get_group_name(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Returns details about a given group.
+    Returns details about a given group. Requires a clearance level of 0 or
+    more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return group_record_to_response(user.Group.objects(name=group_name).get())
@@ -112,9 +113,9 @@ def post_groups(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Creates a group.
+    Creates a group. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_group')
+    clearance.assert_has_clearance(tkn.owner, 'sni.create_group')
     grp = user.Group(
         description=data.description,
         members=[tkn.owner],
@@ -136,10 +137,13 @@ def put_group(
     Updates a group. All fields in the request body are optional. The
     ``add_members`` and ``remove_members`` fields can be used together, but the
     ``members`` cannot be used in conjunction with ``add_members`` and
-    ``remove_members``.
+    ``remove_members``. Requires a clearance level of 9 or more of for the user
+    to be the owner of the group.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_group')
     grp: user.Group = user.Group.objects.get(name=group_name)
+    if not (tkn.owner == grp.owner
+            or clearance.has_clearance(tkn.owner, 'sni.update_group')):
+        raise PermissionError
     logging.debug('Updating group %s', group_name)
     if data.add_members is not None:
         grp.members += [

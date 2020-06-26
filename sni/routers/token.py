@@ -95,15 +95,15 @@ async def delete_token(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Deletes a token
+    Manually deletes a token (of any type). Requires a clearance level of 10.
     """
     tok: token.Token = token.Token.objects.get(uuid=uuid)
     if tok.token_type == token.Token.TokenType.dyn:
-        clearance.assert_has_clearance(tkn.owner, 'sni.write_dyn_token')
+        clearance.assert_has_clearance(tkn.owner, 'sni.delete_dyn_token')
     elif tok.token_type == token.Token.TokenType.per:
-        clearance.assert_has_clearance(tkn.owner, 'sni.write_per_token')
+        clearance.assert_has_clearance(tkn.owner, 'sni.delete_per_token')
     elif tok.token_type == token.Token.TokenType.use:
-        clearance.assert_has_clearance(tkn.owner, 'sni.write_use_token')
+        clearance.assert_has_clearance(tkn.owner, 'sni.delete_use_token')
     else:
         logging.error('Token %s has unknown type %s', tok.uuid, tok.token_type)
         raise PermissionError
@@ -115,7 +115,8 @@ async def delete_token(
 async def get_token(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """
-    Returns informations about the token currently being used.
+    Returns informations about the token currently being used. Requires a
+    clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_own_token')
     return GetTokenOut(
@@ -139,9 +140,10 @@ async def post_token_dyn(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
-    Creates a new dynamic app token. Must be called with a permanent app token.
+    Creates a new dynamic app token. Must be called with a permanent app token,
+    and the owner must have a clearance level of 10.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_dyn_token')
+    clearance.assert_has_clearance(tkn.owner, 'sni.create_dyn_token')
     if tkn.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_dynamic_app_token(
@@ -163,9 +165,9 @@ async def post_token_per(
 ):
     """
     Creates a new permanent app token. Must be called with a permanent app
-    token.
+    token, and the owner must have a clearance level of 10.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_per_token')
+    clearance.assert_has_clearance(tkn.owner, 'sni.create_per_token')
     if tkn.token_type != token.Token.TokenType.per:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     new_token = token.create_permanent_app_token(
@@ -189,13 +191,14 @@ async def post_token_use_from_dyn(
     Authenticates an application dynamic token and returns a `state code` and
     an URL at which the user can authenticate to the EVE SSO. Once that is
     done, SNI issues a GET request to the app predefined callback, with that
-    state code and the user token.
+    state code and the user token. Requires the owner of the token to have a
+    clearance level of 0 or more.
     """
     if tkn.token_type != token.Token.TokenType.dyn:
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
             detail='Must use a dynamic app token for this path.')
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_use_token')
+    clearance.assert_has_clearance(tkn.owner, 'sni.create_use_token')
     state_code = token.create_state_code(tkn)
     return PostTokenUseFromDynOut(
         login_url=sso.get_auth_url(data.scopes, str(state_code.uuid)),
@@ -217,7 +220,7 @@ async def post_token_use_from_per(tkn: token.Token = Depends(
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
             detail='Must use a permanent app token for this path.')
-    clearance.assert_has_clearance(tkn.owner, 'sni.write_use_token')
+    clearance.assert_has_clearance(tkn.owner, 'sni.create_use_token')
     user_token = token.create_user_token(
         tkn,
         user.User.objects.get(character_id=0),

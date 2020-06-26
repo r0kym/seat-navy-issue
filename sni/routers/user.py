@@ -79,8 +79,10 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
 def get_user(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """
-    Returns the list of all user names.
+    Returns the list of all user names. Requires a clearance level of 0 or
+    more.
     """
+    clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
     return [user.character_name for user in user.User.objects()]
 
 
@@ -89,10 +91,10 @@ def delete_user(character_name: str,
                 tkn: token.Token = Depends(
                     token.from_authotization_header_nondyn)):
     """
-    Deletes a user.
+    Deletes a user. Requires a clearance level of 9 or more.
     """
-    usr: user.User = user.User.objects.get(character_name=character_name)
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_user')
+    usr: user.User = user.User.objects.get(character_name=character_name)
     usr.delete()
 
 
@@ -101,22 +103,21 @@ def get_user_name(character_name: str,
                   tkn: token.Token = Depends(
                       token.from_authotization_header_nondyn)):
     """
-    Returns details about a character
-
-    Todo:
-        Cleck clearance
+    Returns details about a character. Requires a clearance level of 0 or more.
     """
+    clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
     usr = user.User.objects.get(character_name=character_name)
     return user_record_to_response(usr)
 
 
 @router.put('/{character_name}', response_model=GetUserOut)
-def put_user_me(character_name: str,
-                data: PutUserIn,
-                tkn: token.Token = Depends(
-                    token.from_authotization_header_nondyn)):
+def put_user_name(character_name: str,
+                  data: PutUserIn,
+                  tkn: token.Token = Depends(
+                      token.from_authotization_header_nondyn)):
     """
-    Returns details about a character
+    Manually updates non ESI data about a character. The required clearance
+    level depends on the modification.
     """
     usr: user.User = user.User.objects.get(character_name=character_name)
     if data.clearance_level is not None:
@@ -125,8 +126,8 @@ def put_user_me(character_name: str,
                 status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=
                 'Field clearance_level must be between 0 and 10 (inclusive).')
-        scope = f'sni.set_clearance_level_{data.clearance_level}'
-        clearance.assert_has_clearance(tkn.owner, scope, usr)
+        scope_name = f'sni.set_clearance_level_{data.clearance_level}'
+        clearance.assert_has_clearance(tkn.owner, scope_name, usr)
         usr.clearance_level = data.clearance_level
     usr.updated_on = time.now()
     usr.save()

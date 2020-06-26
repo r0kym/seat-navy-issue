@@ -98,20 +98,22 @@ async def get_esi_latest(
     tkn: snitoken.Token = Depends(snitoken.from_authotization_header_nondyn),
 ):
     """
-    Forwards a GET request to the ESI.
+    Forwards a GET request to the ESI. The required clearance level depends on
+    the user making the request and the user specified on the ``on_behalf_of``
+    field.
 
     See also:
         :class:`sni.routers.esi.EsiRequestIn`
     """
     esi_token: Optional[str] = None
     if data.on_behalf_of:
-        scope = esi.get_path_scope(esi_path)
-        if scope is not None:
+        esi_scope = esi.get_path_scope(esi_path)
+        if esi_scope is not None:
             target = user.User.objects.get(character_id=data.on_behalf_of)
-            clearance.assert_has_clearance(tkn.owner, scope, target)
+            clearance.assert_has_clearance(tkn.owner, esi_scope, target)
             esi_token = esitoken.get_access_token(
                 data.on_behalf_of,
-                scope,
+                esi_scope,
             ).access_token
     headers = {
         'Accept-Encoding': 'gzip',

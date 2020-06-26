@@ -240,11 +240,11 @@ components:
     PostTokenDynOut:
       description: Model for ``POST /token/dyn`` reponses.
       properties:
-        app_token:
-          title: App Token
+        tkn:
+          title: Tkn
           type: string
       required:
-      - app_token
+      - tkn
       title: PostTokenDynOut
       type: object
     PostTokenPerIn:
@@ -266,11 +266,11 @@ components:
     PostTokenPerOut:
       description: Model for ``POST /token/per`` reponses.
       properties:
-        app_token:
-          title: App Token
+        tkn:
+          title: Tkn
           type: string
       required:
-      - app_token
+      - tkn
       title: PostTokenPerOut
       type: object
     PostTokenUseFromDynIn:
@@ -427,7 +427,8 @@ paths:
       - ESI
   /coalition/:
     get:
-      description: Lists all the coalition names.
+      description: Lists all the coalition names. Requires a clearance level of 0
+        or more.
       operationId: get_coalition_coalition__get
       parameters:
       - in: header
@@ -456,7 +457,7 @@ paths:
       tags:
       - Coalition management
     post:
-      description: Creates a coalition.
+      description: Creates a coalition. Requires a clearance level of 9 or more.
       operationId: post_coalitions_coalition__post
       parameters:
       - in: header
@@ -489,7 +490,7 @@ paths:
       - Coalition management
   /coalition/{coalition_name}:
     delete:
-      description: Deletes a coalition.
+      description: Deletes a coalition. Requires a clearance level of 9 or more.
       operationId: delete_coalition_coalition__coalition_name__delete
       parameters:
       - in: path
@@ -520,7 +521,10 @@ paths:
       tags:
       - Coalition management
     get:
-      description: Returns details about a given coalition.
+      description: 'Returns details about a given coalition. Requires a clearance
+        level of 0 or
+
+        more.'
       operationId: get_coalition_name_coalition__coalition_name__get
       parameters:
       - in: path
@@ -559,7 +563,10 @@ paths:
 
         ``members`` cannot be used in conjunction with ``add_members`` and
 
-        ``remove_members``.'
+        ``remove_members``.
+
+
+        Requires a clearance level of 9 or more.'
       operationId: put_coalition_coalition__coalition_name__put
       parameters:
       - in: path
@@ -598,7 +605,9 @@ paths:
       - Coalition management
   /esi/{esi_path}:
     get:
-      description: "Forwards a GET request to the ESI.\n\nSee also:\n    :class:`sni.routers.esi.EsiRequestIn`"
+      description: "Forwards a GET request to the ESI. The required clearance level\
+        \ depends on\nthe user making the request and the user specified on the ``on_behalf_of``\n\
+        field.\n\nSee also:\n    :class:`sni.routers.esi.EsiRequestIn`"
       operationId: get_esi_latest_esi__esi_path__get
       parameters:
       - in: path
@@ -631,7 +640,7 @@ paths:
       - ESI
   /group/:
     get:
-      description: Lists all the group names.
+      description: Lists all the group names. Requires a clearance level of 0 or more.
       operationId: get_group_group__get
       parameters:
       - in: header
@@ -660,7 +669,7 @@ paths:
       tags:
       - Group management
     post:
-      description: Creates a group.
+      description: Creates a group. Requires a clearance level of 9 or more.
       operationId: post_groups_group__post
       parameters:
       - in: header
@@ -693,7 +702,7 @@ paths:
       - Group management
   /group/{group_name}:
     delete:
-      description: Deletes a group.
+      description: Deletes a group. Requires a clearance level of 9 or more.
       operationId: delete_group_group__group_name__delete
       parameters:
       - in: path
@@ -724,7 +733,10 @@ paths:
       tags:
       - Group management
     get:
-      description: Returns details about a given group.
+      description: 'Returns details about a given group. Requires a clearance level
+        of 0 or
+
+        more.'
       operationId: get_group_name_group__group_name__get
       parameters:
       - in: path
@@ -763,7 +775,9 @@ paths:
 
         ``members`` cannot be used in conjunction with ``add_members`` and
 
-        ``remove_members``.'
+        ``remove_members``. Requires a clearance level of 9 or more of for the user
+
+        to be the owner of the group.'
       operationId: put_group_group__group_name__put
       parameters:
       - in: path
@@ -815,7 +829,8 @@ paths:
       - Testing
   /token/:
     delete:
-      description: Deletes a token
+      description: Manually deletes a token (of any type). Requires a clearance level
+        of 10.
       operationId: delete_token_token__delete
       parameters:
       - in: query
@@ -846,7 +861,10 @@ paths:
       tags:
       - Authentication & tokens
     get:
-      description: Returns informations about the token currently being used.
+      description: 'Returns informations about the token currently being used. Requires
+        a
+
+        clearance level of 0 or more.'
       operationId: get_token_token__get
       parameters:
       - in: header
@@ -873,8 +891,10 @@ paths:
       - Authentication & tokens
   /token/dyn:
     post:
-      description: Creates a new dynamic app token. Must be called with a permanent
-        app token.
+      description: 'Creates a new dynamic app token. Must be called with a permanent
+        app token,
+
+        and the owner must have a clearance level of 10.'
       operationId: post_token_dyn_token_dyn_post
       parameters:
       - in: header
@@ -910,7 +930,7 @@ paths:
       description: 'Creates a new permanent app token. Must be called with a permanent
         app
 
-        token.'
+        token, and the owner must have a clearance level of 10.'
       operationId: post_token_per_token_per_post
       parameters:
       - in: header
@@ -950,7 +970,9 @@ paths:
 
         done, SNI issues a GET request to the app predefined callback, with that
 
-        state code and the user token.'
+        state code and the user token. Requires the owner of the token to have a
+
+        clearance level of 0 or more.'
       operationId: post_token_use_from_dyn_token_use_from_dyn_post
       parameters:
       - in: header
@@ -1013,7 +1035,10 @@ paths:
       - Authentication & tokens
   /user/:
     get:
-      description: Returns the list of all user names.
+      description: 'Returns the list of all user names. Requires a clearance level
+        of 0 or
+
+        more.'
       operationId: get_user_user__get
       parameters:
       - in: header
@@ -1043,7 +1068,7 @@ paths:
       - User management
   /user/{character_name}:
     delete:
-      description: Deletes a user.
+      description: Deletes a user. Requires a clearance level of 9 or more.
       operationId: delete_user_user__character_name__delete
       parameters:
       - in: path
@@ -1074,7 +1099,8 @@ paths:
       tags:
       - User management
     get:
-      description: "Returns details about a character\n\nTodo:\n    Cleck clearance"
+      description: Returns details about a character. Requires a clearance level of
+        0 or more.
       operationId: get_user_name_user__character_name__get
       parameters:
       - in: path
@@ -1106,8 +1132,11 @@ paths:
       tags:
       - User management
     put:
-      description: Returns details about a character
-      operationId: put_user_me_user__character_name__put
+      description: 'Manually updates non ESI data about a character. The required
+        clearance
+
+        level depends on the modification.'
+      operationId: put_user_name_user__character_name__put
       parameters:
       - in: path
         name: character_name
@@ -1140,7 +1169,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Put User Me
+      summary: Put User Name
       tags:
       - User management
 
