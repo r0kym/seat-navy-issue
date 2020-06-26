@@ -468,6 +468,22 @@ be the user given in argument.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.uac.token.from_authotization_header">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">from_authotization_header</code><span class="sig-paren">(</span><em class="sig-param">authorization: str = Header(None)</em><span class="sig-paren">)</span> &#x2192; sni.uac.token.Token<a class="reference internal" href="_modules/sni/uac/token.html#from_authotization_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.from_authotization_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates an <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span></code> header and returns a
+<a class="reference internal" href="#sni.uac.token.Token" title="sni.uac.token.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.token.Token</span></code></a>. If the token string is invalid, raises a
+<code class="docutils literal notranslate"><span class="pre">401</span></code>. Should be used as a FastAPI dependency.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.from_authotization_header_nondyn">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">from_authotization_header_nondyn</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header)</em><span class="sig-paren">)</span> &#x2192; sni.uac.token.Token<a class="reference internal" href="_modules/sni/uac/token.html#from_authotization_header_nondyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.from_authotization_header_nondyn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates an <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span></code> header and returns a
+<a class="reference internal" href="#sni.uac.token.Token" title="sni.uac.token.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.token.Token</span></code></a>. If the token string is invalid, or if the
+token is dynamic, raises a <code class="docutils literal notranslate"><span class="pre">401</span></code>. Should be used as a FastAPI dependency.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.uac.token.get_token_from_jwt">
 <code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">get_token_from_jwt</code><span class="sig-paren">(</span><em class="sig-param">token_str: str</em><span class="sig-paren">)</span> &#x2192; Optional[sni.uac.token.Token]<a class="reference internal" href="_modules/sni/uac/token.html#get_token_from_jwt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.get_token_from_jwt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves a token from its JWT string.</p>
@@ -477,13 +493,6 @@ be the user given in argument.</p>
 <dt id="sni.uac.token.to_jwt">
 <code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">to_jwt</code><span class="sig-paren">(</span><em class="sig-param">model: sni.uac.token.Token</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/uac/token.html#to_jwt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.to_jwt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derives a JWT token byte array from the a token model.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.uac.token.validate_header">
-<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">validate_header</code><span class="sig-paren">(</span><em class="sig-param">authorization: str = Header(None)</em><span class="sig-paren">)</span> &#x2192; sni.uac.token.Token<a class="reference internal" href="_modules/sni/uac/token.html#validate_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.validate_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates an <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span></code> header.</p>
-<p>Should be used as a FastAPI dependency.</p>
 </dd></dl>
 
 </div>

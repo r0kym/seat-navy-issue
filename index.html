@@ -94,6 +94,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <p>Then, run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">your</span> <span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">docker</span> <span class="n">container</span> <span class="n">exec</span> <span class="o">-</span><span class="n">it</span> <span class="n">mongodb</span> <span class="n">bash</span>
 <span class="p">(</span><span class="n">mongodb</span> <span class="n">container</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">mongo</span> <span class="o">--</span><span class="n">username</span> <span class="n">root</span> <span class="o">--</span><span class="n">password</span> <span class="n">rootpassword</span>
+<span class="p">(</span><span class="n">mongo</span> <span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">use</span> <span class="n">sni</span>
 <span class="p">(</span><span class="n">mongo</span> <span class="n">shell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">createUser</span><span class="p">({</span>
    <span class="n">user</span><span class="p">:</span> <span class="s2">&quot;sni&quot;</span><span class="p">,</span>
    <span class="n">pwd</span><span class="p">:</span> <span class="s2">&quot;snipassword&quot;</span><span class="p">,</span>

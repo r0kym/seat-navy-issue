@@ -94,7 +94,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    EVE corporation database model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">alliance</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Alliance</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">alliance</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Alliance</span><span class="p">,</span>
+                                 <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">ceo_character_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">corporation_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">corporation_name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

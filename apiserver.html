@@ -82,6 +82,13 @@
 <dd><p>Print the OpenAPI specification of the server in YAML.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.apiserver.requests_httperror_handler">
+<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">requests_httperror_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: requests.exceptions.HTTPError</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#requests_httperror_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.requests_httperror_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.exceptions.HTTPError</span></code> exceptions and forwards them
+as <code class="docutils literal notranslate"><span class="pre">500</span></code>’s.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="routers">
 <h2>Routers<a class="headerlink" href="#routers" title="Permalink to this headline">¶</a></h2>
@@ -158,7 +165,7 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 
 <dl class="function">
 <dt id="sni.routers.esi.get_esi_latest">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.routers.esi.EsiRequestIn = EsiRequestIn(on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.routers.esi.EsiRequestIn = EsiRequestIn(on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forwards a GET request to the ESI.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -240,8 +247,8 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/dyn</span></code> reponses.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.PostTokenDynOut.app_token">
-<code class="sig-name descname">app_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenDynOut.app_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.routers.token.PostTokenDynOut.tkn">
+<code class="sig-name descname">tkn</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenDynOut.tkn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -269,8 +276,8 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/per</span></code> reponses.</p>
 <dl class="attribute">
-<dt id="sni.routers.token.PostTokenPerOut.app_token">
-<code class="sig-name descname">app_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenPerOut.app_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.routers.token.PostTokenPerOut.tkn">
+<code class="sig-name descname">tkn</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.PostTokenPerOut.tkn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -318,32 +325,32 @@ callback, using the <code class="xref py py-class docutils literal notranslate">
 
 <dl class="function">
 <dt id="sni.routers.token.delete_token">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">delete_token</code><span class="sig-paren">(</span><em class="sig-param">uuid: str</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#delete_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.delete_token" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">delete_token</code><span class="sig-paren">(</span><em class="sig-param">uuid: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#delete_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.delete_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes a token</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.routers.token.get_token">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">get_token</code><span class="sig-paren">(</span><em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#get_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.get_token" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">get_token</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#get_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.get_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns informations about the token currently being used.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.routers.token.post_token_dyn">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenDynIn</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_dyn" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenDynIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_dyn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new dynamic app token. Must be called with a permanent app token.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.routers.token.post_token_per">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_per</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenPerIn</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_per" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_per</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenPerIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_per" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new permanent app token. Must be called with a permanent app
 token.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.routers.token.post_token_use_from_dyn">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_use_from_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenUseFromDynIn</em>, <em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_use_from_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_use_from_dyn" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_use_from_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.token.PostTokenUseFromDynIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_use_from_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_use_from_dyn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates an application dynamic token and returns a <cite>state code</cite> and
 an URL at which the user can authenticate to the EVE SSO. Once that is
 done, SNI issues a GET request to the app predefined callback, with that
@@ -352,7 +359,7 @@ state code and the user token.</p>
 
 <dl class="function">
 <dt id="sni.routers.token.post_token_use_from_per">
-<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_use_from_per</code><span class="sig-paren">(</span><em class="sig-param">app_token: sni.uac.token.Token = Depends(validate_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_use_from_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_use_from_per" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.routers.token.</code><code class="sig-name descname">post_token_use_from_per</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/token.html#post_token_use_from_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.token.post_token_use_from_per" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates an application permanent token and returns a user token tied
 to the owner of that app token.</p>
 </dd></dl>
