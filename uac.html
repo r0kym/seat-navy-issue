@@ -1141,14 +1141,81 @@ creates the character’s corporation and alliance (if applicable).</p>
 <div class="section" id="module-sni.uac.clearance">
 <span id="sni-uac-clearance"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.uac.clearance</span></code><a class="headerlink" href="#module-sni.uac.clearance" title="Permalink to this headline">¶</a></h3>
 <p>Clearance management and verification</p>
-<div class="admonition-todo admonition" id="id5">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>Safer implementation. Right now it is too prone to coding errors when
-calling <a class="reference internal" href="#sni.uac.clearance.assert_has_clearance" title="sni.uac.clearance.assert_has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.assert_has_clearance()</span></code></a>.</p></li>
-<li><p>Refactor that mess.</p></li>
-</ul>
-</div>
+<dl class="class">
+<dt id="sni.uac.clearance.AbsoluteScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">AbsoluteScope</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#AbsoluteScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbsoluteScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sni.uac.clearance.AbstractScope" title="sni.uac.clearance.AbstractScope"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope</span></code></a></p>
+<p>An absolute scope asserts that the source user has at least a pretermined
+clearance level.</p>
+<dl class="method">
+<dt id="sni.uac.clearance.AbsoluteScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User, target: Optional[sni.uac.user.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#AbsoluteScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbsoluteScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.clearance.AbsoluteScope.level">
+<code class="sig-name descname">level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.uac.clearance.AbsoluteScope.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.clearance.AbstractScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">AbstractScope</code><a class="reference internal" href="_modules/sni/uac/clearance.html#AbstractScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbstractScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an abstract scope. In SNI, a scope is a class that determines
+wether a <em>source</em> user is authorized to perform an action against a
+<em>target</em> user (see <a class="reference internal" href="#sni.uac.clearance.AbstractScope.has_clearance" title="sni.uac.clearance.AbstractScope.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope.has_clearance()</span></code></a>).</p>
+<dl class="method">
+<dt id="sni.uac.clearance.AbstractScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User, target: Optional[sni.uac.user.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#AbstractScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbstractScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pure virtual methode, raises a <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.clearance.ClearanceModificationScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">ClearanceModificationScope</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#ClearanceModificationScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ClearanceModificationScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sni.uac.clearance.AbstractScope" title="sni.uac.clearance.AbstractScope"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope</span></code></a></p>
+<p>This scope determines when a user is authorized to change the clearance
+level of another user. See <a class="reference internal" href="#sni.uac.clearance.ClearanceModificationScope.has_clearance" title="sni.uac.clearance.ClearanceModificationScope.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.ClearanceModificationScope.has_clearance()</span></code></a>.</p>
+<dl class="method">
+<dt id="sni.uac.clearance.ClearanceModificationScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User, target: Optional[sni.uac.user.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#ClearanceModificationScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ClearanceModificationScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>For the source user to change the clearance level of the target user at
+the level indicated in
+<a class="reference internal" href="#sni.uac.clearance.ClearanceModificationScope.level" title="sni.uac.clearance.ClearanceModificationScope.level"><code class="xref py py-data docutils literal notranslate"><span class="pre">sni.uac.clearance.ClearanceModificationScope.level</span></code></a>, the
+clearance level of the source must be hierarchically superior to the
+target, and have read-write access to the target’s corporation,
+alliance, or coalition, whichever is most global. In addition, the
+source must have at least the same clearance level than the target.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.clearance.ClearanceModificationScope.level">
+<code class="sig-name descname">level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.uac.clearance.ClearanceModificationScope.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.clearance.ESIScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">ESIScope</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#ESIScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ESIScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sni.uac.clearance.AbstractScope" title="sni.uac.clearance.AbstractScope"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope</span></code></a></p>
+<p>This scope determines when a user is authorized to read or write ESI data.</p>
+<dl class="method">
+<dt id="sni.uac.clearance.ESIScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User, target: Optional[sni.uac.user.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#ESIScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ESIScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.clearance.ESIScope.level">
+<code class="sig-name descname">level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.uac.clearance.ESIScope.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.uac.clearance.are_in_same_alliance">
 <code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_alliance</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.uac.user.User</em>, <em class="sig-param">user2: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_alliance" title="Permalink to this definition">¶</a></dt>
@@ -1178,42 +1245,18 @@ corporation are considered in different a corporation as everyone else.</p>
 
 <dl class="function">
 <dt id="sni.uac.clearance.distance_penalty">
-<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">distance_penalty</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User, target: Optional[sni.uac.user.User]</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/sni/uac/clearance.html#distance_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.distance_penalty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns 0 if both users are the same user, of if the source has clearance
-level &gt;= 7, or if the target is <code class="docutils literal notranslate"><span class="pre">None</span></code>; returns 1 if they are not the
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">distance_penalty</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User</em>, <em class="sig-param">target: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/sni/uac/clearance.html#distance_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.distance_penalty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 0 if both users are the same user; returns 1 if they are not the
 same but in the same corporation; 3 if they are not in the same corporation
 but in the same alliance; 5 if they are not in the same alliance but in the
-same coalition; and otherwise, returns 10.</p>
+same coalition; and otherwise, returns 7.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.uac.clearance.has_clearance">
-<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User</em>, <em class="sig-param">scope: str</em>, <em class="sig-param">target: Optional[sni.uac.user.User] = None</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.has_clearance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.uac.user.User</em>, <em class="sig-param">scope_name: str</em>, <em class="sig-param">target: Optional[sni.uac.user.User] = None</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.has_clearance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check wether the <em>source</em> user has sufficient clearance to perform a given
-action (or <em>scope</em>) against the <em>target</em> user. For actions regarding the
-SNI instance (like administrative and maintenance tasks), the target should
-be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-<p>If the scope is not about changing clearance levels (so of the form
-<a href="#id6"><span class="problematic" id="id7">``</span></a>sni.set_clearance_level_X`), then the required clearance is calculated
-with the formula:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">required_clearance</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">distance_penalty</span> <span class="o">+</span> <span class="n">scope_level</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>where</p>
-<ul class="simple">
-<li><p>the <strong>distance penalty</strong>, prepresent “how far” the source is the target
-(see <a class="reference internal" href="#sni.uac.clearance.distance_penalty" title="sni.uac.clearance.distance_penalty"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.distance_penalty()</span></code></a>);</p></li>
-<li><p>the <strong>scope level</strong>, is a factor that depends on the scope.</p></li>
-</ul>
-<p>If the scope <em>is</em> about changing clearance levels (so of the form
-<a href="#id8"><span class="problematic" id="id9">``</span></a>sni.set_clearance_level_X` where 0 &lt;= X &lt;= 10), and if t is the clearance
-level of the target, then:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">required_clearance</span> <span class="o">=</span>
-    <span class="n">X</span>   <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">X</span><span class="p">,</span>
-    <span class="mi">9</span>   <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="n">X</span>
-</pre></div>
-</div>
-<p>Note that in the case, X is also the scope level of the scope.</p>
+action (or <em>scope</em>) against the <em>target</em> user.</p>
 </dd></dl>
 
 <dl class="function">

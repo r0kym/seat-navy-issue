@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Database layer &#8212; SeAT Navy Issue alpha documentation</title>
+    <title>Database modules &#8212; SeAT Navy Issue alpha documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -43,8 +43,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-sni.db">
-<span id="database-layer"></span><h1>Database layer<a class="headerlink" href="#module-sni.db" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="database-modules">
+<h1>Database modules<a class="headerlink" href="#database-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sni.db">
+<span id="mongodb"></span><h2>Mongodb<a class="headerlink" href="#module-sni.db" title="Permalink to this headline">¶</a></h2>
 <p>Database layer</p>
 <dl class="simple">
 <dt>Reference:</dt><dd><p><a class="reference external" href="http://docs.org/index.html">MongoEngine User Documentation</a></p>
@@ -90,6 +92,17 @@ connection. It’s magic.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-sni.redis">
+<span id="redis"></span><h2>Redis<a class="headerlink" href="#module-sni.redis" title="Permalink to this headline">¶</a></h2>
+<p>Redis related module</p>
+<dl class="function">
+<dt id="sni.redis.new_connection">
+<code class="sig-prename descclassname">sni.redis.</code><code class="sig-name descname">new_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; redis.client.Redis<a class="reference internal" href="_modules/sni/redis.html#new_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.redis.new_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new redis connection handler</p>
+</dd></dl>
+
+</div>
+</div>
 
 
           </div>
@@ -97,6 +110,15 @@ connection. It’s magic.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Database modules</a><ul>
+<li><a class="reference internal" href="#module-sni.db">Mongodb</a></li>
+<li><a class="reference internal" href="#module-sni.redis">Redis</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="esi.html"
                         title="previous chapter">ESI requests layer</a></p>
