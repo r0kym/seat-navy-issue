@@ -37,6 +37,7 @@ Running SNI
 
       (your shell) > docker container exec -it mongodb bash
       (mongodb container) > mongo --username root --password rootpassword
+      (mongo shell) > use sni
       (mongo shell) > db.createUser({
          user: "sni",
          pwd: "snipassword",
