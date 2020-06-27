@@ -8,7 +8,6 @@ import mongoengine
 
 import sni.esi.sso as sso
 import sni.time as time
-import sni.uac.clearance as clearance
 import sni.uac.user as user
 
 
@@ -51,7 +50,7 @@ class EsiRefreshToken(mongoengine.Document):
 
 
 def get_access_token(character_id: int,
-                     scope: Optional[str]) -> EsiAccessToken:
+                     scope: Optional[str] = None) -> EsiAccessToken:
     """
     Returns an access token, refreshes if needed
 
@@ -86,7 +85,6 @@ def save_esi_tokens(
     """
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
     owner = user.ensure_user(decoded_access_token.character_id)
-    clearance.reset_clearance(owner)
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
         owner=owner,
         scopes__all=decoded_access_token.scp,

@@ -181,15 +181,12 @@ def ensure_user(character_id: int) -> User:
     It it does not, creates it by fetching relevant data from the ESI. Also
     creates the character's corporation and alliance (if applicable).
     """
-    data = esi.get(f'latest/characters/{character_id}').json()
-    user = User.objects(character_id=character_id).modify(
-        new=True,
-        set__character_id=character_id,
-        set__character_name=data['name'],
-        set__corporation=ensure_corporation(data['corporation_id']),
-        upsert=True,
-    )
-    # grp = ensure_auto_group(data['name'])
-    # grp.modify(add_to_set__members=user)
-    # grp.save()
-    return user
+    usr: User = User.objects(character_id=character_id).first()
+    if usr is None:
+        data = esi.get(f'latest/characters/{character_id}').json()
+        usr = User(
+            character_id=character_id,
+            character_name=data['name'],
+            corporation=ensure_corporation(data['corporation_id']),
+        ).save()
+    return usr
