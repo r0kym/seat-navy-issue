@@ -220,18 +220,15 @@
 <span class="sd">    It it does not, creates it by fetching relevant data from the ESI. Also</span>
 <span class="sd">    creates the character&#39;s corporation and alliance (if applicable).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
-        <span class="n">new</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">set__character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
-        <span class="n">set__character_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-        <span class="n">set__corporation</span><span class="o">=</span><span class="n">ensure_corporation</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;corporation_id&#39;</span><span class="p">]),</span>
-        <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># grp = ensure_auto_group(data[&#39;name&#39;])</span>
-    <span class="c1"># grp.modify(add_to_set__members=user)</span>
-    <span class="c1"># grp.save()</span>
-    <span class="k">return</span> <span class="n">user</span></div>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">usr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="n">corporation</span><span class="o">=</span><span class="n">ensure_corporation</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;corporation_id&#39;</span><span class="p">]),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">usr</span></div>
 </pre></div>
 
           </div>
