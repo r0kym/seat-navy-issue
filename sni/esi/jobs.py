@@ -7,9 +7,27 @@ import logging
 
 from sni.scheduler import scheduler
 import sni.esi.esi as esi
+import sni.esi.sso as sso
+import sni.esi.token as esitoken
+import sni.time as time
 import sni.uac.clearance as clearance
 import sni.uac.user as user
-import sni.time as time
+
+
+def refresh_tokens():
+    """
+    Iterates through the ESI refresh tokens and refreshes the corresponding ESI
+    access tokens.
+    """
+    for refresh_token in esitoken.EsiRefreshToken.objects():
+        usr = refresh_token.owner
+        try:
+            esitoken.save_esi_tokens(
+                sso.refresh_access_token(refresh_token.refresh_token))
+            logging.info('Refreshed token of %s', usr.character_name)
+        except Exception as error:  # pylint: disable=broad-except
+            logging.error('Could not refresh access token of %s: %s',
+                          usr.character_name, str(error))
 
 
 def schedule_jobs():
@@ -17,6 +35,7 @@ def schedule_jobs():
     Schedules all the jobs of this module.
     """
     logging.info('Scheduling ESI jobs')
+    scheduler.add_job(refresh_tokens, 'interval', minutes=60)
     scheduler.add_job(update_alliances, 'interval', minutes=60)
     scheduler.add_job(update_corporations, 'interval', minutes=60)
     scheduler.add_job(update_users, 'interval', minutes=60)
