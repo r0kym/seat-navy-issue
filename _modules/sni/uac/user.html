@@ -41,12 +41,15 @@
 <span class="sd">User (aka character), group, corporation, and alliance management</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
+<span class="kn">import</span> <span class="nn">mongoengine.signals</span> <span class="k">as</span> <span class="nn">signals</span>
 
-<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">sni.esi.esi</span> <span class="k">as</span> <span class="nn">esi</span>
+<span class="kn">import</span> <span class="nn">sni.scheduler</span> <span class="k">as</span> <span class="nn">scheduler</span>
+<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
 
 
 <div class="viewcode-block" id="Alliance"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Alliance">[docs]</a><span class="k">class</span> <span class="nc">Alliance</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -75,7 +78,21 @@
 <span class="sd">        :class:`sni.uac.user.Corporation` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">corporation_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executor_corporation_id</span><span class="p">)</span></div>
+            <span class="n">corporation_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executor_corporation_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Alliance.users"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Alliance.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the member list of this alliance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Alliance.user_iterator"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Alliance.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an iterator over all the members of this alliance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">corporation</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">usr</span></div></div>
 
 
 <div class="viewcode-block" id="Coalition"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Coalition">[docs]</a><span class="k">class</span> <span class="nc">Coalition</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -87,7 +104,21 @@
     <span class="n">members</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Alliance</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ticker</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Coalition.users"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Coalition.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the member list of this coalition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Coalition.user_iterator"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Coalition.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an iterator over all the members of this coalition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">alliance</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">usr</span></div></div>
 
 
 <div class="viewcode-block" id="Corporation"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Corporation">[docs]</a><span class="k">class</span> <span class="nc">Corporation</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -109,7 +140,20 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the corporation&#39;s ceo as a :class:`sni.uac.user.User` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ceo_character_id</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ceo_character_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Corporation.users"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Corporation.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the member list of this corporation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Corporation.user_iterator"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Corporation.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an iterator over all the members of this corporation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">usr</span></div></div>
 
 
 <div class="viewcode-block" id="User"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -180,14 +224,11 @@
 <span class="sd">    Ensured that an automatically created group exists. Automatic groups are</span>
 <span class="sd">    owned by root.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
-        <span class="n">new</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">set__members</span><span class="o">=</span><span class="p">[</span><span class="n">root</span><span class="p">],</span>
-        <span class="n">set__name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-        <span class="n">set__owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="n">grp</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">grp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">grp</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">root</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">grp</span></div>
 
 
 <div class="viewcode-block" id="ensure_corporation"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.ensure_corporation">[docs]</a><span class="k">def</span> <span class="nf">ensure_corporation</span><span class="p">(</span><span class="n">corporation_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Corporation</span><span class="p">:</span>
@@ -229,6 +270,52 @@
             <span class="n">corporation</span><span class="o">=</span><span class="n">ensure_corporation</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;corporation_id&#39;</span><span class="p">]),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">usr</span></div>
+
+
+<span class="nd">@signals</span><span class="o">.</span><span class="n">post_save</span><span class="o">.</span><span class="n">connect_via</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+<span class="nd">@scheduler</span><span class="o">.</span><span class="n">run_scheduled</span>
+<span class="k">def</span> <span class="nf">ensure_user_in_alliance_autogroup</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensures that a user is in its alliance&#39;s autogroup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">grp</span> <span class="o">=</span> <span class="n">ensure_auto_group</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
+    <span class="n">grp</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ensured user </span><span class="si">%s</span><span class="s1"> is in alliance autogroup </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="nd">@signals</span><span class="o">.</span><span class="n">post_save</span><span class="o">.</span><span class="n">connect_via</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+<span class="nd">@scheduler</span><span class="o">.</span><span class="n">run_scheduled</span>
+<span class="k">def</span> <span class="nf">ensure_user_in_coalition_autogroups</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensures that a user is in all its alliance&#39;s coalitions autogroups.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">coalitions</span><span class="p">():</span>
+        <span class="n">grp</span> <span class="o">=</span> <span class="n">ensure_auto_group</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">grp</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ensured user </span><span class="si">%s</span><span class="s1"> is in coalition autogroup </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                      <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="nd">@signals</span><span class="o">.</span><span class="n">post_save</span><span class="o">.</span><span class="n">connect_via</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+<span class="nd">@scheduler</span><span class="o">.</span><span class="n">run_scheduled</span>
+<span class="k">def</span> <span class="nf">ensure_user_in_corporation_autogroup</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensures that a user is in its corporation&#39;s autogroup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">grp</span> <span class="o">=</span> <span class="n">ensure_auto_group</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
+    <span class="n">grp</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ensured user </span><span class="si">%s</span><span class="s1"> is in corporation autogroup </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 
           </div>

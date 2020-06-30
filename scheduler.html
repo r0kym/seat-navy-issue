@@ -47,6 +47,21 @@
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://apscheduler.readthedocs.io/en/stable/">APScheduler documentation</a></p>
 </div>
+<dl class="function">
+<dt id="sni.scheduler.run_scheduled">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">run_scheduled</code><span class="sig-paren">(</span><em class="sig-param">function: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/sni/scheduler.html#run_scheduled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.run_scheduled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that makes a function scheduled to run immediately when called.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@signals</span><span class="o">.</span><span class="n">post_save</span><span class="o">.</span><span class="n">connect_via</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+<span class="nd">@run_scheduled</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">usr</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;created&#39;</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;created&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;updated&#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;User </span><span class="si">%s</span><span class="s1"> has been </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 
