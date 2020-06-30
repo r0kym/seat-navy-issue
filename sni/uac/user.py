@@ -2,12 +2,15 @@
 User (aka character), group, corporation, and alliance management
 """
 
-from typing import List
+import logging
+from typing import Any, List
 
 import mongoengine as me
+import mongoengine.signals as signals
 
-import sni.time as time
 import sni.esi.esi as esi
+import sni.scheduler as scheduler
+import sni.time as time
 
 
 class Alliance(me.Document):
@@ -190,3 +193,49 @@ def ensure_user(character_id: int) -> User:
             corporation=ensure_corporation(data['corporation_id']),
         ).save()
     return usr
+
+
+@signals.post_save.connect_via(User)
+@scheduler.run_scheduled
+def ensure_user_in_alliance_autogroup(_sender: Any, **kwargs):
+    """
+    Ensures that a user is in its alliance's autogroup.
+    """
+    usr: User = kwargs['document']
+    if usr.corporation is None or usr.corporation.alliance is None:
+        return
+    grp = ensure_auto_group(usr.corporation.alliance.alliance_name)
+    grp.modify(add_to_set__members=usr)
+    logging.debug('Ensured user %s is in alliance autogroup %s',
+                  usr.character_name, grp.name)
+
+
+@signals.post_save.connect_via(User)
+@scheduler.run_scheduled
+def ensure_user_in_coalition_autogroups(_sender: Any, **kwargs):
+    """
+    Ensures that a user is in all its alliance's coalitions autogroups.
+    """
+    usr: User = kwargs['document']
+    if usr.corporation is None or usr.corporation.alliance is None:
+        return
+    for coalition in usr.corporation.alliance.coalitions():
+        grp = ensure_auto_group(coalition.name)
+        grp.modify(add_to_set__members=usr)
+        logging.debug('Ensured user %s is in coalition autogroup %s',
+                      usr.character_name, grp.name)
+
+
+@signals.post_save.connect_via(User)
+@scheduler.run_scheduled
+def ensure_user_in_corporation_autogroup(_sender: Any, **kwargs):
+    """
+    Ensures that a user is in its corporation's autogroup.
+    """
+    usr: User = kwargs['document']
+    if usr.corporation is None:
+        return
+    grp = ensure_auto_group(usr.corporation.corporation_name)
+    grp.modify(add_to_set__members=usr)
+    logging.debug('Ensured user %s is in corporation autogroup %s',
+                  usr.character_name, grp.name)
