@@ -7,6 +7,8 @@ See also:
     `APScheduler documentation <https://apscheduler.readthedocs.io/en/stable/>`_
 """
 
+from typing import Any, Callable
+
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -31,3 +33,23 @@ scheduler = BackgroundScheduler(
     },
     timezone=time.utc,
 )
+
+
+def run_scheduled(function: Callable) -> Callable:
+    """
+    Decorator that makes a function scheduled to run immediately when called.
+
+    Example::
+
+        @signals.post_save.connect_via(User)
+        @run_scheduled
+        def test(_sender: Any, **kwargs):
+            usr = kwargs['document']
+            status = 'created' if kwargs.get('created', False) else 'updated'
+            logging.debug('User %s has been %s', status, usr.character_name)
+
+    """
+    def wrapper(sender: Any, **kwargs):
+        scheduler.add_job(function, args=(sender, ), kwargs=kwargs)
+
+    return wrapper

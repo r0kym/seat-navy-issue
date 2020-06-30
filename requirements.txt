@@ -1,4 +1,5 @@
 apscheduler
+blinker
 dateutils
 fastapi
 mongoengine
