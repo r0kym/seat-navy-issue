@@ -61,8 +61,13 @@ def main():
         function()
         sys.exit()
 
-    scheduler.start()
     esijobs.schedule_jobs()
+    scheduler.start()
+    if conf.get('general.debug'):
+        for job in scheduler.get_jobs():
+            logging.debug('Job %s scheduled to run at %s', job.name,
+                          str(job.next_run_time))
+
     start_api_server()
 
 

@@ -24,6 +24,7 @@ scheduler = BackgroundScheduler(
     job_defaults={
         'coalesce': False,
         'executor': 'default',
+        'jitter': '60',
         'jobstore': 'default',
         'max_instances': 3,
         'misfire_grace_time': None,

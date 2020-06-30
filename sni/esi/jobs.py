@@ -36,10 +36,19 @@ def schedule_jobs():
     """
     logging.info('Scheduling ESI jobs')
     scheduler.add_job(refresh_tokens, 'interval', minutes=60)
-    scheduler.add_job(update_alliance_autogroups, 'interval', minutes=60)
+    scheduler.add_job(update_alliance_autogroups,
+                      'interval',
+                      minutes=60,
+                      start_date=time.now_plus(minutes=10))
     scheduler.add_job(update_alliances, 'interval', minutes=60)
-    scheduler.add_job(update_coalition_autogroups, 'interval', minutes=60)
-    scheduler.add_job(update_corporation_autogroups, 'interval', minutes=60)
+    scheduler.add_job(update_coalition_autogroups,
+                      'interval',
+                      minutes=60,
+                      start_date=time.now_plus(minutes=10))
+    scheduler.add_job(update_corporation_autogroups,
+                      'interval',
+                      minutes=60,
+                      start_date=time.now_plus(minutes=10))
     scheduler.add_job(update_corporations, 'interval', minutes=60)
     scheduler.add_job(update_users, 'interval', minutes=60)
 
