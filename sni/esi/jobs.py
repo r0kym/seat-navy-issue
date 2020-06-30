@@ -36,7 +36,10 @@ def schedule_jobs():
     """
     logging.info('Scheduling ESI jobs')
     scheduler.add_job(refresh_tokens, 'interval', minutes=60)
+    scheduler.add_job(update_alliance_autogroups, 'interval', minutes=60)
     scheduler.add_job(update_alliances, 'interval', minutes=60)
+    scheduler.add_job(update_coalition_autogroups, 'interval', minutes=60)
+    scheduler.add_job(update_corporation_autogroups, 'interval', minutes=60)
     scheduler.add_job(update_corporations, 'interval', minutes=60)
     scheduler.add_job(update_users, 'interval', minutes=60)
 
@@ -51,6 +54,21 @@ def update_alliances():
         alliance.ticker = data['ticker']
         alliance.updated_on = time.now()
         alliance.save()
+
+
+def update_alliance_autogroups():
+    """
+    Resets all the alliance autogroup. Instead of querying the ESI, it queries
+    the database for all user in the corporations in that alliance, assuming
+    the user and corporation records are up-to-date.
+    """
+    for alliance in user.Alliance.objects():
+        logging.debug('Updating autogroup of alliance %s',
+                      alliance.alliance_name)
+        grp = user.ensure_auto_group(alliance.alliance_name)
+        grp.owner = alliance.executor().ceo()
+        grp.members = list(alliance.user_iterator())
+        grp.save()
 
 
 def update_corporations():
@@ -72,6 +90,34 @@ def update_corporations():
             for usr in user.User.objects(corporation=corporation):
                 clearance.reset_clearance(usr, save=True)
         corporation.save()
+
+
+def update_coalition_autogroups():
+    """
+    Resets the coalition autogroups. Instead of querying the ESI, it queries
+    the database for all user in that coalition, assuming the user, coalition,
+    and alliance records are up-to-date.
+    """
+    for coalition in user.Coalition.objects():
+        logging.debug('Updating autogroup of coalition %s', coalition.name)
+        grp = user.ensure_auto_group(coalition.name)
+        grp.members = list(coalition.user_iterator())
+        grp.save()
+
+
+def update_corporation_autogroups():
+    """
+    Resets the corporations autogroup. Instead of querying the ESI, it queries
+    the database for all user in that corporation, assuming the user records
+    are up-to-date.
+    """
+    for corporation in user.Corporation.objects():
+        logging.debug('Updating autogroup of corporation %s',
+                      corporation.corporation_name)
+        grp = user.ensure_auto_group(corporation.corporation_name)
+        grp.owner = corporation.ceo
+        grp.members = list(corporation.user_iterator())
+        grp.save()
 
 
 def update_users():

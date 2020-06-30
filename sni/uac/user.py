@@ -3,7 +3,7 @@ User (aka character), group, corporation, and alliance management
 """
 
 import logging
-from typing import Any, List
+from typing import Any, Iterator, List
 
 import mongoengine as me
 import mongoengine.signals as signals
@@ -41,6 +41,20 @@ class Alliance(me.Document):
         return Corporation.objects.get(
             corporation_id=self.executor_corporation_id)
 
+    def users(self) -> List['User']:
+        """
+        Return the member list of this alliance.
+        """
+        return list(self.user_iterator())
+
+    def user_iterator(self) -> Iterator['User']:
+        """
+        Returns an iterator over all the members of this alliance.
+        """
+        for corporation in Corporation.objects(alliance=self):
+            for usr in corporation.user_iterator():
+                yield usr
+
 
 class Coalition(me.Document):
     """
@@ -52,6 +66,20 @@ class Coalition(me.Document):
     name = me.StringField(required=True, unique=True)
     ticker = me.StringField(default=str)
     updated_on = me.DateTimeField(default=time.now, required=True)
+
+    def users(self) -> List['User']:
+        """
+        Return the member list of this coalition.
+        """
+        return list(self.user_iterator())
+
+    def user_iterator(self) -> Iterator['User']:
+        """
+        Returns an iterator over all the members of this coalition.
+        """
+        for alliance in self.members:
+            for usr in alliance.user_iterator():
+                yield usr
 
 
 class Corporation(me.Document):
@@ -74,6 +102,19 @@ class Corporation(me.Document):
         Returns the corporation's ceo as a :class:`sni.uac.user.User` object.
         """
         return User.objects.get(character_id=self.ceo_character_id)
+
+    def users(self) -> List['User']:
+        """
+        Return the member list of this corporation.
+        """
+        return list(self.user_iterator())
+
+    def user_iterator(self) -> Iterator['User']:
+        """
+        Returns an iterator over all the members of this corporation.
+        """
+        for usr in User.objects(corporation=self):
+            yield usr
 
 
 class User(me.Document):
