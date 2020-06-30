@@ -144,14 +144,11 @@ def ensure_auto_group(name: str) -> Group:
     Ensured that an automatically created group exists. Automatic groups are
     owned by root.
     """
-    root = User.objects.get(character_id=0)
-    return Group.objects(name=name).modify(
-        new=True,
-        set__members=[root],
-        set__name=name,
-        set__owner=root,
-        upsert=True,
-    )
+    grp = Group.objects(name=name).first()
+    if grp is None:
+        root = User.objects.get(character_id=0)
+        grp = Group(members=[root], name=name, owner=root).save()
+    return grp
 
 
 def ensure_corporation(corporation_id: int) -> Corporation:
