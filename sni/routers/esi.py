@@ -81,7 +81,7 @@ async def get_callback_esi(code: str, state: str):
                 user_token=user_jwt_str,
             ),
         )
-    except Exception as error:  # pylint: disable=broad-except
+    except Exception as error:
         logging.error('Failed to notify app %s: %s', state_code.app_token.uuid,
                       str(error))
     state_code.delete()

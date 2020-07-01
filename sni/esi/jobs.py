@@ -26,7 +26,7 @@ def refresh_tokens():
             esitoken.save_esi_tokens(
                 sso.refresh_access_token(refresh_token.refresh_token))
             logging.info('Refreshed token of %s', usr.character_name)
-        except Exception as error:  # pylint: disable=broad-except
+        except Exception as error:
             logging.error('Could not refresh access token of %s: %s',
                           usr.character_name, str(error))
 
@@ -61,7 +61,7 @@ def update_alliance_autogroups():
             grp.owner = alliance.executor.ceo
             grp.members = list(alliance.user_iterator())
             grp.save()
-        except Exception as error:  # pylint: disable=broad-except
+        except Exception as error:
             logging.error('Could not update autogroup of alliance %s: %s',
                           alliance.alliance_name, str(error))
 
