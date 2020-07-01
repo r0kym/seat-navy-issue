@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse
 import mongoengine
 import requests
 import requests.exceptions
+import uvicorn
 import yaml
 
 import sni.conf as conf
@@ -136,3 +137,20 @@ def print_openapi_spec() -> None:
     Print the OpenAPI specification of the server in YAML.
     """
     print(yaml.dump(app.openapi()))
+
+
+def start():
+    """
+    Runs the API server.
+    """
+    logging.info('Starting API server on %s:%s', conf.get('general.host'),
+                 conf.get('general.port'))
+    try:
+        uvicorn.run(
+            'sni.apiserver:app',
+            host=conf.get('general.host'),
+            log_level='debug' if conf.get('general.debug') else 'info',
+            port=conf.get('general.port'),
+        )
+    finally:
+        logging.info('API server stopped')

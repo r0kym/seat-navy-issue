@@ -14,6 +14,7 @@ import sni.uac.clearance as clearance
 import sni.uac.user as user
 
 
+@scheduler.scheduled_job('interval', minutes=60)
 def refresh_tokens():
     """
     Iterates through the ESI refresh tokens and refreshes the corresponding ESI
@@ -30,29 +31,7 @@ def refresh_tokens():
                           usr.character_name, str(error))
 
 
-def schedule_jobs():
-    """
-    Schedules all the jobs of this module.
-    """
-    logging.info('Scheduling ESI jobs')
-    scheduler.add_job(refresh_tokens, 'interval', minutes=60)
-    scheduler.add_job(update_alliance_autogroups,
-                      'interval',
-                      minutes=60,
-                      start_date=time.now_plus(minutes=10))
-    scheduler.add_job(update_alliances, 'interval', minutes=60)
-    scheduler.add_job(update_coalition_autogroups,
-                      'interval',
-                      minutes=60,
-                      start_date=time.now_plus(minutes=10))
-    scheduler.add_job(update_corporation_autogroups,
-                      'interval',
-                      minutes=60,
-                      start_date=time.now_plus(minutes=10))
-    scheduler.add_job(update_corporations, 'interval', minutes=60)
-    scheduler.add_job(update_users, 'interval', minutes=60)
-
-
+@scheduler.scheduled_job('interval', minutes=60)
 def update_alliances():
     """
     Iterated through all alliances and updates their fields from ESI.
@@ -65,6 +44,9 @@ def update_alliances():
         alliance.save()
 
 
+@scheduler.scheduled_job('interval',
+                         minutes=60,
+                         start_date=time.now_plus(minutes=10))
 def update_alliance_autogroups():
     """
     Resets all the alliance autogroup. Instead of querying the ESI, it queries
@@ -80,6 +62,7 @@ def update_alliance_autogroups():
         grp.save()
 
 
+@scheduler.scheduled_job('interval', minutes=60)
 def update_corporations():
     """
     Iterated through all corporations and updates their fields from ESI.
@@ -101,6 +84,9 @@ def update_corporations():
         corporation.save()
 
 
+@scheduler.scheduled_job('interval',
+                         minutes=60,
+                         start_date=time.now_plus(minutes=10))
 def update_coalition_autogroups():
     """
     Resets the coalition autogroups. Instead of querying the ESI, it queries
@@ -114,6 +100,9 @@ def update_coalition_autogroups():
         grp.save()
 
 
+@scheduler.scheduled_job('interval',
+                         minutes=60,
+                         start_date=time.now_plus(minutes=10))
 def update_corporation_autogroups():
     """
     Resets the corporations autogroup. Instead of querying the ESI, it queries
@@ -129,6 +118,7 @@ def update_corporation_autogroups():
         grp.save()
 
 
+@scheduler.scheduled_job('interval', minutes=60)
 def update_users():
     """
     Iterated through all users and updates their field from ESI.

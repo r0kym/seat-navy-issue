@@ -7,25 +7,23 @@ This module contains the entry point to SNI.
 import argparse
 import logging
 import logging.config
-import pprint
 import sys
-
-import uvicorn
 
 from sni.scheduler import scheduler
 import sni.apiserver as apiserver
 import sni.conf as conf
-import sni.db as db
 import sni.esi.esi as esi
-import sni.esi.jobs as esijobs
 
 
 def main():
     """
     Entry point.
     """
-    arguments = parse_command_line_arguments()
 
+    # --------------------------------------------------------------------------
+    # Parsing command line arguments and loading configuration file
+    # --------------------------------------------------------------------------
+    arguments = parse_command_line_arguments()
     try:
         conf.load_configuration_file(arguments.file)
     except RuntimeError as error:
@@ -33,24 +31,33 @@ def main():
         sys.exit(-1)
     logging.config.dictConfig(conf.get('logging', {}))
 
-    if arguments.migrate_database:
-        db.init()
-        db.migrate()
-        sys.exit()
+    # --------------------------------------------------------------------------
+    # Pre database init actions
+    # --------------------------------------------------------------------------
+
     if arguments.print_openapi_spec:
         apiserver.print_openapi_spec()
         sys.exit()
+
+    # --------------------------------------------------------------------------
+    # Post database init actions, pre database migration
+    # --------------------------------------------------------------------------
+
+    # pylint: disable=import-outside-toplevel
+    import sni.db as db
+
     if arguments.reload_esi_openapi_spec:
-        db.init()
         esi.load_esi_openapi()
         sys.exit()
 
-    if conf.get('general.debug'):
-        logging.debug('SNI running in debug mode, dumping configuration:')
-        pprint.pprint(conf.CONFIGURATION, depth=1)
+    # --------------------------------------------------------------------------
+    # Post database migration, pre scheduler init
+    # --------------------------------------------------------------------------
 
-    db.init()
     db.migrate()
+
+    if arguments.migrate_database:
+        sys.exit()
 
     if arguments.run_job:
         module_name, function_name = arguments.run_job.split(':')
@@ -61,14 +68,31 @@ def main():
         function()
         sys.exit()
 
-    esijobs.schedule_jobs()
+    # --------------------------------------------------------------------------
+    # Scheduler init, pre scheduler start
+    # --------------------------------------------------------------------------
+
+    # pylint: disable=import-outside-toplevel
+    # pylint: disable=unused-import
+    import sni.esi.jobs
+
     scheduler.start()
     if conf.get('general.debug'):
         for job in scheduler.get_jobs():
             logging.debug('Job %s scheduled to run at %s', job.name,
                           str(job.next_run_time))
 
-    start_api_server()
+    # --------------------------------------------------------------------------
+    # API server start
+    # --------------------------------------------------------------------------
+
+    apiserver.start()
+
+    # --------------------------------------------------------------------------
+    # API server stopped, cleanup time
+    # --------------------------------------------------------------------------
+
+    scheduler.shutdown()
 
 
 def parse_command_line_arguments() -> argparse.Namespace:
@@ -109,23 +133,6 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Runs a job and exists',
     )
     return argument_parser.parse_args()
-
-
-def start_api_server() -> None:
-    """
-    Runs the API server.
-    """
-    logging.info('Starting API server on %s:%s', conf.get('general.host'),
-                 conf.get('general.port'))
-    try:
-        uvicorn.run(
-            'sni.apiserver:app',
-            host=conf.get('general.host'),
-            log_level='debug' if conf.get('general.debug') else 'info',
-            port=conf.get('general.port'),
-        )
-    finally:
-        scheduler.shutdown()
 
 
 if __name__ == '__main__':

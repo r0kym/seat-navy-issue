@@ -113,3 +113,6 @@ def migrate_ensure_superuser_group() -> None:
             owner=root,
         ).save()
         logging.info('Created "%s" group', group_name)
+
+
+init()
