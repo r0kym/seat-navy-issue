@@ -23,8 +23,8 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 
 * ``general``
     * ``debug`` (default: ``false``): Sets the app in debug mode.
-    * ``host`` (default: ``127.0.0.1``): API server host.
-    * ``port`` (default: ``5000``): API server port.
+    * ``host`` (default: ``0.0.0.0``): API server host.
+    * ``port`` (default: ``80``): API server port.
     * ``root_url``: HTTP URL at which the API root is located (e.g.
       ``https://example.com/sni``)
     * ``scheduler_thread_count`` (default: ``5``)

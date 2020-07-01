@@ -1,19 +1,13 @@
 database:
-    authentication_source: admin
-    database: sni
     host: mongodb
     password: snipassword
-    port: 27017
     username: sni
 esi:
     client_id: idididididididididididididididid
     client_secret: secretsecretsecretsecretsecretsecret0000
 general:
-    debug: true
-    host: 0.0.0.0
-    port: 80
+    debug: false
 jwt:
-    algorithm: HS256
     secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecret0000
 logging:
     version: 1
@@ -34,6 +28,4 @@ logging:
             level: DEBUG
             propagate: false
 redis:
-    database: 0
     host: redis
-    port: 6379
