@@ -66,7 +66,7 @@
 <dl class="function">
 <dt id="sni.apiserver.get_ping">
 <em class="property">async </em><code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">get_ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#get_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.get_ping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">pong</span></code>.</p>
+<dd><p>Replies <code class="docutils literal notranslate"><span class="pre">pong</span></code>. That is all.</p>
 </dd></dl>
 
 <dl class="function">
@@ -89,9 +89,139 @@
 as <code class="docutils literal notranslate"><span class="pre">500</span></code>’s.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.apiserver.start">
+<code class="sig-prename descclassname">sni.apiserver.</code><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/apiserver.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.apiserver.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the API server.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="routers">
 <h2>Routers<a class="headerlink" href="#routers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sni.routers.coalition">
+<span id="sni-routers-coalition"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.routers.coalition</span></code><a class="headerlink" href="#module-sni.routers.coalition" title="Permalink to this headline">¶</a></h3>
+<p>Coalition management paths</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Code is too similar to <a class="reference internal" href="#module-sni.routers.group" title="sni.routers.group"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sni.routers.group</span></code></a></p>
+</div>
+<dl class="class">
+<dt id="sni.routers.coalition.GetCoalitionOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">GetCoalitionOut</code><a class="reference internal" href="_modules/sni/routers/coalition.html#GetCoalitionOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.GetCoalitionOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>GET /coalition/{name}</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.coalition.GetCoalitionOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.GetCoalitionOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.GetCoalitionOut.members">
+<code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.GetCoalitionOut.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.GetCoalitionOut.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.GetCoalitionOut.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.GetCoalitionOut.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.GetCoalitionOut.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.GetCoalitionOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.GetCoalitionOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.routers.coalition.PostCoalitionIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">PostCoalitionIn</code><a class="reference internal" href="_modules/sni/routers/coalition.html#PostCoalitionIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.PostCoalitionIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /coalition</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.coalition.PostCoalitionIn.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.PostCoalitionIn.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.PostCoalitionIn.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.PostCoalitionIn.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.routers.coalition.PutCoalitionIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">PutCoalitionIn</code><a class="reference internal" href="_modules/sni/routers/coalition.html#PutCoalitionIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.PutCoalitionIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /coalition</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.coalition.PutCoalitionIn.add_members">
+<code class="sig-name descname">add_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.PutCoalitionIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.PutCoalitionIn.members">
+<code class="sig-name descname">members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.PutCoalitionIn.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.PutCoalitionIn.remove_members">
+<code class="sig-name descname">remove_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.PutCoalitionIn.remove_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.coalition.PutCoalitionIn.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.coalition.PutCoalitionIn.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.coalition.coalition_record_to_response">
+<code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">coalition_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">coa: sni.uac.user.Coalition</em><span class="sig-paren">)</span> &#x2192; sni.routers.coalition.GetCoalitionOut<a class="reference internal" href="_modules/sni/routers/coalition.html#coalition_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.coalition_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a coalition database record to a response.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.coalition.delete_coalition">
+<code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">delete_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_name: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/coalition.html#delete_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.delete_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a coalition. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.coalition.get_coalition">
+<code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">get_coalition</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/coalition.html#get_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.get_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists all the coalition names. Requires a clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.coalition.get_coalition_name">
+<code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">get_coalition_name</code><span class="sig-paren">(</span><em class="sig-param">coalition_name: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/coalition.html#get_coalition_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.get_coalition_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns details about a given coalition. Requires a clearance level of 0 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.coalition.post_coalitions">
+<code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">post_coalitions</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.coalition.PostCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/coalition.html#post_coalitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.post_coalitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a coalition. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.coalition.put_coalition">
+<code class="sig-prename descclassname">sni.routers.coalition.</code><code class="sig-name descname">put_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_name: str</em>, <em class="sig-param">data: sni.routers.coalition.PutCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/coalition.html#put_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.coalition.put_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a coalition. All fields in the request body are optional. The
+<cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
+<cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
+<cite>remove_members</cite>. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.routers.esi">
 <span id="sni-routers-esi"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.routers.esi</span></code><a class="headerlink" href="#module-sni.routers.esi" title="Permalink to this headline">¶</a></h3>
 <p>ESI related paths</p>
@@ -154,25 +284,193 @@ as <code class="docutils literal notranslate"><span class="pre">500</span></code
 <dl class="function">
 <dt id="sni.routers.esi.get_callback_esi">
 <em class="property">async </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">get_callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/esi.html#get_callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.get_callback_esi" title="Permalink to this definition">¶</a></dt>
-<dd><p>ESI callback.</p>
-<p>Notifies the app with by issuing a POST request to the predefined app
-callback, using the <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.apimodels.PostCallbackEsiOut</span></code> model.</p>
-<dl class="simple">
-<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">OAuth 2.0 for Web Based Applications</a></p>
-</dd>
-</dl>
+<dd><p>ESI callback. You should not manually call this.</p>
+<p>Upon receiving a notification from EVE SSO, SNI notifies the appropriate
+app by issuing a <cite>POST</cite> request to the predefined app callback, using the
+<cite>PostCallbackEsiOut</cite> model.</p>
+<p>Reference: OAuth 2.0 for Web Based Applications
+<a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html</a></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.routers.esi.get_esi_latest">
 <em class="property">async </em><code class="sig-prename descclassname">sni.routers.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.routers.esi.EsiRequestIn = EsiRequestIn(on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Forwards a GET request to the ESI. The required clearance level depends on
-the user making the request and the user specified on the <code class="docutils literal notranslate"><span class="pre">on_behalf_of</span></code>
-field.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#sni.routers.esi.EsiRequestIn" title="sni.routers.esi.EsiRequestIn"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.esi.EsiRequestIn</span></code></a></p>
+<dd><p>Forwards a <cite>GET</cite> request to the ESI. The required clearance level depends
+on the user making the request and the user specified on the
+<cite>on_behalf_of</cite> field. See also <cite>EsiRequestIn</cite>.</p>
+</dd></dl>
+
 </div>
+<div class="section" id="module-sni.routers.group">
+<span id="sni-routers-group"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.routers.group</span></code><a class="headerlink" href="#module-sni.routers.group" title="Permalink to this headline">¶</a></h3>
+<p>Group management paths</p>
+<dl class="class">
+<dt id="sni.routers.group.GetGroupOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">GetGroupOut</code><a class="reference internal" href="_modules/sni/routers/group.html#GetGroupOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.GetGroupOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>GET /group/{name}</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.description">
+<code class="sig-name descname">description</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.members">
+<code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.owner">
+<code class="sig-name descname">owner</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.owner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.routers.group.PostGroupIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">PostGroupIn</code><a class="reference internal" href="_modules/sni/routers/group.html#PostGroupIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.PostGroupIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /group</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.group.PostGroupIn.description">
+<code class="sig-name descname">description</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PostGroupIn.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.PostGroupIn.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PostGroupIn.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.routers.group.PutGroupIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">PutGroupIn</code><a class="reference internal" href="_modules/sni/routers/group.html#PutGroupIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.PutGroupIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /group</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.group.PutGroupIn.add_members">
+<code class="sig-name descname">add_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PutGroupIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.PutGroupIn.description">
+<code class="sig-name descname">description</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PutGroupIn.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.PutGroupIn.members">
+<code class="sig-name descname">members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PutGroupIn.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.PutGroupIn.owner">
+<code class="sig-name descname">owner</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PutGroupIn.owner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.group.PutGroupIn.remove_members">
+<code class="sig-name descname">remove_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.PutGroupIn.remove_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.group.delete_group">
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">delete_group</code><span class="sig-paren">(</span><em class="sig-param">group_name: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/group.html#delete_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.delete_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a group. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.group.get_group">
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">get_group</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/group.html#get_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.get_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists all the group names. Requires a clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.group.get_group_name">
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">get_group_name</code><span class="sig-paren">(</span><em class="sig-param">group_name: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/group.html#get_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.get_group_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns details about a given group. Requires a clearance level of 0 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.group.group_record_to_response">
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">group_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">grp: sni.uac.user.Group</em><span class="sig-paren">)</span> &#x2192; sni.routers.group.GetGroupOut<a class="reference internal" href="_modules/sni/routers/group.html#group_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.group_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a group database record to a response.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.group.post_groups">
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">post_groups</code><span class="sig-paren">(</span><em class="sig-param">data: sni.routers.group.PostGroupIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/group.html#post_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.post_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a group. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.group.put_group">
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">put_group</code><span class="sig-paren">(</span><em class="sig-param">group_name: str</em>, <em class="sig-param">data: sni.routers.group.PutGroupIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/group.html#put_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.put_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a group. All fields in the request body are optional. The
+<cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
+<cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
+<cite>remove_members</cite>. Requires a clearance level of 9 or more of for the user
+to be the owner of the group.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.routers.teamspeak">
+<span id="sni-routers-teamspeak"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.routers.teamspeak</span></code><a class="headerlink" href="#module-sni.routers.teamspeak" title="Permalink to this headline">¶</a></h3>
+<p>Teamspeak related paths</p>
+<dl class="class">
+<dt id="sni.routers.teamspeak.PostAuthStartOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.teamspeak.</code><code class="sig-name descname">PostAuthStartOut</code><a class="reference internal" href="_modules/sni/routers/teamspeak.html#PostAuthStartOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.teamspeak.PostAuthStartOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /teamspeak/auth/start</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.teamspeak.PostAuthStartOut.challenge_nickname">
+<code class="sig-name descname">challenge_nickname</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.teamspeak.PostAuthStartOut.challenge_nickname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.teamspeak.PostAuthStartOut.expiration_datetime">
+<code class="sig-name descname">expiration_datetime</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.teamspeak.PostAuthStartOut.expiration_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.teamspeak.PostAuthStartOut.user">
+<code class="sig-name descname">user</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.teamspeak.PostAuthStartOut.user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.teamspeak.port_auth_start">
+<code class="sig-prename descclassname">sni.routers.teamspeak.</code><code class="sig-name descname">port_auth_start</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/teamspeak.html#port_auth_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.teamspeak.port_auth_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a new authentication challenge for the owner of the token. A random
+nickname is returned (see <cite>PostAuthStartOut</cite> for more details), and the
+user has 1 minute to update its teamspeak nickname to it, and then call
+<cite>POST /teamspeak/auth/complete</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.teamspeak.post_auth_complete">
+<code class="sig-prename descclassname">sni.routers.teamspeak.</code><code class="sig-name descname">post_auth_complete</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/teamspeak.html#post_auth_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.teamspeak.post_auth_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Completes an authentication challenge for the owner of the token. See the
+<cite>POST /teamspeak/auth/start</cite> documentation.</p>
 </dd></dl>
 
 </div>
@@ -370,6 +668,112 @@ to the owner of that app token.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-sni.routers.user">
+<span id="sni-routers-user"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.routers.user</span></code><a class="headerlink" href="#module-sni.routers.user" title="Permalink to this headline">¶</a></h3>
+<p>User management paths</p>
+<dl class="class">
+<dt id="sni.routers.user.GetUserOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">GetUserOut</code><a class="reference internal" href="_modules/sni/routers/user.html#GetUserOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.GetUserOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/user/{character_name}</span></code> requests</p>
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.alliance">
+<code class="sig-name descname">alliance</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.alliance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.character_id">
+<code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.character_name">
+<code class="sig-name descname">character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.clearance_level">
+<code class="sig-name descname">clearance_level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.clearance_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.coalitions">
+<code class="sig-name descname">coalitions</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.coalitions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.corporation">
+<code class="sig-name descname">corporation</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.corporation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.is_ceo_of_alliance">
+<code class="sig-name descname">is_ceo_of_alliance</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.is_ceo_of_alliance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.is_ceo_of_corporation">
+<code class="sig-name descname">is_ceo_of_corporation</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.is_ceo_of_corporation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.user.GetUserOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.GetUserOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.routers.user.PutUserIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">PutUserIn</code><a class="reference internal" href="_modules/sni/routers/user.html#PutUserIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.PutUserIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/user/{character_name}</span></code> requests</p>
+<dl class="attribute">
+<dt id="sni.routers.user.PutUserIn.clearance_level">
+<code class="sig-name descname">clearance_level</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.user.PutUserIn.clearance_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.user.delete_user">
+<code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">delete_user</code><span class="sig-paren">(</span><em class="sig-param">character_name: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/user.html#delete_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.delete_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a user. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.user.get_user">
+<code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">get_user</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/user.html#get_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.get_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of all user names. Requires a clearance level of 0 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.user.get_user_name">
+<code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">get_user_name</code><span class="sig-paren">(</span><em class="sig-param">character_name: str</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/user.html#get_user_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.get_user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns details about a character. Requires a clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.user.put_user_name">
+<code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">put_user_name</code><span class="sig-paren">(</span><em class="sig-param">character_name: str</em>, <em class="sig-param">data: sni.routers.user.PutUserIn</em>, <em class="sig-param">tkn: sni.uac.token.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/routers/user.html#put_user_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.put_user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually updates non ESI data about a character. The required clearance
+level depends on the modification.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.routers.user.user_record_to_response">
+<code class="sig-prename descclassname">sni.routers.user.</code><code class="sig-name descname">user_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; sni.routers.user.GetUserOut<a class="reference internal" href="_modules/sni/routers/user.html#user_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.user.user_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates a new <a class="reference internal" href="#sni.routers.user.GetUserOut" title="sni.routers.user.GetUserOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.user.GetUserOut</span></code></a> with the information
+contained in a user database record.</p>
+</dd></dl>
+
+</div>
 </div>
 </div>
 
@@ -384,8 +788,12 @@ to the owner of that app token.</p>
 <li><a class="reference internal" href="#">API Server</a><ul>
 <li><a class="reference internal" href="#module-sni.apiserver">Main module</a></li>
 <li><a class="reference internal" href="#routers">Routers</a><ul>
+<li><a class="reference internal" href="#module-sni.routers.coalition"><code class="docutils literal notranslate"><span class="pre">sni.routers.coalition</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.routers.esi"><code class="docutils literal notranslate"><span class="pre">sni.routers.esi</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.routers.group"><code class="docutils literal notranslate"><span class="pre">sni.routers.group</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.routers.teamspeak"><code class="docutils literal notranslate"><span class="pre">sni.routers.teamspeak</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.routers.token"><code class="docutils literal notranslate"><span class="pre">sni.routers.token</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.routers.user"><code class="docutils literal notranslate"><span class="pre">sni.routers.user</span></code></a></li>
 </ul>
 </li>
 </ul>

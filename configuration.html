@@ -16,7 +16,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="User Access Control" href="uac.html" />
+    <link rel="next" title="Teamspeak module" href="teamspeak.html" />
     <link rel="prev" title="Authentication" href="authentication.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -29,7 +29,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="uac.html" title="User Access Control"
+          <a href="teamspeak.html" title="Teamspeak module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="authentication.html" title="Authentication"
@@ -73,8 +73,8 @@
 <li><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">general</span></code></dt><dd><ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Sets the app in debug mode.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>): API server host.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">5000</span></code>): API server port.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>): API server host.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">80</span></code>): API server port.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">root_url</span></code>: HTTP URL at which the API root is located (e.g.
 <code class="docutils literal notranslate"><span class="pre">https://example.com/sni</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scheduler_thread_count</span></code> (default: <code class="docutils literal notranslate"><span class="pre">5</span></code>)</p></li>
@@ -100,26 +100,32 @@
 </dd>
 </dl>
 </li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">teamspeak</span></code></dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code>: The query server port! Not the port used by clients.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">server_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 </div>
 <div class="section" id="example">
 <span id="configuration-file-reference-example"></span><h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">database</span><span class="p">:</span>
-    <span class="nt">authentication_source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
-    <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongodb</span>
     <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">snipassword</span>
-    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">27017</span>
     <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
 <span class="nt">esi</span><span class="p">:</span>
     <span class="nt">client_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">idididididididididididididididid</span>
     <span class="nt">client_secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">secretsecretsecretsecretsecretsecret0000</span>
 <span class="nt">general</span><span class="p">:</span>
-    <span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
-    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+    <span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">jwt</span><span class="p">:</span>
-    <span class="nt">algorithm</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HS256</span>
     <span class="nt">secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">secretsecretsecretsecretsecretsecretsecretsecretsecretsecret0000</span>
 <span class="nt">logging</span><span class="p">:</span>
     <span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -140,9 +146,13 @@
             <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
             <span class="nt">propagate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">redis</span><span class="p">:</span>
-    <span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
-    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6379</span>
+<span class="nt">teamspeak</span><span class="p">:</span>
+    <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.2.3.4</span>
+    <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6eG8e7z4</span>
+    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+    <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
 </pre></div>
 </div>
 </div>
@@ -205,8 +215,8 @@
   <p class="topless"><a href="authentication.html"
                         title="previous chapter">Authentication</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="uac.html"
-                        title="next chapter">User Access Control</a></p>
+  <p class="topless"><a href="teamspeak.html"
+                        title="next chapter">Teamspeak module</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -238,7 +248,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="uac.html" title="User Access Control"
+          <a href="teamspeak.html" title="Teamspeak module"
              >next</a> |</li>
         <li class="right" >
           <a href="authentication.html" title="Authentication"

@@ -183,7 +183,25 @@
 <span class="sd">        Tells wether the user is the ceo of its corporation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span></div></div>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tickered_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the user&#39;s character name with its alliance ticker as a prefix.</span>
+<span class="sd">        If the user is not in an alliance, then the corporation&#39;s ticker is</span>
+<span class="sd">        used instead. If the user is not in any coproration (e.g. root), then</span>
+<span class="sd">        there is no prefix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">ticker</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">ticker</span>
+        <span class="k">if</span> <span class="n">ticker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{ticker}</span><span class="s1">] </span><span class="si">{self.character_name}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_name</span></div>
 
 
 <div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../../uac.html#sni.uac.user.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>

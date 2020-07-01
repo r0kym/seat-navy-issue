@@ -37,7 +37,9 @@
           <div class="body" role="main">
             
   <h1>Source code for sni.__main__</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="c1"># pylint: disable=import-outside-toplevel</span>
+<span class="c1"># pylint: disable=unused-import</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Main module</span>
 
 <span class="sd">This module contains the entry point to SNI.</span>
@@ -46,25 +48,20 @@
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
-<span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">import</span> <span class="nn">uvicorn</span>
-
-<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
-<span class="kn">import</span> <span class="nn">sni.apiserver</span> <span class="k">as</span> <span class="nn">apiserver</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
-<span class="kn">import</span> <span class="nn">sni.db</span> <span class="k">as</span> <span class="nn">db</span>
-<span class="kn">import</span> <span class="nn">sni.esi.esi</span> <span class="k">as</span> <span class="nn">esi</span>
-<span class="kn">import</span> <span class="nn">sni.esi.jobs</span> <span class="k">as</span> <span class="nn">esijobs</span>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../sni.html#sni.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Entry point.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">arguments</span> <span class="o">=</span> <span class="n">parse_command_line_arguments</span><span class="p">()</span>
 
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Parsing command line arguments and loading configuration file</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="n">parse_command_line_arguments</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
@@ -72,24 +69,34 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="p">{}))</span>
 
-    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
-        <span class="n">db</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
-        <span class="n">db</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Pre database init actions</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">sni.apiserver</span> <span class="k">as</span> <span class="nn">apiserver</span>
         <span class="n">apiserver</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Post database init actions, pre database migration</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="kn">import</span> <span class="nn">sni.db</span> <span class="k">as</span> <span class="nn">db</span>
+
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reload_esi_openapi_spec</span><span class="p">:</span>
-        <span class="n">db</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="kn">import</span> <span class="nn">sni.esi.esi</span> <span class="k">as</span> <span class="nn">esi</span>
         <span class="n">esi</span><span class="o">.</span><span class="n">load_esi_openapi</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;SNI running in debug mode, dumping configuration:&#39;</span><span class="p">)</span>
-        <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">CONFIGURATION</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Post database migration, pre scheduler init</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="n">db</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
     <span class="n">db</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">:</span>
         <span class="n">module_name</span><span class="p">,</span> <span class="n">function_name</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
@@ -100,14 +107,34 @@
         <span class="n">function</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-    <span class="n">esijobs</span><span class="o">.</span><span class="n">schedule_jobs</span><span class="p">()</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">get_jobs</span><span class="p">():</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Job </span><span class="si">%s</span><span class="s1"> scheduled to run at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                          <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">next_run_time</span><span class="p">))</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Scheduler init, pre scheduler start</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="n">start_api_server</span><span class="p">()</span></div>
+    <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
+    <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.teamspeak</span>
+
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="c1"># if conf.get(&#39;general.debug&#39;):</span>
+    <span class="c1">#     for job in scheduler.get_jobs():</span>
+    <span class="c1">#         logging.debug(&#39;Job %s scheduled to run at %s&#39;, job.name,</span>
+    <span class="c1">#                       str(job.next_run_time))</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># API server start</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="kn">import</span> <span class="nn">sni.apiserver</span> <span class="k">as</span> <span class="nn">apiserver</span>
+    <span class="n">apiserver</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># API server stopped, cleanup time</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="parse_command_line_arguments"><a class="viewcode-back" href="../../sni.html#sni.__main__.parse_command_line_arguments">[docs]</a><span class="k">def</span> <span class="nf">parse_command_line_arguments</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
@@ -148,23 +175,6 @@
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Runs a job and exists&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">argument_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="start_api_server"><a class="viewcode-back" href="../../sni.html#sni.__main__.start_api_server">[docs]</a><span class="k">def</span> <span class="nf">start_api_server</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Runs the API server.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting API server on </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
-                 <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">))</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="s1">&#39;sni.apiserver:app&#39;</span><span class="p">,</span>
-            <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
-            <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span> <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
-            <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">),</span>
-        <span class="p">)</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

@@ -52,6 +52,7 @@
 <span class="kn">import</span> <span class="nn">mongoengine</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">requests.exceptions</span>
+<span class="kn">import</span> <span class="nn">uvicorn</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
@@ -73,6 +74,13 @@
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/group&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Group management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
+<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">sni.routers.teamspeak</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/teamspeak&#39;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Teamspeak&#39;</span><span class="p">],</span>
+    <span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/token&#39;</span><span class="p">,</span>
@@ -162,10 +170,11 @@
 <div class="viewcode-block" id="get_ping"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.get_ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="s1">&#39;/ping&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Testing&#39;</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Replies &quot;pong&quot;&#39;</span>
 <span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ping</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns ``pong``.</span>
+<span class="sd">    Replies ``pong``. That is all.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;pong&#39;</span></div>
 
@@ -175,6 +184,23 @@
 <span class="sd">    Print the OpenAPI specification of the server in YAML.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">openapi</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../apiserver.html#sni.apiserver.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs the API server.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting API server on </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
+                 <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="s1">&#39;sni.apiserver:app&#39;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span> <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API server stopped&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Teamspeak module &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Access Control" href="uac.html" />
+    <link rel="prev" title="Configuration facility" href="configuration.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="uac.html" title="User Access Control"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration facility"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="teamspeak-module">
+<h1>Teamspeak module<a class="headerlink" href="#teamspeak-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sni.teamspeak">
+<span id="module-documentation"></span><h2>Module documentation<a class="headerlink" href="#module-sni.teamspeak" title="Permalink to this headline">¶</a></h2>
+<p>Teamspeak management.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://drive.google.com/file/d/1d2y5daxBR7mo92g1IxOKB6A14Ok2-R7T/view?usp=sharing">Teamspeak 3 query server documentation</a></p>
+</div>
+<dl class="class">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge">
+<em class="property">class </em><code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">TeamspeakAuthenticationChallenge</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/teamspeak.html#TeamspeakAuthenticationChallenge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a teamspeak authentication challenge, akin to
+<a class="reference internal" href="uac.html#sni.uac.token.StateCode" title="sni.uac.token.StateCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.token.StateCode</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#sni.teamspeak.new_authentication_challenge" title="sni.teamspeak.new_authentication_challenge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.teamspeak.new_authentication_challenge()</span></code></a></p>
+</div>
+<dl class="exception">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.challenge_nickname">
+<code class="sig-name descname">challenge_nickname</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.challenge_nickname" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakAuthenticationChallenge.user">
+<code class="sig-name descname">user</code><a class="headerlink" href="#sni.teamspeak.TeamspeakAuthenticationChallenge.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.teamspeak.TeamspeakClient">
+<em class="property">class </em><code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">TeamspeakClient</code><a class="reference internal" href="_modules/sni/teamspeak.html#TeamspeakClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.TeamspeakClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a teamspeak client as reported by the teamspeak query server.</p>
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakClient.cid">
+<code class="sig-name descname">cid</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.teamspeak.TeamspeakClient.cid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakClient.clid">
+<code class="sig-name descname">clid</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.teamspeak.TeamspeakClient.clid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakClient.client_database_id">
+<code class="sig-name descname">client_database_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.teamspeak.TeamspeakClient.client_database_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakClient.client_nickname">
+<code class="sig-name descname">client_nickname</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.teamspeak.TeamspeakClient.client_nickname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakClient.client_type">
+<code class="sig-name descname">client_type</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.teamspeak.TeamspeakClient.client_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.teamspeak.TeamspeakUser">
+<em class="property">class </em><code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">TeamspeakUser</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/teamspeak.html#TeamspeakUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.TeamspeakUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represent a teamspeak user.</p>
+<dl class="exception">
+<dt id="sni.teamspeak.TeamspeakUser.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.teamspeak.TeamspeakUser.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakUser.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakUser.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakUser.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakUser.teamspeak_id">
+<code class="sig-name descname">teamspeak_id</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.teamspeak_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.teamspeak.TeamspeakUser.user">
+<code class="sig-name descname">user</code><a class="headerlink" href="#sni.teamspeak.TeamspeakUser.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.client_list">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">client_list</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em><span class="sig-paren">)</span> &#x2192; List[sni.teamspeak.TeamspeakClient]<a class="reference internal" href="_modules/sni/teamspeak.html#client_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.client_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of clients currently connected to the teamspeak server.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#sni.teamspeak.TeamspeakClient" title="sni.teamspeak.TeamspeakClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.teamspeak.TeamspeakClient</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.complete_authentication_challenge">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">complete_authentication_challenge</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em>, <em class="sig-param">usr: sni.uac.user.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/teamspeak.html#complete_authentication_challenge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.complete_authentication_challenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Complete an authentication challenge, see
+<a class="reference internal" href="#sni.teamspeak.new_authentication_challenge" title="sni.teamspeak.new_authentication_challenge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.teamspeak.new_authentication_challenge()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.find_client">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">find_client</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em>, <em class="sig-param">*</em>, <em class="sig-param">nickname: Optional[str] = None</em>, <em class="sig-param">client_database_id: Optional[int] = None</em><span class="sig-paren">)</span> &#x2192; sni.teamspeak.TeamspeakClient<a class="reference internal" href="_modules/sni/teamspeak.html#find_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.find_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <a class="reference internal" href="#sni.teamspeak.TeamspeakClient" title="sni.teamspeak.TeamspeakClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.teamspeak.TeamspeakClient</span></code></a> representation if a
+client. Raises a <code class="xref py py-class docutils literal notranslate"><span class="pre">LookupError</span></code> if the client is not found, or if
+multiple client with the same nickname are found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.new_authentication_challenge">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">new_authentication_challenge</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.uac.user.User</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/teamspeak.html#new_authentication_challenge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.new_authentication_challenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates an authentication challenge. The challenge proceeds as follows:</p>
+<ol class="arabic simple">
+<li><p>A user (<a class="reference internal" href="uac.html#sni.uac.user.User" title="sni.uac.user.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.user.User</span></code></a>) asks to start a challenge by calling
+this method.</p></li>
+<li><p>This methods returns a UUID, and the user has 60 seconds to change its
+teamspeak nickname to that UUID.</p></li>
+<li><p>The user notifies SNI that (s)he has done so.</p></li>
+<li><p>The server checks (see
+<a class="reference internal" href="#sni.teamspeak.complete_authentication_challenge" title="sni.teamspeak.complete_authentication_challenge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.teamspeak.complete_authentication_challenge()</span></code></a>), and if
+sucessful, the corresponding teamspeak client is registered in the
+database and bound to that user. The nickname is also automatically
+assigned.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.new_connection">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">new_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; ts3.query.TS3Connection<a class="reference internal" href="_modules/sni/teamspeak.html#new_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.new_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new connection to the teamspeak server.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.update_client">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">update_client</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em>, <em class="sig-param">client: sni.teamspeak.TeamspeakClient</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/teamspeak.html#update_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.update_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update’s a teamspeak client data and permissions, if that client is
+registered as a teamspeak user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.teamspeak.update_teamspeak_clients">
+<code class="sig-prename descclassname">sni.teamspeak.</code><code class="sig-name descname">update_teamspeak_clients</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/teamspeak.html#update_teamspeak_clients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.update_teamspeak_clients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates all teamspeak clients. See <a class="reference internal" href="#sni.teamspeak.update_client" title="sni.teamspeak.update_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.teamspeak.update_client()</span></code></a>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Teamspeak module</a><ul>
+<li><a class="reference internal" href="#module-sni.teamspeak">Module documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="configuration.html"
+                        title="previous chapter">Configuration facility</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="uac.html"
+                        title="next chapter">User Access Control</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/teamspeak.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="uac.html" title="User Access Control"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration facility"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

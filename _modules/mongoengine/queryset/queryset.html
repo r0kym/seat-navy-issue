@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>mongoengine.queryset.queryset &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mongoengine.queryset.queryset</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">mongoengine.errors</span> <span class="kn">import</span> <span class="n">OperationError</span>
+<span class="kn">from</span> <span class="nn">mongoengine.queryset.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseQuerySet</span><span class="p">,</span>
+    <span class="n">CASCADE</span><span class="p">,</span>
+    <span class="n">DENY</span><span class="p">,</span>
+    <span class="n">DO_NOTHING</span><span class="p">,</span>
+    <span class="n">NULLIFY</span><span class="p">,</span>
+    <span class="n">PULL</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;QuerySet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuerySetNoCache&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DO_NOTHING&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NULLIFY&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CASCADE&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DENY&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PULL&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># The maximum number of items to display in a QuerySet.__repr__</span>
+<span class="n">REPR_OUTPUT_SIZE</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">ITER_CHUNK_SIZE</span> <span class="o">=</span> <span class="mi">100</span>
+
+
+<span class="k">class</span> <span class="nc">QuerySet</span><span class="p">(</span><span class="n">BaseQuerySet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The default queryset, that builds queries and handles a set of results</span>
+<span class="sd">    returned from a query.</span>
+
+<span class="sd">    Wraps a MongoDB cursor, providing :class:`~mongoengine.Document` objects as</span>
+<span class="sd">    the results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_has_more</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">_len</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_result_cache</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iteration utilises a results cache which iterates the cursor</span>
+<span class="sd">        in batches of ``ITER_CHUNK_SIZE``.</span>
+
+<span class="sd">        If ``self._has_more`` the cursor hasn&#39;t been exhausted so cache then</span>
+<span class="sd">        batch. Otherwise iterate the result_cache.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter_results</span><span class="p">()</span>
+
+        <span class="c1"># iterating over the cache.</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Since __len__ is called quite frequently (for example, as part of</span>
+<span class="sd">        list(qs)), we populate the result cache and cache the length.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
+
+        <span class="c1"># Populate the result cache with *all* of the docs in the cursor</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span><span class="p">:</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_results</span><span class="p">())</span>
+
+        <span class="c1"># Cache the length of the complete result cache and return it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provide a string representation of the QuerySet&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;.. queryset mid-iteration ..&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_populate_cache</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="p">[:</span> <span class="n">REPR_OUTPUT_SIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">REPR_OUTPUT_SIZE</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...(remaining elements truncated)...&quot;</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_iter_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A generator for iterating over the result cache.</span>
+
+<span class="sd">        Also populates the cache if there are more possible results to</span>
+<span class="sd">        yield. Raises StopIteration when there are no more results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="c1"># For all positions lower than the length of the current result</span>
+            <span class="c1"># cache, serve the docs straight from the cache w/o hitting the</span>
+            <span class="c1"># database.</span>
+            <span class="c1"># XXX it&#39;s VERY important to compute the len within the `while`</span>
+            <span class="c1"># condition because the result cache might expand mid-iteration</span>
+            <span class="c1"># (e.g. if we call len(qs) inside a loop that iterates over the</span>
+            <span class="c1"># queryset). Fortunately len(list) is O(1) in Python, so this</span>
+            <span class="c1"># doesn&#39;t cause performance issues.</span>
+            <span class="k">while</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+                <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># return if we already established there were no more</span>
+            <span class="c1"># docs in the db cursor.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Otherwise, populate more of the cache and repeat.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">pos</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_populate_cache</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_populate_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Populates the result cache with ``ITER_CHUNK_SIZE`` more entries</span>
+<span class="sd">        (until the cursor is exhausted).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Skip populating the cache if we already established there are no</span>
+        <span class="c1"># more docs to pull from the database.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Pull in ITER_CHUNK_SIZE docs from the database and store them in</span>
+        <span class="c1"># the result cache.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ITER_CHUNK_SIZE</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="c1"># Getting this exception means there are no more docs in the</span>
+            <span class="c1"># db cursor. Set _has_more to False so that we can use that</span>
+            <span class="c1"># information in other places.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_limit_and_skip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Count the selected elements in the query.</span>
+
+<span class="sd">        :param with_limit_and_skip (optional): take any :meth:`limit` or</span>
+<span class="sd">            :meth:`skip` that has been applied to this cursor into account when</span>
+<span class="sd">            getting the count</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">with_limit_and_skip</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">with_limit_and_skip</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">with_limit_and_skip</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
+
+    <span class="k">def</span> <span class="nf">no_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert to a non-caching queryset</span>
+
+<span class="sd">        .. versionadded:: 0.8.3 Convert to non caching queryset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OperationError</span><span class="p">(</span><span class="s2">&quot;QuerySet already cached&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone_into</span><span class="p">(</span><span class="n">QuerySetNoCache</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">QuerySetNoCache</span><span class="p">(</span><span class="n">BaseQuerySet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A non caching QuerySet&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert to a caching queryset</span>
+
+<span class="sd">        .. versionadded:: 0.8.3 Convert to caching queryset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone_into</span><span class="p">(</span><span class="n">QuerySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provides the string representation of the QuerySet</span>
+
+<span class="sd">        .. versionchanged:: 0.6.13 Now doesnt modify the cursor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;.. queryset mid-iteration ..&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">REPR_OUTPUT_SIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">REPR_OUTPUT_SIZE</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...(remaining elements truncated)...&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="n">queryset</span><span class="o">.</span><span class="n">_iter</span><span class="p">:</span>
+            <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="n">queryset</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">queryset</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>
