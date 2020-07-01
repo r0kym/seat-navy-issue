@@ -197,6 +197,8 @@ SCOPES: Dict[str, AbstractScope] = {
     'sni.update_per_token': AbsoluteScope(10),
     'sni.update_use_token': AbsoluteScope(0),
     'sni.update_user': AbsoluteScope(9),
+    'sni.teamspeak.auth': AbsoluteScope(0),
+    'sni.teamspeak.read_user': AbsoluteScope(0),
 }
 
 

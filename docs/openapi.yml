@@ -1,4 +1,4 @@
-2020-07-01 15:51:12,763 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2020-07-01 17:58:26,591 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
 components:
   schemas:
     EsiRequestIn:
@@ -136,54 +136,6 @@ components:
       - token_type
       - uuid
       title: GetTokenOut
-      type: object
-    GetUserOut:
-      description: Model for ``GET /user/{character_name}`` requests
-      properties:
-        alliance:
-          title: Alliance
-          type: string
-        character_id:
-          title: Character Id
-          type: integer
-        character_name:
-          title: Character Name
-          type: string
-        clearance_level:
-          title: Clearance Level
-          type: integer
-        coalitions:
-          items:
-            type: string
-          title: Coalitions
-          type: array
-        corporation:
-          title: Corporation
-          type: string
-        created_on:
-          format: date-time
-          title: Created On
-          type: string
-        is_ceo_of_alliance:
-          title: Is Ceo Of Alliance
-          type: boolean
-        is_ceo_of_corporation:
-          title: Is Ceo Of Corporation
-          type: boolean
-        updated_on:
-          format: date-time
-          title: Updated On
-          type: string
-      required:
-      - character_id
-      - character_name
-      - clearance_level
-      - coalitions
-      - created_on
-      - is_ceo_of_alliance
-      - is_ceo_of_corporation
-      - updated_on
-      title: GetUserOut
       type: object
     HTTPValidationError:
       properties:
@@ -405,6 +357,73 @@ components:
       - type
       title: ValidationError
       type: object
+    sni__routers__teamspeak__GetUserOut:
+      description: Model for `GET /teamspeak/user/{name}` responses.
+      properties:
+        character_name:
+          title: Character Name
+          type: string
+        client_database_id:
+          title: Client Database Id
+          type: integer
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+      required:
+      - character_name
+      - client_database_id
+      - created_on
+      title: GetUserOut
+      type: object
+    sni__routers__user__GetUserOut:
+      description: Model for ``GET /user/{character_name}`` requests
+      properties:
+        alliance:
+          title: Alliance
+          type: string
+        character_id:
+          title: Character Id
+          type: integer
+        character_name:
+          title: Character Name
+          type: string
+        clearance_level:
+          title: Clearance Level
+          type: integer
+        coalitions:
+          items:
+            type: string
+          title: Coalitions
+          type: array
+        corporation:
+          title: Corporation
+          type: string
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        is_ceo_of_alliance:
+          title: Is Ceo Of Alliance
+          type: boolean
+        is_ceo_of_corporation:
+          title: Is Ceo Of Corporation
+          type: boolean
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - character_id
+      - character_name
+      - clearance_level
+      - coalitions
+      - created_on
+      - is_ceo_of_alliance
+      - is_ceo_of_corporation
+      - updated_on
+      title: GetUserOut
+      type: object
 info:
   title: FastAPI
   version: 0.1.0
@@ -417,7 +436,7 @@ paths:
 
         Upon receiving a notification from EVE SSO, SNI notifies the appropriate
 
-        app by issuing a `POST request to the predefined app callback, using the
+        app by issuing a `POST` request to the predefined app callback, using the
 
         `PostCallbackEsiOut` model.
 
@@ -872,7 +891,7 @@ paths:
           title: Authorization
           type: string
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema: {}
@@ -918,6 +937,76 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Starts a teamspeak authentication challenge
+      tags:
+      - Teamspeak
+  /teamspeak/user:
+    get:
+      description: 'Lists all EVE characters registered on Teamspeak. Requires a clearance
+
+        level of 0 or more.'
+      operationId: get_teamspeak_users_teamspeak_user_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                title: Response Get Teamspeak Users Teamspeak User Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Lists all EVE characters registered on Teamspeak
+      tags:
+      - Teamspeak
+  /teamspeak/user/{name}:
+    get:
+      description: 'Get basic teamspeak informations about a registered EVE character.
+        In other
+
+        words, the `name` parameter is expected to be an EVE character name.
+
+        Requires a clearance level of 0 or more.'
+      operationId: get_teamspeak_user_teamspeak_user__name__get
+      parameters:
+      - in: path
+        name: name
+        required: true
+        schema:
+          title: Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sni__routers__teamspeak__GetUserOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get basic teamspeak informations about a registered EVE character
       tags:
       - Teamspeak
   /token/:
@@ -1213,7 +1302,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserOut'
+                $ref: '#/components/schemas/sni__routers__user__GetUserOut'
           description: Successful Response
         '422':
           content:
@@ -1254,7 +1343,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserOut'
+                $ref: '#/components/schemas/sni__routers__user__GetUserOut'
           description: Successful Response
         '422':
           content:
