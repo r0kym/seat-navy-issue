@@ -14,12 +14,13 @@ CONFIGURATION: Dict[str, Any] = {
     'database.username': 'sni',
     'general.debug': False,
     'general.host': '0.0.0.0',
-    'general.port': '80',
+    'general.port': 80,
     'general.scheduler_thread_count': 5,
     'jwt.algorithm': 'HS256',
     'redis.database': 0,
     'redis.port': 6379,
     'teamspeak.enabled': False,
+    'teamspeak.server_id': 0,
 }
 
 

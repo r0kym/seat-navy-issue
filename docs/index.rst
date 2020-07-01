@@ -59,6 +59,7 @@ High level documentation
    openapi
    authentication
    configuration
+   teamspeak
    uac
    todos
 

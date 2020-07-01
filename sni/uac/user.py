@@ -146,6 +146,24 @@ class User(me.Document):
         return (self.corporation is not None
                 and self.corporation.ceo_character_id == self.character_id)
 
+    @property
+    def tickered_name(self) -> str:
+        """
+        Returns the user's character name with its alliance ticker as a prefix.
+        If the user is not in an alliance, then the corporation's ticker is
+        used instead. If the user is not in any coproration (e.g. root), then
+        there is no prefix.
+        """
+        ticker = None
+        if self.corporation is not None:
+            if self.corporation.alliance is not None:
+                ticker = self.corporation.alliance.ticker
+            else:
+                ticker = self.corporation.ticker
+        if ticker is not None:
+            return f'[{ticker}] {self.character_name}'
+        return self.character_name
+
 
 class Group(me.Document):
     """

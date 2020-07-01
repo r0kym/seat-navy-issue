@@ -35,6 +35,13 @@ app.include_router(
     prefix='/group',
     tags=['Group management'],
 )
+if conf.get('teamspeak.enabled'):
+    import sni.routers.teamspeak
+    app.include_router(
+        sni.routers.teamspeak.router,
+        prefix='/teamspeak',
+        tags=['Teamspeak'],
+    )
 app.include_router(
     sni.routers.token.router,
     prefix='/token',

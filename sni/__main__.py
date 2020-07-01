@@ -1,3 +1,5 @@
+# pylint: disable=import-outside-toplevel
+# pylint: disable=unused-import
 """
 Main module
 
@@ -9,10 +11,7 @@ import logging
 import logging.config
 import sys
 
-from sni.scheduler import scheduler
-import sni.apiserver as apiserver
 import sni.conf as conf
-import sni.esi.esi as esi
 
 
 def main():
@@ -36,6 +35,7 @@ def main():
     # --------------------------------------------------------------------------
 
     if arguments.print_openapi_spec:
+        import sni.apiserver as apiserver
         apiserver.print_openapi_spec()
         sys.exit()
 
@@ -43,10 +43,10 @@ def main():
     # Post database init actions, pre database migration
     # --------------------------------------------------------------------------
 
-    # pylint: disable=import-outside-toplevel
     import sni.db as db
 
     if arguments.reload_esi_openapi_spec:
+        import sni.esi.esi as esi
         esi.load_esi_openapi()
         sys.exit()
 
@@ -72,9 +72,11 @@ def main():
     # Scheduler init, pre scheduler start
     # --------------------------------------------------------------------------
 
-    # pylint: disable=import-outside-toplevel
-    # pylint: disable=unused-import
+    from sni.scheduler import scheduler
     import sni.esi.jobs
+
+    if conf.get('teamspeak.enabled'):
+        import sni.teamspeak
 
     scheduler.start()
     if conf.get('general.debug'):
@@ -86,6 +88,7 @@ def main():
     # API server start
     # --------------------------------------------------------------------------
 
+    import sni.apiserver as apiserver
     apiserver.start()
 
     # --------------------------------------------------------------------------
