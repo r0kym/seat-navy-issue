@@ -185,7 +185,7 @@ def update_client(connection: ts3.query.TS3Connection,
 
 
 @scheduler.scheduled_job('interval', minutes=10)
-def update_clients():
+def update_teamspeak_clients():
     """
     Updates all teamspeak clients. See :meth:`sni.teamspeak.update_client`.
     """

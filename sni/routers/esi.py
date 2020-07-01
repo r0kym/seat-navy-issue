@@ -89,6 +89,7 @@ async def get_callback_esi(code: str, state: str):
 
 @router.get(
     '/esi/{esi_path:path}',
+    description='Proxy path to the ESI',
     tags=['ESI'],
     response_model=EsiRequestOut,
 )
