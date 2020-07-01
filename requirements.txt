@@ -9,4 +9,5 @@ pyjwt
 pyyaml
 redis
 requests
+ts3
 uvicorn

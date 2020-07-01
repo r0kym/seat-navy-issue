@@ -29,3 +29,9 @@ logging:
             propagate: false
 redis:
     host: redis
+teamspeak:
+    enabled: True
+    host: 1.2.3.4
+    password: 6eG8e7z4
+    port: 12345
+    username: sni
