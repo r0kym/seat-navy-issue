@@ -86,7 +86,10 @@ def get_user(tkn: token.Token = Depends(
     return [user.character_name for user in user.User.objects()]
 
 
-@router.delete('/{character_name}')
+@router.delete(
+    '/{character_name}',
+    summary='Delete a user',
+)
 def delete_user(character_name: str,
                 tkn: token.Token = Depends(
                     token.from_authotization_header_nondyn)):
@@ -98,7 +101,11 @@ def delete_user(character_name: str,
     usr.delete()
 
 
-@router.get('/{character_name}', response_model=GetUserOut)
+@router.get(
+    '/{character_name}',
+    response_model=GetUserOut,
+    summary='Get basic informations about a user',
+)
 def get_user_name(character_name: str,
                   tkn: token.Token = Depends(
                       token.from_authotization_header_nondyn)):
@@ -110,7 +117,11 @@ def get_user_name(character_name: str,
     return user_record_to_response(usr)
 
 
-@router.put('/{character_name}', response_model=GetUserOut)
+@router.put(
+    '/{character_name}',
+    response_model=GetUserOut,
+    summary='Update a user',
+)
 def put_user_name(character_name: str,
                   data: PutUserIn,
                   tkn: token.Token = Depends(

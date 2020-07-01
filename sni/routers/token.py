@@ -89,7 +89,10 @@ class PostTokenPerOut(pdt.BaseModel):
     tkn: str
 
 
-@router.delete('/')
+@router.delete(
+    '/',
+    summary='Manually delete a token',
+)
 async def delete_token(
         uuid: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
@@ -111,7 +114,11 @@ async def delete_token(
     logging.debug('Deleted token %s', uuid)
 
 
-@router.get('/', response_model=GetTokenOut)
+@router.get(
+    '/',
+    response_model=GetTokenOut,
+    summary='Get basic informations about the current token',
+)
 async def get_token(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """
@@ -134,6 +141,7 @@ async def get_token(tkn: token.Token = Depends(
 @router.post(
     '/dyn',
     response_model=PostTokenDynOut,
+    summary='Create a new dynamic app token',
 )
 async def post_token_dyn(
         data: PostTokenDynIn,
@@ -158,6 +166,7 @@ async def post_token_dyn(
 @router.post(
     '/per',
     response_model=PostTokenPerOut,
+    summary='Create a new permanent app token',
 )
 async def post_token_per(
         data: PostTokenPerIn,
@@ -182,6 +191,7 @@ async def post_token_per(
 @router.post(
     '/use/from/dyn',
     response_model=PostTokenUseFromDynOut,
+    summary='Create a new user token with a dynamic app token',
 )
 async def post_token_use_from_dyn(
         data: PostTokenUseFromDynIn,
@@ -209,6 +219,7 @@ async def post_token_use_from_dyn(
 @router.post(
     '/use/from/per',
     response_model=PostUseFromPerOut,
+    summary='Create a new user token with a permanent app token',
 )
 async def post_token_use_from_per(tkn: token.Token = Depends(
     token.from_authotization_header)):

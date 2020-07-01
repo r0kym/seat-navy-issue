@@ -50,17 +50,19 @@ class PostCallbackEsiOut(pydantic.BaseModel):
 
 @router.get(
     '/callback/esi',
+    summary='ESI callback',
     tags=['Callbacks', 'ESI'],
 )
 async def get_callback_esi(code: str, state: str):
     """
-    ESI callback.
+    ESI callback. You should not manually call this.
 
-    Notifies the app with by issuing a POST request to the predefined app
-    callback, using the :class:`sni.apimodels.PostCallbackEsiOut` model.
+    Upon receiving a notification from EVE SSO, SNI notifies the appropriate
+    app by issuing a `POST request to the predefined app callback, using the
+    `PostCallbackEsiOut` model.
 
-    Reference:
-        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
+    Reference: OAuth 2.0 for Web Based Applications
+    https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html
     """
     logging.info('Received callback from ESI for state %s', state)
     state_code: snitoken.StateCode = snitoken.StateCode.objects.get(uuid=state)
@@ -89,9 +91,9 @@ async def get_callback_esi(code: str, state: str):
 
 @router.get(
     '/esi/{esi_path:path}',
-    description='Proxy path to the ESI',
-    tags=['ESI'],
     response_model=EsiRequestOut,
+    summary='Proxy path to the ESI',
+    tags=['ESI'],
 )
 async def get_esi_latest(
     esi_path: str,
@@ -99,12 +101,9 @@ async def get_esi_latest(
     tkn: snitoken.Token = Depends(snitoken.from_authotization_header_nondyn),
 ):
     """
-    Forwards a GET request to the ESI. The required clearance level depends on
-    the user making the request and the user specified on the ``on_behalf_of``
-    field.
-
-    See also:
-        :class:`sni.routers.esi.EsiRequestIn`
+    Forwards a `GET` request to the ESI. The required clearance level depends
+    on the user making the request and the user specified on the
+    `on_behalf_of` field. See also `EsiRequestIn`.
     """
     esi_token: Optional[str] = None
     if data.on_behalf_of:

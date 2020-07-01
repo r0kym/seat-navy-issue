@@ -131,10 +131,11 @@ def exception_handler(_request: requests.Request, error: Exception):
 @app.get(
     '/ping',
     tags=['Testing'],
+    summary='Replies "pong"'
 )
 async def get_ping():
     """
-    Returns ``pong``.
+    Replies ``pong``. That is all.
     """
     return 'pong'
 

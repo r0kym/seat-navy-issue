@@ -79,10 +79,10 @@ def main():
         import sni.teamspeak
 
     scheduler.start()
-    if conf.get('general.debug'):
-        for job in scheduler.get_jobs():
-            logging.debug('Job %s scheduled to run at %s', job.name,
-                          str(job.next_run_time))
+    # if conf.get('general.debug'):
+    #     for job in scheduler.get_jobs():
+    #         logging.debug('Job %s scheduled to run at %s', job.name,
+    #                       str(job.next_run_time))
 
     # --------------------------------------------------------------------------
     # API server start

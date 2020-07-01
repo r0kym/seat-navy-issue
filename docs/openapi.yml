@@ -1,3 +1,4 @@
+2020-07-01 15:45:42,581 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
 components:
   schemas:
     EsiRequestIn:
@@ -28,7 +29,7 @@ components:
       title: EsiRequestOut
       type: object
     GetCoalitionOut:
-      description: Model for ``GET /coalition/{name}`` responses.
+      description: Model for `GET /coalition/{name}` responses.
       properties:
         created_on:
           format: date-time
@@ -193,8 +194,27 @@ components:
           type: array
       title: HTTPValidationError
       type: object
+    PostAuthStartOut:
+      description: Model for ``POST /teamspeak/auth/start`` responses
+      properties:
+        challenge_nickname:
+          title: Challenge Nickname
+          type: string
+        expiration_datetime:
+          format: date-time
+          title: Expiration Datetime
+          type: string
+        user:
+          title: User
+          type: string
+      required:
+      - expiration_datetime
+      - challenge_nickname
+      - user
+      title: PostAuthStartOut
+      type: object
     PostCoalitionIn:
-      description: Model for ``POST /coalition`` responses.
+      description: Model for `POST /coalition` responses.
       properties:
         name:
           title: Name
@@ -310,7 +330,7 @@ components:
       title: PostUseFromPerOut
       type: object
     PutCoalitionIn:
-      description: Model for ``POST /coalition`` responses.
+      description: Model for `POST /coalition` responses.
       properties:
         add_members:
           items:
@@ -392,9 +412,19 @@ openapi: 3.0.2
 paths:
   /callback/esi:
     get:
-      description: "ESI callback.\n\nNotifies the app with by issuing a POST request\
-        \ to the predefined app\ncallback, using the :class:`sni.apimodels.PostCallbackEsiOut`\
-        \ model.\n\nReference:\n    `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_"
+      description: 'ESI callback. You should not manually call this.
+
+
+        Upon receiving a notification from EVE SSO, SNI notifies the appropriate
+
+        app by issuing a `POST request to the predefined app callback, using the
+
+        `PostCallbackEsiOut` model.
+
+
+        Reference: OAuth 2.0 for Web Based Applications
+
+        https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html'
       operationId: get_callback_esi_callback_esi_get
       parameters:
       - in: query
@@ -421,7 +451,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Callback Esi
+      summary: ESI callback
       tags:
       - Callbacks
       - ESI
@@ -453,7 +483,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Coalition
+      summary: List all coalition names
       tags:
       - Coalition management
     post:
@@ -485,7 +515,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Post Coalitions
+      summary: Create a coalition
       tags:
       - Coalition management
   /coalition/{coalition_name}:
@@ -517,7 +547,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Delete Coalition
+      summary: Delete a coalition
       tags:
       - Coalition management
     get:
@@ -552,21 +582,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Coalition Name
+      summary: Get basic informations about a coalition
       tags:
       - Coalition management
     put:
       description: 'Updates a coalition. All fields in the request body are optional.
         The
 
-        ``add_members`` and ``remove_members`` fields can be used together, but the
+        `add_members` and `remove_members` fields can be used together, but the
 
-        ``members`` cannot be used in conjunction with ``add_members`` and
+        `members` cannot be used in conjunction with `add_members` and
 
-        ``remove_members``.
-
-
-        Requires a clearance level of 9 or more.'
+        `remove_members`. Requires a clearance level of 9 or more.'
       operationId: put_coalition_coalition__coalition_name__put
       parameters:
       - in: path
@@ -600,7 +627,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Put Coalition
+      summary: Update a coalition
       tags:
       - Coalition management
   /esi/{esi_path}:
@@ -635,7 +662,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Esi Latest
+      summary: Proxy path to the ESI
       tags:
       - ESI
   /group/:
@@ -665,7 +692,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Group
+      summary: List all group names
       tags:
       - Group management
     post:
@@ -697,7 +724,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Post Groups
+      summary: Create a group
       tags:
       - Group management
   /group/{group_name}:
@@ -729,7 +756,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Delete Group
+      summary: Delete a group
       tags:
       - Group management
     get:
@@ -764,7 +791,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Group Name
+      summary: Get basic informations about a group
       tags:
       - Group management
     put:
@@ -811,12 +838,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Put Group
+      summary: Update a group
       tags:
       - Group management
   /ping:
     get:
-      description: Returns ``pong``.
+      description: Replies ``pong``. That is all.
       operationId: get_ping_ping_get
       responses:
         '200':
@@ -824,9 +851,67 @@ paths:
             application/json:
               schema: {}
           description: Successful Response
-      summary: Get Ping
+      summary: Replies "pong"
       tags:
       - Testing
+  /teamspeak/auth/complete:
+    post:
+      description: Completes an authentication challenge for the owner of the token.
+      operationId: post_auth_complete_teamspeak_auth_complete_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Completes a teamspeak authentication challenge
+      tags:
+      - Teamspeak
+  /teamspeak/auth/start:
+    post:
+      description: 'Starts a new authentication challenge for the owner of the token.
+        A random
+
+        nickname is returned, and the user has 1 minute to update its teamspeak
+
+        nickname with it. Then, call ``POST /teamspeak/auth/complete``.'
+      operationId: port_auth_start_teamspeak_auth_start_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAuthStartOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Starts a teamspeak authentication challenge
+      tags:
+      - Teamspeak
   /token/:
     delete:
       description: Manually deletes a token (of any type). Requires a clearance level
@@ -857,7 +942,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Delete Token
+      summary: Manually delete a token
       tags:
       - Authentication & tokens
     get:
@@ -886,7 +971,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Token
+      summary: Get basic informations about the current token
       tags:
       - Authentication & tokens
   /token/dyn:
@@ -922,7 +1007,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Post Token Dyn
+      summary: Create a new dynamic app token
       tags:
       - Authentication & tokens
   /token/per:
@@ -958,7 +1043,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Post Token Per
+      summary: Create a new permanent app token
       tags:
       - Authentication & tokens
   /token/use/from/dyn:
@@ -1000,7 +1085,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Post Token Use From Dyn
+      summary: Create a new user token with a dynamic app token
       tags:
       - Authentication & tokens
   /token/use/from/per:
@@ -1030,7 +1115,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Post Token Use From Per
+      summary: Create a new user token with a permanent app token
       tags:
       - Authentication & tokens
   /user/:
@@ -1095,7 +1180,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Delete User
+      summary: Delete a user
       tags:
       - User management
     get:
@@ -1128,7 +1213,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get User Name
+      summary: Get basic informations about a user
       tags:
       - User management
     put:
@@ -1169,7 +1254,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Put User Name
+      summary: Update a user
       tags:
       - User management
 

@@ -23,7 +23,7 @@ router = APIRouter()
 
 class GetGroupOut(pdt.BaseModel):
     """
-    Model for ``GET /group/{name}`` responses.
+    Model for `GET /group/{name}` responses.
     """
     created_on: datetime
     description: str
@@ -35,7 +35,7 @@ class GetGroupOut(pdt.BaseModel):
 
 class PostGroupIn(pdt.BaseModel):
     """
-    Model for ``POST /group`` responses.
+    Model for `POST /group` responses.
     """
     name: str
     description: str = ''
@@ -43,7 +43,7 @@ class PostGroupIn(pdt.BaseModel):
 
 class PutGroupIn(pdt.BaseModel):
     """
-    Model for ``POST /group`` responses.
+    Model for `POST /group` responses.
     """
     add_members: Optional[List[str]] = None
     description: Optional[str] = None
@@ -66,7 +66,10 @@ def group_record_to_response(grp: user.Group) -> GetGroupOut:
     )
 
 
-@router.delete('/{group_name}')
+@router.delete(
+    '/{group_name}',
+    summary='Delete a group',
+)
 def delete_group(
         group_name: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
@@ -80,7 +83,11 @@ def delete_group(
     grp.delete()
 
 
-@router.get('/', response_model=List[str])
+@router.get(
+    '/',
+    response_model=List[str],
+    summary='List all group names',
+)
 def get_group(
         tkn: token.Token = Depends(token.from_authotization_header_nondyn), ):
     """
@@ -90,7 +97,11 @@ def get_group(
     return [group.name for group in user.Group.objects()]
 
 
-@router.get('/{group_name}', response_model=GetGroupOut)
+@router.get(
+    '/{group_name}',
+    response_model=GetGroupOut,
+    summary='Get basic informations about a group',
+)
 def get_group_name(
         group_name: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
@@ -107,6 +118,7 @@ def get_group_name(
     '/',
     response_model=GetGroupOut,
     status_code=status.HTTP_201_CREATED,
+    summary='Create a group',
 )
 def post_groups(
         data: PostGroupIn,
@@ -127,7 +139,11 @@ def post_groups(
     return group_record_to_response(grp)
 
 
-@router.put('/{group_name}', response_model=GetGroupOut)
+@router.put(
+    '/{group_name}',
+    response_model=GetGroupOut,
+    summary='Update a group',
+)
 def put_group(
         group_name: str,
         data: PutGroupIn,
@@ -135,9 +151,9 @@ def put_group(
 ):
     """
     Updates a group. All fields in the request body are optional. The
-    ``add_members`` and ``remove_members`` fields can be used together, but the
-    ``members`` cannot be used in conjunction with ``add_members`` and
-    ``remove_members``. Requires a clearance level of 9 or more of for the user
+    `add_members` and `remove_members` fields can be used together, but the
+    `members` cannot be used in conjunction with `add_members` and
+    `remove_members`. Requires a clearance level of 9 or more of for the user
     to be the owner of the group.
     """
     grp: user.Group = user.Group.objects.get(name=group_name)

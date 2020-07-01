@@ -26,7 +26,7 @@ router = APIRouter()
 
 class GetCoalitionOut(pdt.BaseModel):
     """
-    Model for ``GET /coalition/{name}`` responses.
+    Model for `GET /coalition/{name}` responses.
     """
     created_on: datetime
     members: List[str]
@@ -37,7 +37,7 @@ class GetCoalitionOut(pdt.BaseModel):
 
 class PostCoalitionIn(pdt.BaseModel):
     """
-    Model for ``POST /coalition`` responses.
+    Model for `POST /coalition` responses.
     """
     name: str
     ticker: str
@@ -45,7 +45,7 @@ class PostCoalitionIn(pdt.BaseModel):
 
 class PutCoalitionIn(pdt.BaseModel):
     """
-    Model for ``POST /coalition`` responses.
+    Model for `POST /coalition` responses.
     """
     add_members: Optional[List[str]] = None
     members: Optional[List[str]] = None
@@ -66,7 +66,10 @@ def coalition_record_to_response(coa: user.Coalition) -> GetCoalitionOut:
     )
 
 
-@router.delete('/{coalition_name}')
+@router.delete(
+    '/{coalition_name}',
+    summary='Delete a coalition',
+)
 def delete_coalition(
         coalition_name: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
@@ -80,7 +83,11 @@ def delete_coalition(
     coa.delete()
 
 
-@router.get('/', response_model=List[str])
+@router.get(
+    '/',
+    response_model=List[str],
+    summary='List all coalition names',
+)
 def get_coalition(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """
@@ -90,7 +97,11 @@ def get_coalition(tkn: token.Token = Depends(
     return [coalition.name for coalition in user.Coalition.objects()]
 
 
-@router.get('/{coalition_name}', response_model=GetCoalitionOut)
+@router.get(
+    '/{coalition_name}',
+    response_model=GetCoalitionOut,
+    summary='Get basic informations about a coalition',
+)
 def get_coalition_name(
         coalition_name: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
@@ -108,6 +119,7 @@ def get_coalition_name(
     '/',
     response_model=GetCoalitionOut,
     status_code=status.HTTP_201_CREATED,
+    summary='Create a coalition',
 )
 def post_coalitions(
         data: PostCoalitionIn,
@@ -125,7 +137,11 @@ def post_coalitions(
     return coalition_record_to_response(coa)
 
 
-@router.put('/{coalition_name}', response_model=GetCoalitionOut)
+@router.put(
+    '/{coalition_name}',
+    response_model=GetCoalitionOut,
+    summary='Update a coalition',
+)
 def put_coalition(
         coalition_name: str,
         data: PutCoalitionIn,
@@ -133,11 +149,9 @@ def put_coalition(
 ):
     """
     Updates a coalition. All fields in the request body are optional. The
-    ``add_members`` and ``remove_members`` fields can be used together, but the
-    ``members`` cannot be used in conjunction with ``add_members`` and
-    ``remove_members``.
-
-    Requires a clearance level of 9 or more.
+    `add_members` and `remove_members` fields can be used together, but the
+    `members` cannot be used in conjunction with `add_members` and
+    `remove_members`. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.update_coalition')
     coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
