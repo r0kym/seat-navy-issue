@@ -56,10 +56,14 @@ def update_alliance_autogroups():
     for alliance in user.Alliance.objects():
         logging.debug('Updating autogroup of alliance %s',
                       alliance.alliance_name)
-        grp = user.ensure_auto_group(alliance.alliance_name)
-        grp.owner = alliance.executor().ceo()
-        grp.members = list(alliance.user_iterator())
-        grp.save()
+        try:
+            grp = user.ensure_auto_group(alliance.alliance_name)
+            grp.owner = alliance.executor.ceo
+            grp.members = list(alliance.user_iterator())
+            grp.save()
+        except Exception as error:  # pylint: disable=broad-except
+            logging.error('Could not update autogroup of alliance %s: %s',
+                          alliance.alliance_name, str(error))
 
 
 @scheduler.scheduled_job('interval', minutes=60)
