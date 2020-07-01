@@ -58,7 +58,7 @@ async def get_callback_esi(code: str, state: str):
     ESI callback. You should not manually call this.
 
     Upon receiving a notification from EVE SSO, SNI notifies the appropriate
-    app by issuing a `POST request to the predefined app callback, using the
+    app by issuing a `POST` request to the predefined app callback, using the
     `PostCallbackEsiOut` model.
 
     Reference: OAuth 2.0 for Web Based Applications

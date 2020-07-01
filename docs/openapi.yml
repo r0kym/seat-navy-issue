@@ -1,4 +1,4 @@
-2020-07-01 15:45:42,581 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2020-07-01 15:51:12,763 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
 components:
   schemas:
     EsiRequestIn:
@@ -59,7 +59,7 @@ components:
       title: GetCoalitionOut
       type: object
     GetGroupOut:
-      description: Model for ``GET /group/{name}`` responses.
+      description: Model for `GET /group/{name}` responses.
       properties:
         created_on:
           format: date-time
@@ -195,7 +195,7 @@ components:
       title: HTTPValidationError
       type: object
     PostAuthStartOut:
-      description: Model for ``POST /teamspeak/auth/start`` responses
+      description: Model for `POST /teamspeak/auth/start` responses.
       properties:
         challenge_nickname:
           title: Challenge Nickname
@@ -228,7 +228,7 @@ components:
       title: PostCoalitionIn
       type: object
     PostGroupIn:
-      description: Model for ``POST /group`` responses.
+      description: Model for `POST /group` responses.
       properties:
         description:
           default: ''
@@ -353,7 +353,7 @@ components:
       title: PutCoalitionIn
       type: object
     PutGroupIn:
-      description: Model for ``POST /group`` responses.
+      description: Model for `POST /group` responses.
       properties:
         add_members:
           items:
@@ -632,9 +632,12 @@ paths:
       - Coalition management
   /esi/{esi_path}:
     get:
-      description: "Forwards a GET request to the ESI. The required clearance level\
-        \ depends on\nthe user making the request and the user specified on the ``on_behalf_of``\n\
-        field.\n\nSee also:\n    :class:`sni.routers.esi.EsiRequestIn`"
+      description: 'Forwards a `GET` request to the ESI. The required clearance level
+        depends
+
+        on the user making the request and the user specified on the
+
+        `on_behalf_of` field. See also `EsiRequestIn`.'
       operationId: get_esi_latest_esi__esi_path__get
       parameters:
       - in: path
@@ -798,11 +801,11 @@ paths:
       description: 'Updates a group. All fields in the request body are optional.
         The
 
-        ``add_members`` and ``remove_members`` fields can be used together, but the
+        `add_members` and `remove_members` fields can be used together, but the
 
-        ``members`` cannot be used in conjunction with ``add_members`` and
+        `members` cannot be used in conjunction with `add_members` and
 
-        ``remove_members``. Requires a clearance level of 9 or more of for the user
+        `remove_members`. Requires a clearance level of 9 or more of for the user
 
         to be the owner of the group.'
       operationId: put_group_group__group_name__put
@@ -856,7 +859,10 @@ paths:
       - Testing
   /teamspeak/auth/complete:
     post:
-      description: Completes an authentication challenge for the owner of the token.
+      description: 'Completes an authentication challenge for the owner of the token.
+        See the
+
+        `POST /teamspeak/auth/start` documentation.'
       operationId: post_auth_complete_teamspeak_auth_complete_post
       parameters:
       - in: header
@@ -885,9 +891,11 @@ paths:
       description: 'Starts a new authentication challenge for the owner of the token.
         A random
 
-        nickname is returned, and the user has 1 minute to update its teamspeak
+        nickname is returned (see `PostAuthStartOut` for more details), and the
 
-        nickname with it. Then, call ``POST /teamspeak/auth/complete``.'
+        user has 1 minute to update its teamspeak nickname to it, and then call
+
+        `POST /teamspeak/auth/complete`.'
       operationId: port_auth_start_teamspeak_auth_start_post
       parameters:
       - in: header
