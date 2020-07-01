@@ -38,7 +38,7 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``enabled`` (default: ``false``)
     * ``host``
     * ``password``
-    * ``port``: The query server port! Not the port used by clients.
+    * ``port`` (default: ``10011``): The query server port! Not the port used by clients.
     * ``server_id`` (default: ``0``)
     * ``username``
 

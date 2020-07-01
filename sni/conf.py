@@ -20,6 +20,7 @@ CONFIGURATION: Dict[str, Any] = {
     'redis.database': 0,
     'redis.port': 6379,
     'teamspeak.enabled': False,
+    'teamspeak.port': 10011,
     'teamspeak.server_id': 0,
 }
 
