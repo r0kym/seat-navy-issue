@@ -17,6 +17,7 @@ import ts3.query
 
 import sni.conf as conf
 import sni.time as time
+from sni.scheduler import scheduler
 import sni.uac.user as user
 
 
@@ -172,10 +173,28 @@ def update_client(connection: ts3.query.TS3Connection,
     tsusr: TeamspeakUser = TeamspeakUser.objects(
         teamspeak_id=client.client_database_id).first()
     if tsusr is not None:
-        new_nickname = tsusr.user.tickered_name
+        logging.debug(
+            'Updating known teamspeak client %s (%d) bound to user %s',
+            client.client_nickname, client.client_database_id,
+            tsusr.user.character_name)
         connection.clientedit(clid=client.clid,
                               client_description=tsusr.user.tickered_name)
-        logging.info('Updated teamspeak client %s (%d)', new_nickname,
-                     client.client_database_id)
     else:
-        pass
+        logging.debug('Updating unknown teamspeak client %s (%d)',
+                      client.client_nickname, client.client_database_id)
+
+
+@scheduler.scheduled_job('interval', minutes=10)
+def update_clients():
+    """
+    Updates all teamspeak clients. See :meth:`sni.teamspeak.update_client`.
+    """
+    logging.info('Updating all teamspeak clients')
+    connection = new_connection()
+    for client in client_list(connection):
+        try:
+            update_client(connection, client)
+        except Exception as error:
+            logging.error('Failed to update client %s (%d): %s',
+                          client.client_nickname, client.client_database_id,
+                          str(error))

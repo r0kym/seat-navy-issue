@@ -3,7 +3,6 @@ Teamspeak related paths
 """
 
 from datetime import datetime
-import logging
 
 from fastapi import (
     APIRouter,
@@ -15,7 +14,6 @@ import mongoengine as me
 import pydantic as pdt
 
 import sni.teamspeak as teamspeak
-import sni.conf as conf
 import sni.time as time
 import sni.uac.token as token
 
@@ -55,10 +53,10 @@ def post_auth_complete(tkn: token.Token = Depends(
             teamspeak.new_connection(),
             tkn.owner,
         )
-    except (me.DoesNotExist, LookupError) as error:
-        message = 'Could not complete authentication challenge for user ' \
-            + tkn.owner.character_name
-        if conf.get('general.debug'):
-            message += ': ' + str(error)
-        logging.error(message)
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=message)
+    except LookupError:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            detail='Could not find corresponding teamspeak client')
+    except me.DoesNotExist:
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            detail='Could not find challenge for user')
