@@ -3,83 +3,63 @@ Recurrent teamspeak jobs
 """
 
 import logging
+from typing import List
 
-from ts3.query import TS3Connection
+import ts3.query
 
 from sni.scheduler import scheduler
-import sni.conf as conf
 import sni.teamspeak.teamspeak as ts
+import sni.uac.group as group
 
 
 @scheduler.scheduled_job('interval', minutes=10)
-def apply_teamspeak_group_mappings():
+def map_teamspeak_groups():
     """
-    Iterates through the Teamspeak group mappings and applies them, see
-    :meth:`sni.teamspeak.jobs.apply_teamspeak_group_mapping`.
+    Creates all groups on Teamspeak.
     """
     connection = ts.new_connection()
-    for ts_group in ts.group_list(connection):
-        sgid = ts_group.sgid
-        if ts.TeamspeakGroupMapping.objects(
-                teamspeak_group_id=sgid).count() == 0:
-            # Group is not registered in a mapping
-            continue
-        allowed_cldbids = ts.client_ids_mapped_to_group(sgid)
-        current_cldbids = [
-            raw['cldbid']
-            for raw in connection.servergroupclientlist(sgid=sgid).parsed
+    for grp in group.Group.objects(map_to_teamspeak=True):
+        logging.debug('Mapping group %s to Teamspeak', grp.name)
+        tsgrp = ts.ensure_group(connection, grp.name)
+        grp.teamspeak_sgid = tsgrp.sgid
+        grp.save()
+
+
+@scheduler.scheduled_job('interval', minutes=10)
+def update_teamspeak_groups():
+    """
+    Updates group memberships on Teamspeak
+    """
+    connection = ts.new_connection()
+    for grp in group.Group.objects(map_to_teamspeak=True,
+                                   teamspeak_sgid__exists=True):
+        logging.debug('Updating Teamspeak group %s', grp.name)
+        current_cldbids: List[int] = [
+            int(raw['cldbid']) for raw in connection.servergroupclientlist(
+                sgid=grp.teamspeak_sgid).parsed
         ]
-        # Remove clients that should not be in group
+        allowed_cldbids: List[int] = [
+            usr.teamspeak_cldbid for usr in grp.members
+            if 'teamspeak_cldbid' in usr
+        ]
         for cldbid in current_cldbids:
             if cldbid not in allowed_cldbids:
-                connection.servergroupdelclient(cldbid=cldbid, sgid=sgid)
-        # Add clients that should be in group
+                try:
+                    connection.servergroupdelclient(
+                        cldbid=cldbid,
+                        sgid=grp.teamspeak_sgid,
+                    )
+                except ts3.query.TS3QueryError as error:
+                    logging.error(
+                        'Could not remove client %d from Teamspeak group %s: %s',
+                        cldbid, grp.name, str(error))
         for cldbid in allowed_cldbids:
-            connection.servergroupaddclient(cldbid=cldbid, sgid=sgid)
-
-
-def update_teamspeak_client(connection: TS3Connection,
-                            client: ts.TeamspeakClient):
-    """
-    Update's a teamspeak client data and permissions, if that client is
-    registered as a teamspeak user.
-    """
-    tsusr: ts.TeamspeakUser = ts.TeamspeakUser.objects(
-        teamspeak_id=client.client_database_id).first()
-    auth_group = ts.ensure_group(connection,
-                                 conf.get('teamspeak.auth_group_name'))
-    if tsusr is not None:
-        logging.debug(
-            'Updating known teamspeak client %s (%d) bound to user %s',
-            client.client_nickname, client.client_database_id,
-            tsusr.user.character_name)
-        connection.clientedit(clid=client.clid,
-                              client_description=tsusr.user.tickered_name)
-        connection.servergroupaddclient(
-            cldbid=client.client_database_id,
-            sgid=auth_group.sgid,
-        )
-    else:
-        logging.debug('Updating unknown teamspeak client %s (%d)',
-                      client.client_nickname, client.client_database_id)
-        connection.servergroupdelclient(
-            cldbid=client.client_database_id,
-            sgid=auth_group.sgid,
-        )
-
-
-@scheduler.scheduled_job('interval', minutes=10)
-def update_teamspeak_clients():
-    """
-    Updates all teamspeak clients. See
-    :meth:`sni.teamspeak.update_teamspeak_client`.
-    """
-    logging.info('Updating all teamspeak clients')
-    connection = ts.new_connection()
-    for client in ts.client_list(connection):
-        try:
-            update_teamspeak_client(connection, client)
-        except Exception as error:
-            logging.error('Failed to update client %s (%d): %s',
-                          client.client_nickname, client.client_database_id,
-                          str(error))
+            try:
+                connection.servergroupaddclient(
+                    sgid=grp.teamspeak_sgid,
+                    cldbid=cldbid,
+                )
+            except ts3.query.TS3QueryError as error:
+                logging.error(
+                    'Could not add client %d to Teamspeak group %s: %s',
+                    cldbid, grp.name, str(error))

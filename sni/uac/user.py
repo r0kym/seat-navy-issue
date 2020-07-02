@@ -125,6 +125,7 @@ class User(me.Document):
     clearance_level = me.IntField(default=0, required=True)
     corporation = me.ReferenceField(Corporation, default=None, null=True)
     created_on = me.DateTimeField(default=time.now, required=True)
+    teamspeak_cldbid = me.IntField()
     updated_on = me.DateTimeField(default=time.now, required=True)
 
     def is_ceo_of_alliance(self) -> bool:

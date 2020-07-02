@@ -14,11 +14,10 @@ import mongoengine as me
 import pydantic
 from ts3.query import TS3Connection
 
-from sni.scheduler import scheduler
 import sni.conf as conf
 import sni.time as time
-import sni.uac.group as group
 import sni.uac.user as user
+import sni.uac.group as group
 
 
 class TeamspeakAuthenticationChallenge(me.Document):
@@ -64,34 +63,6 @@ class TeamspeakGroup(pydantic.BaseModel):
     type: int
 
 
-class TeamspeakGroupMapping(me.Document):
-    """
-    Represents a Teamspeak group mapping, i.e. a correspondence between an SNI
-    group and a Teamspeak group. Members of the former should be assigned to
-    the latter.
-    """
-    sni_group = me.ReferenceField(group.Group,
-                                  required=True,
-                                  unique_with='teamspeak_group_id')
-    teamspeak_group_id = me.IntField(required=True)
-
-    def teamspeak_group(self, connection: TS3Connection) -> TeamspeakGroup:
-        """
-        Returns a :class:`sni.teamspeak.teamspeak.TeamspeakGroup` model of the
-        Teamspeak group of this mapping.
-        """
-        return find_group(connection, group_id=self.teamspeak_group_id)
-
-
-class TeamspeakUser(me.Document):
-    """
-    Represent a teamspeak user.
-    """
-    created_on = me.DateTimeField(default=time.now, required=True)
-    teamspeak_id = me.IntField(required=True)
-    user = me.ReferenceField(user.User, required=True, unique=True)
-
-
 def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
     """
     Returns the list of clients currently connected to the teamspeak server.
@@ -100,22 +71,6 @@ def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
         :class:`sni.teamspeak.TeamspeakClient`
     """
     return [TeamspeakClient(**raw) for raw in connection.clientlist()]
-
-
-def client_ids_mapped_to_group(teamspeak_group_id: int) -> List[int]:
-    """
-    Returns a list client database ids of the Teamspeak clients that should
-    belong to a given group.
-    """
-    result: List[int] = []
-    for mapping in TeamspeakGroupMapping.objects(
-            teamspeak_group_id=teamspeak_group_id):
-        for sni_user in mapping.sni_group.members:
-            ts_user: Optional[TeamspeakUser] = TeamspeakUser.objects(
-                user=sni_user).first()
-            if ts_user is not None:
-                result.append(ts_user.teamspeak_id)
-    return result
 
 
 def complete_authentication_challenge(connection: TS3Connection,
@@ -127,15 +82,11 @@ def complete_authentication_challenge(connection: TS3Connection,
     challenge: TeamspeakAuthenticationChallenge = TeamspeakAuthenticationChallenge.objects.get(
         user=usr)
     client = find_client(connection, nickname=challenge.challenge_nickname)
-    TeamspeakUser.objects(user=usr).modify(
-        new=True,
-        set__teamspeak_id=client.client_database_id,
-        set__user=usr,
-        upsert=True,
-    )
+    usr.teamspeak_cldbid = client.client_database_id
+    usr.save()
+    auth_group = group.ensure_autogroup(conf.get('teamspeak.auth_group_name'))
+    auth_group.modify(add_to_set__members=usr)
     challenge.delete()
-    scheduler.add_job('sni.teamspeak.jobs:update_teamspeak_client',
-                      args=[connection, client])
     logging.info('Completed authentication challenge for %s',
                  usr.character_name)
 

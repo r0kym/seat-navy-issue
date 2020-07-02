@@ -20,9 +20,11 @@ class Group(me.Document):
     created_on = me.DateTimeField(default=time.now, required=True)
     description = me.StringField(default=str)
     is_autogroup = me.BooleanField(default=False, required=True)
+    map_to_teamspeak = me.BooleanField(default=True, required=True)
     members = me.ListField(me.ReferenceField(user.User), required=True)
     name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField(user.User, required=True)
+    teamspeak_sgid = me.IntField()
     updated_on = me.DateTimeField(default=time.now, required=True)
 
 

@@ -109,6 +109,7 @@ def migrate_ensure_superuser_group() -> None:
     except me.DoesNotExist:
         group.Group(
             description="Superuser group.",
+            map_to_teamspeak=False,
             members=[root],
             name=group_name,
             owner=root,
