@@ -69,20 +69,17 @@ def main():
         sys.exit()
 
     # --------------------------------------------------------------------------
-    # Scheduler init, pre scheduler start
+    # Scheduler init, and start
     # --------------------------------------------------------------------------
 
     from sni.scheduler import scheduler
+
+    scheduler.start()
+
     import sni.esi.jobs
 
     if conf.get('teamspeak.enabled'):
         import sni.teamspeak.jobs
-
-    scheduler.start()
-    # if conf.get('general.debug'):
-    #     for job in scheduler.get_jobs():
-    #         logging.debug('Job %s scheduled to run at %s', job.name,
-    #                       str(job.next_run_time))
 
     # --------------------------------------------------------------------------
     # API server start
