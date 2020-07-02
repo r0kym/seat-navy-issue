@@ -74,6 +74,13 @@ class TeamspeakGroupMapping(me.Document):
                                   unique_with='teamspeak_group_id')
     teamspeak_group_id = me.IntField(required=True)
 
+    def teamspeak_group(self, connection: TS3Connection) -> TeamspeakGroup:
+        """
+        Returns a :class:`sni.teamspeak.teamspeak.TeamspeakGroup` model of the
+        Teamspeak group of this mapping.
+        """
+        return find_group(connection, group_id=self.teamspeak_group_id)
+
 
 class TeamspeakUser(me.Document):
     """
@@ -92,6 +99,22 @@ def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
         :class:`sni.teamspeak.TeamspeakClient`
     """
     return [TeamspeakClient(**raw) for raw in connection.clientlist()]
+
+
+def client_ids_mapped_to_group(teamspeak_group_id: int) -> List[int]:
+    """
+    Returns a list client database ids of the Teamspeak clients that should
+    belong to a given group.
+    """
+    result: List[int] = []
+    for mapping in TeamspeakGroupMapping.objects(
+            teamspeak_group_id=teamspeak_group_id):
+        for sni_user in mapping.sni_group.members:
+            ts_user: Optional[TeamspeakUser] = TeamspeakUser.objects(
+                user=sni_user).first()
+            if ts_user is not None:
+                result.append(ts_user.teamspeak_id)
+    return result
 
 
 def complete_authentication_challenge(connection: TS3Connection,

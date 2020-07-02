@@ -216,20 +216,21 @@ def post_group_mapping(sni_group_name: str,
                        tkn: token.Token = Depends(
                            token.from_authotization_header_nondyn)):
     """
-    Maps a SNI group to a Teamspeak group. This mean that users belonging to
-    that SNI group will be affected to that Teamspeak group, if they are
-    registered on Teamspeak. Requires a clearance level of 9 or more.
+    Maps a SNI group to a Teamspeak group. Creates the latter if it does not
+    exist. This mean that users belonging to that SNI group will be affected to
+    that Teamspeak group, if they are registered on Teamspeak. Requires a
+    clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner,
                                    'sni.teamspeak.create_group_mapping')
     sni_group = user.Group.objects(name=sni_group_name).get()
-    teamspeak_group_id = teamspeak.find_group(teamspeak.new_connection(),
-                                              name=ts_group_name)
+    connection = teamspeak.new_connection()
+    teamspeak_group = teamspeak.ensure_group(connection, ts_group_name)
     teamspeak.TeamspeakGroupMapping.objects(
         sni_group=sni_group,
-        teamspeak_group_id=teamspeak_group_id,
+        teamspeak_group_id=teamspeak_group.sgid,
     ).modify(
         set__sni_group=sni_group,
-        set__teamspeak_group_id=teamspeak_group_id,
+        set__teamspeak_group_id=teamspeak_group.sgid,
         upsert=True,
     )
