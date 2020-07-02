@@ -11,6 +11,7 @@ import sni.esi.sso as sso
 import sni.esi.token as esitoken
 import sni.time as time
 import sni.uac.clearance as clearance
+import sni.uac.group as group
 import sni.uac.user as user
 
 
@@ -57,7 +58,7 @@ def update_alliance_autogroups():
         logging.debug('Updating autogroup of alliance %s',
                       alliance.alliance_name)
         try:
-            grp = user.ensure_auto_group(alliance.alliance_name)
+            grp = group.ensure_autogroup(alliance.alliance_name)
             grp.owner = alliance.executor.ceo
             grp.members = list(alliance.user_iterator())
             grp.save()
@@ -99,7 +100,7 @@ def update_coalition_autogroups():
     """
     for coalition in user.Coalition.objects():
         logging.debug('Updating autogroup of coalition %s', coalition.name)
-        grp = user.ensure_auto_group(coalition.name)
+        grp = group.ensure_autogroup(coalition.name)
         grp.members = list(coalition.user_iterator())
         grp.save()
 
@@ -116,7 +117,7 @@ def update_corporation_autogroups():
     for corporation in user.Corporation.objects():
         logging.debug('Updating autogroup of corporation %s',
                       corporation.corporation_name)
-        grp = user.ensure_auto_group(corporation.corporation_name)
+        grp = group.ensure_autogroup(corporation.corporation_name)
         grp.owner = corporation.ceo
         grp.members = list(corporation.user_iterator())
         grp.save()

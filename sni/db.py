@@ -12,6 +12,7 @@ import mongoengine as me
 
 import sni.conf as conf
 import sni.time as time
+import sni.uac.group as group
 import sni.uac.token as token
 import sni.uac.user as user
 
@@ -101,12 +102,12 @@ def migrate_ensure_superuser_group() -> None:
     group_name = 'superusers'
     root = user.User.objects.get(character_id=0)
     try:
-        superusers: user.Group = user.Group.objects.get(name=group_name)
+        superusers: group.Group = group.Group.objects.get(name=group_name)
         superusers.owner = root
         superusers.modify(add_to_set__members=root)
         superusers.save()
     except me.DoesNotExist:
-        user.Group(
+        group.Group(
             description="Superuser group.",
             members=[root],
             name=group_name,

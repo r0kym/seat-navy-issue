@@ -19,6 +19,7 @@ import ts3.query
 import sni.teamspeak.teamspeak as teamspeak
 import sni.time as time
 import sni.uac.clearance as clearance
+import sni.uac.group as group
 import sni.uac.token as token
 import sni.uac.user as user
 
@@ -197,7 +198,7 @@ def delete_group_mapping(sni_group_name: str,
     """
     clearance.assert_has_clearance(tkn.owner,
                                    'sni.teamspeak.delete_group_mapping')
-    sni_group = user.Group.objects(name=sni_group_name).get()
+    sni_group = group.Group.objects(name=sni_group_name).get()
     teamspeak_group_id = teamspeak.find_group(teamspeak.new_connection(),
                                               name=ts_group_name)
     teamspeak.TeamspeakGroupMapping.objects(
@@ -223,7 +224,7 @@ def post_group_mapping(sni_group_name: str,
     """
     clearance.assert_has_clearance(tkn.owner,
                                    'sni.teamspeak.create_group_mapping')
-    sni_group = user.Group.objects(name=sni_group_name).get()
+    sni_group = group.Group.objects(name=sni_group_name).get()
     connection = teamspeak.new_connection()
     teamspeak_group = teamspeak.ensure_group(connection, ts_group_name)
     teamspeak.TeamspeakGroupMapping.objects(

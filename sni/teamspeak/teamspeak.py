@@ -17,6 +17,7 @@ from ts3.query import TS3Connection
 from sni.scheduler import scheduler
 import sni.conf as conf
 import sni.time as time
+import sni.uac.group as group
 import sni.uac.user as user
 
 
@@ -69,7 +70,7 @@ class TeamspeakGroupMapping(me.Document):
     group and a Teamspeak group. Members of the former should be assigned to
     the latter.
     """
-    sni_group = me.ReferenceField(user.Group,
+    sni_group = me.ReferenceField(group.Group,
                                   required=True,
                                   unique_with='teamspeak_group_id')
     teamspeak_group_id = me.IntField(required=True)

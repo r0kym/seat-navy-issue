@@ -75,6 +75,11 @@ UAC modules documentation
 
 .. automodule:: sni.uac.user
 
+``sni.uac.group``
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: sni.uac.group
+
 ``sni.uac.clearance``
 ~~~~~~~~~~~~~~~~~~~~~
 

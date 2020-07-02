@@ -1,4 +1,3 @@
-2020-07-01 17:58:26,591 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
 components:
   schemas:
     EsiRequestIn:
@@ -57,6 +56,24 @@ components:
       - ticker
       - updated_on
       title: GetCoalitionOut
+      type: object
+    GetGroupMappingOut:
+      description: Model for an element of `GET /teamspeak/group` responses.
+      properties:
+        sni_group_name:
+          title: Sni Group Name
+          type: string
+        ts_group_id:
+          title: Ts Group Id
+          type: string
+        ts_group_name:
+          title: Ts Group Name
+          type: string
+      required:
+      - sni_group_name
+      - ts_group_id
+      - ts_group_name
+      title: GetGroupMappingOut
       type: object
     GetGroupOut:
       description: Model for `GET /group/{name}` responses.
@@ -937,6 +954,124 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Starts a teamspeak authentication challenge
+      tags:
+      - Teamspeak
+  /teamspeak/group:
+    get:
+      description: 'Gets informations about all Teamspeak group mappings. Requires
+        a clearance
+
+        level of 0 or more.'
+      operationId: get_group_teamspeak_group_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetGroupMappingOut'
+                title: Response Get Group Teamspeak Group Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get all group mappings
+      tags:
+      - Teamspeak
+  /teamspeak/group/{sni_group_name}/{ts_group_name}:
+    delete:
+      description: 'Deletes a Teamspeak group mapping. Does not immediately update
+        the
+
+        teamspeak users group memberships. Requires a clearance level of 9 or more.'
+      operationId: delete_group_mapping_teamspeak_group__sni_group_name___ts_group_name__delete
+      parameters:
+      - in: path
+        name: sni_group_name
+        required: true
+        schema:
+          title: Sni Group Name
+          type: string
+      - in: path
+        name: ts_group_name
+        required: true
+        schema:
+          title: Ts Group Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Deletes a Teamseak group mapping
+      tags:
+      - Teamspeak
+    post:
+      description: 'Maps a SNI group to a Teamspeak group. Creates the latter if it
+        does not
+
+        exist. This mean that users belonging to that SNI group will be affected to
+
+        that Teamspeak group, if they are registered on Teamspeak. Requires a
+
+        clearance level of 9 or more.'
+      operationId: post_group_mapping_teamspeak_group__sni_group_name___ts_group_name__post
+      parameters:
+      - in: path
+        name: sni_group_name
+        required: true
+        schema:
+          title: Sni Group Name
+          type: string
+      - in: path
+        name: ts_group_name
+        required: true
+        schema:
+          title: Ts Group Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Maps a SNI group to a Teamspeak group
       tags:
       - Teamspeak
   /teamspeak/user:
