@@ -75,7 +75,7 @@ def update_corporations():
         data = esi.get(
             f'latest/corporations/{corporation.corporation_id}').json()
         old_alliance = corporation.alliance
-        if 'alliance_id' in data['alliance_id']:
+        if 'alliance_id' in data:
             corporation.alliance = user.ensure_alliance(data['alliance_id'])
         corporation.ceo_character_id = int(data['ceo_id'])
         corporation.ticker = data['ticker']
