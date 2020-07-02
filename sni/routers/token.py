@@ -5,7 +5,6 @@ Token management paths
 from datetime import datetime
 import logging
 from typing import List, Optional
-from uuid import UUID
 
 from fastapi import (
     APIRouter,
@@ -32,9 +31,10 @@ class GetTokenOut(pdt.BaseModel):
     created_on: datetime
     expires_on: Optional[datetime]
     owner_character_id: int
-    parent: Optional[UUID]
+    owner_character_name: str
+    parent: Optional[str]
     token_type: token.Token.TokenType
-    uuid: UUID
+    uuid: str
 
 
 class PostTokenUseFromDynIn(pdt.BaseModel):
@@ -132,7 +132,8 @@ async def get_token(tkn: token.Token = Depends(
         created_on=tkn.created_on,
         expires_on=tkn.expires_on,
         owner_character_id=tkn.owner.character_id,
-        parent=tkn.parent,
+        owner_character_name=tkn.owner.character_name,
+        parent=str(tkn.parent.uuid),
         token_type=tkn.token_type,
         uuid=str(tkn.uuid),
     )
