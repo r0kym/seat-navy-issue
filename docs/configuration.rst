@@ -35,6 +35,8 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``host``
     * ``port`` (default: ``6379``)
 * ``teamspeak``
+    * ``auth_group_name`` (default: ``SNI AUTH``): Name of the auth group;
+    teamspeak users authenticated through SNI are automatically added to this group.
     * ``enabled`` (default: ``false``)
     * ``host``
     * ``password``

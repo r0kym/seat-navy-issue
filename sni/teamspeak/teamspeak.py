@@ -12,12 +12,11 @@ from typing import List, Optional
 
 import mongoengine as me
 import pydantic
-import ts3
-import ts3.query
+from ts3.query import TS3Connection
 
+from sni.scheduler import scheduler
 import sni.conf as conf
 import sni.time as time
-from sni.scheduler import scheduler
 import sni.uac.user as user
 
 
@@ -53,6 +52,29 @@ class TeamspeakClient(pydantic.BaseModel):
     client_type: int
 
 
+class TeamspeakGroup(pydantic.BaseModel):
+    """
+    Represents a teamspeak group as reported by the teamspeak query server.
+    """
+    iconid: int
+    name: str
+    savedb: int
+    sgid: int
+    type: int
+
+
+class TeamspeakGroupMapping(me.Document):
+    """
+    Represents a Teamspeak group mapping, i.e. a correspondence between an SNI
+    group and a Teamspeak group. Members of the former should be assigned to
+    the latter.
+    """
+    sni_group = me.ReferenceField(user.Group,
+                                  required=True,
+                                  unique_with='teamspeak_group_id')
+    teamspeak_group_id = me.IntField(required=True)
+
+
 class TeamspeakUser(me.Document):
     """
     Represent a teamspeak user.
@@ -62,7 +84,7 @@ class TeamspeakUser(me.Document):
     user = me.ReferenceField(user.User, required=True, unique=True)
 
 
-def client_list(connection: ts3.query.TS3Connection) -> List[TeamspeakClient]:
+def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
     """
     Returns the list of clients currently connected to the teamspeak server.
 
@@ -72,7 +94,7 @@ def client_list(connection: ts3.query.TS3Connection) -> List[TeamspeakClient]:
     return [TeamspeakClient(**raw) for raw in connection.clientlist()]
 
 
-def complete_authentication_challenge(connection: ts3.query.TS3Connection,
+def complete_authentication_challenge(connection: TS3Connection,
                                       usr: user.User):
     """
     Complete an authentication challenge, see
@@ -88,17 +110,31 @@ def complete_authentication_challenge(connection: ts3.query.TS3Connection,
         upsert=True,
     )
     challenge.delete()
+    scheduler.add_job('sni.teamspeak.jobs:update_teamspeak_client',
+                      args=[connection, client])
     logging.info('Completed authentication challenge for %s',
                  usr.character_name)
-    update_client(connection, client)
 
 
-def find_client(connection: ts3.query.TS3Connection,
+def ensure_group(connection: TS3Connection, name: str) -> TeamspeakGroup:
+    """
+    Ensures that a teamspeak group exists, and returns a
+    :class:`sni.teamspeak.teamspeak.TeamspeakGroup`.
+    """
+    try:
+        return find_group(connection, name=name)
+    except LookupError:
+        connection.servergroupadd(name=name)
+        logging.debug('Created Teamspeak group %s', name)
+        return find_group(connection, name=name)
+
+
+def find_client(connection: TS3Connection,
                 *,
                 nickname: Optional[str] = None,
                 client_database_id: Optional[int] = None) -> TeamspeakClient:
     """
-    Returns the :class:`sni.teamspeak.TeamspeakClient` representation if a
+    Returns the :class:`sni.teamspeak.TeamspeakClient` representation of a
     client. Raises a :class:`LookupError` if the client is not found, or if
     multiple client with the same nickname are found.
     """
@@ -110,6 +146,33 @@ def find_client(connection: ts3.query.TS3Connection,
     if len(clients) != 1:
         raise LookupError
     return clients[0]
+
+
+def find_group(connection: TS3Connection,
+               *,
+               name: Optional[str] = None,
+               group_id: Optional[int] = None) -> TeamspeakGroup:
+    """
+    Returns the :class:`sni.teamspeak.TeamspeakGroup` representation of a
+    teamspeak group. Raises a :class:`LookupError` if the group is not found.
+    """
+    groups = [
+        grp for grp in group_list(connection)
+        if grp.sgid == group_id or grp.name == name
+    ]
+    if len(groups) != 1:
+        raise LookupError
+    return groups[0]
+
+
+def group_list(connection: TS3Connection) -> List[TeamspeakGroup]:
+    """
+    Returns the list of groups in the teamspeak server.
+
+    See also:
+        :class:`sni.teamspeak.TeamspeakGroup`
+    """
+    return [TeamspeakGroup(**raw) for raw in connection.servergrouplist()]
 
 
 def new_authentication_challenge(usr: user.User) -> str:
@@ -142,11 +205,11 @@ def new_authentication_challenge(usr: user.User) -> str:
     return str(challenge.challenge_nickname)
 
 
-def new_connection() -> ts3.query.TS3Connection:
+def new_connection() -> TS3Connection:
     """
     Returns a new connection to the teamspeak server.
     """
-    connection = ts3.query.TS3Connection(
+    connection = TS3Connection(
         conf.get('teamspeak.host'),
         conf.get('teamspeak.port'),
     )
@@ -162,39 +225,3 @@ def new_connection() -> ts3.query.TS3Connection:
         conf.get('teamspeak.username'),
     )
     return connection
-
-
-def update_client(connection: ts3.query.TS3Connection,
-                  client: TeamspeakClient):
-    """
-    Update's a teamspeak client data and permissions, if that client is
-    registered as a teamspeak user.
-    """
-    tsusr: TeamspeakUser = TeamspeakUser.objects(
-        teamspeak_id=client.client_database_id).first()
-    if tsusr is not None:
-        logging.debug(
-            'Updating known teamspeak client %s (%d) bound to user %s',
-            client.client_nickname, client.client_database_id,
-            tsusr.user.character_name)
-        connection.clientedit(clid=client.clid,
-                              client_description=tsusr.user.tickered_name)
-    else:
-        logging.debug('Updating unknown teamspeak client %s (%d)',
-                      client.client_nickname, client.client_database_id)
-
-
-@scheduler.scheduled_job('interval', minutes=10)
-def update_teamspeak_clients():
-    """
-    Updates all teamspeak clients. See :meth:`sni.teamspeak.update_client`.
-    """
-    logging.info('Updating all teamspeak clients')
-    connection = new_connection()
-    for client in client_list(connection):
-        try:
-            update_client(connection, client)
-        except Exception as error:
-            logging.error('Failed to update client %s (%d): %s',
-                          client.client_nickname, client.client_database_id,
-                          str(error))

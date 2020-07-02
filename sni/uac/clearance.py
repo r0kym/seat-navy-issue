@@ -191,14 +191,18 @@ SCOPES: Dict[str, AbstractScope] = {
     'sni.set_clearance_level_7': ClearanceModificationScope(7),
     'sni.set_clearance_level_8': ClearanceModificationScope(8),
     'sni.set_clearance_level_9': ClearanceModificationScope(9),
+    'sni.teamspeak.auth': AbsoluteScope(0),
+    'sni.teamspeak.create_group_mapping': AbsoluteScope(9),
+    'sni.teamspeak.delete_group_mapping': AbsoluteScope(9),
+    'sni.teamspeak.read_group_mapping': AbsoluteScope(0),
+    'sni.teamspeak.read_user': AbsoluteScope(0),
+    'sni.teamspeak.update_group_mapping': AbsoluteScope(9),
     'sni.update_coalition': AbsoluteScope(9),
     'sni.update_dyn_token': AbsoluteScope(10),
     'sni.update_group': AbsoluteScope(9),
     'sni.update_per_token': AbsoluteScope(10),
     'sni.update_use_token': AbsoluteScope(0),
     'sni.update_user': AbsoluteScope(9),
-    'sni.teamspeak.auth': AbsoluteScope(0),
-    'sni.teamspeak.read_user': AbsoluteScope(0),
 }
 
 

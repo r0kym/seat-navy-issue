@@ -19,6 +19,7 @@ CONFIGURATION: Dict[str, Any] = {
     'jwt.algorithm': 'HS256',
     'redis.database': 0,
     'redis.port': 6379,
+    'teamspeak.auth_group_name': 'SNI AUTH',
     'teamspeak.enabled': False,
     'teamspeak.port': 10011,
     'teamspeak.server_id': 0,
