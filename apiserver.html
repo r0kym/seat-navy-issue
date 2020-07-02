@@ -320,6 +320,11 @@ on the user making the request and the user specified on the
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="sni.routers.group.GetGroupOut.is_autogroup">
+<code class="sig-name descname">is_autogroup</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.is_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.routers.group.GetGroupOut.members">
 <code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.group.GetGroupOut.members" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -411,7 +416,7 @@ more.</p>
 
 <dl class="function">
 <dt id="sni.routers.group.group_record_to_response">
-<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">group_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">grp: sni.uac.user.Group</em><span class="sig-paren">)</span> &#x2192; sni.routers.group.GetGroupOut<a class="reference internal" href="_modules/sni/routers/group.html#group_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.group_record_to_response" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.routers.group.</code><code class="sig-name descname">group_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">grp: sni.uac.group.Group</em><span class="sig-paren">)</span> &#x2192; sni.routers.group.GetGroupOut<a class="reference internal" href="_modules/sni/routers/group.html#group_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.group.group_record_to_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a group database record to a response.</p>
 </dd></dl>
 
@@ -435,6 +440,28 @@ to be the owner of the group.</p>
 <div class="section" id="module-sni.routers.teamspeak">
 <span id="sni-routers-teamspeak"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.routers.teamspeak</span></code><a class="headerlink" href="#module-sni.routers.teamspeak" title="Permalink to this headline">¶</a></h3>
 <p>Teamspeak related paths</p>
+<dl class="class">
+<dt id="sni.routers.teamspeak.GetGroupMappingOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.routers.teamspeak.</code><code class="sig-name descname">GetGroupMappingOut</code><a class="reference internal" href="_modules/sni/routers/teamspeak.html#GetGroupMappingOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.teamspeak.GetGroupMappingOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for an element of <cite>GET /teamspeak/group</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.routers.teamspeak.GetGroupMappingOut.sni_group_name">
+<code class="sig-name descname">sni_group_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.teamspeak.GetGroupMappingOut.sni_group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.teamspeak.GetGroupMappingOut.ts_group_id">
+<code class="sig-name descname">ts_group_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.teamspeak.GetGroupMappingOut.ts_group_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.routers.teamspeak.GetGroupMappingOut.ts_group_name">
+<code class="sig-name descname">ts_group_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.teamspeak.GetGroupMappingOut.ts_group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="sni.routers.teamspeak.PostAuthStartOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.routers.teamspeak.</code><code class="sig-name descname">PostAuthStartOut</code><a class="reference internal" href="_modules/sni/routers/teamspeak.html#PostAuthStartOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.routers.teamspeak.PostAuthStartOut" title="Permalink to this definition">¶</a></dt>
@@ -508,8 +535,13 @@ user has 1 minute to update its teamspeak nickname to it, and then call
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="sni.routers.token.GetTokenOut.owner_character_name">
+<code class="sig-name descname">owner_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.GetTokenOut.owner_character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.routers.token.GetTokenOut.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional[UUID]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.GetTokenOut.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.GetTokenOut.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -519,7 +551,7 @@ user has 1 minute to update its teamspeak nickname to it, and then call
 
 <dl class="attribute">
 <dt id="sni.routers.token.GetTokenOut.uuid">
-<code class="sig-name descname">uuid</code><em class="property">: UUID</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.GetTokenOut.uuid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">uuid</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.routers.token.GetTokenOut.uuid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -44,7 +44,6 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">APIRouter</span><span class="p">,</span>
@@ -71,9 +70,10 @@
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">expires_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
     <span class="n">owner_character_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span>
+    <span class="n">owner_character_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">token_type</span><span class="p">:</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span>
-    <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span></div>
+    <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="PostTokenUseFromDynIn"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.token.PostTokenUseFromDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -171,7 +171,8 @@
         <span class="n">created_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
         <span class="n">expires_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">expires_on</span><span class="p">,</span>
         <span class="n">owner_character_id</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-        <span class="n">parent</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+        <span class="n">owner_character_name</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+        <span class="n">parent</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
         <span class="n">token_type</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
         <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
     <span class="p">)</span></div>

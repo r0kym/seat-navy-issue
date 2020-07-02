@@ -49,9 +49,9 @@
 <span id="configuration-file-reference"></span><h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
 <p>The configuration file is in <a class="reference external" href="https://yaml.org/">YAML</a> format, and named
 <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code> by default.</p>
-<ul class="simple">
+<ul>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">database</span></code></dt><dd><ul>
+<dt><code class="docutils literal notranslate"><span class="pre">database</span></code></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">authentication_source</span></code> (default: <code class="docutils literal notranslate"><span class="pre">admin</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
@@ -63,7 +63,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">esi</span></code>: Create an application at the <a class="reference external" href="https://developers.eveonline.com/">EVE Developer Portal</a></dt><dd><ul>
+<dt><code class="docutils literal notranslate"><span class="pre">esi</span></code>: Create an application at the <a class="reference external" href="https://developers.eveonline.com/">EVE Developer Portal</a></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">client_id</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">client_secret</span></code></p></li>
 </ul>
@@ -71,7 +71,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">general</span></code></dt><dd><ul>
+<dt><code class="docutils literal notranslate"><span class="pre">general</span></code></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Sets the app in debug mode.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>): API server host.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">80</span></code>): API server port.</p></li>
@@ -83,7 +83,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">jwt</span></code></dt><dd><ul>
+<dt><code class="docutils literal notranslate"><span class="pre">jwt</span></code></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (default: <code class="docutils literal notranslate"><span class="pre">HS256</span></code>): A <code class="docutils literal notranslate"><span class="pre">pyjwt</span></code> supported algorithm, see <a class="reference external" href="https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms">here</a>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">secret</span></code>: Application secret. Generate with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">rand</span> <span class="pre">-hex</span> <span class="pre">32</span></code>.</p></li>
 </ul>
@@ -92,7 +92,7 @@
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">logging</span></code>: Logging facility configuration, see the <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#dictionary-schema-details">logging.config documentation</a>.</p></li>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">redis</span></code></dt><dd><ul>
+<dt><code class="docutils literal notranslate"><span class="pre">redis</span></code></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">6379</span></code>)</p></li>
@@ -100,15 +100,19 @@
 </dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">teamspeak</span></code></dt><dd><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code>: The query server port! Not the port used by clients.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">server_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code></p></li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">teamspeak</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">auth_group_name</span></code> (default: <code class="docutils literal notranslate"><span class="pre">SNI</span> <span class="pre">TS</span> <span class="pre">AUTH</span></code>): Name of the auth group;</p></li>
 </ul>
+<p>teamspeak users authenticated through SNI are automatically added to this
+group.
+* <code class="docutils literal notranslate"><span class="pre">bot_name</span></code> (default: <code class="docutils literal notranslate"><span class="pre">SeAT</span> <span class="pre">Navy</span> <span class="pre">Issue</span></code>)
+* <code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)
+* <code class="docutils literal notranslate"><span class="pre">host</span></code>
+* <code class="docutils literal notranslate"><span class="pre">password</span></code>
+* <code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">10011</span></code>): The query server port! Not the port used by clients.
+* <code class="docutils literal notranslate"><span class="pre">server_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
+* <code class="docutils literal notranslate"><span class="pre">username</span></code></p>
 </dd>
 </dl>
 </li>
@@ -151,7 +155,6 @@
     <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.2.3.4</span>
     <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6eG8e7z4</span>
-    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
     <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sni</span>
 </pre></div>
 </div>

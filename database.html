@@ -91,6 +91,12 @@ connection. It’s magic.</p>
 <dd><p>Create the <code class="docutils literal notranslate"><span class="pre">superusers</span></code> group and makes sure that root is the owner.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.db.on_pre_save">
+<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">on_pre_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">document: mongoengine.document.Document</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db.html#on_pre_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.on_pre_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the document has a <cite>updated_on</cite>, sets it to the current datetime.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.redis">
 <span id="redis"></span><h2>Redis<a class="headerlink" href="#module-sni.redis" title="Permalink to this headline">¶</a></h2>

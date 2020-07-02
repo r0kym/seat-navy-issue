@@ -52,11 +52,21 @@
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
-<span class="kn">import</span> <span class="nn">sni.teamspeak</span> <span class="k">as</span> <span class="nn">teamspeak</span>
+<span class="kn">import</span> <span class="nn">sni.teamspeak.teamspeak</span> <span class="k">as</span> <span class="nn">teamspeak</span>
 <span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sni.uac.clearance</span> <span class="k">as</span> <span class="nn">clearance</span>
 <span class="kn">import</span> <span class="nn">sni.uac.token</span> <span class="k">as</span> <span class="nn">token</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="GetGroupMappingOut"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.teamspeak.GetGroupMappingOut">[docs]</a><span class="k">class</span> <span class="nc">GetGroupMappingOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for an element of `GET /teamspeak/group` responses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sni_group_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ts_group_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ts_group_name</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="PostAuthStartOut"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.teamspeak.PostAuthStartOut">[docs]</a><span class="k">class</span> <span class="nc">PostAuthStartOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -81,6 +91,7 @@
 <span class="sd">    user has 1 minute to update its teamspeak nickname to it, and then call</span>
 <span class="sd">    `POST /teamspeak/auth/complete`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">clearance</span><span class="o">.</span><span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.teamspeak.auth&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">PostAuthStartOut</span><span class="p">(</span>
         <span class="n">expiration_datetime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span>
         <span class="n">challenge_nickname</span><span class="o">=</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">new_authentication_challenge</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">),</span>
@@ -90,6 +101,7 @@
 
 <div class="viewcode-block" id="post_auth_complete"><a class="viewcode-back" href="../../../apiserver.html#sni.routers.teamspeak.post_auth_complete">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
     <span class="s1">&#39;/auth/complete&#39;</span><span class="p">,</span>
+    <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">,</span>
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Completes a teamspeak authentication challenge&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">post_auth_complete</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span>
@@ -98,6 +110,7 @@
 <span class="sd">    Completes an authentication challenge for the owner of the token. See the</span>
 <span class="sd">    `POST /teamspeak/auth/start` documentation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">clearance</span><span class="o">.</span><span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.teamspeak.auth&#39;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">teamspeak</span><span class="o">.</span><span class="n">complete_authentication_challenge</span><span class="p">(</span>
             <span class="n">teamspeak</span><span class="o">.</span><span class="n">new_connection</span><span class="p">(),</span>
