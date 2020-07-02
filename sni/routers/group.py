@@ -28,6 +28,7 @@ class GetGroupOut(pdt.BaseModel):
     """
     created_on: datetime
     description: str
+    is_autogroup: bool
     members: List[str]
     name: str
     owner: str
@@ -60,6 +61,7 @@ def group_record_to_response(grp: group.Group) -> GetGroupOut:
     return GetGroupOut(
         created_on=grp.created_on,
         description=grp.description,
+        is_autogroup=grp.is_autogroup,
         members=[member.character_name for member in grp.members],
         name=grp.name,
         owner=grp.owner.character_name,

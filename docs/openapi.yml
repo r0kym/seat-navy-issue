@@ -85,6 +85,9 @@ components:
         description:
           title: Description
           type: string
+        is_autogroup:
+          title: Is Autogroup
+          type: boolean
         members:
           items:
             type: string
@@ -103,6 +106,7 @@ components:
       required:
       - created_on
       - description
+      - is_autogroup
       - members
       - name
       - owner

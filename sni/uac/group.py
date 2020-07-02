@@ -19,6 +19,7 @@ class Group(me.Document):
     """
     created_on = me.DateTimeField(default=time.now, required=True)
     description = me.StringField(default=str)
+    is_autogroup = me.BooleanField(default=False, required=True)
     members = me.ListField(me.ReferenceField(user.User), required=True)
     name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField(user.User, required=True)
@@ -33,7 +34,12 @@ def ensure_autogroup(name: str) -> Group:
     grp = Group.objects(name=name).first()
     if grp is None:
         root = user.User.objects.get(character_id=0)
-        grp = Group(members=[root], name=name, owner=root).save()
+        grp = Group(
+            is_autogroup=True,
+            members=[root],
+            name=name,
+            owner=root,
+        ).save()
     return grp
 
 
