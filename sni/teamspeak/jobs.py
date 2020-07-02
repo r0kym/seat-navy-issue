@@ -8,8 +8,44 @@ from typing import List
 import ts3.query
 
 from sni.scheduler import scheduler
+import sni.conf as conf
 import sni.teamspeak.teamspeak as ts
 import sni.uac.group as group
+import sni.uac.user as user
+
+
+@scheduler.scheduled_job('interval', minutes=30)
+def message_registered_clients_with_wrong_name():
+    """
+    Iterates through all users that are registered in Teamspeak, and checks
+    their nickname. If it doesn't match, sends a message.
+    """
+    connection = ts.new_connection()
+    for ts_client in ts.client_list(connection):
+        if ts_client.client_nickname == conf.get('teamspeak.bot_name'):
+            continue
+        usr: user.User = user.User.objects(
+            teamspeak_cldbid=ts_client.client_database_id).first()
+        if usr is None:
+            # TS client is unknown
+            continue
+        tickered_name = usr.tickered_name
+        if ts_client.client_nickname != tickered_name:
+            logging.debug('Wrong nickname found %s; should be %s',
+                          ts_client.client_nickname, tickered_name)
+            message = f'Hello {ts_client.client_nickname}. ' \
+                + 'Please change your Teamspeak nickname to ' \
+                + f'"{tickered_name}" (without the quotes). Thank you :)' \
+                + ' -- SeAT Navy Issue Teamspeak Bot; This is an automated' \
+                + ' message, please do not respond.'
+            try:
+                connection.sendtextmessage(
+                    targetmode=1,
+                    target=ts_client.clid,
+                    msg=message,
+                )
+            except Exception:
+                pass
 
 
 @scheduler.scheduled_job('interval', minutes=10)

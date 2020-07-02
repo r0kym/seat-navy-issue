@@ -12,7 +12,7 @@ from typing import List, Optional
 
 import mongoengine as me
 import pydantic
-from ts3.query import TS3Connection
+from ts3.query import TS3Connection, TS3QueryError
 
 import sni.conf as conf
 import sni.time as time
@@ -193,6 +193,10 @@ def new_connection() -> TS3Connection:
         client_login_name=conf.get('teamspeak.username'),
         client_login_password=conf.get('teamspeak.password'),
     )
+    try:
+        connection.clientupdate(client_nickname=conf.get('teamspeak.bot_name'))
+    except TS3QueryError:
+        pass
     logging.info(
         'Connected to teamspeak server %s:%d as %s',
         conf.get('teamspeak.host'),

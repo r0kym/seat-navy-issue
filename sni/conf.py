@@ -20,6 +20,7 @@ CONFIGURATION: Dict[str, Any] = {
     'redis.database': 0,
     'redis.port': 6379,
     'teamspeak.auth_group_name': 'SNI TS AUTH',
+    'teamspeak.bot_name': 'SeAT Navy Issue',
     'teamspeak.enabled': False,
     'teamspeak.port': 10011,
     'teamspeak.server_id': 0,
