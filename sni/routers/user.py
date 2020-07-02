@@ -13,7 +13,6 @@ from fastapi import (
 )
 import pydantic as pdt
 
-import sni.time as time
 import sni.uac.clearance as clearance
 import sni.uac.token as token
 import sni.uac.user as user
@@ -140,6 +139,5 @@ def put_user_name(character_name: str,
         scope_name = f'sni.set_clearance_level_{data.clearance_level}'
         clearance.assert_has_clearance(tkn.owner, scope_name, usr)
         usr.clearance_level = data.clearance_level
-    usr.updated_on = time.now()
     usr.save()
     return user_record_to_response(usr)

@@ -41,7 +41,6 @@ def update_alliances():
         data = esi.get(f'latest/alliances/{alliance.alliance_id}').json()
         alliance.executor_corporation_id = int(data['executor_corporation_id'])
         alliance.ticker = data['ticker']
-        alliance.updated_on = time.now()
         alliance.save()
 
 
@@ -80,7 +79,6 @@ def update_corporations():
             corporation.alliance = user.ensure_alliance(data['alliance_id'])
         corporation.ceo_character_id = int(data['ceo_id'])
         corporation.ticker = data['ticker']
-        corporation.updated_on = time.now()
         if corporation.alliance != old_alliance:
             logging.debug('Alliance of corporation %s changed',
                           corporation.corporation_name)

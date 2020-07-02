@@ -13,7 +13,6 @@ from fastapi import (
 )
 import pydantic as pdt
 
-import sni.time as time
 import sni.uac.clearance as clearance
 import sni.uac.group as group
 import sni.uac.token as token
@@ -184,6 +183,5 @@ def put_group(
             if member.character_name not in data.remove_members
         ]
     grp.members = list(set(grp.members + [grp.owner]))
-    grp.updated_on = time.now()
     grp.save()
     return group_record_to_response(grp)

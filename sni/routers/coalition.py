@@ -16,7 +16,6 @@ from fastapi import (
 )
 import pydantic as pdt
 
-import sni.time as time
 import sni.uac.clearance as clearance
 import sni.uac.token as token
 import sni.uac.user as user
@@ -173,6 +172,5 @@ def put_coalition(
         ]
     if data.ticker is not None:
         coa.ticker = data.ticker
-    coa.updated_on = time.now()
     coa.save()
     return coalition_record_to_response(coa)

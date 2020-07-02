@@ -91,7 +91,6 @@ def save_esi_tokens(
     ).first()
     if esi_refresh_token:
         esi_refresh_token.refresh_token = esi_response.refresh_token
-        esi_refresh_token.updated_on = time.now()
         esi_refresh_token.save()
     else:
         EsiRefreshToken(

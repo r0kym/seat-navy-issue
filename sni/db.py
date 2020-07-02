@@ -6,9 +6,10 @@ Reference:
 """
 
 import logging
-from typing import Callable, List
+from typing import Any, Callable, List
 
 import mongoengine as me
+import mongoengine.signals as me_signals
 
 import sni.conf as conf
 import sni.time as time
@@ -34,6 +35,7 @@ def init():
         port=conf.get('database.port'),
         username=conf.get('database.username'),
     )
+    me_signals.pre_save.connect(on_pre_save)
 
 
 def migrate() -> None:
@@ -115,6 +117,14 @@ def migrate_ensure_superuser_group() -> None:
             owner=root,
         ).save()
         logging.info('Created "%s" group', group_name)
+
+
+def on_pre_save(_sender: Any, document: me.Document):
+    """
+    If the document has a `updated_on`, sets it to the current datetime.
+    """
+    if 'updated_on' in document:
+        document.updated_on = time.now()
 
 
 init()
