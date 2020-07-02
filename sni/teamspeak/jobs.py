@@ -43,17 +43,20 @@ def update_teamspeak_groups():
             if 'teamspeak_cldbid' in usr
         ]
         for cldbid in current_cldbids:
-            if cldbid not in allowed_cldbids:
-                try:
-                    connection.servergroupdelclient(
-                        cldbid=cldbid,
-                        sgid=grp.teamspeak_sgid,
-                    )
-                except ts3.query.TS3QueryError as error:
-                    logging.error(
-                        'Could not remove client %d from Teamspeak group %s: %s',
-                        cldbid, grp.name, str(error))
+            if cldbid in allowed_cldbids:
+                continue
+            try:
+                connection.servergroupdelclient(
+                    cldbid=cldbid,
+                    sgid=grp.teamspeak_sgid,
+                )
+            except ts3.query.TS3QueryError as error:
+                logging.error(
+                    'Could not remove client %d from Teamspeak group %s: %s',
+                    cldbid, grp.name, str(error))
         for cldbid in allowed_cldbids:
+            if cldbid in current_cldbids:
+                continue
             try:
                 connection.servergroupaddclient(
                     sgid=grp.teamspeak_sgid,
