@@ -33,6 +33,7 @@ class GetUserOut(pdt.BaseModel):
     created_on: datetime
     is_ceo_of_alliance: bool
     is_ceo_of_corporation: bool
+    tickered_name: str
     updated_on: datetime
 
 
@@ -70,6 +71,7 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
         created_on=usr.created_on,
         is_ceo_of_alliance=usr.is_ceo_of_alliance(),
         is_ceo_of_corporation=usr.is_ceo_of_corporation(),
+        tickered_name=usr.tickered_name,
         updated_on=usr.updated_on,
     )
 

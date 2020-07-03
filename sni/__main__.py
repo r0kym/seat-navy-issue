@@ -22,6 +22,7 @@ def main():
     # --------------------------------------------------------------------------
     # Parsing command line arguments and loading configuration file
     # --------------------------------------------------------------------------
+
     arguments = parse_command_line_arguments()
     try:
         conf.load_configuration_file(arguments.file)
