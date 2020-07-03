@@ -4,7 +4,7 @@ Database modules
 Mongodb
 -------
 
-.. automodule:: sni.db
+.. automodule:: sni.db.mongodb
 
 
 Redis

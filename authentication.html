@@ -51,15 +51,15 @@
 <li><p><strong>Permanent app token</strong>: this token is tied to a user, and inherits the
 privileges of that user.</p>
 <img alt="_images/auth_permanent_token.png" src="_images/auth_permanent_token.png" />
-<p>See <a class="reference internal" href="apiserver.html#sni.routers.token.PostUseFromPerOut" title="sni.routers.token.PostUseFromPerOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.token.PostUseFromPerOut</span></code></a> for the response model.</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.token.PostUseFromPerOut</span></code> for the response model.</p>
 </li>
 <li><p><strong>Dynamic app token</strong>: this token is tied to <code class="docutils literal notranslate"><span class="pre">root</span></code>, and requires the user
 to authenticate via the ESI SSO; the user token inherits the privileges of
 the user that logged in.</p>
 <img alt="_images/auth_dynamic_token.png" src="_images/auth_dynamic_token.png" />
-<p>See <a class="reference internal" href="apiserver.html#sni.routers.token.PostTokenUseFromDynOut" title="sni.routers.token.PostTokenUseFromDynOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.token.PostTokenUseFromDynOut</span></code></a> for the response model.
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.token.PostTokenUseFromDynOut</span></code> for the response model.
 The notification sent by SNI to the application looks like this (see also
-<a class="reference internal" href="apiserver.html#sni.routers.esi.PostCallbackEsiOut" title="sni.routers.esi.PostCallbackEsiOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.esi.PostCallbackEsiOut</span></code></a>)</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.esi.PostCallbackEsiOut</span></code>)</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;character_id&quot;</span><span class="p">:</span> <span class="mi">0000000000</span><span class="p">,</span>
   <span class="nt">&quot;state_code&quot;</span><span class="p">:</span> <span class="s2">&quot;dcbd81af-4df0-478b-a8b9-baee74e2d517&quot;</span><span class="p">,</span>

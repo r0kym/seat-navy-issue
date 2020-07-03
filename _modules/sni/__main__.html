@@ -61,6 +61,7 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Parsing command line arguments and loading configuration file</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
+
     <span class="n">arguments</span> <span class="o">=</span> <span class="n">parse_command_line_arguments</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
@@ -74,7 +75,7 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.apiserver</span> <span class="k">as</span> <span class="nn">apiserver</span>
+        <span class="kn">import</span> <span class="nn">sni.api.server</span> <span class="k">as</span> <span class="nn">apiserver</span>
         <span class="n">apiserver</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
@@ -82,7 +83,7 @@
     <span class="c1"># Post database init actions, pre database migration</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="kn">import</span> <span class="nn">sni.db</span> <span class="k">as</span> <span class="nn">db</span>
+    <span class="kn">import</span> <span class="nn">sni.db.mongodb</span> <span class="k">as</span> <span class="nn">mongodb</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reload_esi_openapi_spec</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.esi.esi</span> <span class="k">as</span> <span class="nn">esi</span>
@@ -93,7 +94,7 @@
     <span class="c1"># Post database migration, pre scheduler init</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="n">db</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+    <span class="n">mongodb</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
@@ -124,8 +125,8 @@
     <span class="c1"># API server start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="kn">import</span> <span class="nn">sni.apiserver</span> <span class="k">as</span> <span class="nn">apiserver</span>
-    <span class="n">apiserver</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="kn">import</span> <span class="nn">sni.api.server</span> <span class="k">as</span> <span class="nn">api_server</span>
+    <span class="n">api_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server stopped, cleanup time</span>

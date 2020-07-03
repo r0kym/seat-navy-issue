@@ -45,68 +45,61 @@
             
   <div class="section" id="database-modules">
 <h1>Database modules<a class="headerlink" href="#database-modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-sni.db">
-<span id="mongodb"></span><h2>Mongodb<a class="headerlink" href="#module-sni.db" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sni.db.mongodb">
+<span id="mongodb"></span><h2>Mongodb<a class="headerlink" href="#module-sni.db.mongodb" title="Permalink to this headline">¶</a></h2>
 <p>Database layer</p>
 <dl class="simple">
 <dt>Reference:</dt><dd><p><a class="reference external" href="http://docs.org/index.html">MongoEngine User Documentation</a></p>
 </dd>
 </dl>
 <dl class="function">
-<dt id="sni.db.init">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.init" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.init">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/mongodb.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects to the MongoDB instance.</p>
 <p>Does not return anything. Any call to <code class="docutils literal notranslate"><span class="pre">mongoengine</span></code> will act on that
 connection. It’s magic.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.migrate">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.migrate">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs various migration jobs on the database.</p>
 <p>Should be called immediately after initializing the connection.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.migrate_ensure_root">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_root" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.migrate_ensure_root">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create root user if it does not exist.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.migrate_ensure_root_dyn_token">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_root_dyn_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_root_dyn_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_root_dyn_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.migrate_ensure_root_dyn_token">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_root_dyn_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_root_dyn_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_root_dyn_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a dynamic app token owned by root, if none exist.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.migrate_ensure_root_per_token">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_root_per_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_root_per_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_root_per_token" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.migrate_ensure_root_per_token">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_root_per_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_root_per_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_root_per_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a permanent app token owned by root, if none exist.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.migrate_ensure_superuser_group">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">migrate_ensure_superuser_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db.html#migrate_ensure_superuser_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migrate_ensure_superuser_group" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.migrate_ensure_superuser_group">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_superuser_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_superuser_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_superuser_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the <code class="docutils literal notranslate"><span class="pre">superusers</span></code> group and makes sure that root is the owner.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.on_pre_save">
-<code class="sig-prename descclassname">sni.db.</code><code class="sig-name descname">on_pre_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">document: mongoengine.document.Document</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db.html#on_pre_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.on_pre_save" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.mongodb.on_pre_save">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">on_pre_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">document: mongoengine.document.Document</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/mongodb.html#on_pre_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.on_pre_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the document has a <cite>updated_on</cite>, sets it to the current datetime.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-sni.redis">
-<span id="redis"></span><h2>Redis<a class="headerlink" href="#module-sni.redis" title="Permalink to this headline">¶</a></h2>
-<p>Redis related module</p>
-<dl class="function">
-<dt id="sni.redis.new_connection">
-<code class="sig-prename descclassname">sni.redis.</code><code class="sig-name descname">new_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; redis.client.Redis<a class="reference internal" href="_modules/sni/redis.html#new_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.redis.new_connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new redis connection handler</p>
-</dd></dl>
-
+<div class="section" id="redis">
+<h2>Redis<a class="headerlink" href="#redis" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -119,8 +112,8 @@ connection. It’s magic.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Database modules</a><ul>
-<li><a class="reference internal" href="#module-sni.db">Mongodb</a></li>
-<li><a class="reference internal" href="#module-sni.redis">Redis</a></li>
+<li><a class="reference internal" href="#module-sni.db.mongodb">Mongodb</a></li>
+<li><a class="reference internal" href="#redis">Redis</a></li>
 </ul>
 </li>
 </ul>

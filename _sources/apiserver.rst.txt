@@ -6,7 +6,7 @@ API server modules documentation
 Main module
 -----------
 
-.. automodule:: sni.apiserver
+.. automodule:: sni.api.server
 
 Routers
 -------
