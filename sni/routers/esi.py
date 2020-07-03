@@ -18,7 +18,7 @@ import sni.esi.sso as sso
 import sni.esi.token as esitoken
 import sni.uac.clearance as clearance
 import sni.uac.token as snitoken
-import sni.uac.user as user
+import sni.user.user as user
 
 router = APIRouter()
 

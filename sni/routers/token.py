@@ -17,7 +17,7 @@ import pydantic as pdt
 import sni.esi.sso as sso
 import sni.uac.clearance as clearance
 import sni.uac.token as token
-import sni.uac.user as user
+import sni.user.user as user
 
 router = APIRouter()
 

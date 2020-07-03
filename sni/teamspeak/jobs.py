@@ -10,8 +10,8 @@ import ts3.query
 from sni.scheduler import scheduler
 import sni.conf as conf
 import sni.teamspeak.teamspeak as ts
-import sni.uac.group as group
-import sni.uac.user as user
+import sni.user.group as group
+import sni.user.user as user
 
 
 @scheduler.scheduled_job('interval', minutes=30)

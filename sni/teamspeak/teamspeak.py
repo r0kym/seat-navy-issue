@@ -16,8 +16,8 @@ from ts3.query import TS3Connection, TS3QueryError
 
 import sni.conf as conf
 import sni.time as time
-import sni.uac.user as user
-import sni.uac.group as group
+import sni.user.user as user
+import sni.user.group as group
 
 
 class TeamspeakAuthenticationChallenge(me.Document):
@@ -154,7 +154,7 @@ def new_authentication_challenge(usr: user.User) -> str:
     """
     Initiates an authentication challenge. The challenge proceeds as follows:
 
-    1. A user (:class:`sni.uac.user.User`) asks to start a challenge by calling
+    1. A user (:class:`sni.user.user.User`) asks to start a challenge by calling
        this method.
 
     2. This methods returns a UUID, and the user has 60 seconds to change its

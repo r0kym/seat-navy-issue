@@ -14,9 +14,9 @@ from fastapi import (
 import pydantic as pdt
 
 import sni.uac.clearance as clearance
-import sni.uac.group as group
+import sni.user.group as group
 import sni.uac.token as token
-import sni.uac.user as user
+import sni.user.user as user
 
 router = APIRouter()
 

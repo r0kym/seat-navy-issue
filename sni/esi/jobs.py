@@ -11,8 +11,8 @@ import sni.esi.sso as sso
 import sni.esi.token as esitoken
 import sni.time as time
 import sni.uac.clearance as clearance
-import sni.uac.group as group
-import sni.uac.user as user
+import sni.user.group as group
+import sni.user.user as user
 
 
 @scheduler.scheduled_job('interval', minutes=60)

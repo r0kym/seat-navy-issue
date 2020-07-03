@@ -10,7 +10,7 @@ import mongoengine.signals as me_signals
 
 import sni.scheduler as scheduler
 import sni.time as time
-import sni.uac.user as user
+import sni.user.user as user
 
 
 class Group(me.Document):

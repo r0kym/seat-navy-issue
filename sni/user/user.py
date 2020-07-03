@@ -33,7 +33,7 @@ class Alliance(me.Document):
     def executor(self) -> 'Corporation':
         """
         Returns the alliance's executor corporation as a
-        :class:`sni.uac.user.Corporation` object.
+        :class:`sni.user.user.Corporation` object.
         """
         return Corporation.objects.get(
             corporation_id=self.executor_corporation_id)
@@ -96,7 +96,7 @@ class Corporation(me.Document):
     @property
     def ceo(self) -> 'User':
         """
-        Returns the corporation's ceo as a :class:`sni.uac.user.User` object.
+        Returns the corporation's ceo as a :class:`sni.user.user.User` object.
         """
         return User.objects.get(character_id=self.ceo_character_id)
 

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import logging
 from typing import Dict, Optional
 
-import sni.uac.user as user
+import sni.user.user as user
 
 
 class AbstractScope:

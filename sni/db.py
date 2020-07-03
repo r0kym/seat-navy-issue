@@ -13,9 +13,9 @@ import mongoengine.signals as me_signals
 
 import sni.conf as conf
 import sni.time as time
-import sni.uac.group as group
+import sni.user.group as group
 import sni.uac.token as token
-import sni.uac.user as user
+import sni.user.user as user
 
 
 def init():

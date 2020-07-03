@@ -8,7 +8,7 @@ import mongoengine
 
 import sni.esi.sso as sso
 import sni.time as time
-import sni.uac.user as user
+import sni.user.user as user
 
 
 class EsiAccessToken(mongoengine.Document):

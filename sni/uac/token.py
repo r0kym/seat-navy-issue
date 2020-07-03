@@ -14,7 +14,7 @@ import mongoengine as me
 
 import sni.conf as conf
 import sni.time as time
-import sni.uac.user as user
+import sni.user.user as user
 
 
 class Token(me.Document):

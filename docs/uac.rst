@@ -70,15 +70,15 @@ UAC modules documentation
 
 .. automodule:: sni.uac.token
 
-``sni.uac.user``
+``sni.user.user``
 ~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.uac.user
+.. automodule:: sni.user.user
 
-``sni.uac.group``
+``sni.user.group``
 ~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.uac.group
+.. automodule:: sni.user.group
 
 ``sni.uac.clearance``
 ~~~~~~~~~~~~~~~~~~~~~
