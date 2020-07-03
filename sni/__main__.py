@@ -36,7 +36,7 @@ def main():
     # --------------------------------------------------------------------------
 
     if arguments.print_openapi_spec:
-        import sni.apiserver as apiserver
+        import sni.api.server as apiserver
         apiserver.print_openapi_spec()
         sys.exit()
 
@@ -44,7 +44,7 @@ def main():
     # Post database init actions, pre database migration
     # --------------------------------------------------------------------------
 
-    import sni.db as db
+    import sni.db.mongodb as mongodb
 
     if arguments.reload_esi_openapi_spec:
         import sni.esi.esi as esi
@@ -55,7 +55,7 @@ def main():
     # Post database migration, pre scheduler init
     # --------------------------------------------------------------------------
 
-    db.migrate()
+    mongodb.migrate()
 
     if arguments.migrate_database:
         sys.exit()
@@ -86,8 +86,8 @@ def main():
     # API server start
     # --------------------------------------------------------------------------
 
-    import sni.apiserver as apiserver
-    apiserver.start()
+    import sni.api.server as api_server
+    api_server.start()
 
     # --------------------------------------------------------------------------
     # API server stopped, cleanup time

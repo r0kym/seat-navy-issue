@@ -17,38 +17,38 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
-import sni.routers.coalition
-import sni.routers.esi
-import sni.routers.group
-import sni.routers.token
-import sni.routers.user
+import sni.api.coalition
+import sni.api.esi
+import sni.api.group
+import sni.api.token
+import sni.api.user
 
 app = FastAPI()
 app.include_router(
-    sni.routers.coalition.router,
+    sni.api.coalition.router,
     prefix='/coalition',
     tags=['Coalition management'],
 )
-app.include_router(sni.routers.esi.router)
+app.include_router(sni.api.esi.router)
 app.include_router(
-    sni.routers.group.router,
+    sni.api.group.router,
     prefix='/group',
     tags=['Group management'],
 )
 if conf.get('teamspeak.enabled'):
-    import sni.routers.teamspeak
+    import sni.api.teamspeak
     app.include_router(
-        sni.routers.teamspeak.router,
+        sni.api.teamspeak.router,
         prefix='/teamspeak',
         tags=['Teamspeak'],
     )
 app.include_router(
-    sni.routers.token.router,
+    sni.api.token.router,
     prefix='/token',
     tags=['Authentication & tokens'],
 )
 app.include_router(
-    sni.routers.user.router,
+    sni.api.user.router,
     prefix='/user',
     tags=['User management'],
 )
@@ -151,7 +151,7 @@ def start():
                  conf.get('general.port'))
     try:
         uvicorn.run(
-            'sni.apiserver:app',
+            'sni.api.server:app',
             host=conf.get('general.host'),
             log_level='debug' if conf.get('general.debug') else 'info',
             port=conf.get('general.port'),
