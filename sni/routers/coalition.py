@@ -83,7 +83,7 @@ def delete_coalition(
 
 
 @router.get(
-    '/',
+    '',
     response_model=List[str],
     summary='List all coalition names',
 )
@@ -115,7 +115,7 @@ def get_coalition_name(
 
 
 @router.post(
-    '/',
+    '',
     response_model=GetCoalitionOut,
     status_code=status.HTTP_201_CREATED,
     summary='Create a coalition',

@@ -74,7 +74,7 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
     )
 
 
-@router.get('/', response_model=List[str])
+@router.get('', response_model=List[str])
 def get_user(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """

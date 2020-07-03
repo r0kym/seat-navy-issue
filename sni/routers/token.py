@@ -90,7 +90,7 @@ class PostTokenPerOut(pdt.BaseModel):
 
 
 @router.delete(
-    '/',
+    '',
     summary='Manually delete a token',
 )
 async def delete_token(
@@ -115,7 +115,7 @@ async def delete_token(
 
 
 @router.get(
-    '/',
+    '',
     response_model=GetTokenOut,
     summary='Get basic informations about the current token',
 )

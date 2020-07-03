@@ -86,7 +86,7 @@ def delete_group(
 
 
 @router.get(
-    '/',
+    '',
     response_model=List[str],
     summary='List all group names',
 )
@@ -117,7 +117,7 @@ def get_group_name(
 
 
 @router.post(
-    '/',
+    '',
     response_model=GetGroupOut,
     status_code=status.HTTP_201_CREATED,
     summary='Create a group',

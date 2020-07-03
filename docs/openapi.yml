@@ -57,24 +57,6 @@ components:
       - updated_on
       title: GetCoalitionOut
       type: object
-    GetGroupMappingOut:
-      description: Model for an element of `GET /teamspeak/group` responses.
-      properties:
-        sni_group_name:
-          title: Sni Group Name
-          type: string
-        ts_group_id:
-          title: Ts Group Id
-          type: string
-        ts_group_name:
-          title: Ts Group Name
-          type: string
-      required:
-      - sni_group_name
-      - ts_group_id
-      - ts_group_name
-      title: GetGroupMappingOut
-      type: object
     GetGroupOut:
       description: Model for `GET /group/{name}` responses.
       properties:
@@ -136,8 +118,10 @@ components:
         owner_character_id:
           title: Owner Character Id
           type: integer
+        owner_character_name:
+          title: Owner Character Name
+          type: string
         parent:
-          format: uuid
           title: Parent
           type: string
         token_type:
@@ -148,15 +132,63 @@ components:
           title: Token Type
           type: string
         uuid:
-          format: uuid
           title: Uuid
           type: string
       required:
       - created_on
       - owner_character_id
+      - owner_character_name
       - token_type
       - uuid
       title: GetTokenOut
+      type: object
+    GetUserOut:
+      description: Model for ``GET /user/{character_name}`` requests
+      properties:
+        alliance:
+          title: Alliance
+          type: string
+        character_id:
+          title: Character Id
+          type: integer
+        character_name:
+          title: Character Name
+          type: string
+        clearance_level:
+          title: Clearance Level
+          type: integer
+        coalitions:
+          items:
+            type: string
+          title: Coalitions
+          type: array
+        corporation:
+          title: Corporation
+          type: string
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        is_ceo_of_alliance:
+          title: Is Ceo Of Alliance
+          type: boolean
+        is_ceo_of_corporation:
+          title: Is Ceo Of Corporation
+          type: boolean
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - character_id
+      - character_name
+      - clearance_level
+      - coalitions
+      - created_on
+      - is_ceo_of_alliance
+      - is_ceo_of_corporation
+      - updated_on
+      title: GetUserOut
       type: object
     HTTPValidationError:
       properties:
@@ -378,73 +410,6 @@ components:
       - type
       title: ValidationError
       type: object
-    sni__routers__teamspeak__GetUserOut:
-      description: Model for `GET /teamspeak/user/{name}` responses.
-      properties:
-        character_name:
-          title: Character Name
-          type: string
-        client_database_id:
-          title: Client Database Id
-          type: integer
-        created_on:
-          format: date-time
-          title: Created On
-          type: string
-      required:
-      - character_name
-      - client_database_id
-      - created_on
-      title: GetUserOut
-      type: object
-    sni__routers__user__GetUserOut:
-      description: Model for ``GET /user/{character_name}`` requests
-      properties:
-        alliance:
-          title: Alliance
-          type: string
-        character_id:
-          title: Character Id
-          type: integer
-        character_name:
-          title: Character Name
-          type: string
-        clearance_level:
-          title: Clearance Level
-          type: integer
-        coalitions:
-          items:
-            type: string
-          title: Coalitions
-          type: array
-        corporation:
-          title: Corporation
-          type: string
-        created_on:
-          format: date-time
-          title: Created On
-          type: string
-        is_ceo_of_alliance:
-          title: Is Ceo Of Alliance
-          type: boolean
-        is_ceo_of_corporation:
-          title: Is Ceo Of Corporation
-          type: boolean
-        updated_on:
-          format: date-time
-          title: Updated On
-          type: string
-      required:
-      - character_id
-      - character_name
-      - clearance_level
-      - coalitions
-      - created_on
-      - is_ceo_of_alliance
-      - is_ceo_of_corporation
-      - updated_on
-      title: GetUserOut
-      type: object
 info:
   title: FastAPI
   version: 0.1.0
@@ -495,11 +460,11 @@ paths:
       tags:
       - Callbacks
       - ESI
-  /coalition/:
+  /coalition:
     get:
       description: Lists all the coalition names. Requires a clearance level of 0
         or more.
-      operationId: get_coalition_coalition__get
+      operationId: get_coalition_coalition_get
       parameters:
       - in: header
         name: authorization
@@ -514,7 +479,7 @@ paths:
               schema:
                 items:
                   type: string
-                title: Response Get Coalition Coalition  Get
+                title: Response Get Coalition Coalition Get
                 type: array
           description: Successful Response
         '422':
@@ -528,7 +493,7 @@ paths:
       - Coalition management
     post:
       description: Creates a coalition. Requires a clearance level of 9 or more.
-      operationId: post_coalitions_coalition__post
+      operationId: post_coalitions_coalition_post
       parameters:
       - in: header
         name: authorization
@@ -708,10 +673,10 @@ paths:
       summary: Proxy path to the ESI
       tags:
       - ESI
-  /group/:
+  /group:
     get:
       description: Lists all the group names. Requires a clearance level of 0 or more.
-      operationId: get_group_group__get
+      operationId: get_group_group_get
       parameters:
       - in: header
         name: authorization
@@ -726,7 +691,7 @@ paths:
               schema:
                 items:
                   type: string
-                title: Response Get Group Group  Get
+                title: Response Get Group Group Get
                 type: array
           description: Successful Response
         '422':
@@ -740,7 +705,7 @@ paths:
       - Group management
     post:
       description: Creates a group. Requires a clearance level of 9 or more.
-      operationId: post_groups_group__post
+      operationId: post_groups_group_post
       parameters:
       - in: header
         name: authorization
@@ -960,199 +925,11 @@ paths:
       summary: Starts a teamspeak authentication challenge
       tags:
       - Teamspeak
-  /teamspeak/group:
-    get:
-      description: 'Gets informations about all Teamspeak group mappings. Requires
-        a clearance
-
-        level of 0 or more.'
-      operationId: get_group_teamspeak_group_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/GetGroupMappingOut'
-                title: Response Get Group Teamspeak Group Get
-                type: array
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get all group mappings
-      tags:
-      - Teamspeak
-  /teamspeak/group/{sni_group_name}/{ts_group_name}:
-    delete:
-      description: 'Deletes a Teamspeak group mapping. Does not immediately update
-        the
-
-        teamspeak users group memberships. Requires a clearance level of 9 or more.'
-      operationId: delete_group_mapping_teamspeak_group__sni_group_name___ts_group_name__delete
-      parameters:
-      - in: path
-        name: sni_group_name
-        required: true
-        schema:
-          title: Sni Group Name
-          type: string
-      - in: path
-        name: ts_group_name
-        required: true
-        schema:
-          title: Ts Group Name
-          type: string
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Deletes a Teamseak group mapping
-      tags:
-      - Teamspeak
-    post:
-      description: 'Maps a SNI group to a Teamspeak group. Creates the latter if it
-        does not
-
-        exist. This mean that users belonging to that SNI group will be affected to
-
-        that Teamspeak group, if they are registered on Teamspeak. Requires a
-
-        clearance level of 9 or more.'
-      operationId: post_group_mapping_teamspeak_group__sni_group_name___ts_group_name__post
-      parameters:
-      - in: path
-        name: sni_group_name
-        required: true
-        schema:
-          title: Sni Group Name
-          type: string
-      - in: path
-        name: ts_group_name
-        required: true
-        schema:
-          title: Ts Group Name
-          type: string
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '201':
-          content:
-            application/json:
-              schema: {}
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Maps a SNI group to a Teamspeak group
-      tags:
-      - Teamspeak
-  /teamspeak/user:
-    get:
-      description: 'Lists all EVE characters registered on Teamspeak. Requires a clearance
-
-        level of 0 or more.'
-      operationId: get_teamspeak_users_teamspeak_user_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                items:
-                  type: string
-                title: Response Get Teamspeak Users Teamspeak User Get
-                type: array
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Lists all EVE characters registered on Teamspeak
-      tags:
-      - Teamspeak
-  /teamspeak/user/{name}:
-    get:
-      description: 'Get basic teamspeak informations about a registered EVE character.
-        In other
-
-        words, the `name` parameter is expected to be an EVE character name.
-
-        Requires a clearance level of 0 or more.'
-      operationId: get_teamspeak_user_teamspeak_user__name__get
-      parameters:
-      - in: path
-        name: name
-        required: true
-        schema:
-          title: Name
-          type: string
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/sni__routers__teamspeak__GetUserOut'
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get basic teamspeak informations about a registered EVE character
-      tags:
-      - Teamspeak
-  /token/:
+  /token:
     delete:
       description: Manually deletes a token (of any type). Requires a clearance level
         of 10.
-      operationId: delete_token_token__delete
+      operationId: delete_token_token_delete
       parameters:
       - in: query
         name: uuid
@@ -1186,7 +963,7 @@ paths:
         a
 
         clearance level of 0 or more.'
-      operationId: get_token_token__get
+      operationId: get_token_token_get
       parameters:
       - in: header
         name: authorization
@@ -1354,13 +1131,13 @@ paths:
       summary: Create a new user token with a permanent app token
       tags:
       - Authentication & tokens
-  /user/:
+  /user:
     get:
       description: 'Returns the list of all user names. Requires a clearance level
         of 0 or
 
         more.'
-      operationId: get_user_user__get
+      operationId: get_user_user_get
       parameters:
       - in: header
         name: authorization
@@ -1375,7 +1152,7 @@ paths:
               schema:
                 items:
                   type: string
-                title: Response Get User User  Get
+                title: Response Get User User Get
                 type: array
           description: Successful Response
         '422':
@@ -1441,7 +1218,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sni__routers__user__GetUserOut'
+                $ref: '#/components/schemas/GetUserOut'
           description: Successful Response
         '422':
           content:
@@ -1482,7 +1259,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sni__routers__user__GetUserOut'
+                $ref: '#/components/schemas/GetUserOut'
           description: Successful Response
         '422':
           content:
