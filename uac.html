@@ -574,13 +574,15 @@ need accurate microsecond support.</p>
 <dl class="method">
 <dt id="sni.user.user.Alliance.user_iterator">
 <code class="sig-name descname">user_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[sni.user.user.User]<a class="reference internal" href="_modules/sni/user/user.html#Alliance.user_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.Alliance.user_iterator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an iterator over all the members of this alliance.</p>
+<dd><p>Returns an iterator over all the members of this alliance, according to
+the database. This may not be up to date with the ESI.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sni.user.user.Alliance.users">
 <code class="sig-name descname">users</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.user.User]<a class="reference internal" href="_modules/sni/user/user.html#Alliance.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.Alliance.users" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the member list of this alliance.</p>
+<dd><p>Return the member list of this alliance, according to the database.
+This may not be up to date with the ESI.</p>
 </dd></dl>
 
 </dd></dl>
@@ -807,13 +809,15 @@ need accurate microsecond support.</p>
 <dl class="method">
 <dt id="sni.user.user.Corporation.user_iterator">
 <code class="sig-name descname">user_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[sni.user.user.User]<a class="reference internal" href="_modules/sni/user/user.html#Corporation.user_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.Corporation.user_iterator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an iterator over all the members of this corporation.</p>
+<dd><p>Returns an iterator over all the members of this corporation, according
+to the database. This may not be up to date with the ESI.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sni.user.user.Corporation.users">
 <code class="sig-name descname">users</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.user.User]<a class="reference internal" href="_modules/sni/user/user.html#Corporation.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.Corporation.users" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the member list of this corporation.</p>
+<dd><p>Return the member list of this corporation, according to the database.
+This may not be up to date with the ESI.</p>
 </dd></dl>
 
 </dd></dl>
@@ -969,6 +973,13 @@ need accurate microsecond support.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.user.corporation_member_ids">
+<code class="sig-prename descclassname">sni.user.user.</code><code class="sig-name descname">corporation_member_ids</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.user.Corporation</em><span class="sig-paren">)</span> &#x2192; List[int]<a class="reference internal" href="_modules/sni/user/user.html#corporation_member_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.corporation_member_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the character ids of the members of this corporation, according to
+the ESI or EVEWHO.</p>
 </dd></dl>
 
 <dl class="function">

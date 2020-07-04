@@ -79,13 +79,15 @@
 
 <div class="viewcode-block" id="Alliance.users"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Alliance.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the member list of this alliance.</span>
+<span class="sd">        Return the member list of this alliance, according to the database.</span>
+<span class="sd">        This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Alliance.user_iterator"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Alliance.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns an iterator over all the members of this alliance.</span>
+<span class="sd">        Returns an iterator over all the members of this alliance, according to</span>
+<span class="sd">        the database. This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">corporation</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">():</span>
@@ -141,13 +143,15 @@
 
 <div class="viewcode-block" id="Corporation.users"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Corporation.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the member list of this corporation.</span>
+<span class="sd">        Return the member list of this corporation, according to the database.</span>
+<span class="sd">        This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Corporation.user_iterator"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Corporation.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns an iterator over all the members of this corporation.</span>
+<span class="sd">        Returns an iterator over all the members of this corporation, according</span>
+<span class="sd">        to the database. This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">yield</span> <span class="n">usr</span></div></div>
@@ -200,6 +204,14 @@
         <span class="k">if</span> <span class="n">ticker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{ticker}</span><span class="s1">] </span><span class="si">{self.character_name}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_name</span></div>
+
+
+<div class="viewcode-block" id="corporation_member_ids"><a class="viewcode-back" href="../../../uac.html#sni.user.user.corporation_member_ids">[docs]</a><span class="k">def</span> <span class="nf">corporation_member_ids</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the character ids of the members of this corporation, according to</span>
+<span class="sd">    the ESI or EVEWHO.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="ensure_alliance"><a class="viewcode-back" href="../../../uac.html#sni.user.user.ensure_alliance">[docs]</a><span class="k">def</span> <span class="nf">ensure_alliance</span><span class="p">(</span><span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Alliance</span><span class="p">:</span>
