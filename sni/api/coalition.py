@@ -23,10 +23,19 @@ import sni.user.user as user
 router = APIRouter()
 
 
+class GetCoalitionShortOut(pdt.BaseModel):
+    """
+    Model for an element of a `GET /coalition` response.
+    """
+    coalition_id: str
+    name: str
+
+
 class GetCoalitionOut(pdt.BaseModel):
     """
-    Model for `GET /coalition/{name}` responses.
+    Model for `GET /coalition/{coalition_id}` responses.
     """
+    coalition_id: str
     created_on: datetime
     members: List[str]
     name: str
@@ -57,8 +66,9 @@ def coalition_record_to_response(coa: user.Coalition) -> GetCoalitionOut:
     Converts a coalition database record to a response.
     """
     return GetCoalitionOut(
+        coalition_id=str(coa.pk),
         created_on=coa.created_on,
-        members=[member.alliance_name for member in coa.members],
+        members=[member.alliance_id for member in coa.members],
         name=coa.name,
         ticker=coa.ticker,
         updated_on=coa.updated_on,
@@ -66,25 +76,25 @@ def coalition_record_to_response(coa: user.Coalition) -> GetCoalitionOut:
 
 
 @router.delete(
-    '/{coalition_name}',
+    '/{coalition_id}',
     summary='Delete a coalition',
 )
 def delete_coalition(
-        coalition_name: str,
+        coalition_id: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Deletes a coalition. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_coalition')
-    coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
-    logging.debug('Deleting coalition %s', coalition_name)
+    coa: user.Coalition = user.Coalition.objects.get(pk=coalition_id)
+    logging.debug('Deleting coalition %s (%s)', coa.name, coalition_id)
     coa.delete()
 
 
 @router.get(
     '',
-    response_model=List[str],
+    response_model=List[GetCoalitionShortOut],
     summary='List all coalition names',
 )
 def get_coalition(tkn: token.Token = Depends(
@@ -93,16 +103,19 @@ def get_coalition(tkn: token.Token = Depends(
     Lists all the coalition names. Requires a clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
-    return [coalition.name for coalition in user.Coalition.objects()]
+    return [
+        GetCoalitionShortOut(coalition_id=str(coa.pk), name=coa.name)
+        for coa in user.Coalition.objects()
+    ]
 
 
 @router.get(
-    '/{coalition_name}',
+    '/{coalition_id}',
     response_model=GetCoalitionOut,
     summary='Get basic informations about a coalition',
 )
 def get_coalition_name(
-        coalition_name: str,
+        coalition_id: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
@@ -111,7 +124,7 @@ def get_coalition_name(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return coalition_record_to_response(
-        user.Coalition.objects(name=coalition_name).get())
+        user.Coalition.objects(pk=coalition_id).get())
 
 
 @router.post(
@@ -132,17 +145,17 @@ def post_coalitions(
         name=data.name,
         ticker=data.ticker,
     ).save()
-    logging.debug('Created coalition %s', data.name)
+    logging.debug('Created coalition %s (%s)', data.name, str(coa.pk))
     return coalition_record_to_response(coa)
 
 
 @router.put(
-    '/{coalition_name}',
+    '/{coalition_id}',
     response_model=GetCoalitionOut,
     summary='Update a coalition',
 )
 def put_coalition(
-        coalition_name: str,
+        coalition_id: str,
         data: PutCoalitionIn,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
@@ -153,8 +166,8 @@ def put_coalition(
     `remove_members`. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.update_coalition')
-    coa: user.Coalition = user.Coalition.objects.get(name=coalition_name)
-    logging.debug('Updating coalition %s', coalition_name)
+    coa: user.Coalition = user.Coalition.objects.get(pk=coalition_id)
+    logging.debug('Updating coalition %s (%s)', coa.name, coalition_id)
     if data.add_members is not None:
         coa.members += [
             user.Alliance.objects.get(alliance_name=member_name)
