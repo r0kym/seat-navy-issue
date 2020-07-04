@@ -48,7 +48,7 @@
 <span class="kn">import</span> <span class="nn">mongoengine.signals</span> <span class="k">as</span> <span class="nn">me_signals</span>
 
 <span class="kn">import</span> <span class="nn">sni.scheduler</span> <span class="k">as</span> <span class="nn">scheduler</span>
-<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">import</span> <span class="nn">sni.user.user</span> <span class="k">as</span> <span class="nn">user</span>
 
 
@@ -56,7 +56,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Group model. A group is simply a collection of users.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">description</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
     <span class="n">is_autogroup</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">map_to_teamspeak</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -64,7 +64,7 @@
     <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">teamspeak_sgid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ensure_autogroup"><a class="viewcode-back" href="../../../uac.html#sni.user.group.ensure_autogroup">[docs]</a><span class="k">def</span> <span class="nf">ensure_autogroup</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Group</span><span class="p">:</span>

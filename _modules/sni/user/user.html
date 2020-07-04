@@ -46,7 +46,7 @@
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
 
 <span class="kn">import</span> <span class="nn">sni.esi.esi</span> <span class="k">as</span> <span class="nn">esi</span>
-<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 
 <div class="viewcode-block" id="Alliance"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Alliance">[docs]</a><span class="k">class</span> <span class="nc">Alliance</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -57,7 +57,7 @@
     <span class="n">executor_corporation_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">alliance_name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ticker</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Alliance.coalitions"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Alliance.coalitions">[docs]</a>    <span class="k">def</span> <span class="nf">coalitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Coalition&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -99,11 +99,11 @@
 <span class="sd">    EVE coalition. Coalitions are not formally represented in EVE, so they have</span>
 <span class="sd">    to be created manually. An alliance can be part of multiple coalitions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">members</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Alliance</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ticker</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Coalition.users"><a class="viewcode-back" href="../../../uac.html#sni.user.user.Coalition.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -132,7 +132,7 @@
     <span class="n">corporation_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">corporation_name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ticker</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;User&#39;</span><span class="p">:</span>
@@ -167,9 +167,9 @@
     <span class="n">character_name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">clearance_level</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">corporation</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Corporation</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">teamspeak_cldbid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="User.is_ceo_of_alliance"><a class="viewcode-back" href="../../../uac.html#sni.user.user.User.is_ceo_of_alliance">[docs]</a>    <span class="k">def</span> <span class="nf">is_ceo_of_alliance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -210,20 +210,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensures that an alliance exists, and returns it. It it does not, creates</span>
 <span class="sd">    it by fetching relevant data from the ESI.</span>
-
-<span class="sd">    Todo:</span>
-<span class="sd">        Maintain alliance user group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/alliances/</span><span class="si">{alliance_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
-        <span class="n">new</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">set__alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">,</span>
-        <span class="n">set__alliance_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-        <span class="n">set__executor_corporation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;executor_corporation_id&#39;</span><span class="p">]),</span>
-        <span class="n">set__ticker</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ticker&#39;</span><span class="p">],</span>
-        <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># ensure_auto_group(data[&#39;name&#39;])</span>
+    <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/alliances/</span><span class="si">{alliance_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="p">(</span>
+            <span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">,</span>
+            <span class="n">alliance_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="n">executor_corporation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;executor_corporation_id&#39;</span><span class="p">]),</span>
+            <span class="n">ticker</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ticker&#39;</span><span class="p">],</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">alliance</span></div>
 
 
@@ -231,23 +227,19 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensures that a corporation exists, and returns it. It it does not, creates</span>
 <span class="sd">    it by fetching relevant data from the ESI.</span>
-
-<span class="sd">    Todo:</span>
-<span class="sd">        Maintain corporation user group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;alliance_id&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;alliance_id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
-        <span class="n">new</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">set__alliance</span><span class="o">=</span><span class="n">alliance</span><span class="p">,</span>
-        <span class="n">set__ceo_character_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ceo_id&#39;</span><span class="p">]),</span>
-        <span class="n">set__corporation_id</span><span class="o">=</span><span class="n">corporation_id</span><span class="p">,</span>
-        <span class="n">set__corporation_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-        <span class="n">set__ticker</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ticker&#39;</span><span class="p">],</span>
-        <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># ensure_auto_group(data[&#39;name&#39;])</span>
+    <span class="n">corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;alliance_id&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;alliance_id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="p">(</span>
+            <span class="n">alliance</span><span class="o">=</span><span class="n">alliance</span><span class="p">,</span>
+            <span class="n">ceo_character_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ceo_id&#39;</span><span class="p">]),</span>
+            <span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span><span class="p">,</span>
+            <span class="n">corporation_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="n">ticker</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ticker&#39;</span><span class="p">],</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">corporation</span></div>
 
 
@@ -257,7 +249,7 @@
 <span class="sd">    It it does not, creates it by fetching relevant data from the ESI. Also</span>
 <span class="sd">    creates the character&#39;s corporation and alliance (if applicable).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">usr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">esi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span>

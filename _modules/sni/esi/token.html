@@ -41,12 +41,13 @@
 <span class="sd">EVE token (access and refresh) management</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">mongoengine</span>
 
 <span class="kn">import</span> <span class="nn">sni.esi.sso</span> <span class="k">as</span> <span class="nn">sso</span>
-<span class="kn">import</span> <span class="nn">sni.time</span> <span class="k">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">import</span> <span class="nn">sni.user.user</span> <span class="k">as</span> <span class="nn">user</span>
 
 
@@ -56,7 +57,7 @@
 <span class="sd">    relevant metadatas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">access_token</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
     <span class="n">expires_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">owner</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
         <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
@@ -78,8 +79,8 @@
 <span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
 <span class="sd">    relevant metadatas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
-    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">updated_on</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
     <span class="n">owner</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
         <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
     <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -100,13 +101,18 @@
     <span class="n">esi_access_token</span><span class="p">:</span> <span class="n">EsiAccessToken</span> <span class="o">=</span> <span class="n">EsiAccessToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
         <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
         <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
-        <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
     <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_access_token</span><span class="p">:</span>
-        <span class="n">esi_refresh_token</span><span class="p">:</span> <span class="n">EsiRefreshToken</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">esi_refresh_token</span><span class="p">:</span> <span class="n">EsiRefreshToken</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
             <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
             <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_refresh_token</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;Could not find refresh token for user </span><span class="si">%s</span><span class="s1"> with scope </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">LookupError</span>
         <span class="n">esi_access_token</span> <span class="o">=</span> <span class="n">save_esi_tokens</span><span class="p">(</span>
             <span class="n">sso</span><span class="o">.</span><span class="n">refresh_access_token</span><span class="p">(</span><span class="n">esi_refresh_token</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">esi_access_token</span></div>
@@ -139,7 +145,7 @@
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">EsiAccessToken</span><span class="p">(</span>
         <span class="n">access_token</span><span class="o">=</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
-        <span class="n">expires_on</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">from_timestamp</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">exp</span><span class="p">),</span>
+        <span class="n">expires_on</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">from_timestamp</span><span class="p">(</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">exp</span><span class="p">),</span>
         <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
         <span class="n">scopes</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
