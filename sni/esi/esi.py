@@ -9,6 +9,8 @@ from typing import Optional
 import mongoengine
 import requests
 
+import sni.conf as conf
+
 ESI_BASE = 'https://esi.evetech.net/'
 ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
 
@@ -67,9 +69,14 @@ def request(http_method: str,
     """
     Makes an HTTP request to the ESI, and returns the response object.
     """
+    kwargs['headers'] = {
+        'Accept-Encoding': 'gzip',
+        'accept': 'application/json',
+        'User-Agent': 'SeAT Navy Issue @ ' \
+            + conf.get('general.root_url'),
+        **kwargs.get('headers', dict)
+    }
     if token:
-        if 'headers' not in kwargs:
-            kwargs['headers'] = {}
         kwargs['headers']['Authorization'] = 'Bearer ' + token
     response = requests.request(http_method, ESI_BASE + path, **kwargs)
     response.raise_for_status()

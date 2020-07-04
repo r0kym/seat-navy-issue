@@ -12,7 +12,6 @@ from fastapi import (
 import pydantic
 import requests
 
-import sni.conf as conf
 import sni.esi.esi as esi
 import sni.esi.sso as sso
 import sni.esi.token as esitoken
@@ -115,15 +114,9 @@ async def get_esi_latest(
                 data.on_behalf_of,
                 esi_scope,
             ).access_token
-    headers = {
-        'Accept-Encoding': 'gzip',
-        'accept': 'application/json',
-        'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
-    }
     response = esi.get(
         esi_path,
         esi_token,
-        headers=headers,
         params=data.params,
     )
     return EsiRequestOut(
