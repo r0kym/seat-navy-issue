@@ -40,13 +40,15 @@ class Alliance(me.Document):
 
     def users(self) -> List['User']:
         """
-        Return the member list of this alliance.
+        Return the member list of this alliance, according to the database.
+        This may not be up to date with the ESI.
         """
         return list(self.user_iterator())
 
     def user_iterator(self) -> Iterator['User']:
         """
-        Returns an iterator over all the members of this alliance.
+        Returns an iterator over all the members of this alliance, according to
+        the database. This may not be up to date with the ESI.
         """
         for corporation in Corporation.objects(alliance=self):
             for usr in corporation.user_iterator():
@@ -102,13 +104,15 @@ class Corporation(me.Document):
 
     def users(self) -> List['User']:
         """
-        Return the member list of this corporation.
+        Return the member list of this corporation, according to the database.
+        This may not be up to date with the ESI.
         """
         return list(self.user_iterator())
 
     def user_iterator(self) -> Iterator['User']:
         """
-        Returns an iterator over all the members of this corporation.
+        Returns an iterator over all the members of this corporation, according
+        to the database. This may not be up to date with the ESI.
         """
         for usr in User.objects(corporation=self):
             yield usr
@@ -161,6 +165,14 @@ class User(me.Document):
         if ticker is not None:
             return f'[{ticker}] {self.character_name}'
         return self.character_name
+
+
+def corporation_member_ids(corporation: Corporation) -> List[int]:
+    """
+    Returns the character ids of the members of this corporation, according to
+    the ESI or EVEWHO.
+    """
+    pass
 
 
 def ensure_alliance(alliance_id: int) -> Alliance:
