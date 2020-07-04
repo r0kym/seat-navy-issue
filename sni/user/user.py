@@ -171,20 +171,16 @@ def ensure_alliance(alliance_id: int) -> Alliance:
     """
     Ensures that an alliance exists, and returns it. It it does not, creates
     it by fetching relevant data from the ESI.
-
-    Todo:
-        Maintain alliance user group.
     """
-    data = esi.get(f'latest/alliances/{alliance_id}').json()
-    alliance = Alliance.objects(alliance_id=alliance_id).modify(
-        new=True,
-        set__alliance_id=alliance_id,
-        set__alliance_name=data['name'],
-        set__executor_corporation_id=int(data['executor_corporation_id']),
-        set__ticker=data['ticker'],
-        upsert=True,
-    )
-    # ensure_auto_group(data['name'])
+    alliance = Alliance.objects(alliance_id=alliance_id).first()
+    if alliance is None:
+        data = esi.get(f'latest/alliances/{alliance_id}').json()
+        alliance = Alliance(
+            alliance_id=alliance_id,
+            alliance_name=data['name'],
+            executor_corporation_id=int(data['executor_corporation_id']),
+            ticker=data['ticker'],
+        ).save()
     return alliance
 
 
@@ -192,23 +188,19 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     """
     Ensures that a corporation exists, and returns it. It it does not, creates
     it by fetching relevant data from the ESI.
-
-    Todo:
-        Maintain corporation user group.
     """
-    data = esi.get(f'latest/corporations/{corporation_id}').json()
-    alliance = ensure_alliance(
-        data['alliance_id']) if 'alliance_id' in data else None
-    corporation = Corporation.objects(corporation_id=corporation_id).modify(
-        new=True,
-        set__alliance=alliance,
-        set__ceo_character_id=int(data['ceo_id']),
-        set__corporation_id=corporation_id,
-        set__corporation_name=data['name'],
-        set__ticker=data['ticker'],
-        upsert=True,
-    )
-    # ensure_auto_group(data['name'])
+    corporation = Corporation.objects(corporation_id=corporation_id).first()
+    if corporation is None:
+        data = esi.get(f'latest/corporations/{corporation_id}').json()
+        alliance = ensure_alliance(
+            data['alliance_id']) if 'alliance_id' in data else None
+        corporation = Corporation(
+            alliance=alliance,
+            ceo_character_id=int(data['ceo_id']),
+            corporation_id=corporation_id,
+            corporation_name=data['name'],
+            ticker=data['ticker'],
+        ).save()
     return corporation
 
 
@@ -218,7 +210,7 @@ def ensure_user(character_id: int) -> User:
     It it does not, creates it by fetching relevant data from the ESI. Also
     creates the character's corporation and alliance (if applicable).
     """
-    usr: User = User.objects(character_id=character_id).first()
+    usr = User.objects(character_id=character_id).first()
     if usr is None:
         data = esi.get(f'latest/characters/{character_id}').json()
         usr = User(
