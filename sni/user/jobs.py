@@ -11,19 +11,30 @@ import sni.esi.esi as esi
 import sni.user.user as user
 
 
-def update_alliance_members(alliance: user.Alliance):
+def update_alliance_properties(alliance: user.Alliance):
     """
-    Ensures that all member coproration of a given alliance exist in the
-    database.
+    Updates an alliance's properties from the ESI.
     """
-    logging.debug('Updating members of alliance %s', alliance.alliance_name)
-    response = esi.get(
-        f'latest/alliances/{alliance.alliance_id}/corporations/')
-    for corporation_id in response.json():
-        user.ensure_corporation(corporation_id)
+    logging.debug('Updating properties of alliance %s', alliance.alliance_name)
+    data = esi.get(f'latest/alliances/{alliance.alliance_id}').json()
+    alliance.executor_corporation_id = data['executor_corporation_id']
+    alliance.save()
 
 
-@scheduler.scheduled_job('interval', minutes=60)
+@scheduler.scheduled_job('interval', days=1)
+def update_alliances_properties():
+    """
+    Updates the alliances properties from the ESI.
+    """
+    for alliance in user.Alliance.objects:
+        try:
+            update_alliance_properties(alliance)
+        except Exception as error:
+            logging.error('Failed to update properties of alliance %s: %s',
+                          alliance.alliance_name, str(error))
+
+
+@scheduler.scheduled_job('interval', hours=1)
 def update_alliances_members():
     """
     Iterates through all alliances (in the database) and makes sure their
@@ -32,7 +43,12 @@ def update_alliances_members():
     """
     for alliance in user.Alliance.objects:
         try:
-            update_alliance_members(alliance)
+            logging.debug('Updating members of alliance %s',
+                          alliance.alliance_name)
+            response = esi.get(
+                f'latest/alliances/{alliance.alliance_id}/corporations/')
+            for corporation_id in response.json():
+                user.ensure_corporation(corporation_id)
         except Exception as error:
             logging.error('Could not update members of alliance %s: %s',
                           alliance.alliance_name, str(error))
@@ -79,7 +95,7 @@ def update_coropration_members(corporation: user.Corporation):
         user.ensure_user(character_id)
 
 
-@scheduler.scheduled_job('interval', minutes=60)
+@scheduler.scheduled_job('interval', hours=1)
 def update_corporations_members():
     """
     Iterates through all corporations (in the database) and makes sure their
@@ -91,4 +107,30 @@ def update_corporations_members():
             update_coropration_members(corporation)
         except Exception as error:
             logging.error('Could not update members of coproration %s: %s',
+                          corporation.corporation_name, str(error))
+
+
+def update_corporation_properties(corporation: user.Corporation):
+    """
+    Updates a corporation properties from the ESI.
+    """
+    logging.debug('Updating properties of corproation %s',
+                  corporation.corporation_name)
+    data = esi.get(f'latest/corporations/{corporation.corporation_id}').json()
+    corporation.alliance = user.ensure_alliance(
+        data['alliance_id']) if 'alliance_id' in data else None
+    corporation.ceo_character_id = int(data['ceo_id'])
+    corporation.save()
+
+
+@scheduler.scheduled_job('interval', days=1)
+def update_corporations_properties():
+    """
+    Updates corporations properties. (yes)
+    """
+    for corporation in user.Corporation.objects:
+        try:
+            update_corporation_properties(corporation)
+        except Exception as error:
+            logging.error('Failed to update properties of corporation %s: %s',
                           corporation.corporation_name, str(error))
