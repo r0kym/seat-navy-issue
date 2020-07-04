@@ -28,8 +28,14 @@ components:
       title: EsiRequestOut
       type: object
     GetCoalitionOut:
-      description: Model for `GET /coalition/{name}` responses.
+      description: Model for `GET /coalition/{coalition_id}` responses.
       properties:
+        coalition_id:
+          title: Coalition Id
+          type: string
+        coalition_name:
+          title: Coalition Name
+          type: string
         created_on:
           format: date-time
           title: Created On
@@ -39,9 +45,6 @@ components:
             type: string
           title: Members
           type: array
-        name:
-          title: Name
-          type: string
         ticker:
           title: Ticker
           type: string
@@ -50,15 +53,30 @@ components:
           title: Updated On
           type: string
       required:
+      - coalition_id
       - created_on
       - members
-      - name
+      - coalition_name
       - ticker
       - updated_on
       title: GetCoalitionOut
       type: object
+    GetCoalitionShortOut:
+      description: Model for an element of a `GET /coalition` response.
+      properties:
+        coalition_id:
+          title: Coalition Id
+          type: string
+        coalition_name:
+          title: Coalition Name
+          type: string
+      required:
+      - coalition_id
+      - coalition_name
+      title: GetCoalitionShortOut
+      type: object
     GetGroupOut:
-      description: Model for `GET /group/{name}` responses.
+      description: Model for `GET /group/{group_id}` responses.
       properties:
         created_on:
           format: date-time
@@ -66,6 +84,12 @@ components:
           type: string
         description:
           title: Description
+          type: string
+        group_id:
+          title: Group Id
+          type: string
+        group_name:
+          title: Group Name
           type: string
         is_autogroup:
           title: Is Autogroup
@@ -75,9 +99,6 @@ components:
             type: string
           title: Members
           type: array
-        name:
-          title: Name
-          type: string
         owner:
           title: Owner
           type: string
@@ -88,12 +109,27 @@ components:
       required:
       - created_on
       - description
+      - group_id
       - is_autogroup
       - members
-      - name
+      - group_name
       - owner
       - updated_on
       title: GetGroupOut
+      type: object
+    GetGroupShortOut:
+      description: Model for an element of `GET /group` responses
+      properties:
+        group_id:
+          title: Group Id
+          type: string
+        group_name:
+          title: Group Name
+          type: string
+      required:
+      - group_id
+      - group_name
+      title: GetGroupShortOut
       type: object
     GetTokenOut:
       description: Model for ``GET /token`` responses.
@@ -143,7 +179,7 @@ components:
       title: GetTokenOut
       type: object
     GetUserOut:
-      description: Model for ``GET /user/{character_name}`` requests
+      description: Model for ``GET /user/{character_name}`` responses
       properties:
         alliance:
           title: Alliance
@@ -175,6 +211,9 @@ components:
         is_ceo_of_corporation:
           title: Is Ceo Of Corporation
           type: boolean
+        tickered_name:
+          title: Tickered Name
+          type: string
         updated_on:
           format: date-time
           title: Updated On
@@ -187,8 +226,23 @@ components:
       - created_on
       - is_ceo_of_alliance
       - is_ceo_of_corporation
+      - tickered_name
       - updated_on
       title: GetUserOut
+      type: object
+    GetUserShortOut:
+      description: Model for an element of ``GET /user`` response
+      properties:
+        character_id:
+          title: Character Id
+          type: integer
+        character_name:
+          title: Character Name
+          type: string
+      required:
+      - character_id
+      - character_name
+      title: GetUserShortOut
       type: object
     HTTPValidationError:
       properties:
@@ -221,14 +275,14 @@ components:
     PostCoalitionIn:
       description: Model for `POST /coalition` responses.
       properties:
-        name:
-          title: Name
+        coalition_name:
+          title: Coalition Name
           type: string
         ticker:
           title: Ticker
           type: string
       required:
-      - name
+      - coalition_name
       - ticker
       title: PostCoalitionIn
       type: object
@@ -239,11 +293,11 @@ components:
           default: ''
           title: Description
           type: string
-        name:
-          title: Name
+        group_name:
+          title: Group Name
           type: string
       required:
-      - name
+      - group_name
       title: PostGroupIn
       type: object
     PostTokenDynIn:
@@ -384,7 +438,7 @@ components:
       title: PutGroupIn
       type: object
     PutUserIn:
-      description: Model for ``PUT /user/{character_name}`` requests
+      description: Model for ``PUT /user/{character_id}`` requests
       properties:
         clearance_level:
           title: Clearance Level
@@ -478,7 +532,7 @@ paths:
             application/json:
               schema:
                 items:
-                  type: string
+                  $ref: '#/components/schemas/GetCoalitionShortOut'
                 title: Response Get Coalition Coalition Get
                 type: array
           description: Successful Response
@@ -523,16 +577,16 @@ paths:
       summary: Create a coalition
       tags:
       - Coalition management
-  /coalition/{coalition_name}:
+  /coalition/{coalition_id}:
     delete:
       description: Deletes a coalition. Requires a clearance level of 9 or more.
-      operationId: delete_coalition_coalition__coalition_name__delete
+      operationId: delete_coalition_coalition__coalition_id__delete
       parameters:
       - in: path
-        name: coalition_name
+        name: coalition_id
         required: true
         schema:
-          title: Coalition Name
+          title: Coalition Id
           type: string
       - in: header
         name: authorization
@@ -560,13 +614,13 @@ paths:
         level of 0 or
 
         more.'
-      operationId: get_coalition_name_coalition__coalition_name__get
+      operationId: get_coalition_name_coalition__coalition_id__get
       parameters:
       - in: path
-        name: coalition_name
+        name: coalition_id
         required: true
         schema:
-          title: Coalition Name
+          title: Coalition Id
           type: string
       - in: header
         name: authorization
@@ -599,13 +653,13 @@ paths:
         `members` cannot be used in conjunction with `add_members` and
 
         `remove_members`. Requires a clearance level of 9 or more.'
-      operationId: put_coalition_coalition__coalition_name__put
+      operationId: put_coalition_coalition__coalition_id__put
       parameters:
       - in: path
-        name: coalition_name
+        name: coalition_id
         required: true
         schema:
-          title: Coalition Name
+          title: Coalition Id
           type: string
       - in: header
         name: authorization
@@ -690,7 +744,7 @@ paths:
             application/json:
               schema:
                 items:
-                  type: string
+                  $ref: '#/components/schemas/GetGroupShortOut'
                 title: Response Get Group Group Get
                 type: array
           description: Successful Response
@@ -735,16 +789,16 @@ paths:
       summary: Create a group
       tags:
       - Group management
-  /group/{group_name}:
+  /group/{group_id}:
     delete:
       description: Deletes a group. Requires a clearance level of 9 or more.
-      operationId: delete_group_group__group_name__delete
+      operationId: delete_group_group__group_id__delete
       parameters:
       - in: path
-        name: group_name
+        name: group_id
         required: true
         schema:
-          title: Group Name
+          title: Group Id
           type: string
       - in: header
         name: authorization
@@ -772,13 +826,13 @@ paths:
         of 0 or
 
         more.'
-      operationId: get_group_name_group__group_name__get
+      operationId: get_group_name_group__group_id__get
       parameters:
       - in: path
-        name: group_name
+        name: group_id
         required: true
         schema:
-          title: Group Name
+          title: Group Id
           type: string
       - in: header
         name: authorization
@@ -813,13 +867,13 @@ paths:
         `remove_members`. Requires a clearance level of 9 or more of for the user
 
         to be the owner of the group.'
-      operationId: put_group_group__group_name__put
+      operationId: put_group_group__group_id__put
       parameters:
       - in: path
-        name: group_name
+        name: group_id
         required: true
         schema:
-          title: Group Name
+          title: Group Id
           type: string
       - in: header
         name: authorization
@@ -1151,7 +1205,7 @@ paths:
             application/json:
               schema:
                 items:
-                  type: string
+                  $ref: '#/components/schemas/GetUserShortOut'
                 title: Response Get User User Get
                 type: array
           description: Successful Response
@@ -1161,20 +1215,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get User
+      summary: Get the user list
       tags:
       - User management
-  /user/{character_name}:
+  /user/{character_id}:
     delete:
       description: Deletes a user. Requires a clearance level of 9 or more.
-      operationId: delete_user_user__character_name__delete
+      operationId: delete_user_user__character_id__delete
       parameters:
       - in: path
-        name: character_name
+        name: character_id
         required: true
         schema:
-          title: Character Name
-          type: string
+          title: Character Id
+          type: integer
       - in: header
         name: authorization
         required: false
@@ -1199,14 +1253,14 @@ paths:
     get:
       description: Returns details about a character. Requires a clearance level of
         0 or more.
-      operationId: get_user_name_user__character_name__get
+      operationId: get_user_name_user__character_id__get
       parameters:
       - in: path
-        name: character_name
+        name: character_id
         required: true
         schema:
-          title: Character Name
-          type: string
+          title: Character Id
+          type: integer
       - in: header
         name: authorization
         required: false
@@ -1234,14 +1288,14 @@ paths:
         clearance
 
         level depends on the modification.'
-      operationId: put_user_name_user__character_name__put
+      operationId: put_user_name_user__character_id__put
       parameters:
       - in: path
-        name: character_name
+        name: character_id
         required: true
         schema:
-          title: Character Name
-          type: string
+          title: Character Id
+          type: integer
       - in: header
         name: authorization
         required: false

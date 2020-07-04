@@ -28,7 +28,7 @@ class GetCoalitionShortOut(pdt.BaseModel):
     Model for an element of a `GET /coalition` response.
     """
     coalition_id: str
-    name: str
+    coalition_name: str
 
 
 class GetCoalitionOut(pdt.BaseModel):
@@ -38,7 +38,7 @@ class GetCoalitionOut(pdt.BaseModel):
     coalition_id: str
     created_on: datetime
     members: List[str]
-    name: str
+    coalition_name: str
     ticker: str
     updated_on: datetime
 
@@ -47,7 +47,7 @@ class PostCoalitionIn(pdt.BaseModel):
     """
     Model for `POST /coalition` responses.
     """
-    name: str
+    coalition_name: str
     ticker: str
 
 
@@ -69,7 +69,7 @@ def coalition_record_to_response(coa: user.Coalition) -> GetCoalitionOut:
         coalition_id=str(coa.pk),
         created_on=coa.created_on,
         members=[member.alliance_id for member in coa.members],
-        name=coa.name,
+        coalition_name=coa.name,
         ticker=coa.ticker,
         updated_on=coa.updated_on,
     )
@@ -104,7 +104,7 @@ def get_coalition(tkn: token.Token = Depends(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return [
-        GetCoalitionShortOut(coalition_id=str(coa.pk), name=coa.name)
+        GetCoalitionShortOut(coalition_id=str(coa.pk), coalition_name=coa.name)
         for coa in user.Coalition.objects()
     ]
 
@@ -142,10 +142,11 @@ def post_coalitions(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.create_coalition')
     coa = user.Coalition(
-        name=data.name,
+        name=data.coalition_name,
         ticker=data.ticker,
     ).save()
-    logging.debug('Created coalition %s (%s)', data.name, str(coa.pk))
+    logging.debug('Created coalition %s (%s)', data.coalition_name,
+                  str(coa.pk))
     return coalition_record_to_response(coa)
 
 
