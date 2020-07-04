@@ -26,7 +26,7 @@ class GetGroupShortOut(pdt.BaseModel):
     Model for an element of `GET /group` responses
     """
     group_id: str
-    name: str
+    group_name: str
 
 
 class GetGroupOut(pdt.BaseModel):
@@ -38,7 +38,7 @@ class GetGroupOut(pdt.BaseModel):
     group_id: str
     is_autogroup: bool
     members: List[str]
-    name: str
+    group_name: str
     owner: str
     updated_on: datetime
 
@@ -47,7 +47,7 @@ class PostGroupIn(pdt.BaseModel):
     """
     Model for `POST /group` responses.
     """
-    name: str
+    group_name: str
     description: str = ''
 
 
@@ -72,7 +72,7 @@ def group_record_to_response(grp: group.Group) -> GetGroupOut:
         group_id=str(grp.pk),
         is_autogroup=grp.is_autogroup,
         members=[member.character_name for member in grp.members],
-        name=grp.name,
+        group_name=grp.name,
         owner=grp.owner.character_name,
         updated_on=grp.updated_on,
     )
@@ -107,7 +107,7 @@ def get_group(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return [
-        GetGroupShortOut(group_id=str(grp.pk), name=grp.name)
+        GetGroupShortOut(group_id=str(grp.pk), group_name=grp.name)
         for grp in group.Group.objects()
     ]
 
@@ -146,11 +146,11 @@ def post_groups(
     grp = group.Group(
         description=data.description,
         members=[tkn.owner],
-        name=data.name,
+        group_name=data.group_name,
         owner=tkn.owner,
     ).save()
-    logging.debug('Created group %s (%s) owned by %s', data.name, str(grp.pk),
-                  tkn.owner.character_name)
+    logging.debug('Created group %s (%s) owned by %s', data.group_name,
+                  str(grp.pk), tkn.owner.character_name)
     return group_record_to_response(grp)
 
 
