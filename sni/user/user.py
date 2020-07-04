@@ -167,14 +167,6 @@ class User(me.Document):
         return self.character_name
 
 
-def corporation_member_ids(corporation: Corporation) -> List[int]:
-    """
-    Returns the character ids of the members of this corporation, according to
-    the ESI or EVEWHO.
-    """
-    pass
-
-
 def ensure_alliance(alliance_id: int) -> Alliance:
     """
     Ensures that an alliance exists, and returns it. It it does not, creates
