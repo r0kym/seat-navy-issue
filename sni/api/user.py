@@ -20,9 +20,17 @@ import sni.user.user as user
 router = APIRouter()
 
 
+class GetUserShortOut(pdt.BaseModel):
+    """
+    Model for an element of ``GET /user`` response
+    """
+    character_id: int
+    character_name: str
+
+
 class GetUserOut(pdt.BaseModel):
     """
-    Model for ``GET /user/{character_name}`` requests
+    Model for ``GET /user/{character_name}`` responses
     """
     alliance: Optional[str]
     character_id: int
@@ -39,7 +47,7 @@ class GetUserOut(pdt.BaseModel):
 
 class PutUserIn(pdt.BaseModel):
     """
-    Model for ``PUT /user/{character_name}`` requests
+    Model for ``PUT /user/{character_id}`` requests
     """
     clearance_level: Optional[int]
 
@@ -76,7 +84,11 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
     )
 
 
-@router.get('', response_model=List[str])
+@router.get(
+    '',
+    response_model=List[GetUserShortOut],
+    summary='Get the user list',
+)
 def get_user(tkn: token.Token = Depends(
     token.from_authotization_header_nondyn)):
     """
@@ -84,46 +96,51 @@ def get_user(tkn: token.Token = Depends(
     more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
-    return [user.character_name for user in user.User.objects()]
+    return [
+        GetUserShortOut(
+            character_id=usr.character_id,
+            character_name=usr.character_name,
+        ) for usr in user.User.objects()
+    ]
 
 
 @router.delete(
-    '/{character_name}',
+    '/{character_id}',
     summary='Delete a user',
 )
-def delete_user(character_name: str,
+def delete_user(character_id: int,
                 tkn: token.Token = Depends(
                     token.from_authotization_header_nondyn)):
     """
     Deletes a user. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_user')
-    usr: user.User = user.User.objects.get(character_name=character_name)
+    usr: user.User = user.User.objects.get(character_id=character_id)
     usr.delete()
 
 
 @router.get(
-    '/{character_name}',
+    '/{character_id}',
     response_model=GetUserOut,
     summary='Get basic informations about a user',
 )
-def get_user_name(character_name: str,
+def get_user_name(character_id: int,
                   tkn: token.Token = Depends(
                       token.from_authotization_header_nondyn)):
     """
     Returns details about a character. Requires a clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
-    usr = user.User.objects.get(character_name=character_name)
+    usr = user.User.objects.get(character_id=character_id)
     return user_record_to_response(usr)
 
 
 @router.put(
-    '/{character_name}',
+    '/{character_id}',
     response_model=GetUserOut,
     summary='Update a user',
 )
-def put_user_name(character_name: str,
+def put_user_name(character_id: int,
                   data: PutUserIn,
                   tkn: token.Token = Depends(
                       token.from_authotization_header_nondyn)):
@@ -131,7 +148,7 @@ def put_user_name(character_name: str,
     Manually updates non ESI data about a character. The required clearance
     level depends on the modification.
     """
-    usr: user.User = user.User.objects.get(character_name=character_name)
+    usr: user.User = user.User.objects.get(character_id=character_id)
     if data.clearance_level is not None:
         if not 0 <= data.clearance_level <= 10:
             raise HTTPException(
