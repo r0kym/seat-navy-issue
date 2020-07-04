@@ -21,12 +21,21 @@ import sni.user.user as user
 router = APIRouter()
 
 
+class GetGroupShortOut(pdt.BaseModel):
+    """
+    Model for an element of `GET /group` responses
+    """
+    group_id: str
+    name: str
+
+
 class GetGroupOut(pdt.BaseModel):
     """
-    Model for `GET /group/{name}` responses.
+    Model for `GET /group/{group_id}` responses.
     """
     created_on: datetime
     description: str
+    group_id: str
     is_autogroup: bool
     members: List[str]
     name: str
@@ -60,6 +69,7 @@ def group_record_to_response(grp: group.Group) -> GetGroupOut:
     return GetGroupOut(
         created_on=grp.created_on,
         description=grp.description,
+        group_id=str(grp.pk),
         is_autogroup=grp.is_autogroup,
         members=[member.character_name for member in grp.members],
         name=grp.name,
@@ -69,25 +79,25 @@ def group_record_to_response(grp: group.Group) -> GetGroupOut:
 
 
 @router.delete(
-    '/{group_name}',
+    '/{group_id}',
     summary='Delete a group',
 )
 def delete_group(
-        group_name: str,
+        group_id: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
     Deletes a group. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_group')
-    grp: group.Group = group.Group.objects.get(name=group_name)
-    logging.debug('Deleting group %s', group_name)
+    grp: group.Group = group.Group.objects.get(pk=group_id)
+    logging.debug('Deleting group %s (%s)', grp.name, group_id)
     grp.delete()
 
 
 @router.get(
     '',
-    response_model=List[str],
+    response_model=List[GetGroupShortOut],
     summary='List all group names',
 )
 def get_group(
@@ -96,16 +106,19 @@ def get_group(
     Lists all the group names. Requires a clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
-    return [grp.name for grp in group.Group.objects()]
+    return [
+        GetGroupShortOut(group_id=str(grp.pk), name=grp.name)
+        for grp in group.Group.objects()
+    ]
 
 
 @router.get(
-    '/{group_name}',
+    '/{group_id}',
     response_model=GetGroupOut,
     summary='Get basic informations about a group',
 )
 def get_group_name(
-        group_name: str,
+        group_id: str,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
     """
@@ -113,7 +126,7 @@ def get_group_name(
     more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
-    return group_record_to_response(group.Group.objects(name=group_name).get())
+    return group_record_to_response(group.Group.objects(pk=group_id).get())
 
 
 @router.post(
@@ -136,18 +149,18 @@ def post_groups(
         name=data.name,
         owner=tkn.owner,
     ).save()
-    logging.debug('Created group %s owned by %s', data.name,
+    logging.debug('Created group %s (%s) owned by %s', data.name, str(grp.pk),
                   tkn.owner.character_name)
     return group_record_to_response(grp)
 
 
 @router.put(
-    '/{group_name}',
+    '/{group_id}',
     response_model=GetGroupOut,
     summary='Update a group',
 )
 def put_group(
-        group_name: str,
+        group_id: str,
         data: PutGroupIn,
         tkn: token.Token = Depends(token.from_authotization_header_nondyn),
 ):
@@ -158,11 +171,11 @@ def put_group(
     `remove_members`. Requires a clearance level of 9 or more of for the user
     to be the owner of the group.
     """
-    grp: group.Group = group.Group.objects.get(name=group_name)
+    grp: group.Group = group.Group.objects.get(pk=group_id)
     if not (tkn.owner == grp.owner
             or clearance.has_clearance(tkn.owner, 'sni.update_group')):
         raise PermissionError
-    logging.debug('Updating group %s', group_name)
+    logging.debug('Updating group %s (%s)', grp.name, group_id)
     if data.add_members is not None:
         grp.members += [
             user.User.objects.get(character_name=member_name)
