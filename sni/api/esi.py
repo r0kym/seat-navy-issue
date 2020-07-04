@@ -12,6 +12,7 @@ from fastapi import (
 import pydantic
 import requests
 
+import sni.utils as utils
 import sni.esi.esi as esi
 import sni.esi.sso as sso
 import sni.esi.token as esitoken
@@ -74,17 +75,18 @@ async def get_callback_esi(code: str, state: str):
     user_jwt_str = snitoken.to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
-    try:
-        requests.post(
-            state_code.app_token.callback,
-            data=PostCallbackEsiOut(
+    utils.catch_all(
+        requests.post,
+        f'Failed to notify application {state_code.app_token.uuid}',
+        args=[state_code.app_token.callback],
+        kwargs={
+            'data':
+            PostCallbackEsiOut(
                 state_code=str(state_code.uuid),
                 user_token=user_jwt_str,
-            ),
-        )
-    except Exception as error:
-        logging.error('Failed to notify app %s: %s', state_code.app_token.uuid,
-                      str(error))
+            )
+        },
+    )
     state_code.delete()
 
 

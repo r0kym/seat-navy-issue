@@ -9,6 +9,7 @@ import ts3.query
 
 from sni.scheduler import scheduler
 import sni.conf as conf
+import sni.utils as utils
 import sni.teamspeak.teamspeak as ts
 import sni.user.group as group
 import sni.user.user as user
@@ -38,14 +39,14 @@ def message_registered_clients_with_wrong_name():
                 + f'"{tickered_name}" (without the quotes). Thank you :)' \
                 + ' -- SeAT Navy Issue Teamspeak Bot; This is an automated' \
                 + ' message, please do not respond.'
-            try:
-                connection.sendtextmessage(
-                    targetmode=1,
-                    target=ts_client.clid,
-                    msg=message,
-                )
-            except Exception:
-                pass
+            utils.catch_all(
+                connection.sendtextmessage,
+                f'Failed to notify teamspeak user {ts_client.client_nickname}',
+                kwargs={
+                    'targetmode': 1,
+                    'target': ts_client.clid,
+                    'msg': message,
+                })
 
 
 @scheduler.scheduled_job('interval', minutes=10)
