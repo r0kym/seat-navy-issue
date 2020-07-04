@@ -8,7 +8,7 @@ from typing import Optional
 import mongoengine
 
 import sni.esi.sso as sso
-import sni.time as time
+import sni.utils as utils
 import sni.user.user as user
 
 
@@ -18,7 +18,7 @@ class EsiAccessToken(mongoengine.Document):
     relevant metadatas.
     """
     access_token = mongoengine.StringField(required=True)
-    created_on = mongoengine.DateTimeField(required=True, default=time.now)
+    created_on = mongoengine.DateTimeField(required=True, default=utils.now)
     expires_on = mongoengine.DateTimeField(required=True)
     owner = mongoengine.ReferenceField(
         user.User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
@@ -40,8 +40,8 @@ class EsiRefreshToken(mongoengine.Document):
     A model representing an ESI access token, along with its refresh token and
     relevant metadatas.
     """
-    created_on = mongoengine.DateTimeField(required=True, default=time.now)
-    updated_on = mongoengine.DateTimeField(required=True, default=time.now)
+    created_on = mongoengine.DateTimeField(required=True, default=utils.now)
+    updated_on = mongoengine.DateTimeField(required=True, default=utils.now)
     owner = mongoengine.ReferenceField(
         user.User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
     refresh_token = mongoengine.StringField(required=True)
@@ -62,7 +62,7 @@ def get_access_token(character_id: int,
     esi_access_token: EsiAccessToken = EsiAccessToken.objects(
         owner=owner,
         scopes=scope,
-        expires_on__gt=time.now(),
+        expires_on__gt=utils.now(),
     ).first()
     if not esi_access_token:
         esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
@@ -106,7 +106,7 @@ def save_esi_tokens(
         ).save()
     return EsiAccessToken(
         access_token=esi_response.access_token,
-        expires_on=time.from_timestamp(decoded_access_token.exp),
+        expires_on=utils.from_timestamp(decoded_access_token.exp),
         owner=owner,
         scopes=decoded_access_token.scp,
     ).save()

@@ -13,7 +13,7 @@ import jwt.exceptions
 import mongoengine as me
 
 import sni.conf as conf
-import sni.time as time
+import sni.utils as utils
 import sni.user.user as user
 
 
@@ -31,7 +31,7 @@ class Token(me.Document):
 
     callback = me.URLField(default=None, null=True)
     comments = me.StringField(default=str)
-    created_on = me.DateTimeField(default=time.now, required=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
     expires_on = me.DateTimeField(default=None, null=True)
     owner = me.ReferenceField(user.User,
                               required=True,
@@ -61,7 +61,7 @@ class StateCode(me.Document):
     end user logs in to EVE SSO.
     """
     app_token = me.ReferenceField(Token, required=True)
-    created_on = me.DateTimeField(default=time.now, required=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
     uuid = me.UUIDField(binary=False, unique=True)
     meta = {
         'indexes': [
@@ -88,7 +88,7 @@ def create_dynamic_app_token(
     new_token = Token(
         callback=callback,
         comments=comments,
-        created_on=time.now(),
+        created_on=utils.now(),
         owner=owner,
         parent=parent,
         token_type=Token.TokenType.dyn,
@@ -114,7 +114,7 @@ def create_permanent_app_token(
     new_token = Token(
         callback=callback,
         comments=comments,
-        created_on=time.now(),
+        created_on=utils.now(),
         owner=owner,
         parent=parent,
         token_type=Token.TokenType.per,
@@ -134,7 +134,7 @@ def create_state_code(app_token: Token) -> StateCode:
     """
     state_code = StateCode(
         app_token=app_token,
-        created_on=time.now(),
+        created_on=utils.now(),
         uuid=str(uuid4()),
     )
     state_code.save()
@@ -150,8 +150,8 @@ def create_user_token(app_token: Token, owner: user.User) -> Token:
     """
     if app_token.token_type == Token.TokenType.dyn:
         new_token = Token(
-            created_on=time.now(),
-            expires_on=time.now_plus(days=1),
+            created_on=utils.now(),
+            expires_on=utils.now_plus(days=1),
             owner=owner,
             parent=app_token,
             token_type='use',
@@ -159,7 +159,7 @@ def create_user_token(app_token: Token, owner: user.User) -> Token:
         )
     elif app_token.token_type == Token.TokenType.per:
         new_token = Token(
-            created_on=time.now(),
+            created_on=utils.now(),
             owner=owner,
             parent=app_token,
             token_type='use',

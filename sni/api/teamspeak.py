@@ -14,7 +14,7 @@ import mongoengine as me
 import pydantic as pdt
 
 import sni.teamspeak.teamspeak as teamspeak
-import sni.time as time
+import sni.utils as utils
 import sni.uac.clearance as clearance
 import sni.uac.token as token
 
@@ -54,7 +54,7 @@ def port_auth_start(tkn: token.Token = Depends(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
     return PostAuthStartOut(
-        expiration_datetime=time.now_plus(seconds=60),
+        expiration_datetime=utils.now_plus(seconds=60),
         challenge_nickname=teamspeak.new_authentication_challenge(tkn.owner),
         user=tkn.owner.character_name,
     )

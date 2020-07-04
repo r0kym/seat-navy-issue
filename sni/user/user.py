@@ -7,7 +7,7 @@ from typing import Iterator, List
 import mongoengine as me
 
 import sni.esi.esi as esi
-import sni.time as time
+import sni.utils as utils
 
 
 class Alliance(me.Document):
@@ -18,7 +18,7 @@ class Alliance(me.Document):
     executor_corporation_id = me.IntField(required=True)
     alliance_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
-    updated_on = me.DateTimeField(default=time.now, required=True)
+    updated_on = me.DateTimeField(default=utils.now, required=True)
 
     def coalitions(self) -> List['Coalition']:
         """
@@ -60,11 +60,11 @@ class Coalition(me.Document):
     EVE coalition. Coalitions are not formally represented in EVE, so they have
     to be created manually. An alliance can be part of multiple coalitions.
     """
-    created_on = me.DateTimeField(default=time.now, required=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     name = me.StringField(required=True, unique=True)
     ticker = me.StringField(default=str)
-    updated_on = me.DateTimeField(default=time.now, required=True)
+    updated_on = me.DateTimeField(default=utils.now, required=True)
 
     def users(self) -> List['User']:
         """
@@ -93,7 +93,7 @@ class Corporation(me.Document):
     corporation_id = me.IntField(unique=True)
     corporation_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
-    updated_on = me.DateTimeField(default=time.now, required=True)
+    updated_on = me.DateTimeField(default=utils.now, required=True)
 
     @property
     def ceo(self) -> 'User':
@@ -128,9 +128,9 @@ class User(me.Document):
     character_name = me.StringField(required=True)
     clearance_level = me.IntField(default=0, required=True)
     corporation = me.ReferenceField(Corporation, default=None, null=True)
-    created_on = me.DateTimeField(default=time.now, required=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
     teamspeak_cldbid = me.IntField()
-    updated_on = me.DateTimeField(default=time.now, required=True)
+    updated_on = me.DateTimeField(default=utils.now, required=True)
 
     def is_ceo_of_alliance(self) -> bool:
         """

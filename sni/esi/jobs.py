@@ -9,7 +9,7 @@ from sni.scheduler import scheduler
 import sni.esi.esi as esi
 import sni.esi.sso as sso
 import sni.esi.token as esitoken
-import sni.time as time
+import sni.utils as utils
 import sni.uac.clearance as clearance
 import sni.user.group as group
 import sni.user.user as user
@@ -46,7 +46,7 @@ def update_alliances():
 
 @scheduler.scheduled_job('interval',
                          minutes=60,
-                         start_date=time.now_plus(minutes=10))
+                         start_date=utils.now_plus(minutes=10))
 def update_alliance_autogroups():
     """
     Resets all the alliance autogroup. Instead of querying the ESI, it queries
@@ -89,7 +89,7 @@ def update_corporations():
 
 @scheduler.scheduled_job('interval',
                          minutes=60,
-                         start_date=time.now_plus(minutes=10))
+                         start_date=utils.now_plus(minutes=10))
 def update_coalition_autogroups():
     """
     Resets the coalition autogroups. Instead of querying the ESI, it queries
@@ -105,7 +105,7 @@ def update_coalition_autogroups():
 
 @scheduler.scheduled_job('interval',
                          minutes=60,
-                         start_date=time.now_plus(minutes=10))
+                         start_date=utils.now_plus(minutes=10))
 def update_corporation_autogroups():
     """
     Resets the corporations autogroup. Instead of querying the ESI, it queries
@@ -130,7 +130,7 @@ def update_users():
         data = esi.get(f'latest/characters/{usr.character_id}').json()
         old_corporation = usr.corporation
         usr.corporation = user.ensure_corporation(data['corporation_id'])
-        usr.updated_on = time.now()
+        usr.updated_on = utils.now()
         if usr.corporation != old_corporation:
             logging.debug('Corporation of user %s changed', usr.character_name)
             clearance.reset_clearance(usr)

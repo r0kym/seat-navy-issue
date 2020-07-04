@@ -1,6 +1,7 @@
 """
-Datetime utilities
+Various utilities
 """
+
 from datetime import datetime, timedelta
 
 from pytz import utc

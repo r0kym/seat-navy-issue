@@ -9,7 +9,7 @@ import mongoengine as me
 import mongoengine.signals as me_signals
 
 import sni.scheduler as scheduler
-import sni.time as time
+import sni.utils as utils
 import sni.user.user as user
 
 
@@ -17,7 +17,7 @@ class Group(me.Document):
     """
     Group model. A group is simply a collection of users.
     """
-    created_on = me.DateTimeField(default=time.now, required=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
     description = me.StringField(default=str)
     is_autogroup = me.BooleanField(default=False, required=True)
     map_to_teamspeak = me.BooleanField(default=True, required=True)
@@ -25,7 +25,7 @@ class Group(me.Document):
     name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField(user.User, required=True)
     teamspeak_sgid = me.IntField()
-    updated_on = me.DateTimeField(default=time.now, required=True)
+    updated_on = me.DateTimeField(default=utils.now, required=True)
 
 
 def ensure_autogroup(name: str) -> Group:

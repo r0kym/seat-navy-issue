@@ -14,7 +14,7 @@ from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import sni.conf as conf
-import sni.time as time
+import sni.utils as utils
 
 scheduler = BackgroundScheduler(
     executors={
@@ -32,7 +32,7 @@ scheduler = BackgroundScheduler(
     jobstores={
         'default': MemoryJobStore(),
     },
-    timezone=time.utc,
+    timezone=utils.utc,
 )
 
 

@@ -12,7 +12,7 @@ import mongoengine as me
 import mongoengine.signals as me_signals
 
 import sni.conf as conf
-import sni.time as time
+import sni.utils as utils
 import sni.user.group as group
 import sni.uac.token as token
 import sni.user.user as user
@@ -64,7 +64,7 @@ def migrate_ensure_root() -> None:
             character_id=0,
             character_name='root',
             clearance_level=10,
-            created_on=time.now(),
+            created_on=utils.now(),
         ).save()
         logging.info('Created root user')
 
@@ -124,7 +124,7 @@ def on_pre_save(_sender: Any, document: me.Document):
     If the document has a `updated_on`, sets it to the current datetime.
     """
     if 'updated_on' in document:
-        document.updated_on = time.now()
+        document.updated_on = utils.now()
 
 
 init()

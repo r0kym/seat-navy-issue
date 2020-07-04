@@ -15,7 +15,7 @@ import pydantic
 from ts3.query import TS3Connection, TS3QueryError
 
 import sni.conf as conf
-import sni.time as time
+import sni.utils as utils
 import sni.user.user as user
 import sni.user.group as group
 
@@ -28,7 +28,7 @@ class TeamspeakAuthenticationChallenge(me.Document):
     See also:
         :meth:`sni.teamspeak.new_authentication_challenge`
     """
-    created_on = me.DateTimeField(default=time.now, required=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
     user = me.ReferenceField(user.User, required=True, unique=True)
     challenge_nickname = me.StringField(required=True, unique=True)
     meta = {
