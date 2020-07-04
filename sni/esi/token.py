@@ -2,6 +2,7 @@
 EVE token (access and refresh) management
 """
 
+import logging
 from typing import Optional
 
 import mongoengine
@@ -64,10 +65,15 @@ def get_access_token(character_id: int,
         expires_on__gt=time.now(),
     ).first()
     if not esi_access_token:
-        esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects.get(
+        esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
             owner=owner,
             scopes=scope,
-        )
+        ).first()
+        if not esi_refresh_token:
+            logging.error(
+                'Could not find refresh token for user %s with scope %s',
+                owner.character_name, scope)
+            raise LookupError
         esi_access_token = save_esi_tokens(
             sso.refresh_access_token(esi_refresh_token.refresh_token))
     return esi_access_token

@@ -74,8 +74,10 @@ def request(http_method: str,
         'accept': 'application/json',
         'User-Agent': 'SeAT Navy Issue @ ' \
             + conf.get('general.root_url'),
-        **kwargs.get('headers', dict)
+        ** kwargs.get('headers', {})
     }
+    if 'headers' not in kwargs:
+        kwargs['headers'] = {}
     if token:
         kwargs['headers']['Authorization'] = 'Bearer ' + token
     response = requests.request(http_method, ESI_BASE + path, **kwargs)

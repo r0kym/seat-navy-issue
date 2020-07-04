@@ -44,8 +44,9 @@ def update_coropration_members(corporation: user.Corporation):
     """
     logging.debug('Ensuring members of corporation %s',
                   corporation.corporation_name)
+    scope = 'esi-corporations.read_corporation_membership.v1'
     # pylint: disable=protected-access
-    query = token.EsiAccessToken.objects.aggregate([
+    query = token.EsiRefreshToken.objects.aggregate([
         {
             '$lookup': {
                 'as': 'owner_data',
@@ -57,19 +58,22 @@ def update_coropration_members(corporation: user.Corporation):
         {
             '$match': {
                 'owner_data.corporation': corporation.pk,
-                'scopes': 'esi-corporations.read_corporation_membership.v1',
+                'scopes': scope,
             },
         },
         {
             '$project': {
-                'access_token': 1,
+                'owner_data.character_id': 1,
             },
         },
     ])
-    esi_token = query.next()['access_token']
+    esi_access_token = token.get_access_token(
+        query.next()['owner_data'][0]['character_id'],
+        scope,
+    )
     response = esi.get(
         f'latest/corporations/{corporation.corporation_id}/members/',
-        esi_token,
+        esi_access_token.access_token,
     )
     for character_id in response.json():
         user.ensure_user(character_id)
