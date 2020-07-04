@@ -78,6 +78,7 @@ def main():
     scheduler.start()
 
     import sni.esi.jobs
+    import sni.user.jobs
 
     if conf.get('teamspeak.enabled'):
         import sni.teamspeak.jobs
