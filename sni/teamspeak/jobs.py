@@ -56,8 +56,8 @@ def map_teamspeak_groups():
     """
     connection = ts.new_connection()
     for grp in group.Group.objects(map_to_teamspeak=True):
-        logging.debug('Mapping group %s to Teamspeak', grp.name)
-        tsgrp = ts.ensure_group(connection, grp.name)
+        logging.debug('Mapping group %s to Teamspeak', grp.group_name)
+        tsgrp = ts.ensure_group(connection, grp.group_name)
         grp.teamspeak_sgid = tsgrp.sgid
         grp.save()
 
@@ -70,7 +70,7 @@ def update_teamspeak_groups():
     connection = ts.new_connection()
     for grp in group.Group.objects(map_to_teamspeak=True,
                                    teamspeak_sgid__exists=True):
-        logging.debug('Updating Teamspeak group %s', grp.name)
+        logging.debug('Updating Teamspeak group %s', grp.group_name)
         current_cldbids: List[int] = [
             int(raw['cldbid']) for raw in connection.servergroupclientlist(
                 sgid=grp.teamspeak_sgid).parsed
@@ -90,7 +90,7 @@ def update_teamspeak_groups():
             except ts3.query.TS3QueryError as error:
                 logging.error(
                     'Could not remove client %d from Teamspeak group %s: %s',
-                    cldbid, grp.name, str(error))
+                    cldbid, grp.group_name, str(error))
         for cldbid in allowed_cldbids:
             if cldbid in current_cldbids:
                 continue
@@ -102,4 +102,4 @@ def update_teamspeak_groups():
             except ts3.query.TS3QueryError as error:
                 logging.error(
                     'Could not add client %d to Teamspeak group %s: %s',
-                    cldbid, grp.name, str(error))
+                    cldbid, grp.group_name, str(error))

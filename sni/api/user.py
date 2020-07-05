@@ -67,7 +67,8 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
         if alliance is not None:
             alliance_name = alliance.alliance_name
             coalition_names = [
-                coalition.name for coalition in alliance.coalitions()
+                coalition.coalition_name
+                for coalition in alliance.coalitions()
             ]
     return GetUserOut(
         alliance=alliance_name,

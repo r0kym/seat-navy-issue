@@ -36,9 +36,9 @@ class GetGroupOut(pdt.BaseModel):
     created_on: datetime
     description: str
     group_id: str
+    group_name: str
     is_autogroup: bool
     members: List[str]
-    group_name: str
     owner: str
     updated_on: datetime
 
@@ -70,9 +70,9 @@ def group_record_to_response(grp: group.Group) -> GetGroupOut:
         created_on=grp.created_on,
         description=grp.description,
         group_id=str(grp.pk),
+        group_name=grp.group_name,
         is_autogroup=grp.is_autogroup,
         members=[member.character_name for member in grp.members],
-        group_name=grp.name,
         owner=grp.owner.character_name,
         updated_on=grp.updated_on,
     )
@@ -91,7 +91,7 @@ def delete_group(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_group')
     grp: group.Group = group.Group.objects.get(pk=group_id)
-    logging.debug('Deleting group %s (%s)', grp.name, group_id)
+    logging.debug('Deleting group %s (%s)', grp.group_name, group_id)
     grp.delete()
 
 
@@ -107,7 +107,7 @@ def get_group(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return [
-        GetGroupShortOut(group_id=str(grp.pk), group_name=grp.name)
+        GetGroupShortOut(group_id=str(grp.pk), group_name=grp.group_name)
         for grp in group.Group.objects()
     ]
 
@@ -175,7 +175,7 @@ def put_group(
     if not (tkn.owner == grp.owner
             or clearance.has_clearance(tkn.owner, 'sni.update_group')):
         raise PermissionError
-    logging.debug('Updating group %s (%s)', grp.name, group_id)
+    logging.debug('Updating group %s (%s)', grp.group_name, group_id)
     if data.add_members is not None:
         grp.members += [
             user.User.objects.get(character_name=member_name)

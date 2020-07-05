@@ -100,8 +100,9 @@ def update_coalition_autogroups():
     and alliance records are up-to-date.
     """
     for coalition in user.Coalition.objects():
-        logging.debug('Updating autogroup of coalition %s', coalition.name)
-        grp = group.ensure_autogroup(coalition.name)
+        logging.debug('Updating autogroup of coalition %s',
+                      coalition.coalition_name)
+        grp = group.ensure_autogroup(coalition.coalition_name)
         grp.members = list(coalition.user_iterator())
         grp.save()
 

@@ -9,6 +9,9 @@ import mongoengine as me
 import sni.esi.esi as esi
 import sni.utils as utils
 
+COALITION_SCHEMA_VERSION = 2
+USER_SCHEMA_VERSION = 1
+
 
 class Alliance(me.Document):
     """
@@ -60,10 +63,10 @@ class Coalition(me.Document):
     EVE coalition. Coalitions are not formally represented in EVE, so they have
     to be created manually. An alliance can be part of multiple coalitions.
     """
-    _version = me.IntField(default=1)
+    _version = me.IntField(default=COALITION_SCHEMA_VERSION)
     created_on = me.DateTimeField(default=utils.now, required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
-    name = me.StringField(required=True, unique=True)
+    coalition_name = me.StringField(required=True, unique=True)
     ticker = me.StringField(default=str)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 
@@ -125,7 +128,7 @@ class User(me.Document):
 
     A user corresponds to a single EVE character.
     """
-    _version = me.IntField(default=1)
+    _version = me.IntField(default=USER_SCHEMA_VERSION)
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
     clearance_level = me.IntField(default=0, required=True)
