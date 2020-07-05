@@ -110,9 +110,9 @@ components:
       - created_on
       - description
       - group_id
+      - group_name
       - is_autogroup
       - members
-      - group_name
       - owner
       - updated_on
       title: GetGroupOut

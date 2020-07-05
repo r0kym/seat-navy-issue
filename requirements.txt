@@ -1,6 +1,7 @@
 apscheduler
 blinker
 dateutils
+discord.py
 fastapi
 mongoengine
 passlib[bcrypt]

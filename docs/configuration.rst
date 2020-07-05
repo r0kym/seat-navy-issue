@@ -16,6 +16,9 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``password``
     * ``port`` (default: ``27017``)
     * ``username`` (default: ``sni``)
+* ``discord``
+    * ``enabled`` (default: ``false``)
+    * ``token``
 * ``esi``: Create an application at the `EVE Developer Portal <https://developers.eveonline.com/>`_
     * ``client_id``
     * ``client_secret``
