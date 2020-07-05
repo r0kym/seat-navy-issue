@@ -13,6 +13,7 @@ CONFIGURATION: Dict[str, Any] = {
     'database.port': 27017,
     'database.username': 'sni',
     'discord.enabled': False,
+    'discord.log_channel_id': None,
     'general.debug': False,
     'general.host': '0.0.0.0',
     'general.port': 80,

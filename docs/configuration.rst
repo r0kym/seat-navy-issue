@@ -18,6 +18,8 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``username`` (default: ``sni``)
 * ``discord``
     * ``enabled`` (default: ``false``)
+    * ``log_channel_id`` (default: ``null``): Channel id where the Discorb bot
+    can send log messages
     * ``token``
 * ``esi``: Create an application at the `EVE Developer Portal <https://developers.eveonline.com/>`_
     * ``client_id``

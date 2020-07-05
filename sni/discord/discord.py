@@ -35,6 +35,18 @@ scheduler = AsyncIOScheduler(
 )
 
 
+async def log(message: str):
+    """
+    Sends a message on the logging channel. If configuration key
+    ``discord.log_channel_id`` is ``None``, does't do anything.
+    """
+    log_channel_id = conf.get('discord.log_channel_id')
+    if log_channel_id is None:
+        return
+    log_channel = client.get_channel(log_channel_id)
+    await log_channel.send(message)
+
+
 @client.event
 async def on_disconnect():
     """
@@ -56,6 +68,7 @@ async def on_ready():
         activity=discord.Game('EVE Online'),
     )
     logging.info('Discord client online')
+    await log('SeAT Navy Issue Discord\'s bot online')
     scheduler.start()
 
 
