@@ -55,7 +55,8 @@ def main():
     # Post database migration, pre scheduler init
     # --------------------------------------------------------------------------
 
-    mongodb.migrate()
+    import sni.db.migration
+    sni.db.migration.migrate()
 
     if arguments.migrate_database:
         sys.exit()
