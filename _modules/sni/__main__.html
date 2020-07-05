@@ -94,7 +94,8 @@
     <span class="c1"># Post database migration, pre scheduler init</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="n">mongodb</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+    <span class="kn">import</span> <span class="nn">sni.db.migration</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
@@ -117,9 +118,13 @@
     <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
+    <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
 
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.jobs</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server start</span>

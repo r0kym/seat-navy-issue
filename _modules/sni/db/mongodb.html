@@ -45,16 +45,16 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote_plus</span>
 
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
 <span class="kn">import</span> <span class="nn">mongoengine.signals</span> <span class="k">as</span> <span class="nn">me_signals</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="kn">import</span> <span class="nn">pymongo.collection</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">sni.user.group</span> <span class="k">as</span> <span class="nn">group</span>
-<span class="kn">import</span> <span class="nn">sni.uac.token</span> <span class="k">as</span> <span class="nn">token</span>
-<span class="kn">import</span> <span class="nn">sni.user.user</span> <span class="k">as</span> <span class="nn">user</span>
 
 
 <div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
@@ -77,85 +77,34 @@
     <span class="n">me_signals</span><span class="o">.</span><span class="n">pre_save</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_pre_save</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="migrate"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.migrate">[docs]</a><span class="k">def</span> <span class="nf">migrate</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="get_pymongo_collection"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.get_pymongo_collection">[docs]</a><span class="k">def</span> <span class="nf">get_pymongo_collection</span><span class="p">(</span>
+    <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Collection</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Runs various migration jobs on the database.</span>
-
-<span class="sd">    Should be called immediately after initializing the connection.</span>
+<span class="sd">    Returns a pymongo collection handler.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">migration_tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">migrate_ensure_root</span><span class="p">,</span>
-        <span class="n">migrate_ensure_root_per_token</span><span class="p">,</span>
-        <span class="n">migrate_ensure_root_dyn_token</span><span class="p">,</span>
-        <span class="n">migrate_ensure_superuser_group</span><span class="p">,</span>
-    <span class="p">]</span>
-    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">migration_tasks</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running database migration task </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="n">task</span><span class="p">()</span></div>
+    <span class="k">if</span> <span class="n">client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">new_pymongo_client</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">client</span><span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">)][</span><span class="n">collection_name</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="migrate_ensure_root"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.migrate_ensure_root">[docs]</a><span class="k">def</span> <span class="nf">migrate_ensure_root</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="new_pymongo_client"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.new_pymongo_client">[docs]</a><span class="k">def</span> <span class="nf">new_pymongo_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create root user if it does not exist.</span>
+<span class="sd">    Connects to the MongoDB database using pymongo and returns a client object.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        `pymongo.mongo_client.MongoClient documentation</span>
+<span class="sd">        &lt;https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">(</span>
-            <span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">character_name</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
-            <span class="n">clearance_level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-            <span class="n">created_on</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created root user&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="migrate_ensure_root_per_token"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.migrate_ensure_root_per_token">[docs]</a><span class="k">def</span> <span class="nf">migrate_ensure_root_per_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a permanent app token owned by root, if none exist.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-                           <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="n">root_per_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_permanent_app_token</span><span class="p">(</span><span class="n">root</span><span class="p">,</span>
-                                                      <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;Primary token&#39;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No permanent app token owned by root, created one: </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">root_per_token</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="migrate_ensure_root_dyn_token"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.migrate_ensure_root_dyn_token">[docs]</a><span class="k">def</span> <span class="nf">migrate_ensure_root_dyn_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a dynamic app token owned by root, if none exist.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-                           <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="n">root_dyn_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_dynamic_app_token</span><span class="p">(</span><span class="n">root</span><span class="p">,</span>
-                                                    <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;Primary token&#39;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No dynamic app token owned by root, created one: </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">root_dyn_token</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="migrate_ensure_superuser_group"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.migrate_ensure_superuser_group">[docs]</a><span class="k">def</span> <span class="nf">migrate_ensure_superuser_group</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create the ``superusers`` group and makes sure that root is the owner.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;superusers&#39;</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">superusers</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">Group</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">group_name</span><span class="p">)</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">root</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="k">except</span> <span class="n">me</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
-        <span class="n">group</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Superuser group.&quot;</span><span class="p">,</span>
-            <span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">root</span><span class="p">],</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">group_name</span><span class="p">,</span>
-            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created &quot;</span><span class="si">%s</span><span class="s1">&quot; group&#39;</span><span class="p">,</span> <span class="n">group_name</span><span class="p">)</span></div>
+    <span class="n">authentication_database</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">)</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">))</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">))</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mongodb://</span><span class="si">{username}</span><span class="s1">:</span><span class="si">{password}</span><span class="s1">@</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">/&#39;</span> <span class="o">+</span> \
+        <span class="sa">f</span><span class="s1">&#39;?authSource=</span><span class="si">{authentication_database}</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="on_pre_save"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.on_pre_save">[docs]</a><span class="k">def</span> <span class="nf">on_pre_save</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>

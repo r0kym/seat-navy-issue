@@ -53,6 +53,12 @@
 </dd>
 </dl>
 <dl class="function">
+<dt id="sni.db.mongodb.get_pymongo_collection">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">get_pymongo_collection</code><span class="sig-paren">(</span><em class="sig-param">collection_name: str</em>, <em class="sig-param">client: Optional[pymongo.mongo_client.MongoClient] = None</em><span class="sig-paren">)</span> &#x2192; pymongo.collection.Collection<a class="reference internal" href="_modules/sni/db/mongodb.html#get_pymongo_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.get_pymongo_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pymongo collection handler.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.db.mongodb.init">
 <code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/mongodb.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects to the MongoDB instance.</p>
@@ -61,34 +67,13 @@ connection. It’s magic.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.db.mongodb.migrate">
-<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs various migration jobs on the database.</p>
-<p>Should be called immediately after initializing the connection.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.db.mongodb.migrate_ensure_root">
-<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create root user if it does not exist.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.db.mongodb.migrate_ensure_root_dyn_token">
-<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_root_dyn_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_root_dyn_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_root_dyn_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a dynamic app token owned by root, if none exist.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.db.mongodb.migrate_ensure_root_per_token">
-<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_root_per_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_root_per_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_root_per_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a permanent app token owned by root, if none exist.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.db.mongodb.migrate_ensure_superuser_group">
-<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">migrate_ensure_superuser_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/mongodb.html#migrate_ensure_superuser_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.migrate_ensure_superuser_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the <code class="docutils literal notranslate"><span class="pre">superusers</span></code> group and makes sure that root is the owner.</p>
+<dt id="sni.db.mongodb.new_pymongo_client">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">new_pymongo_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pymongo.mongo_client.MongoClient<a class="reference internal" href="_modules/sni/db/mongodb.html#new_pymongo_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.new_pymongo_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to the MongoDB database using pymongo and returns a client object.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient">pymongo.mongo_client.MongoClient documentation</a></p>
+</div>
 </dd></dl>
 
 <dl class="function">
