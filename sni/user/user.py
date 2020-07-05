@@ -60,6 +60,7 @@ class Coalition(me.Document):
     EVE coalition. Coalitions are not formally represented in EVE, so they have
     to be created manually. An alliance can be part of multiple coalitions.
     """
+    _version = me.IntField(default=1)
     created_on = me.DateTimeField(default=utils.now, required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     name = me.StringField(required=True, unique=True)
@@ -124,6 +125,7 @@ class User(me.Document):
 
     A user corresponds to a single EVE character.
     """
+    _version = me.IntField(default=1)
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
     clearance_level = me.IntField(default=0, required=True)

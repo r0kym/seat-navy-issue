@@ -10,6 +10,15 @@ import sni.user.user as user
 import sni.user.group as group
 
 
+def coalition_v0_to_v1():
+    """
+    Migrate the coalition collection from v0 to v1.
+
+    Simply adds the ``_version`` field and sets it to ``1``.
+    """
+    user.Coalition.objects(_version__exists=False).update(set___version=1)
+
+
 def ensure_root() -> None:
     """
     Create root user if it does not exist.
@@ -44,3 +53,20 @@ def ensure_superuser_group() -> None:
             owner=root,
         ).save()
         logging.info('Created "%s" group', group_name)
+
+def group_v0_to_v1():
+    """
+    Migrate the group collection from v0 to v1.
+
+    Simply adds the ``_version`` field and sets it to ``1``.
+    """
+    group.Group.objects(_version__exists=False).update(set___version=1)
+
+
+def user_v0_to_v1():
+    """
+    Migrate the user collection from v0 to v1.
+
+    Simply adds the ``_version`` field and sets it to ``1``.
+    """
+    user.User.objects(_version__exists=False).update(set___version=1)

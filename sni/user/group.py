@@ -17,6 +17,7 @@ class Group(me.Document):
     """
     Group model. A group is simply a collection of users.
     """
+    _version = me.IntField(default=1)
     created_on = me.DateTimeField(default=utils.now, required=True)
     description = me.StringField(default=str)
     is_autogroup = me.BooleanField(default=False, required=True)
