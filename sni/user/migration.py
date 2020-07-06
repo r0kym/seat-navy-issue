@@ -27,7 +27,8 @@ def ensure_root() -> None:
 
 def ensure_superuser_group() -> None:
     """
-    Create the ``superusers`` group and makes sure that root is the owner.
+    Ensure that the ``superusers`` group exists and makes sure that root is the
+    owner.
     """
     group_name = 'superusers'
     root = user.User.objects.get(character_id=0)
@@ -36,14 +37,21 @@ def ensure_superuser_group() -> None:
             group_name=group_name)
         superusers.owner = root
         superusers.modify(add_to_set__members=root)
+        superusers.discord_role_id = None
+        superusers.map_to_discord = None
+        superusers.map_to_teamspeak = False
+        superusers.teamspeak_sgid = False
         superusers.save()
     except me.DoesNotExist:
         group.Group(
             description="Superuser group.",
+            discord_role_id=None,
+            group_name=group_name,
+            map_to_discord=None,
             map_to_teamspeak=False,
             members=[root],
-            group_name=group_name,
             owner=root,
+            teamspeak_sgid=False,
         ).save()
         logging.info('Created "%s" group', group_name)
 
@@ -142,6 +150,86 @@ def migrate_group():
                 '_version': 2
             },
         },
+    )
+
+    # v2 to v3
+    # Ensures that
+    # * discord_role_id exists (if not, sets it to None)
+    # * teamspeak_sgid exists (if not, sets it to None)
+    # * map_to_discord exists (if not, sets it to True)
+    # * map_to_teamspeak exists (if not, sets it to True)
+    group_collection.update_one(
+        {
+            '_version': 2,
+            'group_name': 'superusers',
+        },
+        {
+            '$set': {
+                '_version': 3,
+                'discord_role_id': None,
+                'map_to_discord': False,
+                'map_to_teamspeak': False,
+                'teamspeak_sgid': None,
+            },
+        },
+    )
+    group_collection.update_many(
+        {
+            '_version': 2,
+            'discord_role_id': {
+                '$exists': False
+            },
+        },
+        {
+            '$set': {
+                'discord_role_id': None
+            },
+        },
+    )
+    group_collection.update_many(
+        {
+            '_version': 2,
+            'teamspeak_sgid': {
+                '$exists': False
+            },
+        },
+        {
+            '$set': {
+                'teamspeak_sgid': None
+            },
+        },
+    )
+    group_collection.update_many(
+        {
+            '_version': 2,
+            'map_to_discord': {
+                '$exists': False
+            },
+        },
+        {
+            '$set': {
+                'map_to_discord': True
+            },
+        },
+    )
+    group_collection.update_many(
+        {
+            '_version': 2,
+            'map_to_teamspeak': {
+                '$exists': False
+            },
+        },
+        {
+            '$set': {
+                'map_to_teamspeak': True
+            },
+        },
+    )
+    group_collection.update_many(
+        {'_version': 2},
+        {'$set': {
+            '_version': 3
+        }},
     )
 
     # Finally
