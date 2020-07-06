@@ -168,11 +168,14 @@ def new_authentication_challenge(usr: user.User) -> str:
     """
     logging.info('Starting authentication challenge for %s',
                  usr.character_name)
-    challenge = TeamspeakAuthenticationChallenge(
-        user=usr,
-        challenge_nickname=utils.random_code(20),
-    ).save()
-    return str(challenge.challenge_nickname)
+    challenge_nickname = utils.random_code(20)
+    TeamspeakAuthenticationChallenge.objects(user=usr).update(
+        set__challenge_nickname=challenge_nickname,
+        set__created_on=utils.now(),
+        set__user=usr,
+        upsert=True,
+    )
+    return challenge_nickname
 
 
 def new_connection() -> TS3Connection:
