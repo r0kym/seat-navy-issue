@@ -68,6 +68,13 @@
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/coalition&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Coalition management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
+<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">sni.api.discord</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/discord&#39;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Discord&#39;</span><span class="p">],</span>
+    <span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
