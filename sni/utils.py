@@ -2,8 +2,10 @@
 Various utilities
 """
 
-import logging
 from typing import Callable
+import logging
+import random
+import string
 
 from datetime import datetime, timedelta
 
@@ -48,3 +50,14 @@ def now_plus(**kwargs) -> datetime:
         `datetime.timedelta <https://docs.python.org/3/library/datetime.html?highlight=timedelta#datetime.timedelta>`_
     """
     return now() + timedelta(**kwargs)
+
+
+def random_code(length: int) -> str:
+    """
+    Returns a random string made of digits, lowercase letters, and uppercase
+    letters, of a given length.
+    """
+    return ''.join([
+        random.choice(string.ascii_letters + string.digits)
+        for _ in range(length)
+    ])

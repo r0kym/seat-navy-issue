@@ -1,93 +1,66 @@
 """
-Discord module. The bot requires the ``bot`` scope, and the ``Manage Roles``,
-``Change Nickname``, ``Manage Nicknames``, ``Send Messages`` permissions.
-
-See also:
-    `Creating a Bot Account <https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro>`_
+Discord related functionalities
 """
 
-import asyncio
 import logging
-from threading import Thread
 
-from apscheduler.jobstores.memory import MemoryJobStore
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import discord
+import mongoengine as me
 
-import sni.conf as conf
 import sni.utils as utils
-
-client = discord.Client()
-scheduler = AsyncIOScheduler(
-    event_loop=client.loop,
-    job_defaults={
-        'coalesce': False,
-        'executor': 'default',
-        'jitter': '60',
-        'jobstore': 'discord',
-        'max_instances': 3,
-        'misfire_grace_time': None,
-    },
-    jobstores={
-        'discord': MemoryJobStore(),
-    },
-    timezone=utils.utc,
-)
+import sni.user.user as user
 
 
-async def log(message: str):
+class DiscordAuthenticationChallenge(me.Document):
     """
-    Sends a message on the logging channel. If configuration key
-    ``discord.log_channel_id`` is ``None``, does't do anything.
+    Represents a pending authentication challenge.
     """
-    log_channel_id = conf.get('discord.log_channel_id')
-    if log_channel_id is None:
-        return
-    log_channel = client.get_channel(log_channel_id)
-    await log_channel.send(message)
+    code = me.StringField(required=True, unique=True)
+    created_on = me.DateTimeField(default=utils.now, required=True)
+    user = me.ReferenceField(user.User, required=True, unique=True)
+    meta = {
+        'indexes': [
+            {
+                'fields': ['created_on'],
+                'expireAfterSeconds': 60,
+            },
+        ],
+    }
 
 
-@client.event
-async def on_disconnect():
+def complete_authentication_challenge(discord_user: discord.User, code: str):
     """
-    Called when the Discord client has been disconnected. Executes cleanup
-    tasks.
+    Complete an authentication challenge, see
+    :meth:`sni.discord.discord.new_authentication_challenge`.
     """
-    logging.info('Discord client disconnected')
-    scheduler.shutdown()
+    challenge = DiscordAuthenticationChallenge.objects(code=code)
+    usr = challenge.user
+    usr.discord_user_id = discord_user.id
+    usr.save()
+    logging.info('Authenticated Discord user %d to user %s', discord_user.id,
+                 usr.tickered_name)
+    challenge.delete()
 
 
-@client.event
-async def on_ready():
+def new_authentication_challenge(usr: user.User) -> str:
     """
-    Called when the discord client is ready. Starts the discord client
-    scheduler.
+    Creates a new authentication challenge.
+
+    The challenge proceeds as follows:
+
+    1. A user (:class:`sni.user.user.User`) asks to start a challenge by
+       calling this method.
+
+    2. This methods returns a random code, and the user has 60 seconds type
+       ``!auth <code>`` in the dedicated authentication channel.
+
+    3. The Discord client is notified, and check this code against the pending
+       Discort authentication challenges.
     """
-    await client.change_presence(
-        status=discord.Status.online,
-        activity=discord.Game('EVE Online'),
-    )
-    logging.info('Discord client online')
-    await log('SeAT Navy Issue online o7')
-    scheduler.start()
-
-
-def start():
-    """
-    Runs the discord client in a different thread.
-    """
-    async def _start():
-        await client.start(conf.get('discord.token'))
-
-    logging.info('Starting Discord client')
-    client.loop.create_task(_start())
-    thread = Thread(
-        args=(client.loop, ),
-        daemon=True,
-        name='discord_client',
-        target=asyncio.BaseEventLoop.run_forever,
-    )
-    thread.start()
-
-
-start()
+    logging.info('Starting Discord authentication challenge for %s',
+                 usr.character_name)
+    challenge = DiscordAuthenticationChallenge(
+        user=usr,
+        code=utils.random_code(50),
+    ).save()
+    return challenge.code

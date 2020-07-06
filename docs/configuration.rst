@@ -17,9 +17,12 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
     * ``port`` (default: ``27017``)
     * ``username`` (default: ``sni``)
 * ``discord``
+    * ``auth_channel_id``: Authentication channel id. The bot will listen for
+    ``!auth`` commands from this channel.
     * ``enabled`` (default: ``false``)
     * ``log_channel_id`` (default: ``null``): Channel id where the Discorb bot
     can send log messages
+    * ``server_id``: Server on which the bot is operating.
     * ``token``
 * ``esi``: Create an application at the `EVE Developer Portal <https://developers.eveonline.com/>`_
     * ``client_id``

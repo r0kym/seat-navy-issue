@@ -21,8 +21,10 @@ class Group(me.Document):
     """
     _version = me.IntField(default=GROUP_SCHEMA_VERSION)
     created_on = me.DateTimeField(default=utils.now, required=True)
+    discord_role_id = me.IntField()
     description = me.StringField(default=str)
     is_autogroup = me.BooleanField(default=False, required=True)
+    map_to_discord = me.BooleanField(default=True, required=True)
     map_to_teamspeak = me.BooleanField(default=True, required=True)
     members = me.ListField(me.ReferenceField(user.User), required=True)
     group_name = me.StringField(required=True, unique=True)

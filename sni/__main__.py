@@ -85,7 +85,7 @@ def main():
         import sni.teamspeak.jobs
 
     if conf.get('discord.enabled'):
-        import sni.discord.jobs
+        import sni.discord
 
     # --------------------------------------------------------------------------
     # API server start

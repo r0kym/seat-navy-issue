@@ -29,6 +29,13 @@ app.include_router(
     prefix='/coalition',
     tags=['Coalition management'],
 )
+if conf.get('discord.enabled'):
+    import sni.api.discord
+    app.include_router(
+        sni.api.discord.router,
+        prefix='/discord',
+        tags=['Discord'],
+    )
 app.include_router(sni.api.esi.router)
 app.include_router(
     sni.api.group.router,

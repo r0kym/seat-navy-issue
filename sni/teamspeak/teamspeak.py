@@ -6,8 +6,6 @@ See also:
 """
 
 import logging
-import random
-import string
 from typing import List, Optional
 
 import mongoengine as me
@@ -170,12 +168,9 @@ def new_authentication_challenge(usr: user.User) -> str:
     """
     logging.info('Starting authentication challenge for %s',
                  usr.character_name)
-    challenge_nickname = ''.join([
-        random.choice(string.ascii_letters + string.digits) for _ in range(20)
-    ])
     challenge = TeamspeakAuthenticationChallenge(
         user=usr,
-        challenge_nickname=challenge_nickname,
+        challenge_nickname=utils.random_code(20),
     ).save()
     return str(challenge.challenge_nickname)
 

@@ -21,15 +21,6 @@ import sni.uac.token as token
 router = APIRouter()
 
 
-class GetGroupMappingOut(pdt.BaseModel):
-    """
-    Model for an element of `GET /teamspeak/group` responses.
-    """
-    sni_group_name: str
-    ts_group_id: str
-    ts_group_name: str
-
-
 class PostAuthStartOut(pdt.BaseModel):
     """
     Model for `POST /teamspeak/auth/start` responses.
