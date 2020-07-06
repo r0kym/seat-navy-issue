@@ -65,6 +65,7 @@ def migrate_coalition():
     coalition_collection.drop_indexes()
 
     # v0 to v1
+    # Set _version field to 1
     coalition_collection.update_many(
         {
             '_version': {
@@ -79,6 +80,7 @@ def migrate_coalition():
     )
 
     # v1 to v2
+    # Set name field to coalition_name
     coalition_collection.update_many(
         {'_version': 1},
         {
@@ -114,6 +116,7 @@ def migrate_group():
     group_collection.drop_indexes()
 
     # v0 to v1
+    # Set _version field to 1
     group_collection.update_many(
         {
             '_version': {
@@ -128,6 +131,7 @@ def migrate_group():
     )
 
     # v1 to v2
+    # Rename name field to group_name
     group_collection.update_many(
         {'_version': 1},
         {
@@ -161,6 +165,7 @@ def migrate_user():
     user_collection.drop_indexes()
 
     # v0 to v1
+    # Set _version field to 1
     user_collection.update_many(
         {
             '_version': {
@@ -170,6 +175,19 @@ def migrate_user():
         {
             '$set': {
                 '_version': 1
+            },
+        },
+    )
+
+    # v1 to v2
+    # Add discord_user_id and teamspeak_cldbid fields, and set them to None
+    user_collection.update_many(
+        {'_version': 1},
+        {
+            '$set': {
+                '_version': 2,
+                'discord_user_id': None,
+                'teamspeak_cldbid': None,
             },
         },
     )

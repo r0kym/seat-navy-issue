@@ -77,7 +77,7 @@ def update_teamspeak_groups():
         ]
         allowed_cldbids: List[int] = [
             usr.teamspeak_cldbid for usr in grp.members
-            if 'teamspeak_cldbid' in usr
+            if usr.teamspeak_cldbid is not None
         ]
         for cldbid in current_cldbids:
             if cldbid in allowed_cldbids:

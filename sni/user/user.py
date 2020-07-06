@@ -10,7 +10,7 @@ import sni.esi.esi as esi
 import sni.utils as utils
 
 COALITION_SCHEMA_VERSION = 2
-USER_SCHEMA_VERSION = 1
+USER_SCHEMA_VERSION = 2
 
 
 class Alliance(me.Document):
@@ -134,7 +134,8 @@ class User(me.Document):
     clearance_level = me.IntField(default=0, required=True)
     corporation = me.ReferenceField(Corporation, default=None, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
-    teamspeak_cldbid = me.IntField()
+    discord_user_id = me.IntField(default=None, null=True)
+    teamspeak_cldbid = me.IntField(default=None, null=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 
     def is_ceo_of_alliance(self) -> bool:

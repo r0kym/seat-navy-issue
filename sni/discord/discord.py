@@ -68,7 +68,7 @@ async def on_ready():
         activity=discord.Game('EVE Online'),
     )
     logging.info('Discord client online')
-    await log('SeAT Navy Issue Discord\'s bot online')
+    await log('SeAT Navy Issue online o7')
     scheduler.start()
 
 
