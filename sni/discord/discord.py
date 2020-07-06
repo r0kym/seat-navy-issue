@@ -33,7 +33,7 @@ def complete_authentication_challenge(discord_user: discord.User, code: str):
     Complete an authentication challenge, see
     :meth:`sni.discord.discord.new_authentication_challenge`.
     """
-    challenge = DiscordAuthenticationChallenge.objects(code=code)
+    challenge = DiscordAuthenticationChallenge.objects(code=code).get()
     usr = challenge.user
     usr.discord_user_id = discord_user.id
     usr.save()

@@ -18,9 +18,7 @@ from .jobs import update_discord_user
 @bot.command()
 async def auth(ctx: Context, code: str):
     """
-    Authentication command. See authentication challenges:
-    :meth:`sni.discord.discord.new_authentication_challenge` and
-    :meth:`sni.discord.discord.complete_authentication_challenge`
+    Starts a Discord authentication challenge.
     """
     if ctx.channel.id != conf.get('discord.auth_channel_id'):
         return
