@@ -34,3 +34,11 @@ def ensure_root_dyn_token() -> None:
                                                     comments='Primary token')
     logging.info('No dynamic app token owned by root, created one: %r',
                  token.to_jwt(root_dyn_token))
+
+
+def migrate():
+    """
+    Migrates all schema and ensures basic documents
+    """
+    ensure_root_dyn_token()
+    ensure_root_per_token()

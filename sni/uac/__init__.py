@@ -8,3 +8,5 @@ from .clearance import *
 from .migration import *
 from .models import *
 from .token import *
+
+migrate()

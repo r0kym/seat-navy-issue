@@ -41,24 +41,19 @@ def main():
         sys.exit()
 
     # --------------------------------------------------------------------------
-    # Post database init actions, pre database migration
+    # Post database migration, pre scheduler init
     # --------------------------------------------------------------------------
 
-    import sni.db.mongodb as mongodb
+    import sni.db
+
+    if arguments.migrate_database:
+        import sni.user
+        import sni.uac
+        sys.exit()
 
     if arguments.reload_esi_openapi_spec:
         from sni.esi import load_esi_openapi
         load_esi_openapi()
-        sys.exit()
-
-    # --------------------------------------------------------------------------
-    # Post database migration, pre scheduler init
-    # --------------------------------------------------------------------------
-
-    import sni.db.migration
-    sni.db.migration.migrate()
-
-    if arguments.migrate_database:
         sys.exit()
 
     if arguments.run_job:
@@ -82,7 +77,7 @@ def main():
     import sni.user
 
     if conf.get('teamspeak.enabled'):
-        import sni.teamspeak.jobs
+        import sni.teamspeak
 
     if conf.get('discord.enabled'):
         import sni.discord

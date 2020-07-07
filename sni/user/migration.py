@@ -23,13 +23,13 @@ def ensure_root() -> None:
     Create root user if it does not exist.
     """
     if User.objects(character_id=0).count() == 0:
+        logging.info('Creating root user')
         User(
             character_id=0,
             character_name='root',
             clearance_level=10,
             created_on=utils.now(),
         ).save()
-        logging.info('Created root user')
 
 
 def ensure_superuser_group() -> None:
@@ -49,6 +49,7 @@ def ensure_superuser_group() -> None:
         superusers.teamspeak_sgid = False
         superusers.save()
     except me.DoesNotExist:
+        logging.info('Creating superuser group')
         Group(
             description="Superuser group.",
             discord_role_id=None,
@@ -59,7 +60,17 @@ def ensure_superuser_group() -> None:
             owner=root,
             teamspeak_sgid=False,
         ).save()
-        logging.info('Created "%s" group', group_name)
+
+
+def migrate():
+    """
+    Migrates all schema
+    """
+    ensure_root()
+    ensure_superuser_group()
+    migrate_coalition()
+    migrate_group()
+    migrate_user()
 
 
 def migrate_coalition():
@@ -75,6 +86,9 @@ def migrate_coalition():
             '$ne': COALITION_SCHEMA_VERSION
         }}) == 0:
         return
+
+    logging.info('Migrating collection "coalition" to v%d',
+                 COALITION_SCHEMA_VERSION)
 
     coalition_collection.drop_indexes()
 
@@ -126,6 +140,8 @@ def migrate_group():
             '$ne': GROUP_SCHEMA_VERSION
         }}) == 0:
         return
+
+    logging.info('Migrating collection "group" to v%d', GROUP_SCHEMA_VERSION)
 
     group_collection.drop_indexes()
 
@@ -255,6 +271,8 @@ def migrate_user():
             '$ne': USER_SCHEMA_VERSION
         }}) == 0:
         return
+
+    logging.info('Migrating collection "user" to v%d', USER_SCHEMA_VERSION)
 
     user_collection.drop_indexes()
 

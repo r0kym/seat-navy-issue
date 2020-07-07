@@ -18,7 +18,7 @@ import sni.conf as conf
 import sni.utils as utils
 
 
-def init():
+def init_mongodb():
     """
     Connects to the MongoDB instance.
 
@@ -74,6 +74,3 @@ def on_pre_save(_sender: Any, document: me.Document):
     """
     if 'updated_on' in document:
         document.updated_on = utils.now()
-
-
-init()

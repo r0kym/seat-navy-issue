@@ -8,37 +8,17 @@ See also:
 import logging
 from typing import List, Optional
 
-import mongoengine as me
-import pydantic
+import pydantic as pdt
 from ts3.query import TS3Connection, TS3QueryError
 
 from sni.user import ensure_autogroup, User
 import sni.conf as conf
 import sni.utils as utils
 
-
-class TeamspeakAuthenticationChallenge(me.Document):
-    """
-    Represents a teamspeak authentication challenge, akin to
-    :class:`sni.uac.token.StateCode`.
-
-    See also:
-        :meth:`sni.teamspeak.new_authentication_challenge`
-    """
-    created_on = me.DateTimeField(default=utils.now, required=True)
-    user = me.ReferenceField(User, required=True, unique=True)
-    challenge_nickname = me.StringField(required=True, unique=True)
-    meta = {
-        'indexes': [
-            {
-                'fields': ['created_on'],
-                'expireAfterSeconds': 60,
-            },
-        ],
-    }
+from .models import TeamspeakAuthenticationChallenge
 
 
-class TeamspeakClient(pydantic.BaseModel):
+class TeamspeakClient(pdt.BaseModel):
     """
     Represents a teamspeak client as reported by the teamspeak query server.
     """
@@ -49,7 +29,7 @@ class TeamspeakClient(pydantic.BaseModel):
     client_type: int
 
 
-class TeamspeakGroup(pydantic.BaseModel):
+class TeamspeakGroup(pdt.BaseModel):
     """
     Represents a teamspeak group as reported by the teamspeak query server.
     """

@@ -11,8 +11,13 @@ from sni.scheduler import scheduler
 from sni.user import Group
 from sni.user import User
 import sni.conf as conf
-import sni.teamspeak.teamspeak as ts
 import sni.utils as utils
+
+from .teamspeak import (
+    client_list,
+    ensure_group,
+    new_connection,
+)
 
 
 @scheduler.scheduled_job('interval', minutes=30)
@@ -21,8 +26,8 @@ def message_registered_clients_with_wrong_name():
     Iterates through all users that are registered in Teamspeak, and checks
     their nickname. If it doesn't match, sends a message.
     """
-    connection = ts.new_connection()
-    for ts_client in ts.client_list(connection):
+    connection = new_connection()
+    for ts_client in client_list(connection):
         if ts_client.client_nickname == conf.get('teamspeak.bot_name'):
             continue
         usr: User = User.objects(
@@ -54,10 +59,10 @@ def map_teamspeak_groups():
     """
     Creates all groups on Teamspeak.
     """
-    connection = ts.new_connection()
+    connection = new_connection()
     for grp in Group.objects(map_to_teamspeak=True):
         logging.debug('Mapping group %s to Teamspeak', grp.group_name)
-        tsgrp = ts.ensure_group(connection, grp.group_name)
+        tsgrp = ensure_group(connection, grp.group_name)
         grp.teamspeak_sgid = tsgrp.sgid
         grp.save()
 
@@ -67,7 +72,7 @@ def update_teamspeak_groups():
     """
     Updates group memberships on Teamspeak
     """
-    connection = ts.new_connection()
+    connection = new_connection()
     for grp in Group.objects(map_to_teamspeak=True,
                              teamspeak_sgid__exists=True):
         logging.debug('Updating Teamspeak group %s', grp.group_name)
