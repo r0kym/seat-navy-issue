@@ -7,7 +7,7 @@ import logging
 from sni.scheduler import scheduler
 import sni.esi.esi as esi
 import sni.esi.token as token
-import sni.uac.clearance as clearance
+from sni.uac import reset_clearance
 import sni.utils as utils
 
 from .models import (
@@ -232,5 +232,5 @@ def update_users():
         usr.updated_on = utils.now()
         if usr.corporation != old_corporation:
             logging.debug('Corporation of user %s changed', usr.character_name)
-            clearance.reset_clearance(usr)
+            reset_clearance(usr)
         usr.save()

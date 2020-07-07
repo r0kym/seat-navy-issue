@@ -14,8 +14,12 @@ from fastapi import (
 import pydantic as pdt
 
 from sni.user import Group, User
-import sni.uac.clearance as clearance
-import sni.uac.token as token
+from sni.uac import (
+    assert_has_clearance,
+    from_authotization_header_nondyn,
+    Token,
+    has_clearance,
+)
 
 router = APIRouter()
 
@@ -83,12 +87,12 @@ def group_record_to_response(grp: Group) -> GetGroupOut:
 )
 def delete_group(
         group_id: str,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Deletes a group. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.delete_group')
+    assert_has_clearance(tkn.owner, 'sni.delete_group')
     grp: Group = Group.objects.get(pk=group_id)
     logging.debug('Deleting group %s (%s)', grp.group_name, group_id)
     grp.delete()
@@ -99,12 +103,11 @@ def delete_group(
     response_model=List[GetGroupShortOut],
     summary='List all group names',
 )
-def get_group(
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn), ):
+def get_group(tkn: Token = Depends(from_authotization_header_nondyn), ):
     """
     Lists all the group names. Requires a clearance level of 0 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
+    assert_has_clearance(tkn.owner, 'sni.read_group')
     return [
         GetGroupShortOut(group_id=str(grp.pk), group_name=grp.group_name)
         for grp in Group.objects()
@@ -118,13 +121,13 @@ def get_group(
 )
 def get_group_name(
         group_id: str,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Returns details about a given group. Requires a clearance level of 0 or
     more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
+    assert_has_clearance(tkn.owner, 'sni.read_group')
     return group_record_to_response(Group.objects(pk=group_id).get())
 
 
@@ -136,12 +139,12 @@ def get_group_name(
 )
 def post_groups(
         data: PostGroupIn,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Creates a group. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.create_group')
+    assert_has_clearance(tkn.owner, 'sni.create_group')
     grp = Group(
         description=data.description,
         members=[tkn.owner],
@@ -161,7 +164,7 @@ def post_groups(
 def put_group(
         group_id: str,
         data: PutGroupIn,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Updates a group. All fields in the request body are optional. The
@@ -172,7 +175,7 @@ def put_group(
     """
     grp: Group = Group.objects.get(pk=group_id)
     if not (tkn.owner == grp.owner
-            or clearance.has_clearance(tkn.owner, 'sni.update_group')):
+            or has_clearance(tkn.owner, 'sni.update_group')):
         raise PermissionError
     logging.debug('Updating group %s (%s)', grp.group_name, group_id)
     if data.add_members is not None:

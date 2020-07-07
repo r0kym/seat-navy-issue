@@ -4,7 +4,7 @@ UAC specific migrations
 
 import logging
 
-from sni.user import User
+from sni.user.models import User
 import sni.uac.token as token
 
 

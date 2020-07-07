@@ -16,8 +16,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
-import sni.uac.clearance as clearance
-import sni.uac.token as token
+from sni.uac import assert_has_clearance, from_authotization_header_nondyn, Token
 from sni.user import Alliance, Coalition
 
 router = APIRouter()
@@ -81,12 +80,12 @@ def coalition_record_to_response(coalition: Coalition) -> GetCoalitionOut:
 )
 def delete_coalition(
         coalition_id: str,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Deletes a coalition. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.delete_coalition')
+    assert_has_clearance(tkn.owner, 'sni.delete_coalition')
     coalition: Coalition = Coalition.objects.get(pk=coalition_id)
     logging.debug('Deleting coalition %s (%s)', coalition.coalition_name,
                   coalition_id)
@@ -98,12 +97,11 @@ def delete_coalition(
     response_model=List[GetCoalitionShortOut],
     summary='List all coalition names',
 )
-def get_coalition(tkn: token.Token = Depends(
-    token.from_authotization_header_nondyn)):
+def get_coalition(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Lists all the coalition names. Requires a clearance level of 0 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
+    assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return [
         GetCoalitionShortOut(coalition_id=str(coalition.pk),
                              coalition_name=coalition.coalition_name)
@@ -118,13 +116,13 @@ def get_coalition(tkn: token.Token = Depends(
 )
 def get_coalition_name(
         coalition_id: str,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Returns details about a given coalition. Requires a clearance level of 0 or
     more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
+    assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return coalition_record_to_response(
         Coalition.objects(pk=coalition_id).get())
 
@@ -137,12 +135,12 @@ def get_coalition_name(
 )
 def post_coalitions(
         data: PostCoalitionIn,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Creates a coalition. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.create_coalition')
+    assert_has_clearance(tkn.owner, 'sni.create_coalition')
     coa = Coalition(
         coalition_name=data.coalition_name,
         ticker=data.ticker,
@@ -160,7 +158,7 @@ def post_coalitions(
 def put_coalition(
         coalition_id: str,
         data: PutCoalitionIn,
-        tkn: token.Token = Depends(token.from_authotization_header_nondyn),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Updates a coalition. All fields in the request body are optional. The
@@ -168,7 +166,7 @@ def put_coalition(
     `members` cannot be used in conjunction with `add_members` and
     `remove_members`. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.update_coalition')
+    assert_has_clearance(tkn.owner, 'sni.update_coalition')
     coalition: Coalition = Coalition.objects.get(pk=coalition_id)
     logging.debug('Updating coalition %s (%s)', coalition.coalition_name,
                   coalition_id)

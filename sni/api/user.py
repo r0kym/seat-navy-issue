@@ -14,8 +14,7 @@ from fastapi import (
 import pydantic as pdt
 
 from sni.user import Alliance, Corporation, User
-import sni.uac.clearance as clearance
-import sni.uac.token as token
+from sni.uac import assert_has_clearance, from_authotization_header_nondyn, Token
 
 router = APIRouter()
 
@@ -90,13 +89,12 @@ def user_record_to_response(usr: User) -> GetUserOut:
     response_model=List[GetUserShortOut],
     summary='Get the user list',
 )
-def get_user(tkn: token.Token = Depends(
-    token.from_authotization_header_nondyn)):
+def get_user(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Returns the list of all user names. Requires a clearance level of 0 or
     more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
+    assert_has_clearance(tkn.owner, 'sni.read_user')
     return [
         GetUserShortOut(
             character_id=usr.character_id,
@@ -110,12 +108,11 @@ def get_user(tkn: token.Token = Depends(
     summary='Delete a user',
 )
 def delete_user(character_id: int,
-                tkn: token.Token = Depends(
-                    token.from_authotization_header_nondyn)):
+                tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Deletes a user. Requires a clearance level of 9 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.delete_user')
+    assert_has_clearance(tkn.owner, 'sni.delete_user')
     usr: User = User.objects.get(character_id=character_id)
     usr.delete()
 
@@ -126,12 +123,11 @@ def delete_user(character_id: int,
     summary='Get basic informations about a user',
 )
 def get_user_name(character_id: int,
-                  tkn: token.Token = Depends(
-                      token.from_authotization_header_nondyn)):
+                  tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Returns details about a character. Requires a clearance level of 0 or more.
     """
-    clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
+    assert_has_clearance(tkn.owner, 'sni.read_user')
     usr = User.objects.get(character_id=character_id)
     return user_record_to_response(usr)
 
@@ -143,8 +139,7 @@ def get_user_name(character_id: int,
 )
 def put_user_name(character_id: int,
                   data: PutUserIn,
-                  tkn: token.Token = Depends(
-                      token.from_authotization_header_nondyn)):
+                  tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Manually updates non ESI data about a character. The required clearance
     level depends on the modification.
@@ -157,7 +152,7 @@ def put_user_name(character_id: int,
                 detail=
                 'Field clearance_level must be between 0 and 10 (inclusive).')
         scope_name = f'sni.set_clearance_level_{data.clearance_level}'
-        clearance.assert_has_clearance(tkn.owner, scope_name, usr)
+        assert_has_clearance(tkn.owner, scope_name, usr)
         usr.clearance_level = data.clearance_level
     usr.save()
     return user_record_to_response(usr)

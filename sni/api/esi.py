@@ -16,8 +16,14 @@ from sni.user import User
 import sni.esi.esi as esi
 import sni.esi.sso as sso
 import sni.esi.token as esitoken
-import sni.uac.clearance as clearance
-import sni.uac.token as snitoken
+from sni.uac import (
+    assert_has_clearance,
+    create_user_token,
+    from_authotization_header_nondyn,
+    StateCode,
+    to_jwt,
+    Token,
+)
 import sni.utils as utils
 
 router = APIRouter()
@@ -65,14 +71,14 @@ async def get_callback_esi(code: str, state: str):
     https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html
     """
     logging.info('Received callback from ESI for state %s', state)
-    state_code: snitoken.StateCode = snitoken.StateCode.objects.get(uuid=state)
+    state_code: StateCode = StateCode.objects.get(uuid=state)
     esi_response = sso.get_access_token(code)
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
     esitoken.save_esi_tokens(esi_response)
-    user_token = snitoken.create_user_token(
+    user_token = create_user_token(
         state_code.app_token,
         User.objects.get(character_id=decoded_access_token.character_id))
-    user_jwt_str = snitoken.to_jwt(user_token)
+    user_jwt_str = to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
     utils.catch_all(
@@ -97,9 +103,9 @@ async def get_callback_esi(code: str, state: str):
     tags=['ESI'],
 )
 async def get_esi_latest(
-    esi_path: str,
-    data: EsiRequestIn = EsiRequestIn(),
-    tkn: snitoken.Token = Depends(snitoken.from_authotization_header_nondyn),
+        esi_path: str,
+        data: EsiRequestIn = EsiRequestIn(),
+        tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Forwards a `GET` request to the ESI. The required clearance level depends
@@ -111,7 +117,7 @@ async def get_esi_latest(
         esi_scope = esi.get_path_scope(esi_path)
         if esi_scope is not None:
             target = User.objects.get(character_id=data.on_behalf_of)
-            clearance.assert_has_clearance(tkn.owner, esi_scope, target)
+            assert_has_clearance(tkn.owner, esi_scope, target)
             esi_token = esitoken.get_access_token(
                 data.on_behalf_of,
                 esi_scope,
