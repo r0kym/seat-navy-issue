@@ -13,9 +13,9 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.user import Alliance, Corporation, User
 import sni.uac.clearance as clearance
 import sni.uac.token as token
-import sni.user.user as user
 
 router = APIRouter()
 
@@ -52,7 +52,7 @@ class PutUserIn(pdt.BaseModel):
     clearance_level: Optional[int]
 
 
-def user_record_to_response(usr: user.User) -> GetUserOut:
+def user_record_to_response(usr: User) -> GetUserOut:
     """
     Populates a new :class:`sni.routers.user.GetUserOut` with the information
     contained in a user database record.
@@ -60,10 +60,10 @@ def user_record_to_response(usr: user.User) -> GetUserOut:
     corporation_name = None
     alliance_name = None
     coalition_names = []
-    corporation: user.Corporation = usr.corporation
+    corporation: Corporation = usr.corporation
     if corporation is not None:
         corporation_name = corporation.corporation_name
-        alliance: user.Alliance = corporation.alliance
+        alliance: Alliance = corporation.alliance
         if alliance is not None:
             alliance_name = alliance.alliance_name
             coalition_names = [
@@ -101,7 +101,7 @@ def get_user(tkn: token.Token = Depends(
         GetUserShortOut(
             character_id=usr.character_id,
             character_name=usr.character_name,
-        ) for usr in user.User.objects()
+        ) for usr in User.objects()
     ]
 
 
@@ -116,7 +116,7 @@ def delete_user(character_id: int,
     Deletes a user. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_user')
-    usr: user.User = user.User.objects.get(character_id=character_id)
+    usr: User = User.objects.get(character_id=character_id)
     usr.delete()
 
 
@@ -132,7 +132,7 @@ def get_user_name(character_id: int,
     Returns details about a character. Requires a clearance level of 0 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_user')
-    usr = user.User.objects.get(character_id=character_id)
+    usr = User.objects.get(character_id=character_id)
     return user_record_to_response(usr)
 
 
@@ -149,7 +149,7 @@ def put_user_name(character_id: int,
     Manually updates non ESI data about a character. The required clearance
     level depends on the modification.
     """
-    usr: user.User = user.User.objects.get(character_id=character_id)
+    usr: User = User.objects.get(character_id=character_id)
     if data.clearance_level is not None:
         if not 0 <= data.clearance_level <= 10:
             raise HTTPException(

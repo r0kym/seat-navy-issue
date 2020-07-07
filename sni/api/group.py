@@ -13,10 +13,9 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.user import Group, User
 import sni.uac.clearance as clearance
-import sni.user.group as group
 import sni.uac.token as token
-import sni.user.user as user
 
 router = APIRouter()
 
@@ -62,7 +61,7 @@ class PutGroupIn(pdt.BaseModel):
     remove_members: Optional[List[str]] = None
 
 
-def group_record_to_response(grp: group.Group) -> GetGroupOut:
+def group_record_to_response(grp: Group) -> GetGroupOut:
     """
     Converts a group database record to a response.
     """
@@ -90,7 +89,7 @@ def delete_group(
     Deletes a group. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_group')
-    grp: group.Group = group.Group.objects.get(pk=group_id)
+    grp: Group = Group.objects.get(pk=group_id)
     logging.debug('Deleting group %s (%s)', grp.group_name, group_id)
     grp.delete()
 
@@ -108,7 +107,7 @@ def get_group(
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
     return [
         GetGroupShortOut(group_id=str(grp.pk), group_name=grp.group_name)
-        for grp in group.Group.objects()
+        for grp in Group.objects()
     ]
 
 
@@ -126,7 +125,7 @@ def get_group_name(
     more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_group')
-    return group_record_to_response(group.Group.objects(pk=group_id).get())
+    return group_record_to_response(Group.objects(pk=group_id).get())
 
 
 @router.post(
@@ -143,7 +142,7 @@ def post_groups(
     Creates a group. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.create_group')
-    grp = group.Group(
+    grp = Group(
         description=data.description,
         members=[tkn.owner],
         group_name=data.group_name,
@@ -171,25 +170,25 @@ def put_group(
     `remove_members`. Requires a clearance level of 9 or more of for the user
     to be the owner of the group.
     """
-    grp: group.Group = group.Group.objects.get(pk=group_id)
+    grp: Group = Group.objects.get(pk=group_id)
     if not (tkn.owner == grp.owner
             or clearance.has_clearance(tkn.owner, 'sni.update_group')):
         raise PermissionError
     logging.debug('Updating group %s (%s)', grp.group_name, group_id)
     if data.add_members is not None:
         grp.members += [
-            user.User.objects.get(character_name=member_name)
+            User.objects.get(character_name=member_name)
             for member_name in set(data.add_members)
         ]
     if data.description is not None:
         grp.description = data.description
     if data.members is not None:
         grp.members = [
-            user.User.objects.get(character_name=member_name)
+            User.objects.get(character_name=member_name)
             for member_name in set(data.members)
         ]
     if data.owner is not None:
-        grp.owner = user.User.objects.get(character_name=data.owner)
+        grp.owner = User.objects.get(character_name=data.owner)
     if data.remove_members is not None:
         grp.members = [
             member for member in grp.members

@@ -4,15 +4,15 @@ UAC specific migrations
 
 import logging
 
+from sni.user import User
 import sni.uac.token as token
-import sni.user.user as user
 
 
 def ensure_root_per_token() -> None:
     """
     Create a permanent app token owned by root, if none exist.
     """
-    root = user.User.objects.get(character_id=0)
+    root = User.objects.get(character_id=0)
     if token.Token.objects(owner=root,
                            token_type=token.Token.TokenType.per).count() > 0:
         return
@@ -26,7 +26,7 @@ def ensure_root_dyn_token() -> None:
     """
     Create a dynamic app token owned by root, if none exist.
     """
-    root = user.User.objects.get(character_id=0)
+    root = User.objects.get(character_id=0)
     if token.Token.objects(owner=root,
                            token_type=token.Token.TokenType.dyn).count() > 0:
         return

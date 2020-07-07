@@ -8,16 +8,27 @@ from sni.scheduler import scheduler
 import sni.esi.esi as esi
 import sni.esi.token as token
 import sni.uac.clearance as clearance
-import sni.user.group as group
-import sni.user.user as user
 import sni.utils as utils
 
+from .models import (
+    Alliance,
+    Coalition,
+    Corporation,
+    User,
+)
+from .user import (
+    ensure_alliance,
+    ensure_autogroup,
+    ensure_corporation,
+    ensure_user,
+)
 
-def update_alliance_autogroup(alliance: user.Alliance):
+
+def update_alliance_autogroup(alliance: Alliance):
     """
     Updates an alliance autogroup.
     """
-    grp = group.ensure_autogroup(alliance.alliance_name)
+    grp = ensure_autogroup(alliance.alliance_name)
     grp.owner = alliance.executor.ceo
     grp.members = list(alliance.user_iterator())
     grp.save()
@@ -32,7 +43,7 @@ def update_alliance_autogroups():
     the database for all user in the corporations in that alliance, assuming
     the user and corporation records are up-to-date.
     """
-    for alliance in user.Alliance.objects():
+    for alliance in Alliance.objects():
         logging.debug('Updating autogroup of alliance %s',
                       alliance.alliance_name)
         utils.catch_all(
@@ -41,7 +52,7 @@ def update_alliance_autogroups():
             args=[alliance])
 
 
-def update_alliance_members(alliance: user.Alliance):
+def update_alliance_members(alliance: Alliance):
     """
     Makes sure all members of a given alliance exist in the database.
     """
@@ -49,7 +60,7 @@ def update_alliance_members(alliance: user.Alliance):
     response = esi.get(
         f'latest/alliances/{alliance.alliance_id}/corporations/')
     for corporation_id in response.json():
-        user.ensure_corporation(corporation_id)
+        ensure_corporation(corporation_id)
 
 
 @scheduler.scheduled_job('interval', hours=1)
@@ -59,7 +70,7 @@ def update_alliances_members():
     member corporations exist in the database. See
     :meth:`sni.user.jobs.update_alliance_members`.
     """
-    for alliance in user.Alliance.objects:
+    for alliance in Alliance.objects:
         utils.catch_all(
             update_alliance_members,
             f'Failed to update members of alliance {alliance.alliance_name}',
@@ -67,7 +78,7 @@ def update_alliances_members():
         )
 
 
-def update_alliance(alliance: user.Alliance):
+def update_alliance(alliance: Alliance):
     """
     Updates an alliance's properties from the ESI.
     """
@@ -82,7 +93,7 @@ def update_alliances():
     """
     Updates the alliances properties from the ESI.
     """
-    for alliance in user.Alliance.objects:
+    for alliance in Alliance.objects:
         utils.catch_all(
             update_alliance,
             f'Failed to update properties of alliance {alliance.alliance_name}',
@@ -99,10 +110,10 @@ def update_coalition_autogroups():
     the database for all user in that coalition, assuming the user, coalition,
     and alliance records are up-to-date.
     """
-    for coalition in user.Coalition.objects():
+    for coalition in Coalition.objects():
         logging.debug('Updating autogroup of coalition %s',
                       coalition.coalition_name)
-        grp = group.ensure_autogroup(coalition.coalition_name)
+        grp = ensure_autogroup(coalition.coalition_name)
         grp.members = list(coalition.user_iterator())
         grp.save()
 
@@ -116,16 +127,16 @@ def update_corporation_autogroups():
     the database for all user in that corporation, assuming the user records
     are up-to-date.
     """
-    for corporation in user.Corporation.objects():
+    for corporation in Corporation.objects():
         logging.debug('Updating autogroup of corporation %s',
                       corporation.corporation_name)
-        grp = group.ensure_autogroup(corporation.corporation_name)
+        grp = ensure_autogroup(corporation.corporation_name)
         grp.owner = corporation.ceo
         grp.members = list(corporation.user_iterator())
         grp.save()
 
 
-def update_coropration_members(corporation: user.Corporation):
+def update_coropration_members(corporation: Corporation):
     """
     Ensure that all members of a corporation exist in the database.
     """
@@ -138,7 +149,7 @@ def update_coropration_members(corporation: user.Corporation):
             '$lookup': {
                 'as': 'owner_data',
                 'foreignField': '_id',
-                'from': user.User._get_collection_name(),
+                'from': User._get_collection_name(),
                 'localField': 'owner',
             },
         },
@@ -163,7 +174,7 @@ def update_coropration_members(corporation: user.Corporation):
         esi_access_token.access_token,
     )
     for character_id in response.json():
-        user.ensure_user(character_id)
+        ensure_user(character_id)
 
 
 @scheduler.scheduled_job('interval', hours=1)
@@ -173,7 +184,7 @@ def update_corporations_members():
     members exist in the database. See
     :meth:`sni.user.jobs.update_coropration_members`.
     """
-    for corporation in user.Corporation.objects:
+    for corporation in Corporation.objects:
         utils.catch_all(
             update_coropration_members,
             'Failed to update members of corporation ' \
@@ -182,14 +193,14 @@ def update_corporations_members():
         )
 
 
-def update_corporation(corporation: user.Corporation):
+def update_corporation(corporation: Corporation):
     """
     Updates a corporation properties from the ESI.
     """
     logging.debug('Updating properties of corproation %s',
                   corporation.corporation_name)
     data = esi.get(f'latest/corporations/{corporation.corporation_id}').json()
-    corporation.alliance = user.ensure_alliance(
+    corporation.alliance = ensure_alliance(
         data['alliance_id']) if 'alliance_id' in data else None
     corporation.ceo_character_id = int(data['ceo_id'])
     corporation.save()
@@ -200,7 +211,7 @@ def update_corporations():
     """
     Updates corporations properties. (yes)
     """
-    for corporation in user.Corporation.objects:
+    for corporation in Corporation.objects:
         utils.catch_all(
             update_corporation,
             'Failed to update properties of corporation ' \
@@ -214,10 +225,10 @@ def update_users():
     """
     Iterated through all users and updates their field from ESI.
     """
-    for usr in user.User.objects(character_id__gt=0):
+    for usr in User.objects(character_id__gt=0):
         data = esi.get(f'latest/characters/{usr.character_id}').json()
         old_corporation = usr.corporation
-        usr.corporation = user.ensure_corporation(data['corporation_id'])
+        usr.corporation = ensure_corporation(data['corporation_id'])
         usr.updated_on = utils.now()
         if usr.corporation != old_corporation:
             logging.debug('Corporation of user %s changed', usr.character_name)

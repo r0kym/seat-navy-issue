@@ -7,9 +7,10 @@ from typing import Optional
 
 import mongoengine
 
+from sni.user.models import User
+from sni.user.user import ensure_user
 import sni.esi.sso as sso
 import sni.utils as utils
-import sni.user.user as user
 
 
 class EsiAccessToken(mongoengine.Document):
@@ -21,7 +22,7 @@ class EsiAccessToken(mongoengine.Document):
     created_on = mongoengine.DateTimeField(required=True, default=utils.now)
     expires_on = mongoengine.DateTimeField(required=True)
     owner = mongoengine.ReferenceField(
-        user.User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
+        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
     scopes = mongoengine.ListField(mongoengine.StringField(),
                                    required=True,
                                    default=[])
@@ -43,7 +44,7 @@ class EsiRefreshToken(mongoengine.Document):
     created_on = mongoengine.DateTimeField(required=True, default=utils.now)
     updated_on = mongoengine.DateTimeField(required=True, default=utils.now)
     owner = mongoengine.ReferenceField(
-        user.User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
+        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
     refresh_token = mongoengine.StringField(required=True)
     scopes = mongoengine.ListField(mongoengine.StringField(),
                                    required=True,
@@ -58,7 +59,7 @@ def get_access_token(character_id: int,
     Todo:
         Support multiple scopes.
     """
-    owner: user.User = user.User.objects.get(character_id=character_id)
+    owner: User = User.objects.get(character_id=character_id)
     esi_access_token: EsiAccessToken = EsiAccessToken.objects(
         owner=owner,
         scopes=scope,
@@ -90,7 +91,7 @@ def save_esi_tokens(
         The new ESI access token.
     """
     decoded_access_token = sso.decode_access_token(esi_response.access_token)
-    owner = user.ensure_user(decoded_access_token.character_id)
+    owner = ensure_user(decoded_access_token.character_id)
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
         owner=owner,
         scopes__all=decoded_access_token.scp,

@@ -7,16 +7,23 @@ import mongoengine as me
 
 import sni.db.mongodb as mongodb
 import sni.utils as utils
-import sni.user.user as user
-import sni.user.group as group
+
+from .models import (
+    COALITION_SCHEMA_VERSION,
+    Coalition,
+    GROUP_SCHEMA_VERSION,
+    Group,
+    USER_SCHEMA_VERSION,
+    User,
+)
 
 
 def ensure_root() -> None:
     """
     Create root user if it does not exist.
     """
-    if user.User.objects(character_id=0).count() == 0:
-        user.User(
+    if User.objects(character_id=0).count() == 0:
+        User(
             character_id=0,
             character_name='root',
             clearance_level=10,
@@ -31,10 +38,9 @@ def ensure_superuser_group() -> None:
     owner.
     """
     group_name = 'superusers'
-    root = user.User.objects.get(character_id=0)
+    root = User.objects.get(character_id=0)
     try:
-        superusers: group.Group = group.Group.objects.get(
-            group_name=group_name)
+        superusers: Group = Group.objects.get(group_name=group_name)
         superusers.owner = root
         superusers.modify(add_to_set__members=root)
         superusers.discord_role_id = None
@@ -43,7 +49,7 @@ def ensure_superuser_group() -> None:
         superusers.teamspeak_sgid = False
         superusers.save()
     except me.DoesNotExist:
-        group.Group(
+        Group(
             description="Superuser group.",
             discord_role_id=None,
             group_name=group_name,
@@ -62,11 +68,11 @@ def migrate_coalition():
     """
     # pylint: disable=protected-access
     coalition_collection = mongodb.get_pymongo_collection(
-        user.Coalition._get_collection_name())
+        Coalition._get_collection_name())
 
     if coalition_collection.count_documents(
         {'_version': {
-            '$ne': user.COALITION_SCHEMA_VERSION
+            '$ne': COALITION_SCHEMA_VERSION
         }}) == 0:
         return
 
@@ -102,7 +108,7 @@ def migrate_coalition():
     )
 
     # Finally
-    user.Coalition.ensure_indexes()
+    Coalition.ensure_indexes()
 
 
 def migrate_group():
@@ -113,11 +119,11 @@ def migrate_group():
     """
     # pylint: disable=protected-access
     group_collection = mongodb.get_pymongo_collection(
-        group.Group._get_collection_name())
+        Group._get_collection_name())
 
     if group_collection.count_documents(
         {'_version': {
-            '$ne': group.GROUP_SCHEMA_VERSION
+            '$ne': GROUP_SCHEMA_VERSION
         }}) == 0:
         return
 
@@ -233,7 +239,7 @@ def migrate_group():
     )
 
     # Finally
-    group.Group.ensure_indexes()
+    Group.ensure_indexes()
 
 
 def migrate_user():
@@ -242,11 +248,11 @@ def migrate_user():
     """
     # pylint: disable=protected-access
     user_collection = mongodb.get_pymongo_collection(
-        user.User._get_collection_name())
+        User._get_collection_name())
 
     if user_collection.count_documents(
         {'_version': {
-            '$ne': user.USER_SCHEMA_VERSION
+            '$ne': USER_SCHEMA_VERSION
         }}) == 0:
         return
 
@@ -281,4 +287,4 @@ def migrate_user():
     )
 
     # Finally
-    user.User.ensure_indexes()
+    User.ensure_indexes()

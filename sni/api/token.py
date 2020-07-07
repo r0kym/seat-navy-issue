@@ -14,10 +14,10 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.user import User
 import sni.esi.sso as sso
 import sni.uac.clearance as clearance
 import sni.uac.token as token
-import sni.user.user as user
 
 router = APIRouter()
 
@@ -235,7 +235,7 @@ async def post_token_use_from_per(tkn: token.Token = Depends(
     clearance.assert_has_clearance(tkn.owner, 'sni.create_use_token')
     user_token = token.create_user_token(
         tkn,
-        user.User.objects.get(character_id=0),
+        User.objects.get(character_id=0),
     )
     user_token_str = token.to_jwt(user_token)
     return PostUseFromPerOut(user_token=user_token_str)

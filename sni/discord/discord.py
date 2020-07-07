@@ -7,8 +7,8 @@ import logging
 import discord
 import mongoengine as me
 
+from sni.user import User
 import sni.utils as utils
-import sni.user.user as user
 
 
 class DiscordAuthenticationChallenge(me.Document):
@@ -17,7 +17,7 @@ class DiscordAuthenticationChallenge(me.Document):
     """
     code = me.StringField(required=True, unique=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
-    user = me.ReferenceField(user.User, required=True, unique=True)
+    user = me.ReferenceField(User, required=True, unique=True)
     meta = {
         'indexes': [
             {
@@ -42,13 +42,13 @@ def complete_authentication_challenge(discord_user: discord.User, code: str):
     challenge.delete()
 
 
-def new_authentication_challenge(usr: user.User) -> str:
+def new_authentication_challenge(usr: User) -> str:
     """
     Creates a new authentication challenge.
 
     The challenge proceeds as follows:
 
-    1. A user (:class:`sni.user.user.User`) asks to start a challenge by
+    1. A user (:class:`sni.user`) asks to start a challenge by
        calling this method.
 
     2. This methods returns a random code, and the user has 60 seconds type

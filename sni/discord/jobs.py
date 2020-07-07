@@ -7,8 +7,7 @@ These jobs run on a dedicated asyncio scheduler.
 from discord import Member
 
 import sni.utils as utils
-from sni.user.user import User
-from sni.user.group import Group
+from sni.user import Group, User
 
 from .bot import (
     get_guild,

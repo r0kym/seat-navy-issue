@@ -12,10 +12,9 @@ import mongoengine as me
 import pydantic
 from ts3.query import TS3Connection, TS3QueryError
 
+from sni.user import ensure_autogroup, User
 import sni.conf as conf
 import sni.utils as utils
-import sni.user.user as user
-import sni.user.group as group
 
 
 class TeamspeakAuthenticationChallenge(me.Document):
@@ -27,7 +26,7 @@ class TeamspeakAuthenticationChallenge(me.Document):
         :meth:`sni.teamspeak.new_authentication_challenge`
     """
     created_on = me.DateTimeField(default=utils.now, required=True)
-    user = me.ReferenceField(user.User, required=True, unique=True)
+    user = me.ReferenceField(User, required=True, unique=True)
     challenge_nickname = me.StringField(required=True, unique=True)
     meta = {
         'indexes': [
@@ -71,8 +70,7 @@ def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
     return [TeamspeakClient(**raw) for raw in connection.clientlist()]
 
 
-def complete_authentication_challenge(connection: TS3Connection,
-                                      usr: user.User):
+def complete_authentication_challenge(connection: TS3Connection, usr: User):
     """
     Complete an authentication challenge, see
     :meth:`sni.teamspeak.new_authentication_challenge`.
@@ -82,7 +80,7 @@ def complete_authentication_challenge(connection: TS3Connection,
     client = find_client(connection, nickname=challenge.challenge_nickname)
     usr.teamspeak_cldbid = client.client_database_id
     usr.save()
-    auth_group = group.ensure_autogroup(conf.get('teamspeak.auth_group_name'))
+    auth_group = ensure_autogroup(conf.get('teamspeak.auth_group_name'))
     auth_group.modify(add_to_set__members=usr)
     challenge.delete()
     logging.info('Completed authentication challenge for %s',
@@ -148,11 +146,11 @@ def group_list(connection: TS3Connection) -> List[TeamspeakGroup]:
     return [TeamspeakGroup(**raw) for raw in connection.servergrouplist()]
 
 
-def new_authentication_challenge(usr: user.User) -> str:
+def new_authentication_challenge(usr: User) -> str:
     """
     Initiates an authentication challenge. The challenge proceeds as follows:
 
-    1. A user (:class:`sni.user.user.User`) asks to start a challenge by calling
+    1. A user (:class:`sni.user`) asks to start a challenge by calling
        this method.
 
     2. This methods returns a UUID, and the user has 60 seconds to change its

@@ -12,9 +12,9 @@ import jwt
 import jwt.exceptions
 import mongoengine as me
 
+from sni.user import User
 import sni.conf as conf
 import sni.utils as utils
-import sni.user.user as user
 
 
 class Token(me.Document):
@@ -33,7 +33,7 @@ class Token(me.Document):
     comments = me.StringField(default=str)
     created_on = me.DateTimeField(default=utils.now, required=True)
     expires_on = me.DateTimeField(default=None, null=True)
-    owner = me.ReferenceField(user.User,
+    owner = me.ReferenceField(User,
                               required=True,
                               reverse_delete_rule=me.CASCADE)
     parent = me.ReferenceField('self',
@@ -74,7 +74,7 @@ class StateCode(me.Document):
 
 
 def create_dynamic_app_token(
-    owner: user.User,
+    owner: User,
     *,
     callback: Optional[str] = None,
     comments: Optional[str] = None,
@@ -100,7 +100,7 @@ def create_dynamic_app_token(
 
 
 def create_permanent_app_token(
-    owner: user.User,
+    owner: User,
     *,
     callback: Optional[str] = None,
     comments: Optional[str] = None,
@@ -143,7 +143,7 @@ def create_state_code(app_token: Token) -> StateCode:
     return state_code
 
 
-def create_user_token(app_token: Token, owner: user.User) -> Token:
+def create_user_token(app_token: Token, owner: User) -> Token:
     """
     Derives a new user token from an existing app token, and set the owner to
     be the user given in argument.

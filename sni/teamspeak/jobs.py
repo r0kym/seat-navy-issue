@@ -8,11 +8,11 @@ from typing import List
 import ts3.query
 
 from sni.scheduler import scheduler
+from sni.user import Group
+from sni.user import User
 import sni.conf as conf
-import sni.utils as utils
 import sni.teamspeak.teamspeak as ts
-import sni.user.group as group
-import sni.user.user as user
+import sni.utils as utils
 
 
 @scheduler.scheduled_job('interval', minutes=30)
@@ -25,7 +25,7 @@ def message_registered_clients_with_wrong_name():
     for ts_client in ts.client_list(connection):
         if ts_client.client_nickname == conf.get('teamspeak.bot_name'):
             continue
-        usr: user.User = user.User.objects(
+        usr: User = User.objects(
             teamspeak_cldbid=ts_client.client_database_id).first()
         if usr is None:
             # TS client is unknown
@@ -55,7 +55,7 @@ def map_teamspeak_groups():
     Creates all groups on Teamspeak.
     """
     connection = ts.new_connection()
-    for grp in group.Group.objects(map_to_teamspeak=True):
+    for grp in Group.objects(map_to_teamspeak=True):
         logging.debug('Mapping group %s to Teamspeak', grp.group_name)
         tsgrp = ts.ensure_group(connection, grp.group_name)
         grp.teamspeak_sgid = tsgrp.sgid
@@ -68,8 +68,8 @@ def update_teamspeak_groups():
     Updates group memberships on Teamspeak
     """
     connection = ts.new_connection()
-    for grp in group.Group.objects(map_to_teamspeak=True,
-                                   teamspeak_sgid__exists=True):
+    for grp in Group.objects(map_to_teamspeak=True,
+                             teamspeak_sgid__exists=True):
         logging.debug('Updating Teamspeak group %s', grp.group_name)
         current_cldbids: List[int] = [
             int(raw['cldbid']) for raw in connection.servergroupclientlist(

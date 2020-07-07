@@ -18,7 +18,7 @@ import pydantic as pdt
 
 import sni.uac.clearance as clearance
 import sni.uac.token as token
-import sni.user.user as user
+from sni.user import Alliance, Coalition
 
 router = APIRouter()
 
@@ -61,7 +61,7 @@ class PutCoalitionIn(pdt.BaseModel):
     ticker: Optional[str] = None
 
 
-def coalition_record_to_response(coalition: user.Coalition) -> GetCoalitionOut:
+def coalition_record_to_response(coalition: Coalition) -> GetCoalitionOut:
     """
     Converts a coalition database record to a response.
     """
@@ -87,7 +87,7 @@ def delete_coalition(
     Deletes a coalition. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.delete_coalition')
-    coalition: user.Coalition = user.Coalition.objects.get(pk=coalition_id)
+    coalition: Coalition = Coalition.objects.get(pk=coalition_id)
     logging.debug('Deleting coalition %s (%s)', coalition.coalition_name,
                   coalition_id)
     coalition.delete()
@@ -107,7 +107,7 @@ def get_coalition(tkn: token.Token = Depends(
     return [
         GetCoalitionShortOut(coalition_id=str(coalition.pk),
                              coalition_name=coalition.coalition_name)
-        for coalition in user.Coalition.objects()
+        for coalition in Coalition.objects()
     ]
 
 
@@ -126,7 +126,7 @@ def get_coalition_name(
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return coalition_record_to_response(
-        user.Coalition.objects(pk=coalition_id).get())
+        Coalition.objects(pk=coalition_id).get())
 
 
 @router.post(
@@ -143,7 +143,7 @@ def post_coalitions(
     Creates a coalition. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.create_coalition')
-    coa = user.Coalition(
+    coa = Coalition(
         coalition_name=data.coalition_name,
         ticker=data.ticker,
     ).save()
@@ -169,17 +169,17 @@ def put_coalition(
     `remove_members`. Requires a clearance level of 9 or more.
     """
     clearance.assert_has_clearance(tkn.owner, 'sni.update_coalition')
-    coalition: user.Coalition = user.Coalition.objects.get(pk=coalition_id)
+    coalition: Coalition = Coalition.objects.get(pk=coalition_id)
     logging.debug('Updating coalition %s (%s)', coalition.coalition_name,
                   coalition_id)
     if data.add_members is not None:
         coalition.members += [
-            user.Alliance.objects.get(alliance_name=member_name)
+            Alliance.objects.get(alliance_name=member_name)
             for member_name in set(data.add_members)
         ]
     if data.members is not None:
         coalition.members = [
-            user.Alliance.objects.get(alliance_name=member_name)
+            Alliance.objects.get(alliance_name=member_name)
             for member_name in set(data.members)
         ]
     if data.remove_members is not None:

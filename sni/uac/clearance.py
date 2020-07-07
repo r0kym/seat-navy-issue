@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import logging
 from typing import Dict, Optional
 
-import sni.user.user as user
+from sni.user.models import Coalition, User
 
 
 class AbstractScope:
@@ -15,8 +15,7 @@ class AbstractScope:
     wether a *source* user is authorized to perform an action against a
     *target* user (see :meth:`sni.uac.clearance.AbstractScope.has_clearance`).
     """
-    def has_clearance(self, source: user.User,
-                      target: Optional[user.User]) -> bool:
+    def has_clearance(self, source: User, target: Optional[User]) -> bool:
         """
         Pure virtual methode, raises a ``NotImplementedError``.
         """
@@ -32,8 +31,7 @@ class AbsoluteScope(AbstractScope):
 
     level: int
 
-    def has_clearance(self, source: user.User,
-                      target: Optional[user.User]) -> bool:
+    def has_clearance(self, source: User, target: Optional[User]) -> bool:
         if target is not None:
             logging.warning('Absolute scopes should not have targets')
         return self.level <= source.clearance_level
@@ -48,8 +46,7 @@ class ClearanceModificationScope(AbstractScope):
 
     level: int
 
-    def has_clearance(self, source: user.User,
-                      target: Optional[user.User]) -> bool:
+    def has_clearance(self, source: User, target: Optional[User]) -> bool:
         """
         For the source user to change the clearance level of the target user at
         the level indicated in
@@ -79,8 +76,7 @@ class ESIScope(AbstractScope):
 
     level: int
 
-    def has_clearance(self, source: user.User,
-                      target: Optional[user.User]) -> bool:
+    def has_clearance(self, source: User, target: Optional[User]) -> bool:
         if target is None:
             logging.warning('ESI scopes must have a target')
             return False
@@ -205,7 +201,7 @@ SCOPES: Dict[str, AbstractScope] = {
 }
 
 
-def are_in_same_alliance(user1: user.User, user2: user.User) -> bool:
+def are_in_same_alliance(user1: User, user2: User) -> bool:
     """
     Tells wether two users are in the same alliance. Users that have no
     alliance are considered in a different alliance as everyone else.
@@ -215,7 +211,7 @@ def are_in_same_alliance(user1: user.User, user2: user.User) -> bool:
     return user1.corporation.alliance == user2.corporation.alliance
 
 
-def are_in_same_coalition(user1: user.User, user2: user.User) -> bool:
+def are_in_same_coalition(user1: User, user2: User) -> bool:
     """
     Tells wether two users have a coalition in common.
     """
@@ -223,13 +219,13 @@ def are_in_same_coalition(user1: user.User, user2: user.User) -> bool:
         return False
     if user2.corporation is None or user2.corporation.alliance is None:
         return False
-    for coa in user.Coalition.objects(members=user1.corporation.alliance):
+    for coa in Coalition.objects(members=user1.corporation.alliance):
         if user2.corporation.alliance in coa.members:
             return True
     return False
 
 
-def are_in_same_corporation(user1: user.User, user2: user.User) -> bool:
+def are_in_same_corporation(user1: User, user2: User) -> bool:
     """
     Tells wether two users are in the same corporation. Users that have no
     corporation are considered in different a corporation as everyone else.
@@ -239,9 +235,9 @@ def are_in_same_corporation(user1: user.User, user2: user.User) -> bool:
     return user1.corporation == user2.corporation
 
 
-def assert_has_clearance(source: user.User,
+def assert_has_clearance(source: User,
                          scope: str,
-                         target: Optional[user.User] = None) -> None:
+                         target: Optional[User] = None) -> None:
     """
     Like :meth:`sni.uac.clearance.has_clearance` but raises a
     :class:`PermissionError` if the result is ``False``.
@@ -250,7 +246,7 @@ def assert_has_clearance(source: user.User,
         raise PermissionError
 
 
-def distance_penalty(source: user.User, target: user.User) -> int:
+def distance_penalty(source: User, target: User) -> int:
     """
     Returns 0 if both users are the same user; returns 1 if they are not the
     same but in the same corporation; 3 if they are not in the same corporation
@@ -268,9 +264,9 @@ def distance_penalty(source: user.User, target: user.User) -> int:
     return 7
 
 
-def has_clearance(source: user.User,
+def has_clearance(source: User,
                   scope_name: str,
-                  target: Optional[user.User] = None) -> bool:
+                  target: Optional[User] = None) -> bool:
     """
     Check wether the *source* user has sufficient clearance to perform a given
     action (or *scope*) against the *target* user.
@@ -290,7 +286,7 @@ def has_clearance(source: user.User,
     return result
 
 
-def reset_clearance(usr: user.User, save: bool = False):
+def reset_clearance(usr: User, save: bool = False):
     """
     Resets a user's clearance.
 

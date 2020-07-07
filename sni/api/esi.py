@@ -12,13 +12,13 @@ from fastapi import (
 import pydantic
 import requests
 
-import sni.utils as utils
+from sni.user import User
 import sni.esi.esi as esi
 import sni.esi.sso as sso
 import sni.esi.token as esitoken
 import sni.uac.clearance as clearance
 import sni.uac.token as snitoken
-import sni.user.user as user
+import sni.utils as utils
 
 router = APIRouter()
 
@@ -71,7 +71,7 @@ async def get_callback_esi(code: str, state: str):
     esitoken.save_esi_tokens(esi_response)
     user_token = snitoken.create_user_token(
         state_code.app_token,
-        user.User.objects.get(character_id=decoded_access_token.character_id))
+        User.objects.get(character_id=decoded_access_token.character_id))
     user_jwt_str = snitoken.to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
@@ -110,7 +110,7 @@ async def get_esi_latest(
     if data.on_behalf_of:
         esi_scope = esi.get_path_scope(esi_path)
         if esi_scope is not None:
-            target = user.User.objects.get(character_id=data.on_behalf_of)
+            target = User.objects.get(character_id=data.on_behalf_of)
             clearance.assert_has_clearance(tkn.owner, esi_scope, target)
             esi_token = esitoken.get_access_token(
                 data.on_behalf_of,
