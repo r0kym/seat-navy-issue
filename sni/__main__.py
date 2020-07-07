@@ -32,7 +32,7 @@ def main():
     logging.config.dictConfig(conf.get('logging', {}))
 
     # --------------------------------------------------------------------------
-    # Pre database init actions
+    # Pre database
     # --------------------------------------------------------------------------
 
     if arguments.print_openapi_spec:
@@ -41,19 +41,25 @@ def main():
         sys.exit()
 
     # --------------------------------------------------------------------------
-    # Post database migration, pre scheduler init
+    # Database migration, pre scheduler init
     # --------------------------------------------------------------------------
 
     import sni.db
+    import sni.user
+    import sni.uac
+    import sni.esi
+
+    if conf.get('teamspeak.enabled'):
+        import sni.teamspeak
+
+    if conf.get('discord.enabled'):
+        import sni.discord
 
     if arguments.migrate_database:
-        import sni.user
-        import sni.uac
         sys.exit()
 
     if arguments.reload_esi_openapi_spec:
-        from sni.esi import load_esi_openapi
-        load_esi_openapi()
+        sni.esi.load_esi_openapi()
         sys.exit()
 
     if arguments.run_job:
@@ -69,31 +75,22 @@ def main():
     # Scheduler init, and start
     # --------------------------------------------------------------------------
 
-    from sni.scheduler import scheduler
+    import sni.scheduler
 
-    scheduler.start()
-
-    import sni.esi
-    import sni.user
-
-    if conf.get('teamspeak.enabled'):
-        import sni.teamspeak
-
-    if conf.get('discord.enabled'):
-        import sni.discord
+    sni.scheduler.scheduler.start()
 
     # --------------------------------------------------------------------------
     # API server start
     # --------------------------------------------------------------------------
 
-    import sni.api.server as api_server
-    api_server.start()
+    import sni.api.server
+    sni.api.server.start()
 
     # --------------------------------------------------------------------------
     # API server stopped, cleanup time
     # --------------------------------------------------------------------------
 
-    scheduler.shutdown()
+    sni.scheduler.scheduler.shutdown()
 
 
 def parse_command_line_arguments() -> argparse.Namespace:
