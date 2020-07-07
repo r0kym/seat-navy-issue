@@ -5,50 +5,16 @@ EVE token (access and refresh) management
 import logging
 from typing import Optional
 
-import mongoengine
-
 from sni.user.models import User
 from sni.user.user import ensure_user
-import sni.esi.sso as sso
 import sni.utils as utils
 
-
-class EsiAccessToken(mongoengine.Document):
-    """
-    A model representing an ESI access token, along with its refresh token and
-    relevant metadatas.
-    """
-    access_token = mongoengine.StringField(required=True)
-    created_on = mongoengine.DateTimeField(required=True, default=utils.now)
-    expires_on = mongoengine.DateTimeField(required=True)
-    owner = mongoengine.ReferenceField(
-        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
-    scopes = mongoengine.ListField(mongoengine.StringField(),
-                                   required=True,
-                                   default=[])
-    meta = {
-        'indexes': [
-            {
-                'fields': ['expires_on'],
-                'expireAfterSeconds': 0,
-            },
-        ],
-    }
-
-
-class EsiRefreshToken(mongoengine.Document):
-    """
-    A model representing an ESI access token, along with its refresh token and
-    relevant metadatas.
-    """
-    created_on = mongoengine.DateTimeField(required=True, default=utils.now)
-    updated_on = mongoengine.DateTimeField(required=True, default=utils.now)
-    owner = mongoengine.ReferenceField(
-        User, required=True, reverse_delete_rule=mongoengine.DO_NOTHING)
-    refresh_token = mongoengine.StringField(required=True)
-    scopes = mongoengine.ListField(mongoengine.StringField(),
-                                   required=True,
-                                   default=[])
+from .models import EsiAccessToken, EsiRefreshToken
+from .sso import (
+    AuthorizationCodeResponse,
+    decode_access_token,
+    refresh_access_token,
+)
 
 
 def get_access_token(character_id: int,
@@ -76,12 +42,11 @@ def get_access_token(character_id: int,
                 owner.character_name, scope)
             raise LookupError
         esi_access_token = save_esi_tokens(
-            sso.refresh_access_token(esi_refresh_token.refresh_token))
+            refresh_access_token(esi_refresh_token.refresh_token))
     return esi_access_token
 
 
-def save_esi_tokens(
-        esi_response: sso.AuthorizationCodeResponse) -> EsiAccessToken:
+def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
     """
     Saves the tokens contained in an SSO reponse into the database.
 
@@ -90,7 +55,7 @@ def save_esi_tokens(
     Returns:
         The new ESI access token.
     """
-    decoded_access_token = sso.decode_access_token(esi_response.access_token)
+    decoded_access_token = decode_access_token(esi_response.access_token)
     owner = ensure_user(decoded_access_token.character_id)
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
         owner=owner,

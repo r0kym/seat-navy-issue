@@ -47,8 +47,8 @@ def main():
     import sni.db.mongodb as mongodb
 
     if arguments.reload_esi_openapi_spec:
-        import sni.esi.esi as esi
-        esi.load_esi_openapi()
+        from sni.esi import load_esi_openapi
+        load_esi_openapi()
         sys.exit()
 
     # --------------------------------------------------------------------------
@@ -78,7 +78,7 @@ def main():
 
     scheduler.start()
 
-    import sni.esi.jobs
+    import sni.esi
     import sni.user
 
     if conf.get('teamspeak.enabled'):

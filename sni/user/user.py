@@ -2,7 +2,7 @@
 User (aka character), corporation, and alliance management
 """
 
-import sni.esi.esi as esi
+from sni.esi.esi import esi_get
 
 from .models import (
     Alliance,
@@ -19,7 +19,7 @@ def ensure_alliance(alliance_id: int) -> Alliance:
     """
     alliance = Alliance.objects(alliance_id=alliance_id).first()
     if alliance is None:
-        data = esi.get(f'latest/alliances/{alliance_id}').json()
+        data = esi_get(f'latest/alliances/{alliance_id}').json()
         alliance = Alliance(
             alliance_id=alliance_id,
             alliance_name=data['name'],
@@ -53,7 +53,7 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     """
     corporation = Corporation.objects(corporation_id=corporation_id).first()
     if corporation is None:
-        data = esi.get(f'latest/corporations/{corporation_id}').json()
+        data = esi_get(f'latest/corporations/{corporation_id}').json()
         alliance = ensure_alliance(
             data['alliance_id']) if 'alliance_id' in data else None
         corporation = Corporation(
@@ -74,7 +74,7 @@ def ensure_user(character_id: int) -> User:
     """
     usr = User.objects(character_id=character_id).first()
     if usr is None:
-        data = esi.get(f'latest/characters/{character_id}').json()
+        data = esi_get(f'latest/characters/{character_id}').json()
         usr = User(
             character_id=character_id,
             character_name=data['name'],

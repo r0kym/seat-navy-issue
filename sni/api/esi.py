@@ -13,9 +13,16 @@ import pydantic
 import requests
 
 from sni.user import User
-import sni.esi.esi as esi
-import sni.esi.sso as sso
-import sni.esi.token as esitoken
+
+from sni.esi import (
+    decode_access_token,
+    esi_get,
+    get_access_token,
+    get_access_token_from_callback_code,
+    get_esi_path_scope,
+    save_esi_tokens,
+)
+
 from sni.uac import (
     assert_has_clearance,
     create_user_token,
@@ -72,9 +79,9 @@ async def get_callback_esi(code: str, state: str):
     """
     logging.info('Received callback from ESI for state %s', state)
     state_code: StateCode = StateCode.objects.get(uuid=state)
-    esi_response = sso.get_access_token(code)
-    decoded_access_token = sso.decode_access_token(esi_response.access_token)
-    esitoken.save_esi_tokens(esi_response)
+    esi_response = get_access_token_from_callback_code(code)
+    decoded_access_token = decode_access_token(esi_response.access_token)
+    save_esi_tokens(esi_response)
     user_token = create_user_token(
         state_code.app_token,
         User.objects.get(character_id=decoded_access_token.character_id))
@@ -114,15 +121,15 @@ async def get_esi_latest(
     """
     esi_token: Optional[str] = None
     if data.on_behalf_of:
-        esi_scope = esi.get_path_scope(esi_path)
+        esi_scope = get_esi_path_scope(esi_path)
         if esi_scope is not None:
             target = User.objects.get(character_id=data.on_behalf_of)
             assert_has_clearance(tkn.owner, esi_scope, target)
-            esi_token = esitoken.get_access_token(
+            esi_token = get_access_token(
                 data.on_behalf_of,
                 esi_scope,
             ).access_token
-    response = esi.get(
+    response = esi_get(
         esi_path,
         esi_token,
         params=data.params,

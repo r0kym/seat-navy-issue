@@ -14,8 +14,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.user import User
-import sni.esi.sso as sso
+from sni.esi import get_auth_url
 from sni.uac import (
     assert_has_clearance,
     create_dynamic_app_token,
@@ -27,6 +26,7 @@ from sni.uac import (
     to_jwt,
     Token,
 )
+from sni.user import User
 
 router = APIRouter()
 
@@ -220,7 +220,7 @@ async def post_token_use_from_dyn(
     assert_has_clearance(tkn.owner, 'sni.create_use_token')
     state_code = create_state_code(tkn)
     return PostTokenUseFromDynOut(
-        login_url=sso.get_auth_url(data.scopes, str(state_code.uuid)),
+        login_url=get_auth_url(data.scopes, str(state_code.uuid)),
         state_code=str(state_code.uuid),
     )
 

@@ -6,66 +6,57 @@ import logging
 import re
 from typing import Optional
 
-import mongoengine
+import mongoengine as me
 import requests
 
 import sni.conf as conf
+
+from .models import EsiPath
 
 ESI_BASE = 'https://esi.evetech.net/'
 ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
 
 
-class EsiPath(mongoengine.Document):
+def esi_delete(path: str,
+               token: Optional[str] = None,
+               **kwargs) -> requests.Response:
     """
-    Represents a path in ESI's openapi specification.
-
-    See also:
-        `EVE Swagger Interface <https://esi.evetech.net/ui>`_
-        `EVE Swagger Interface (JSON) <https://esi.evetech.net/latest/swagger.json>`_
+    Wrapper for :meth:`sni.esi.esi.esi_request` for DELETE requests.
     """
-    http_method = mongoengine.StringField(required=True)
-    path_re = mongoengine.StringField(required=True)
-    path = mongoengine.StringField(required=True, unique_with='http_method')
-    scope = mongoengine.StringField(required=False)
-    version = mongoengine.StringField(required=True)
+    return esi_request('delete', path, token, **kwargs)
 
 
-def delete(path: str,
-           token: Optional[str] = None,
-           **kwargs) -> requests.Response:
-    """
-    Wrapper for :meth:`sni.esi.esi.request` for DELETE requests.
-    """
-    return request('delete', path, token, **kwargs)
-
-
-def get(path: str, token: Optional[str] = None, **kwargs) -> requests.Response:
-    """
-    Wrapper for :meth:`sni.esi.esi.request` for GET requests.
-    """
-    return request('get', path, token, **kwargs)
-
-
-def post(path: str,
-         token: Optional[str] = None,
-         **kwargs) -> requests.Response:
-    """
-    Wrapper for :meth:`sni.esi.esi.request` for POST requests.
-    """
-    return request('post', path, token, **kwargs)
-
-
-def put(path: str, token: Optional[str] = None, **kwargs) -> requests.Response:
-    """
-    Wrapper for :meth:`sni.esi.esi.request` for PUT requests.
-    """
-    return request('put', path, token, **kwargs)
-
-
-def request(http_method: str,
-            path: str,
+def esi_get(path: str,
             token: Optional[str] = None,
             **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request` for GET requests.
+    """
+    return esi_request('get', path, token, **kwargs)
+
+
+def esi_post(path: str,
+             token: Optional[str] = None,
+             **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request` for POST requests.
+    """
+    return esi_request('post', path, token, **kwargs)
+
+
+def esi_put(path: str,
+            token: Optional[str] = None,
+            **kwargs) -> requests.Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request` for PUT requests.
+    """
+    return esi_request('put', path, token, **kwargs)
+
+
+def esi_request(http_method: str,
+                path: str,
+                token: Optional[str] = None,
+                **kwargs) -> requests.Response:
     """
     Makes an HTTP request to the ESI, and returns the response object.
     """
@@ -85,7 +76,7 @@ def request(http_method: str,
     return response
 
 
-def get_path_scope(path: str) -> Optional[str]:
+def get_esi_path_scope(path: str) -> Optional[str]:
     """
     Returns the ESI scope that is required for a given ESI path.
 
@@ -93,17 +84,17 @@ def get_path_scope(path: str) -> Optional[str]:
 
     Examples:
 
-        >>> get_path_scope('latest/characters/0000000000/assets')
+        >>> get_esi_path_scope('latest/characters/0000000000/assets')
         'esi-assets.read_assets.v1'
 
-        >>> get_path_scope('latest/alliances')
+        >>> get_esi_path_scope('latest/alliances')
         None
     """
     esi_path: EsiPath
     for esi_path in EsiPath.objects:
         if re.search(esi_path.path_re, path):
             return esi_path.scope
-    raise mongoengine.DoesNotExist
+    raise me.DoesNotExist
 
 
 def load_esi_openapi() -> None:

@@ -8,13 +8,13 @@ from typing import List
 from urllib.parse import urljoin
 
 import jwt
-import pydantic
+import pydantic as pdt
 import requests
 
 import sni.conf as conf
 
 
-class AuthorizationCodeResponse(pydantic.BaseModel):
+class AuthorizationCodeResponse(pdt.BaseModel):
     """
     A token document issued by the ESI looks like this::
 
@@ -31,7 +31,7 @@ class AuthorizationCodeResponse(pydantic.BaseModel):
     refresh_token: str
 
 
-class DecodedAccessToken(pydantic.BaseModel):
+class DecodedAccessToken(pdt.BaseModel):
     """
     Decoded access token issued by the ESI. Should look like this::
 
@@ -130,7 +130,8 @@ def get_basic_authorization_code() -> str:
     return urlsafe_b64encode(authorization.encode()).decode()
 
 
-def get_access_token(code: str) -> AuthorizationCodeResponse:
+def get_access_token_from_callback_code(
+        code: str) -> AuthorizationCodeResponse:
     """
     Gets an access token (along with its refresh token) from an EVE SSO
     authorization code.

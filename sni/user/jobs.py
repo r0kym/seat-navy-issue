@@ -4,9 +4,8 @@ User and eve player structure management jobs.
 
 import logging
 
+from sni.esi import esi_get, EsiRefreshToken, get_access_token
 from sni.scheduler import scheduler
-import sni.esi.esi as esi
-import sni.esi.token as token
 from sni.uac import reset_clearance
 import sni.utils as utils
 
@@ -57,7 +56,7 @@ def update_alliance_members(alliance: Alliance):
     Makes sure all members of a given alliance exist in the database.
     """
     logging.debug('Updating members of alliance %s', alliance.alliance_name)
-    response = esi.get(
+    response = esi_get(
         f'latest/alliances/{alliance.alliance_id}/corporations/')
     for corporation_id in response.json():
         ensure_corporation(corporation_id)
@@ -83,7 +82,7 @@ def update_alliance(alliance: Alliance):
     Updates an alliance's properties from the ESI.
     """
     logging.debug('Updating properties of alliance %s', alliance.alliance_name)
-    data = esi.get(f'latest/alliances/{alliance.alliance_id}').json()
+    data = esi_get(f'latest/alliances/{alliance.alliance_id}').json()
     alliance.executor_corporation_id = data['executor_corporation_id']
     alliance.save()
 
@@ -144,7 +143,7 @@ def update_coropration_members(corporation: Corporation):
                   corporation.corporation_name)
     scope = 'esi-corporations.read_corporation_membership.v1'
     # pylint: disable=protected-access
-    query = token.EsiRefreshToken.objects.aggregate([
+    query = EsiRefreshToken.objects.aggregate([
         {
             '$lookup': {
                 'as': 'owner_data',
@@ -165,11 +164,11 @@ def update_coropration_members(corporation: Corporation):
             },
         },
     ])
-    esi_access_token = token.get_access_token(
+    esi_access_token = get_access_token(
         query.next()['owner_data'][0]['character_id'],
         scope,
     )
-    response = esi.get(
+    response = esi_get(
         f'latest/corporations/{corporation.corporation_id}/members/',
         esi_access_token.access_token,
     )
@@ -199,7 +198,7 @@ def update_corporation(corporation: Corporation):
     """
     logging.debug('Updating properties of corproation %s',
                   corporation.corporation_name)
-    data = esi.get(f'latest/corporations/{corporation.corporation_id}').json()
+    data = esi_get(f'latest/corporations/{corporation.corporation_id}').json()
     corporation.alliance = ensure_alliance(
         data['alliance_id']) if 'alliance_id' in data else None
     corporation.ceo_character_id = int(data['ceo_id'])
@@ -226,7 +225,7 @@ def update_users():
     Iterated through all users and updates their field from ESI.
     """
     for usr in User.objects(character_id__gt=0):
-        data = esi.get(f'latest/characters/{usr.character_id}').json()
+        data = esi_get(f'latest/characters/{usr.character_id}').json()
         old_corporation = usr.corporation
         usr.corporation = ensure_corporation(data['corporation_id'])
         usr.updated_on = utils.now()
