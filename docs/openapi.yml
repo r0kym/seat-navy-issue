@@ -253,25 +253,6 @@ components:
           type: array
       title: HTTPValidationError
       type: object
-    PostAuthStartOut:
-      description: Model for `POST /teamspeak/auth/start` responses.
-      properties:
-        challenge_nickname:
-          title: Challenge Nickname
-          type: string
-        expiration_datetime:
-          format: date-time
-          title: Expiration Datetime
-          type: string
-        user:
-          title: User
-          type: string
-      required:
-      - expiration_datetime
-      - challenge_nickname
-      - user
-      title: PostAuthStartOut
-      type: object
     PostCoalitionIn:
       description: Model for `POST /coalition` responses.
       properties:
@@ -463,6 +444,44 @@ components:
       - msg
       - type
       title: ValidationError
+      type: object
+    sni__api__discord__PostAuthStartOut:
+      description: Model for `POST /discord/auth/start` responses.
+      properties:
+        code:
+          title: Code
+          type: string
+        expiration_datetime:
+          format: date-time
+          title: Expiration Datetime
+          type: string
+        user:
+          title: User
+          type: string
+      required:
+      - code
+      - expiration_datetime
+      - user
+      title: PostAuthStartOut
+      type: object
+    sni__api__teamspeak__PostAuthStartOut:
+      description: Model for `POST /teamspeak/auth/start` responses.
+      properties:
+        challenge_nickname:
+          title: Challenge Nickname
+          type: string
+        expiration_datetime:
+          format: date-time
+          title: Expiration Datetime
+          type: string
+        user:
+          title: User
+          type: string
+      required:
+      - expiration_datetime
+      - challenge_nickname
+      - user
+      title: PostAuthStartOut
       type: object
 info:
   title: FastAPI
@@ -689,6 +708,40 @@ paths:
       summary: Update a coalition
       tags:
       - Coalition management
+  /discord/auth/start:
+    post:
+      description: 'Starts a new authentication challenge for the owner of the token.
+        A random
+
+        code is returned (see `PostAuthStartOut` for more details), and the user
+
+        has 1 minute to post it as `!auth <code>` in the dedicated authentication
+
+        chanel.'
+      operationId: port_auth_start_discord_auth_start_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sni__api__discord__PostAuthStartOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Starts a Discord authentication challenge
+      tags:
+      - Discord
   /esi/{esi_path}:
     get:
       description: 'Forwards a `GET` request to the ESI. The required clearance level
@@ -968,7 +1021,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostAuthStartOut'
+                $ref: '#/components/schemas/sni__api__teamspeak__PostAuthStartOut'
           description: Successful Response
         '422':
           content:

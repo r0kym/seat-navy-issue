@@ -1,5 +1,5 @@
-Configuration facility
-======================
+Configuration file reference
+============================
 
 .. _configuration-file-reference:
 
@@ -62,9 +62,3 @@ Example
 
 .. literalinclude:: sni.example.yml
     :language: yaml
-
-
-Module documentation
---------------------
-
-.. automodule:: sni.conf

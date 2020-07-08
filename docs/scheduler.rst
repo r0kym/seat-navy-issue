@@ -1,4 +1,0 @@
-Scheduler
-=========
-
-.. automodule:: sni.scheduler
