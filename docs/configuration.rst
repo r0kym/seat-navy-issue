@@ -29,6 +29,7 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 * ``general``
     * ``debug`` (default: ``false``): Sets the app in debug mode.
     * ``host`` (default: ``0.0.0.0``): API server host.
+    * ``logging_level`` (default: ``info``)
     * ``port`` (default: ``80``): API server port.
     * ``root_url``: HTTP URL at which the API root is located (e.g.
       ``https://example.com/sni``)
@@ -36,7 +37,6 @@ The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 * ``jwt``
     * ``algorithm`` (default: ``HS256``): A ``pyjwt`` supported algorithm, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
     * ``secret``: Application secret. Generate with ``openssl rand -hex 32``.
-* ``logging``: Logging facility configuration, see the `logging.config documentation <https://docs.python.org/3/library/logging.config.html#dictionary-schema-details>`_.
 * ``redis``
     * ``database`` (default: ``0``)
     * ``host``

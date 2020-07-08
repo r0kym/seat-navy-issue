@@ -156,11 +156,56 @@ def start():
     """
     logging.info('Starting API server on %s:%s', conf.get('general.host'),
                  conf.get('general.port'))
+    log_level = str(conf.get('general.logging_level')).upper()
+    log_config = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'default': {
+                '()': 'uvicorn.logging.DefaultFormatter',
+                'fmt': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+                'use_colors': None,
+            },
+            'access': {
+                '()':
+                'uvicorn.logging.AccessFormatter',
+                'fmt': ('%(levelprefix)s %(client_addr)s - "%(request_line)s" '
+                        '%(status_code)s'),
+            },
+        },
+        'handlers': {
+            'default': {
+                'formatter': 'default',
+                'class': 'logging.StreamHandler',
+                'stream': 'ext://sys.stderr',
+            },
+            'access': {
+                'formatter': 'access',
+                'class': 'logging.StreamHandler',
+                'stream': 'ext://sys.stdout',
+            },
+        },
+        'loggers': {
+            '': {
+                'handlers': ['default'],
+                'level': log_level,
+            },
+            'uvicorn.error': {
+                'level': log_level,
+            },
+            'uvicorn.access': {
+                'handlers': ['access'],
+                'level': log_level,
+                'propagate': False,
+            },
+        },
+    }
     try:
         uvicorn.run(
             'sni.api.server:app',
             host=conf.get('general.host'),
-            log_level='debug' if conf.get('general.debug') else 'info',
+            log_config=log_config,
+            log_level=log_level.lower(),
             port=conf.get('general.port'),
         )
     finally:

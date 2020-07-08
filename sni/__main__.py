@@ -8,7 +8,6 @@ This module contains the entry point to SNI.
 
 import argparse
 import logging
-import logging.config
 import sys
 
 import sni.conf as conf
@@ -29,7 +28,18 @@ def main():
     except RuntimeError as error:
         logging.fatal(str(error))
         sys.exit(-1)
-    logging.config.dictConfig(conf.get('logging', {}))
+
+    logging_level = {
+        'CRITICAL': logging.CRITICAL,
+        'DEBUG': logging.DEBUG,
+        'ERROR': logging.ERROR,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+    }[str(conf.get('general.logging_level')).upper()]
+    logging.basicConfig(
+        format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+        level=logging_level,
+    )
 
     # --------------------------------------------------------------------------
     # Pre database
@@ -79,6 +89,7 @@ def main():
     # --------------------------------------------------------------------------
 
     import sni.scheduler
+    logging.getLogger('apscheduler').setLevel(logging_level)
     sni.scheduler.scheduler.start()
 
     import sni.esi.jobs
@@ -98,6 +109,7 @@ def main():
         import sni.discord.bot
         import sni.discord.commands
         import sni.discord.events
+        logging.getLogger('discord').setLevel(logging_level)
         sni.discord.bot.start()
 
     # --------------------------------------------------------------------------
@@ -105,6 +117,8 @@ def main():
     # --------------------------------------------------------------------------
 
     import sni.api.server
+    logging.getLogger('fastapi').setLevel(logging_level)
+    logging.getLogger('uvicorn').setLevel(logging_level)
     sni.api.server.start()
 
     # --------------------------------------------------------------------------

@@ -16,6 +16,7 @@ CONFIGURATION: Dict[str, Any] = {
     'discord.log_channel_id': None,
     'general.debug': False,
     'general.host': '0.0.0.0',
+    'general.logging_level': 'info',
     'general.port': 80,
     'general.scheduler_thread_count': 5,
     'jwt.algorithm': 'HS256',
@@ -68,6 +69,7 @@ def load_configuration_file(path: str) -> None:
 
     assert_is_set('general.debug')
     assert_is_set('general.host')
+    assert_is_set('general.logging_level')
     assert_is_set('general.port')
     assert_is_set('general.root_url')
     assert_is_set('general.scheduler_thread_count')
