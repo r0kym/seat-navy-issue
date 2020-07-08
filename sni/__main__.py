@@ -45,18 +45,19 @@ def main():
     # --------------------------------------------------------------------------
 
     import sni.db
+
     import sni.user
     import sni.uac
     import sni.esi
+
+    if arguments.migrate_database:
+        sys.exit()
 
     if conf.get('teamspeak.enabled'):
         import sni.teamspeak
 
     if conf.get('discord.enabled'):
         import sni.discord
-
-    if arguments.migrate_database:
-        sys.exit()
 
     if arguments.reload_esi_openapi_spec:
         sni.esi.load_esi_openapi()
@@ -91,6 +92,7 @@ def main():
     # --------------------------------------------------------------------------
 
     sni.scheduler.scheduler.shutdown()
+
 
 
 def parse_command_line_arguments() -> argparse.Namespace:

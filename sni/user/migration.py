@@ -5,7 +5,12 @@ import logging
 
 import mongoengine as me
 
-import sni.db.mongodb as mongodb
+from sni.db.mongodb import get_pymongo_collection
+from sni.db.migration import (
+    ensure_minimum_version,
+    has_outdated_documents,
+    set_if_not_exist,
+)
 import sni.utils as utils
 
 from .models import (
@@ -78,38 +83,23 @@ def migrate_coalition():
     Migrate the coalition documents to the latest schema
     """
     # pylint: disable=protected-access
-    coalition_collection = mongodb.get_pymongo_collection(
-        Coalition._get_collection_name())
+    collection = get_pymongo_collection(Coalition._get_collection_name())
 
-    if coalition_collection.count_documents(
-        {'_version': {
-            '$ne': COALITION_SCHEMA_VERSION
-        }}) == 0:
+    if not has_outdated_documents(collection, COALITION_SCHEMA_VERSION):
         return
 
     logging.info('Migrating collection "coalition" to v%d',
                  COALITION_SCHEMA_VERSION)
 
-    coalition_collection.drop_indexes()
+    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
-    coalition_collection.update_many(
-        {
-            '_version': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                '_version': 1
-            },
-        },
-    )
+    set_if_not_exist(collection, '_version', 1)
 
     # v1 to v2
     # Set name field to coalition_name
-    coalition_collection.update_many(
+    collection.update_many(
         {'_version': 1},
         {
             '$rename': {
@@ -132,37 +122,22 @@ def migrate_group():
     Renames the ``name`` field to ``group_name``
     """
     # pylint: disable=protected-access
-    group_collection = mongodb.get_pymongo_collection(
-        Group._get_collection_name())
+    collection = get_pymongo_collection(Group._get_collection_name())
 
-    if group_collection.count_documents(
-        {'_version': {
-            '$ne': GROUP_SCHEMA_VERSION
-        }}) == 0:
+    if not has_outdated_documents(collection, GROUP_SCHEMA_VERSION):
         return
 
     logging.info('Migrating collection "group" to v%d', GROUP_SCHEMA_VERSION)
 
-    group_collection.drop_indexes()
+    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
-    group_collection.update_many(
-        {
-            '_version': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                '_version': 1
-            },
-        },
-    )
+    set_if_not_exist(collection, '_version', 1)
 
     # v1 to v2
     # Rename name field to group_name
-    group_collection.update_many(
+    collection.update_many(
         {'_version': 1},
         {
             '$rename': {
@@ -180,7 +155,7 @@ def migrate_group():
     # * teamspeak_sgid exists (if not, sets it to None)
     # * map_to_discord exists (if not, sets it to True)
     # * map_to_teamspeak exists (if not, sets it to True)
-    group_collection.update_one(
+    collection.update_one(
         {
             '_version': 2,
             'group_name': 'superusers',
@@ -195,64 +170,11 @@ def migrate_group():
             },
         },
     )
-    group_collection.update_many(
-        {
-            '_version': 2,
-            'discord_role_id': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                'discord_role_id': None
-            },
-        },
-    )
-    group_collection.update_many(
-        {
-            '_version': 2,
-            'teamspeak_sgid': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                'teamspeak_sgid': None
-            },
-        },
-    )
-    group_collection.update_many(
-        {
-            '_version': 2,
-            'map_to_discord': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                'map_to_discord': True
-            },
-        },
-    )
-    group_collection.update_many(
-        {
-            '_version': 2,
-            'map_to_teamspeak': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                'map_to_teamspeak': True
-            },
-        },
-    )
-    group_collection.update_many(
-        {'_version': 2},
-        {'$set': {
-            '_version': 3
-        }},
-    )
+    set_if_not_exist(collection, 'discord_role_id', None, version=2)
+    set_if_not_exist(collection, 'teamspeak_sgid', None, version=2)
+    set_if_not_exist(collection, 'map_to_discord', True, version=2)
+    set_if_not_exist(collection, 'map_to_teamspeak', True, version=2)
+    ensure_minimum_version(collection, 3)
 
     # Finally
     Group.ensure_indexes()
@@ -263,46 +185,24 @@ def migrate_user():
     Migrate the user documents to the latest schema
     """
     # pylint: disable=protected-access
-    user_collection = mongodb.get_pymongo_collection(
-        User._get_collection_name())
+    collection = get_pymongo_collection(User._get_collection_name())
 
-    if user_collection.count_documents(
-        {'_version': {
-            '$ne': USER_SCHEMA_VERSION
-        }}) == 0:
+    if not has_outdated_documents(collection, USER_SCHEMA_VERSION):
         return
 
     logging.info('Migrating collection "user" to v%d', USER_SCHEMA_VERSION)
 
-    user_collection.drop_indexes()
+    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
-    user_collection.update_many(
-        {
-            '_version': {
-                '$exists': False
-            },
-        },
-        {
-            '$set': {
-                '_version': 1
-            },
-        },
-    )
+    set_if_not_exist(collection, '_version', 1)
 
     # v1 to v2
     # Add discord_user_id and teamspeak_cldbid fields, and set them to None
-    user_collection.update_many(
-        {'_version': 1},
-        {
-            '$set': {
-                '_version': 2,
-                'discord_user_id': None,
-                'teamspeak_cldbid': None,
-            },
-        },
-    )
+    set_if_not_exist(collection, 'discord_user_id', None, version=1)
+    set_if_not_exist(collection, 'teamspeak_cldbid', None, version=1)
+    ensure_minimum_version(collection, 2)
 
     # Finally
     User.ensure_indexes()

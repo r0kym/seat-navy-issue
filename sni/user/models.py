@@ -133,9 +133,9 @@ class Group(me.Document):
     is_autogroup = me.BooleanField(default=False, required=True)
     map_to_discord = me.BooleanField(default=True, required=True)
     map_to_teamspeak = me.BooleanField(default=True, required=True)
-    members = me.ListField(me.ReferenceField(User), required=True)
+    members = me.ListField(me.ReferenceField('User'), required=True)
     group_name = me.StringField(required=True, unique=True)
-    owner = me.ReferenceField(User, required=True)
+    owner = me.ReferenceField('User', required=True)
     teamspeak_sgid = me.IntField(null=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 

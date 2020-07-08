@@ -27,7 +27,14 @@ async def auth(ctx: Context, code: str):
         complete_authentication_challenge(member, code)
         usr: User = User.objects(discord_user_id=member.id).get()
         await update_discord_user(usr)
-        await ctx.message.delete()
+        await ctx.channel.send(
+            f'Hi <@{ctx.author.id}> :wave:, you are now authenticated. '
+            'Welcome aboard!')
     except Exception as error:
-        logging.error('Could not authenticate Discord user %d: %s',
-                      ctx.author.id, str(error))
+        logging.error('Could not authenticate Discord user %s (%d): %s',
+                      ctx.author.name, ctx.author.id, str(error))
+        await ctx.channel.send(
+            f':x: Sorry <@{ctx.author.id}>, I could not authenticate you. '
+            'Please try again with a different code. If the problem persists, '
+            'contact your Discord administrator.')
+    await ctx.message.delete()
