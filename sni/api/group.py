@@ -36,6 +36,7 @@ class GetGroupOut(pdt.BaseModel):
     """
     Model for `GET /group/{group_id}` responses.
     """
+    authorized_to_login: Optional[bool]
     created_on: datetime
     description: str
     group_id: str
@@ -50,8 +51,8 @@ class PostGroupIn(pdt.BaseModel):
     """
     Model for `POST /group` responses.
     """
-    group_name: str
     description: str = ''
+    group_name: str
 
 
 class PutGroupIn(pdt.BaseModel):
@@ -59,6 +60,7 @@ class PutGroupIn(pdt.BaseModel):
     Model for `POST /group` responses.
     """
     add_members: Optional[List[str]] = None
+    authorized_to_login: Optional[bool]
     description: Optional[str] = None
     members: Optional[List[str]] = None
     owner: Optional[str] = None
@@ -70,6 +72,7 @@ def group_record_to_response(grp: Group) -> GetGroupOut:
     Converts a group database record to a response.
     """
     return GetGroupOut(
+        authorized_to_login=grp.authorized_to_login,
         created_on=grp.created_on,
         description=grp.description,
         group_id=str(grp.pk),
@@ -183,6 +186,9 @@ def put_group(
             User.objects.get(character_name=member_name)
             for member_name in set(data.add_members)
         ]
+    if data.authorized_to_login is not None:
+        assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
+        grp.authorized_to_login = data.authorized_to_login
     if data.description is not None:
         grp.description = data.description
     if data.members is not None:

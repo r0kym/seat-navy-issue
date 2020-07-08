@@ -38,6 +38,7 @@ class GetCoalitionOut(pdt.BaseModel):
     """
     Model for `GET /coalition/{coalition_id}` responses.
     """
+    authorized_to_login: Optional[bool]
     coalition_id: str
     created_on: datetime
     members: List[str]
@@ -59,6 +60,7 @@ class PutCoalitionIn(pdt.BaseModel):
     Model for `POST /coalition` responses.
     """
     add_members: Optional[List[str]] = None
+    authorized_to_login: Optional[bool]
     members: Optional[List[str]] = None
     remove_members: Optional[List[str]] = None
     ticker: Optional[str] = None
@@ -69,6 +71,7 @@ def coalition_record_to_response(coalition: Coalition) -> GetCoalitionOut:
     Converts a coalition database record to a response.
     """
     return GetCoalitionOut(
+        authorized_to_login=coalition.authorized_to_login,
         coalition_id=str(coalition.pk),
         created_on=coalition.created_on,
         members=[member.alliance_id for member in coalition.members],
@@ -179,6 +182,9 @@ def put_coalition(
             Alliance.objects.get(alliance_name=member_name)
             for member_name in set(data.add_members)
         ]
+    if data.authorized_to_login is not None:
+        assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
+        coalition.authorized_to_login = data.authorized_to_login
     if data.members is not None:
         coalition.members = [
             Alliance.objects.get(alliance_name=member_name)

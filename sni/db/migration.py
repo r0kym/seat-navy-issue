@@ -13,7 +13,9 @@ def ensure_minimum_version(collection: Collection, version: int) -> None:
     the given version, sets it to that version.
     """
     collection.update_many(
-        {'_version': {'$lt': version}},
+        {'_version': {
+            '$lt': version
+        }},
         {'$set': {
             '_version': version
         }},

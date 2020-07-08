@@ -2,7 +2,6 @@
 Models
 """
 
-from enum import Enum
 from typing import Iterator, List
 
 import mongoengine as me
@@ -69,7 +68,7 @@ class Coalition(me.Document):
     to be created manually. An alliance can be part of multiple coalitions.
     """
     _version = me.IntField(default=COALITION_SCHEMA_VERSION)
-    authorized_to_login = me.BooleanField(default=None, null=True)
+    authorized_to_login = me.BooleanField(default=True, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     coalition_name = me.StringField(required=True, unique=True)
@@ -142,7 +141,9 @@ class Group(me.Document):
     is_autogroup = me.BooleanField(default=False, required=True)
     map_to_discord = me.BooleanField(default=True, required=True)
     map_to_teamspeak = me.BooleanField(default=True, required=True)
-    members = me.ListField(me.ReferenceField('User'), default=list, required=True)
+    members = me.ListField(me.ReferenceField('User'),
+                           default=list,
+                           required=True)
     group_name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField('User', required=True)
     teamspeak_sgid = me.IntField(null=True)

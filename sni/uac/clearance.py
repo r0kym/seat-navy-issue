@@ -225,6 +225,7 @@ SCOPES: Dict[str, AbstractScope] = {
     'sni.read_per_token': AbsoluteScope(9),
     'sni.read_use_token': AbsoluteScope(0),
     'sni.read_user': AbsoluteScope(0),
+    'sni.set_authorized_to_login': AbsoluteScope(9),
     'sni.set_clearance_level_0': ClearanceModificationScope(0),
     'sni.set_clearance_level_1': ClearanceModificationScope(1),
     'sni.set_clearance_level_10': ClearanceModificationScope(10),

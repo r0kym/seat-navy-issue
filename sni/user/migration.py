@@ -3,15 +3,12 @@ Migration methode for user related collections
 """
 import logging
 
-import mongoengine as me
-
 from sni.db.mongodb import get_pymongo_collection
 from sni.db.migration import (
     ensure_minimum_version,
     has_outdated_documents,
     set_if_not_exist,
 )
-import sni.utils as utils
 
 from .models import (
     ALLIANCE_SCHEMA_VERSION,
@@ -38,6 +35,7 @@ def ensure_root() -> None:
         set__clearance_level=10,
         upsert=True,
     )
+
 
 def ensure_superuser_group() -> None:
     """
@@ -85,7 +83,7 @@ def migrate_alliance():
         return
 
     logging.info('Migrating collection "alliance" to v%d',
-            COALITION_SCHEMA_VERSION)
+                 COALITION_SCHEMA_VERSION)
 
     collection.drop_indexes()
 
@@ -100,6 +98,7 @@ def migrate_alliance():
 
     # Finally
     Alliance.ensure_indexes()
+
 
 def migrate_coalition():
     """
@@ -169,6 +168,7 @@ def migrate_corporation():
 
     # Finally
     Corporation.ensure_indexes()
+
 
 def migrate_group():
     """

@@ -36,6 +36,7 @@ class GetUserOut(pdt.BaseModel):
     Model for ``GET /user/{character_name}`` responses
     """
     alliance: Optional[str]
+    authorized_to_login: Optional[bool]
     character_id: int
     character_name: str
     clearance_level: int
@@ -52,6 +53,7 @@ class PutUserIn(pdt.BaseModel):
     """
     Model for ``PUT /user/{character_id}`` requests
     """
+    authorized_to_login: Optional[bool]
     clearance_level: Optional[int]
 
 
@@ -75,6 +77,7 @@ def user_record_to_response(usr: User) -> GetUserOut:
             ]
     return GetUserOut(
         alliance=alliance_name,
+        authorized_to_login=usr.authorized_to_login,
         character_id=usr.character_id,
         character_name=usr.character_name,
         clearance_level=usr.clearance_level,
@@ -158,5 +161,8 @@ def put_user_name(character_id: int,
         scope_name = f'sni.set_clearance_level_{data.clearance_level}'
         assert_has_clearance(tkn.owner, scope_name, usr)
         usr.clearance_level = data.clearance_level
+    if data.authorized_to_login is not None:
+        assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
+        usr.authorized_to_login = data.authorized_to_login
     usr.save()
     return user_record_to_response(usr)
