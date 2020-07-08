@@ -14,8 +14,12 @@ from sni.db.migration import (
 import sni.utils as utils
 
 from .models import (
+    ALLIANCE_SCHEMA_VERSION,
+    Alliance,
     COALITION_SCHEMA_VERSION,
     Coalition,
+    CORPORATION_SCHEMA_VERSION,
+    Corporation,
     GROUP_SCHEMA_VERSION,
     Group,
     USER_SCHEMA_VERSION,
@@ -27,44 +31,34 @@ def ensure_root() -> None:
     """
     Create root user if it does not exist.
     """
-    if User.objects(character_id=0).count() == 0:
-        logging.info('Creating root user')
-        User(
-            character_id=0,
-            character_name='root',
-            clearance_level=10,
-            created_on=utils.now(),
-        ).save()
-
+    User.objects(character_id=0).update(
+        set__authorized_to_login=True,
+        set__character_id=0,
+        set__character_name='root',
+        set__clearance_level=10,
+        upsert=True,
+    )
 
 def ensure_superuser_group() -> None:
     """
     Ensure that the ``superusers`` group exists and makes sure that root is the
     owner.
     """
-    group_name = 'superusers'
     root = User.objects.get(character_id=0)
-    try:
-        superusers: Group = Group.objects.get(group_name=group_name)
-        superusers.owner = root
-        superusers.modify(add_to_set__members=root)
-        superusers.discord_role_id = None
-        superusers.map_to_discord = None
-        superusers.map_to_teamspeak = False
-        superusers.teamspeak_sgid = False
-        superusers.save()
-    except me.DoesNotExist:
-        logging.info('Creating superuser group')
-        Group(
-            description="Superuser group.",
-            discord_role_id=None,
-            group_name=group_name,
-            map_to_discord=None,
-            map_to_teamspeak=False,
-            members=[root],
-            owner=root,
-            teamspeak_sgid=False,
-        ).save()
+    group_name = 'superusers'
+    Group.objects(group_name='superusers').update(
+        add_to_set__members=root,
+        set__authorized_to_login=True,
+        set__description="Superuser group",
+        set__discord_role_id=None,
+        set__is_autogroup=True,
+        set__group_name=group_name,
+        set__map_to_discord=False,
+        set__map_to_teamspeak=False,
+        set__owner=root,
+        set__teamspeak_sgid=None,
+        upsert=True,
+    )
 
 
 def migrate():
@@ -73,10 +67,39 @@ def migrate():
     """
     ensure_root()
     ensure_superuser_group()
-    migrate_coalition()
-    migrate_group()
     migrate_user()
+    migrate_group()
+    migrate_corporation()
+    migrate_alliance()
+    migrate_coalition()
 
+
+def migrate_alliance():
+    """
+    Migrate the alliances documents to the latest schema
+    """
+    # pylint: disable=protected-access
+    collection = get_pymongo_collection(Alliance._get_collection_name())
+
+    if not has_outdated_documents(collection, ALLIANCE_SCHEMA_VERSION):
+        return
+
+    logging.info('Migrating collection "alliance" to v%d',
+            COALITION_SCHEMA_VERSION)
+
+    collection.drop_indexes()
+
+    # v0 to v1
+    # Set _version field to 1
+    set_if_not_exist(collection, '_version', 1)
+
+    # v1 to v2
+    # Set authorized_to_login field to None
+    set_if_not_exist(collection, 'authorized_to_login', None, version=1)
+    ensure_minimum_version(collection, 2)
+
+    # Finally
+    Alliance.ensure_indexes()
 
 def migrate_coalition():
     """
@@ -111,15 +134,45 @@ def migrate_coalition():
         },
     )
 
+    # v2 to v3
+    # Set authorized_to_login field to None
+    set_if_not_exist(collection, 'authorized_to_login', None, version=2)
+    ensure_minimum_version(collection, 3)
+
     # Finally
     Coalition.ensure_indexes()
 
 
+def migrate_corporation():
+    """
+    Migrate the corporation documents to the latest schema
+    """
+    # pylint: disable=protected-access
+    collection = get_pymongo_collection(Corporation._get_collection_name())
+
+    if not has_outdated_documents(collection, CORPORATION_SCHEMA_VERSION):
+        return
+
+    logging.info('Migrating collection "corporation" to v%d',
+                 CORPORATION_SCHEMA_VERSION)
+
+    collection.drop_indexes()
+
+    # v0 to v1
+    # Set _version field to 1
+    set_if_not_exist(collection, '_version', 1)
+
+    # v1 to v2
+    # Set authorized_to_login field to None
+    set_if_not_exist(collection, 'authorized_to_login', None, version=1)
+    ensure_minimum_version(collection, 2)
+
+    # Finally
+    Corporation.ensure_indexes()
+
 def migrate_group():
     """
-    Migrate the group collection from 10 to v2.
-
-    Renames the ``name`` field to ``group_name``
+    Migrate the group documents to the latest schema
     """
     # pylint: disable=protected-access
     collection = get_pymongo_collection(Group._get_collection_name())
@@ -176,6 +229,11 @@ def migrate_group():
     set_if_not_exist(collection, 'map_to_teamspeak', True, version=2)
     ensure_minimum_version(collection, 3)
 
+    # v3 to v4
+    # Set authorized_to_login field to None
+    set_if_not_exist(collection, 'authorized_to_login', None, version=3)
+    ensure_minimum_version(collection, 4)
+
     # Finally
     Group.ensure_indexes()
 
@@ -203,6 +261,11 @@ def migrate_user():
     set_if_not_exist(collection, 'discord_user_id', None, version=1)
     set_if_not_exist(collection, 'teamspeak_cldbid', None, version=1)
     ensure_minimum_version(collection, 2)
+
+    # v2 to v3
+    # Set authorized_to_login field to None
+    set_if_not_exist(collection, 'authorized_to_login', None, version=2)
+    ensure_minimum_version(collection, 3)
 
     # Finally
     User.ensure_indexes()

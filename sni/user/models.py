@@ -2,22 +2,27 @@
 Models
 """
 
+from enum import Enum
 from typing import Iterator, List
 
 import mongoengine as me
 
 import sni.utils as utils
 
-COALITION_SCHEMA_VERSION = 2
-GROUP_SCHEMA_VERSION = 3
-USER_SCHEMA_VERSION = 2
+ALLIANCE_SCHEMA_VERSION = 2
+COALITION_SCHEMA_VERSION = 3
+CORPORATION_SCHEMA_VERSION = 2
+GROUP_SCHEMA_VERSION = 4
+USER_SCHEMA_VERSION = 3
 
 
 class Alliance(me.Document):
     """
     EVE alliance database model.
     """
+    _version = me.IntField(default=ALLIANCE_SCHEMA_VERSION)
     alliance_id = me.IntField(unique=True)
+    authorized_to_login = me.BooleanField(default=None, null=True)
     executor_corporation_id = me.IntField(required=True)
     alliance_name = me.StringField(required=True)
     ticker = me.StringField(required=True)
@@ -64,6 +69,7 @@ class Coalition(me.Document):
     to be created manually. An alliance can be part of multiple coalitions.
     """
     _version = me.IntField(default=COALITION_SCHEMA_VERSION)
+    authorized_to_login = me.BooleanField(default=None, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     coalition_name = me.StringField(required=True, unique=True)
@@ -89,6 +95,8 @@ class Corporation(me.Document):
     """
     EVE corporation database model.
     """
+    _version = me.IntField(default=CORPORATION_SCHEMA_VERSION)
+    authorized_to_login = me.BooleanField(default=None, null=True)
     alliance = me.ReferenceField(Alliance,
                                  default=None,
                                  null=True,
@@ -127,13 +135,14 @@ class Group(me.Document):
     Group model. A group is simply a collection of users.
     """
     _version = me.IntField(default=GROUP_SCHEMA_VERSION)
+    authorized_to_login = me.BooleanField(default=None, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
     discord_role_id = me.IntField(null=True)
     description = me.StringField(default=str)
     is_autogroup = me.BooleanField(default=False, required=True)
     map_to_discord = me.BooleanField(default=True, required=True)
     map_to_teamspeak = me.BooleanField(default=True, required=True)
-    members = me.ListField(me.ReferenceField('User'), required=True)
+    members = me.ListField(me.ReferenceField('User'), default=list, required=True)
     group_name = me.StringField(required=True, unique=True)
     owner = me.ReferenceField('User', required=True)
     teamspeak_sgid = me.IntField(null=True)
@@ -147,6 +156,7 @@ class User(me.Document):
     A user corresponds to a single EVE character.
     """
     _version = me.IntField(default=USER_SCHEMA_VERSION)
+    authorized_to_login = me.BooleanField(default=None, null=True)
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
     clearance_level = me.IntField(default=0, required=True)
