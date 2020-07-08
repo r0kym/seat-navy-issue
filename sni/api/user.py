@@ -13,7 +13,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.user.models import Alliance, Corporation, User
+from sni.user.models import User
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
     from_authotization_header_nondyn,
@@ -43,6 +43,7 @@ class GetUserOut(pdt.BaseModel):
     coalitions: List[str]
     corporation: Optional[str]
     created_on: datetime
+    cumulated_mandatory_esi_scopes: List[str]
     is_ceo_of_alliance: bool
     is_ceo_of_corporation: bool
     tickered_name: str
@@ -62,28 +63,20 @@ def user_record_to_response(usr: User) -> GetUserOut:
     Populates a new :class:`sni.routers.user.GetUserOut` with the information
     contained in a user database record.
     """
-    corporation_name = None
-    alliance_name = None
-    coalition_names = []
-    corporation: Corporation = usr.corporation
-    if corporation is not None:
-        corporation_name = corporation.corporation_name
-        alliance: Alliance = corporation.alliance
-        if alliance is not None:
-            alliance_name = alliance.alliance_name
-            coalition_names = [
-                coalition.coalition_name
-                for coalition in alliance.coalitions()
-            ]
     return GetUserOut(
-        alliance=alliance_name,
+        alliance=(usr.alliance.alliance_name
+                  if usr.alliance is not None else None),
         authorized_to_login=usr.authorized_to_login,
         character_id=usr.character_id,
         character_name=usr.character_name,
         clearance_level=usr.clearance_level,
-        coalitions=coalition_names,
-        corporation=corporation_name,
+        coalitions=[
+            coalition.coalition_name for coalition in usr.coalitions()
+        ],
+        corporation=(usr.corporation.corporation_name
+                     if usr.corporation is not None else None),
         created_on=usr.created_on,
+        cumulated_mandatory_esi_scopes=usr.cumulated_mandatory_esi_scopes(),
         is_ceo_of_alliance=usr.is_ceo_of_alliance(),
         is_ceo_of_corporation=usr.is_ceo_of_corporation(),
         tickered_name=usr.tickered_name,

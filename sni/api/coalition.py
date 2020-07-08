@@ -41,6 +41,7 @@ class GetCoalitionOut(pdt.BaseModel):
     authorized_to_login: Optional[bool]
     coalition_id: str
     created_on: datetime
+    mandatory_esi_scopes: List[str]
     members: List[str]
     coalition_name: str
     ticker: str
@@ -61,6 +62,7 @@ class PutCoalitionIn(pdt.BaseModel):
     """
     add_members: Optional[List[str]] = None
     authorized_to_login: Optional[bool]
+    mandatory_esi_scopes: Optional[List[str]]
     members: Optional[List[str]] = None
     remove_members: Optional[List[str]] = None
     ticker: Optional[str] = None
@@ -74,6 +76,7 @@ def coalition_record_to_response(coalition: Coalition) -> GetCoalitionOut:
         authorized_to_login=coalition.authorized_to_login,
         coalition_id=str(coalition.pk),
         created_on=coalition.created_on,
+        mandatory_esi_scopes=coalition.mandatory_esi_scopes,
         members=[member.alliance_id for member in coalition.members],
         coalition_name=coalition.coalition_name,
         ticker=coalition.ticker,
@@ -185,6 +188,8 @@ def put_coalition(
     if data.authorized_to_login is not None:
         assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
         coalition.authorized_to_login = data.authorized_to_login
+    if data.mandatory_esi_scopes is not None:
+        coalition.mandatory_esi_scopes = data.mandatory_esi_scopes
     if data.members is not None:
         coalition.members = [
             Alliance.objects.get(alliance_name=member_name)

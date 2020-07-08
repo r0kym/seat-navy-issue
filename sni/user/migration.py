@@ -96,6 +96,11 @@ def migrate_alliance():
     set_if_not_exist(collection, 'authorized_to_login', None, version=1)
     ensure_minimum_version(collection, 2)
 
+    # v2 to v3
+    # Set mandatory_esi_scopes to []
+    set_if_not_exist(collection, 'mandatory_esi_scopes', [], version=2)
+    ensure_minimum_version(collection, 3)
+
     # Finally
     Alliance.ensure_indexes()
 
@@ -138,6 +143,11 @@ def migrate_coalition():
     set_if_not_exist(collection, 'authorized_to_login', None, version=2)
     ensure_minimum_version(collection, 3)
 
+    # v3 to v4
+    # Set mandatory_esi_scopes to []
+    set_if_not_exist(collection, 'mandatory_esi_scopes', [], version=3)
+    ensure_minimum_version(collection, 4)
+
     # Finally
     Coalition.ensure_indexes()
 
@@ -165,6 +175,11 @@ def migrate_corporation():
     # Set authorized_to_login field to None
     set_if_not_exist(collection, 'authorized_to_login', None, version=1)
     ensure_minimum_version(collection, 2)
+
+    # v2 to v3
+    # Set mandatory_esi_scopes to []
+    set_if_not_exist(collection, 'mandatory_esi_scopes', [], version=2)
+    ensure_minimum_version(collection, 3)
 
     # Finally
     Corporation.ensure_indexes()
@@ -233,6 +248,11 @@ def migrate_group():
     # Set authorized_to_login field to None
     set_if_not_exist(collection, 'authorized_to_login', None, version=3)
     ensure_minimum_version(collection, 4)
+
+    # v4 to v5
+    # Set mandatory_esi_scopes to []
+    set_if_not_exist(collection, 'mandatory_esi_scopes', [], version=4)
+    ensure_minimum_version(collection, 5)
 
     # Finally
     Group.ensure_indexes()

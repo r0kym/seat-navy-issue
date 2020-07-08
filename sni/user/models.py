@@ -2,15 +2,15 @@
 Models
 """
 
-from typing import Iterator, List, Optional
+from typing import Iterator, List, Optional, Set
 
 import mongoengine as me
 
 import sni.utils as utils
 
-ALLIANCE_SCHEMA_VERSION = 2
-COALITION_SCHEMA_VERSION = 3
-CORPORATION_SCHEMA_VERSION = 2
+ALLIANCE_SCHEMA_VERSION = 3
+COALITION_SCHEMA_VERSION = 4
+CORPORATION_SCHEMA_VERSION = 3
 GROUP_SCHEMA_VERSION = 4
 USER_SCHEMA_VERSION = 3
 
@@ -21,9 +21,12 @@ class Alliance(me.Document):
     """
     _version = me.IntField(default=ALLIANCE_SCHEMA_VERSION)
     alliance_id = me.IntField(unique=True)
+    alliance_name = me.StringField(required=True)
     authorized_to_login = me.BooleanField(default=None, null=True)
     executor_corporation_id = me.IntField(required=True)
-    alliance_name = me.StringField(required=True)
+    mandatory_esi_scopes = me.ListField(me.StringField(),
+                                        default=list,
+                                        required=True)
     ticker = me.StringField(required=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 
@@ -70,6 +73,9 @@ class Coalition(me.Document):
     _version = me.IntField(default=COALITION_SCHEMA_VERSION)
     authorized_to_login = me.BooleanField(default=True, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
+    mandatory_esi_scopes = me.ListField(me.StringField(),
+                                        default=list,
+                                        required=True)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     coalition_name = me.StringField(required=True, unique=True)
     ticker = me.StringField(default=str)
@@ -103,6 +109,9 @@ class Corporation(me.Document):
     ceo_character_id = me.IntField(required=True)
     corporation_id = me.IntField(unique=True)
     corporation_name = me.StringField(required=True)
+    mandatory_esi_scopes = me.ListField(me.StringField(),
+                                        default=list,
+                                        required=True)
     ticker = me.StringField(required=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 
@@ -175,6 +184,21 @@ class User(me.Document):
         if self.corporation is not None:
             return self.corporation.alliance
         return None
+
+    def cumulated_mandatory_esi_scopes(self) -> Set[str]:
+        """
+        Returns the list (although it really is a set) of all the ESI scopes
+        required by the corporation, alliance, and all the coalitions the user
+        is part of.
+        """
+        corporation_scopes = (self.corporation.mandatory_esi_scopes
+                              if self.corporation is not None else [])
+        alliance_scopes = (self.alliance.mandatory_esi_scopes
+                           if self.alliance is not None else [])
+        coalition_scopes = []
+        for coalition in self.coalitions():
+            coalition_scopes += coalition.mandatory_esi_scopes
+        return set(corporation_scopes + alliance_scopes + coalition_scopes)
 
     def coalitions(self) -> List[Coalition]:
         """
