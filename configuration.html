@@ -64,12 +64,11 @@
 </li>
 <li><dl>
 <dt><code class="docutils literal notranslate"><span class="pre">discord</span></code></dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">auth_channel_id</span></code>: Authentication channel id. The bot will listen for</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auth_channel_id</span></code>: Authentication channel id. The bot will listen for <code class="docutils literal notranslate"><span class="pre">!auth</span></code> commands from this channel.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">log_channel_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">null</span></code>): Channel id where the Discorb bot</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">!auth</span></code> commands from this channel.
-* <code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)
-* <code class="docutils literal notranslate"><span class="pre">log_channel_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">null</span></code>): Channel id where the Discorb bot
-can send log messages
+<p>can send log messages
 * <code class="docutils literal notranslate"><span class="pre">server_id</span></code>: Server on which the bot is operating.
 * <code class="docutils literal notranslate"><span class="pre">token</span></code></p>
 </dd>
@@ -87,6 +86,7 @@ can send log messages
 <dt><code class="docutils literal notranslate"><span class="pre">general</span></code></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Sets the app in debug mode.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>): API server host.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logging_level</span></code> (default: <code class="docutils literal notranslate"><span class="pre">info</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">80</span></code>): API server port.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">root_url</span></code>: HTTP URL at which the API root is located (e.g.
 <code class="docutils literal notranslate"><span class="pre">https://example.com/sni</span></code>)</p></li>
@@ -103,7 +103,6 @@ can send log messages
 </dd>
 </dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">logging</span></code>: Logging facility configuration, see the <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#dictionary-schema-details">logging.config documentation</a>.</p></li>
 <li><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">redis</span></code></dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>

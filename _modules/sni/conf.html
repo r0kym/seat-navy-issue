@@ -55,6 +55,7 @@
     <span class="s1">&#39;discord.log_channel_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="s1">&#39;general.debug&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="s1">&#39;general.host&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;general.logging_level&#39;</span><span class="p">:</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
     <span class="s1">&#39;general.port&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
     <span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
     <span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">:</span> <span class="s1">&#39;HS256&#39;</span><span class="p">,</span>
@@ -87,13 +88,48 @@
     <span class="k">global</span> <span class="n">CONFIGURATION</span>
     <span class="n">CONFIGURATION</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">file_config</span><span class="p">))</span>
     <span class="n">CONFIGURATION</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">)</span>
     <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">)</span>
     <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">)</span>
+
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.auth_channel_id&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.log_channel_id&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.server_id&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.token&#39;</span><span class="p">)</span>
+
     <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;esi.client_id&#39;</span><span class="p">)</span>
     <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;esi.client_secret&#39;</span><span class="p">)</span>
+
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.logging_level&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">)</span>
     <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">)</span>
+
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">)</span>
     <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.host&#39;</span><span class="p">)</span></div>
+
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.database&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.host&#39;</span><span class="p">)</span>
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.port&#39;</span><span class="p">)</span>
+
+    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.auth_group_name&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.host&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.password&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.port&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.server_id&#39;</span><span class="p">)</span>
+        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.username&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../sni.html#sni.conf.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>

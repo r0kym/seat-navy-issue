@@ -47,6 +47,8 @@
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">APIRouter</span><span class="p">,</span>
     <span class="n">Depends</span><span class="p">,</span>
+    <span class="n">HTTPException</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">pydantic</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -73,6 +75,7 @@
     <span class="n">to_jwt</span><span class="p">,</span>
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.uac.uac</span> <span class="kn">import</span> <span class="n">is_authorized_to_login</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
@@ -120,13 +123,29 @@
 <span class="sd">    https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+
     <span class="n">state_code</span><span class="p">:</span> <span class="n">StateCode</span> <span class="o">=</span> <span class="n">StateCode</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+    <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
     <span class="n">esi_response</span> <span class="o">=</span> <span class="n">get_access_token_from_callback_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
     <span class="n">decoded_access_token</span> <span class="o">=</span> <span class="n">decode_access_token</span><span class="p">(</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
     <span class="n">save_esi_tokens</span><span class="p">(</span><span class="n">esi_response</span><span class="p">)</span>
-    <span class="n">user_token</span> <span class="o">=</span> <span class="n">create_user_token</span><span class="p">(</span>
-        <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span>
-        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">))</span>
+
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_authorized_to_login</span><span class="p">(</span><span class="n">usr</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Character </span><span class="si">{usr.character_name}</span><span class="s1"> (</span><span class="si">{usr.character_id}</span><span class="s1">) &#39;</span> \
+                <span class="o">+</span> <span class="s1">&#39;is not allowed to login.&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">):</span>
+        <span class="n">detail</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Insufficient scopes for character </span><span class="si">{usr.character_name}</span><span class="s1"> &#39;</span> \
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{usr.character_id}</span><span class="s1">). Require at least: &#39;</span> \
+                <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()))</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">detail</span><span class="p">)</span>
+
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">create_user_token</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
     <span class="n">user_jwt_str</span> <span class="o">=</span> <span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Issuing token </span><span class="si">%s</span><span class="s1"> to app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span>
                  <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
@@ -141,8 +160,7 @@
                 <span class="n">user_token</span><span class="o">=</span><span class="n">user_jwt_str</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">},</span>
-    <span class="p">)</span>
-    <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../../api.html#sni.api.esi.get_esi_latest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>

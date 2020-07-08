@@ -52,7 +52,9 @@
 <span class="sd">    the given version, sets it to that version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
-        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$le&#39;</span><span class="p">,</span> <span class="n">version</span><span class="p">}},</span>
+        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;$lt&#39;</span><span class="p">:</span> <span class="n">version</span>
+        <span class="p">}},</span>
         <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="n">version</span>
         <span class="p">}},</span>

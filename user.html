@@ -100,6 +100,12 @@ creates the character’s corporation and alliance (if applicable).</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="sni.user.models.Alliance._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.user.models.Alliance._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="sni.user.models.Alliance.alliance_id">
 <code class="sig-name descname">alliance_id</code><a class="headerlink" href="#sni.user.models.Alliance.alliance_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>32-bit integer field.</p>
@@ -109,6 +115,15 @@ creates the character’s corporation and alliance (if applicable).</p>
 <dt id="sni.user.models.Alliance.alliance_name">
 <code class="sig-name descname">alliance_name</code><a class="headerlink" href="#sni.user.models.Alliance.alliance_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Alliance.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -138,6 +153,18 @@ creates the character’s corporation and alliance (if applicable).</p>
 <dt id="sni.user.models.Alliance.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Alliance.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><a class="headerlink" href="#sni.user.models.Alliance.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list field that wraps a standard field, allowing multiple instances
+of the field to be used as a list in the database.</p>
+<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -216,6 +243,15 @@ to be created manually. An alliance can be part of multiple coalitions.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="sni.user.models.Coalition.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Coalition.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="sni.user.models.Coalition.coalition_name">
 <code class="sig-name descname">coalition_name</code><a class="headerlink" href="#sni.user.models.Coalition.coalition_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>A unicode string field.</p>
@@ -242,6 +278,18 @@ need accurate microsecond support.</p>
 <dt id="sni.user.models.Coalition.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Coalition.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><a class="headerlink" href="#sni.user.models.Coalition.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list field that wraps a standard field, allowing multiple instances
+of the field to be used as a list in the database.</p>
+<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -323,6 +371,12 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="sni.user.models.Corporation._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.user.models.Corporation._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="sni.user.models.Corporation.alliance">
 <code class="sig-name descname">alliance</code><a class="headerlink" href="#sni.user.models.Corporation.alliance" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to a document that will be automatically dereferenced on
@@ -365,6 +419,15 @@ bi-directional delete rules)</p>
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Corporation.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="sni.user.models.Corporation.ceo">
 <em class="property">property </em><code class="sig-name descname">ceo</code><a class="headerlink" href="#sni.user.models.Corporation.ceo" title="Permalink to this definition">¶</a></dt>
@@ -393,6 +456,18 @@ bi-directional delete rules)</p>
 <dt id="sni.user.models.Corporation.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Corporation.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><a class="headerlink" href="#sni.user.models.Corporation.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list field that wraps a standard field, allowing multiple instances
+of the field to be used as a list in the database.</p>
+<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -467,6 +542,15 @@ This may not be up to date with the ESI.</p>
 <dt id="sni.user.models.Group._version">
 <code class="sig-name descname">_version</code><a class="headerlink" href="#sni.user.models.Group._version" title="Permalink to this definition">¶</a></dt>
 <dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Group.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -653,6 +737,21 @@ need accurate microsecond support.</p>
 <dd><p>32-bit integer field.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="sni.user.models.User.alliance">
+<em class="property">property </em><code class="sig-name descname">alliance</code><a class="headerlink" href="#sni.user.models.User.alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the alliance the user is part of, if any</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.User.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="sni.user.models.User.character_id">
 <code class="sig-name descname">character_id</code><a class="headerlink" href="#sni.user.models.User.character_id" title="Permalink to this definition">¶</a></dt>
@@ -669,6 +768,12 @@ need accurate microsecond support.</p>
 <dt id="sni.user.models.User.clearance_level">
 <code class="sig-name descname">clearance_level</code><a class="headerlink" href="#sni.user.models.User.clearance_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.User.coalitions">
+<code class="sig-name descname">coalitions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.Coalition]<a class="reference internal" href="_modules/sni/user/models.html#User.coalitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.User.coalitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of coalition this user is part of.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -729,6 +834,14 @@ Use <code class="xref py py-class docutils literal notranslate"><span class="pre
 need accurate microsecond support.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.User.cumulated_mandatory_esi_scopes">
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set[str]<a class="reference internal" href="_modules/sni/user/models.html#User.cumulated_mandatory_esi_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.User.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list (although it really is a set) of all the ESI scopes
+required by the corporation, alliance, and all the coalitions the user
+is part of.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -829,16 +942,27 @@ owner.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.user.migration.migrate_alliance">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_alliance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate the alliances documents to the latest schema</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.user.migration.migrate_coalition">
 <code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_coalition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_coalition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Migrate the coalition documents to the latest schema</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.user.migration.migrate_corporation">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_corporation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate the corporation documents to the latest schema</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.user.migration.migrate_group">
 <code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Migrate the group collection from 10 to v2.</p>
-<p>Renames the <code class="docutils literal notranslate"><span class="pre">name</span></code> field to <code class="docutils literal notranslate"><span class="pre">group_name</span></code></p>
+<dd><p>Migrate the group documents to the latest schema</p>
 </dd></dl>
 
 <dl class="function">

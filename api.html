@@ -110,6 +110,11 @@ as <code class="docutils literal notranslate"><span class="pre">500</span></code
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <cite>GET /coalition/{coalition_id}</cite> responses.</p>
 <dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.api.coalition.GetCoalitionOut.coalition_id">
 <code class="sig-name descname">coalition_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.coalition_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -122,6 +127,11 @@ as <code class="docutils literal notranslate"><span class="pre">500</span></code
 <dl class="attribute">
 <dt id="sni.api.coalition.GetCoalitionOut.created_on">
 <code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -183,6 +193,16 @@ as <code class="docutils literal notranslate"><span class="pre">500</span></code
 <dl class="attribute">
 <dt id="sni.api.coalition.PutCoalitionIn.add_members">
 <code class="sig-name descname">add_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.PutCoalitionIn.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.PutCoalitionIn.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -331,6 +351,11 @@ on the user making the request and the user specified on the
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <cite>GET /group/{group_id}</cite> responses.</p>
 <dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.api.group.GetGroupOut.created_on">
 <code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.created_on" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -414,6 +439,11 @@ on the user making the request and the user specified on the
 <dl class="attribute">
 <dt id="sni.api.group.PutGroupIn.add_members">
 <code class="sig-name descname">add_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.PutGroupIn.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.authorized_to_login" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -735,6 +765,11 @@ to the owner of that app token.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="sni.api.user.GetUserOut.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.api.user.GetUserOut.character_id">
 <code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.character_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -762,6 +797,11 @@ to the owner of that app token.</p>
 <dl class="attribute">
 <dt id="sni.api.user.GetUserOut.created_on">
 <code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.cumulated_mandatory_esi_scopes">
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -808,6 +848,11 @@ to the owner of that app token.</p>
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">PutUserIn</code><a class="reference internal" href="_modules/sni/api/user.html#PutUserIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.PutUserIn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/user/{character_id}</span></code> requests</p>
+<dl class="attribute">
+<dt id="sni.api.user.PutUserIn.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.PutUserIn.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="sni.api.user.PutUserIn.clearance_level">
 <code class="sig-name descname">clearance_level</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.PutUserIn.clearance_level" title="Permalink to this definition">¶</a></dt>

@@ -1,6 +1,11 @@
 User Access Control
 ===================
 
+General UAC utilities
+---------------------
+
+.. automodule:: sni.uac.uac
+
 Clearance management
 --------------------
 

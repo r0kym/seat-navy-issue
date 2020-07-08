@@ -74,13 +74,17 @@
 </li>
       <li><a href="uac.html#sni.uac.models.Token.TokenType._member_type_">_member_type_ (sni.uac.models.Token.TokenType attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="uac.html#sni.uac.models.Token.TokenType._value2member_map_">_value2member_map_ (sni.uac.models.Token.TokenType attribute)</a>
 </li>
-      <li><a href="user.html#sni.user.models.Coalition._version">_version (sni.user.models.Coalition attribute)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="user.html#sni.user.models.Alliance._version">_version (sni.user.models.Alliance attribute)</a>
 
       <ul>
+        <li><a href="user.html#sni.user.models.Coalition._version">(sni.user.models.Coalition attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Corporation._version">(sni.user.models.Corporation attribute)</a>
+</li>
         <li><a href="user.html#sni.user.models.Group._version">(sni.user.models.Group attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.User._version">(sni.user.models.User attribute)</a>
@@ -116,10 +120,10 @@
         <li><a href="user.html#sni.user.models.Corporation.alliance">(sni.user.models.Corporation attribute)</a>
 </li>
       </ul></li>
+      <li><a href="user.html#sni.user.models.User.alliance">alliance() (sni.user.models.User property)</a>
+</li>
       <li><a href="user.html#sni.user.models.Alliance.DoesNotExist">Alliance.DoesNotExist</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="user.html#sni.user.models.Alliance.MultipleObjectsReturned">Alliance.MultipleObjectsReturned</a>
 </li>
       <li><a href="user.html#sni.user.models.Alliance.alliance_id">alliance_id (sni.user.models.Alliance attribute)</a>
@@ -130,6 +134,8 @@
 </li>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_alliance">are_in_same_alliance() (in module sni.uac.clearance)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_coalition">are_in_same_coalition() (in module sni.uac.clearance)</a>
 </li>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_corporation">are_in_same_corporation() (in module sni.uac.clearance)</a>
@@ -140,6 +146,30 @@
 </li>
       <li><a href="esi.html#sni.esi.sso.AuthorizationCodeResponse">AuthorizationCodeResponse (class in sni.esi.sso)</a>
 </li>
+      <li><a href="api.html#sni.api.coalition.GetCoalitionOut.authorized_to_login">authorized_to_login (sni.api.coalition.GetCoalitionOut attribute)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.coalition.PutCoalitionIn.authorized_to_login">(sni.api.coalition.PutCoalitionIn attribute)</a>
+</li>
+        <li><a href="api.html#sni.api.group.GetGroupOut.authorized_to_login">(sni.api.group.GetGroupOut attribute)</a>
+</li>
+        <li><a href="api.html#sni.api.group.PutGroupIn.authorized_to_login">(sni.api.group.PutGroupIn attribute)</a>
+</li>
+        <li><a href="api.html#sni.api.user.GetUserOut.authorized_to_login">(sni.api.user.GetUserOut attribute)</a>
+</li>
+        <li><a href="api.html#sni.api.user.PutUserIn.authorized_to_login">(sni.api.user.PutUserIn attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Alliance.authorized_to_login">(sni.user.models.Alliance attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Coalition.authorized_to_login">(sni.user.models.Coalition attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Corporation.authorized_to_login">(sni.user.models.Corporation attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Group.authorized_to_login">(sni.user.models.Group attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.User.authorized_to_login">(sni.user.models.User attribute)</a>
+</li>
+      </ul></li>
       <li><a href="esi.html#sni.esi.sso.DecodedAccessToken.azp">azp (sni.esi.sso.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
@@ -232,14 +262,18 @@
         <li><a href="user.html#sni.user.models.Coalition.coalition_name">(sni.user.models.Coalition attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.coalition.coalition_record_to_response">coalition_record_to_response() (in module sni.api.coalition)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.user.GetUserOut.coalitions">coalitions (sni.api.user.GetUserOut attribute)</a>
 </li>
       <li><a href="user.html#sni.user.models.Alliance.coalitions">coalitions() (sni.user.models.Alliance method)</a>
+
+      <ul>
+        <li><a href="user.html#sni.user.models.User.coalitions">(sni.user.models.User method)</a>
 </li>
+      </ul></li>
       <li><a href="discord.html#sni.discord.discord.DiscordAuthenticationChallenge.code">code (sni.discord.discord.DiscordAuthenticationChallenge attribute)</a>
 </li>
       <li><a href="api.html#sni.api.token.GetTokenOut.comments">comments (sni.api.token.GetTokenOut attribute)</a>
@@ -310,6 +344,10 @@
         <li><a href="user.html#sni.user.models.User.created_on">(sni.user.models.User attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api.html#sni.api.user.GetUserOut.cumulated_mandatory_esi_scopes">cumulated_mandatory_esi_scopes (sni.api.user.GetUserOut attribute)</a>
+</li>
+      <li><a href="user.html#sni.user.models.User.cumulated_mandatory_esi_scopes">cumulated_mandatory_esi_scopes() (sni.user.models.User method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -612,6 +650,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="db.html#sni.db.mongodb.init">init() (in module sni.db.mongodb)</a>
 </li>
+      <li><a href="uac.html#sni.uac.uac.is_authorized_to_login">is_authorized_to_login() (in module sni.uac.uac)</a>
+</li>
       <li><a href="api.html#sni.api.group.GetGroupOut.is_autogroup">is_autogroup (sni.api.group.GetGroupOut attribute)</a>
 
       <ul>
@@ -676,6 +716,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sni.html#sni.__main__.main">main() (in module sni.__main__)</a>
 </li>
+      <li><a href="api.html#sni.api.coalition.GetCoalitionOut.mandatory_esi_scopes">mandatory_esi_scopes (sni.api.coalition.GetCoalitionOut attribute)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.coalition.PutCoalitionIn.mandatory_esi_scopes">(sni.api.coalition.PutCoalitionIn attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Alliance.mandatory_esi_scopes">(sni.user.models.Alliance attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Coalition.mandatory_esi_scopes">(sni.user.models.Coalition attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Corporation.mandatory_esi_scopes">(sni.user.models.Corporation attribute)</a>
+</li>
+      </ul></li>
       <li><a href="discord.html#sni.discord.jobs.map_discord_roles">map_discord_roles() (in module sni.discord.jobs)</a>
 </li>
       <li><a href="teamspeak.html#sni.teamspeak.jobs.map_teamspeak_groups">map_teamspeak_groups() (in module sni.teamspeak.jobs)</a>
@@ -708,7 +760,11 @@
         <li><a href="user.html#sni.user.migration.migrate">(in module sni.user.migration)</a>
 </li>
       </ul></li>
+      <li><a href="user.html#sni.user.migration.migrate_alliance">migrate_alliance() (in module sni.user.migration)</a>
+</li>
       <li><a href="user.html#sni.user.migration.migrate_coalition">migrate_coalition() (in module sni.user.migration)</a>
+</li>
+      <li><a href="user.html#sni.user.migration.migrate_corporation">migrate_corporation() (in module sni.user.migration)</a>
 </li>
       <li><a href="user.html#sni.user.migration.migrate_group">migrate_group() (in module sni.user.migration)</a>
 </li>
@@ -1005,6 +1061,8 @@
       <li><a href="uac.html#module-sni.uac.models">sni.uac.models (module)</a>
 </li>
       <li><a href="uac.html#module-sni.uac.token">sni.uac.token (module)</a>
+</li>
+      <li><a href="uac.html#module-sni.uac.uac">sni.uac.uac (module)</a>
 </li>
       <li><a href="user.html#module-sni.user.jobs">sni.user.jobs (module)</a>
 </li>

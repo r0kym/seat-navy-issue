@@ -195,11 +195,56 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting API server on </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
                  <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">))</span>
+    <span class="n">log_level</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.logging_level&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">log_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;()&#39;</span><span class="p">:</span> <span class="s1">&#39;uvicorn.logging.DefaultFormatter&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;fmt&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> [</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;use_colors&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;()&#39;</span><span class="p">:</span>
+                <span class="s1">&#39;uvicorn.logging.AccessFormatter&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;fmt&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%(levelprefix)s</span><span class="s1"> </span><span class="si">%(client_addr)s</span><span class="s1"> - &quot;</span><span class="si">%(request_line)s</span><span class="s1">&quot; &#39;</span>
+                        <span class="s1">&#39;</span><span class="si">%(status_code)s</span><span class="s1">&#39;</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stderr&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;access&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stdout&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;uvicorn.error&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;uvicorn.access&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span>
+                <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="s1">&#39;sni.api.server:app&#39;</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
-            <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span> <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
+            <span class="n">log_config</span><span class="o">=</span><span class="n">log_config</span><span class="p">,</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
             <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>

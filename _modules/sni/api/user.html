@@ -52,7 +52,7 @@
 <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
-<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Alliance</span><span class="p">,</span> <span class="n">Corporation</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
@@ -75,12 +75,14 @@
 <span class="sd">    Model for ``GET /user/{character_name}`` responses</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">alliance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">clearance_level</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">coalitions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">corporation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">cumulated_mandatory_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">is_ceo_of_alliance</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">is_ceo_of_corporation</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">tickered_name</span><span class="p">:</span> <span class="nb">str</span>
@@ -91,6 +93,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for ``PUT /user/{character_id}`` requests</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">clearance_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></div>
 
 
@@ -99,27 +102,20 @@
 <span class="sd">    Populates a new :class:`sni.routers.user.GetUserOut` with the information</span>
 <span class="sd">    contained in a user database record.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">corporation_name</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">alliance_name</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">coalition_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span>
-    <span class="k">if</span> <span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">corporation_name</span> <span class="o">=</span> <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span>
-        <span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span> <span class="o">=</span> <span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span>
-        <span class="k">if</span> <span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">alliance_name</span> <span class="o">=</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span>
-            <span class="n">coalition_names</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span>
-                <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">alliance</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()</span>
-            <span class="p">]</span>
     <span class="k">return</span> <span class="n">GetUserOut</span><span class="p">(</span>
-        <span class="n">alliance</span><span class="o">=</span><span class="n">alliance_name</span><span class="p">,</span>
+        <span class="n">alliance</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span>
+                  <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
         <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
         <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
         <span class="n">clearance_level</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
-        <span class="n">coalitions</span><span class="o">=</span><span class="n">coalition_names</span><span class="p">,</span>
-        <span class="n">corporation</span><span class="o">=</span><span class="n">corporation_name</span><span class="p">,</span>
+        <span class="n">coalitions</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span> <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()</span>
+        <span class="p">],</span>
+        <span class="n">corporation</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span>
+                     <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
         <span class="n">created_on</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
+        <span class="n">cumulated_mandatory_esi_scopes</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">(),</span>
         <span class="n">is_ceo_of_alliance</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_alliance</span><span class="p">(),</span>
         <span class="n">is_ceo_of_corporation</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">(),</span>
         <span class="n">tickered_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">,</span>
@@ -197,6 +193,9 @@
         <span class="n">scope_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;sni.set_clearance_level_</span><span class="si">{data.clearance_level}</span><span class="s1">&#39;</span>
         <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">scope_name</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">clearance_level</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.set_authorized_to_login&#39;</span><span class="p">)</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">user_record_to_response</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span></div>
 </pre></div>

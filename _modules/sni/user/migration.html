@@ -42,19 +42,20 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
-
 <span class="kn">from</span> <span class="nn">sni.db.mongodb</span> <span class="kn">import</span> <span class="n">get_pymongo_collection</span>
 <span class="kn">from</span> <span class="nn">sni.db.migration</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ensure_minimum_version</span><span class="p">,</span>
     <span class="n">has_outdated_documents</span><span class="p">,</span>
     <span class="n">set_if_not_exist</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ALLIANCE_SCHEMA_VERSION</span><span class="p">,</span>
+    <span class="n">Alliance</span><span class="p">,</span>
     <span class="n">COALITION_SCHEMA_VERSION</span><span class="p">,</span>
     <span class="n">Coalition</span><span class="p">,</span>
+    <span class="n">CORPORATION_SCHEMA_VERSION</span><span class="p">,</span>
+    <span class="n">Corporation</span><span class="p">,</span>
     <span class="n">GROUP_SCHEMA_VERSION</span><span class="p">,</span>
     <span class="n">Group</span><span class="p">,</span>
     <span class="n">USER_SCHEMA_VERSION</span><span class="p">,</span>
@@ -66,14 +67,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create root user if it does not exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating root user&#39;</span><span class="p">)</span>
-        <span class="n">User</span><span class="p">(</span>
-            <span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">character_name</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
-            <span class="n">clearance_level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-            <span class="n">created_on</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">set__authorized_to_login</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">set__character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">set__character_name</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
+        <span class="n">set__clearance_level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ensure_superuser_group"><a class="viewcode-back" href="../../../user.html#sni.user.migration.ensure_superuser_group">[docs]</a><span class="k">def</span> <span class="nf">ensure_superuser_group</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -81,29 +81,21 @@
 <span class="sd">    Ensure that the ``superusers`` group exists and makes sure that root is the</span>
 <span class="sd">    owner.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;superusers&#39;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">superusers</span><span class="p">:</span> <span class="n">Group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">)</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">root</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">discord_role_id</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">map_to_discord</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">map_to_teamspeak</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">teamspeak_sgid</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">superusers</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="k">except</span> <span class="n">me</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating superuser group&#39;</span><span class="p">)</span>
-        <span class="n">Group</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Superuser group.&quot;</span><span class="p">,</span>
-            <span class="n">discord_role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">,</span>
-            <span class="n">map_to_discord</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">root</span><span class="p">],</span>
-            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-            <span class="n">teamspeak_sgid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;superusers&#39;</span>
+    <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="s1">&#39;superusers&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">add_to_set__members</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+        <span class="n">set__authorized_to_login</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">set__description</span><span class="o">=</span><span class="s2">&quot;Superuser group&quot;</span><span class="p">,</span>
+        <span class="n">set__discord_role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">set__is_autogroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">set__group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">,</span>
+        <span class="n">set__map_to_discord</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">set__map_to_teamspeak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">set__owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+        <span class="n">set__teamspeak_sgid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate">[docs]</a><span class="k">def</span> <span class="nf">migrate</span><span class="p">():</span>
@@ -112,9 +104,44 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ensure_root</span><span class="p">()</span>
     <span class="n">ensure_superuser_group</span><span class="p">()</span>
-    <span class="n">migrate_coalition</span><span class="p">()</span>
+    <span class="n">migrate_user</span><span class="p">()</span>
     <span class="n">migrate_group</span><span class="p">()</span>
-    <span class="n">migrate_user</span><span class="p">()</span></div>
+    <span class="n">migrate_corporation</span><span class="p">()</span>
+    <span class="n">migrate_alliance</span><span class="p">()</span>
+    <span class="n">migrate_coalition</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="migrate_alliance"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_alliance">[docs]</a><span class="k">def</span> <span class="nf">migrate_alliance</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate the alliances documents to the latest schema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Alliance</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">ALLIANCE_SCHEMA_VERSION</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;alliance&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="n">COALITION_SCHEMA_VERSION</span><span class="p">)</span>
+
+    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
+
+    <span class="c1"># v0 to v1</span>
+    <span class="c1"># Set _version field to 1</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># v1 to v2</span>
+    <span class="c1"># Set authorized_to_login field to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># v2 to v3</span>
+    <span class="c1"># Set mandatory_esi_scopes to []</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Finally</span>
+    <span class="n">Alliance</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="migrate_coalition"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_coalition">[docs]</a><span class="k">def</span> <span class="nf">migrate_coalition</span><span class="p">():</span>
@@ -150,15 +177,56 @@
         <span class="p">},</span>
     <span class="p">)</span>
 
+    <span class="c1"># v2 to v3</span>
+    <span class="c1"># Set authorized_to_login field to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># v3 to v4</span>
+    <span class="c1"># Set mandatory_esi_scopes to []</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
     <span class="c1"># Finally</span>
     <span class="n">Coalition</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="migrate_corporation"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_corporation">[docs]</a><span class="k">def</span> <span class="nf">migrate_corporation</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate the corporation documents to the latest schema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Corporation</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">CORPORATION_SCHEMA_VERSION</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;corporation&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="n">CORPORATION_SCHEMA_VERSION</span><span class="p">)</span>
+
+    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
+
+    <span class="c1"># v0 to v1</span>
+    <span class="c1"># Set _version field to 1</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># v1 to v2</span>
+    <span class="c1"># Set authorized_to_login field to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># v2 to v3</span>
+    <span class="c1"># Set mandatory_esi_scopes to []</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Finally</span>
+    <span class="n">Corporation</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="migrate_group"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_group">[docs]</a><span class="k">def</span> <span class="nf">migrate_group</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Migrate the group collection from 10 to v2.</span>
-
-<span class="sd">    Renames the ``name`` field to ``group_name``</span>
+<span class="sd">    Migrate the group documents to the latest schema</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=protected-access</span>
     <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Group</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
@@ -215,6 +283,16 @@
     <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;map_to_teamspeak&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
+    <span class="c1"># v3 to v4</span>
+    <span class="c1"># Set authorized_to_login field to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># v4 to v5</span>
+    <span class="c1"># Set mandatory_esi_scopes to []</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
     <span class="c1"># Finally</span>
     <span class="n">Group</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
 
@@ -242,6 +320,11 @@
     <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;discord_user_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;teamspeak_cldbid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># v2 to v3</span>
+    <span class="c1"># Set authorized_to_login field to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
     <span class="n">User</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>

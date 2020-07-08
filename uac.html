@@ -45,6 +45,27 @@
             
   <div class="section" id="user-access-control">
 <h1>User Access Control<a class="headerlink" href="#user-access-control" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sni.uac.uac">
+<span id="general-uac-utilities"></span><h2>General UAC utilities<a class="headerlink" href="#module-sni.uac.uac" title="Permalink to this headline">¶</a></h2>
+<p>General user access control methods</p>
+<dl class="function">
+<dt id="sni.uac.uac.is_authorized_to_login">
+<code class="sig-prename descclassname">sni.uac.uac.</code><code class="sig-name descname">is_authorized_to_login</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/uac.html#is_authorized_to_login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.uac.is_authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether a user is authorized to login or not. A user is authorized to
+login if the following conditions are satisfied:</p>
+<ul class="simple">
+<li><p>its <code class="docutils literal notranslate"><span class="pre">authorized_to_login</span></code> field is <code class="docutils literal notranslate"><span class="pre">True</span></code> or if the user belongs to
+<strong>at least one</strong> group, corporation, alliance, or coalition whose
+<code class="docutils literal notranslate"><span class="pre">authorized_to_login</span></code> field is <code class="docutils literal notranslate"><span class="pre">True</span></code>;</p></li>
+<li><p>the user’s <code class="docutils literal notranslate"><span class="pre">authorized_to_login</span></code> field is not <code class="docutils literal notranslate"><span class="pre">False</span></code>, and none of
+the groups, corporation, alliance, or coalitions the user belongs to has
+a <code class="docutils literal notranslate"><span class="pre">authorized_to_login</span></code> field set ot <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+<p>In addition, the root user is always allowed to login, regardless of the
+status of the group he’s part of.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.uac.clearance">
 <span id="clearance-management"></span><h2>Clearance management<a class="headerlink" href="#module-sni.uac.clearance" title="Permalink to this headline">¶</a></h2>
 <p>Clearance management and verification. Each user has a <strong>clearance level</strong>,
@@ -657,6 +678,7 @@ bi-directional delete rules)</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">User Access Control</a><ul>
+<li><a class="reference internal" href="#module-sni.uac.uac">General UAC utilities</a></li>
 <li><a class="reference internal" href="#module-sni.uac.clearance">Clearance management</a></li>
 <li><a class="reference internal" href="#module-sni.uac.token">SNI token management</a></li>
 <li><a class="reference internal" href="#module-sni.uac.models">Database models</a></li>
