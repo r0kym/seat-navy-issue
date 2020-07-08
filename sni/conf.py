@@ -48,13 +48,47 @@ def load_configuration_file(path: str) -> None:
     global CONFIGURATION
     CONFIGURATION.update(flatten_dict(file_config))
     CONFIGURATION['logging'] = file_config.get('logging', {})
+
+    assert_is_set('database.authentication_source')
+    assert_is_set('database.database')
     assert_is_set('database.host')
     assert_is_set('database.password')
+    assert_is_set('database.port')
+    assert_is_set('database.username')
+
+    assert_is_set('discord.enabled')
+    if get('discord.enabled'):
+        assert_is_set('discord.auth_channel_id')
+        assert_is_set('discord.log_channel_id')
+        assert_is_set('discord.server_id')
+        assert_is_set('discord.token')
+
     assert_is_set('esi.client_id')
     assert_is_set('esi.client_secret')
+
+    assert_is_set('general.debug')
+    assert_is_set('general.host')
+    assert_is_set('general.port')
     assert_is_set('general.root_url')
+    assert_is_set('general.scheduler_thread_count')
+
+    assert_is_set('jwt.algorithm')
     assert_is_set('jwt.secret')
+
+    assert_is_set('redis.database')
     assert_is_set('redis.host')
+    assert_is_set('redis.port')
+
+    assert_is_set('teamspeak.enabled')
+    if get('teamspeak.enabled'):
+        assert_is_set('teamspeak.auth_group_name')
+        assert_is_set('teamspeak.bot_name')
+        assert_is_set('teamspeak.enabled')
+        assert_is_set('teamspeak.host')
+        assert_is_set('teamspeak.password')
+        assert_is_set('teamspeak.port')
+        assert_is_set('teamspeak.server_id')
+        assert_is_set('teamspeak.username')
 
 
 def flatten_dict(nested_dict: MutableMapping[Any, Any],
