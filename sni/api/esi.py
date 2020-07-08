@@ -8,6 +8,8 @@ from typing import Any, Optional
 from fastapi import (
     APIRouter,
     Depends,
+    HTTPException,
+    status,
 )
 import pydantic
 import requests
@@ -34,6 +36,7 @@ from sni.uac.token import (
     to_jwt,
     Token,
 )
+from sni.uac.uac import is_authorized_to_login
 import sni.utils as utils
 
 router = APIRouter()
@@ -81,13 +84,22 @@ async def get_callback_esi(code: str, state: str):
     https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html
     """
     logging.info('Received callback from ESI for state %s', state)
+
     state_code: StateCode = StateCode.objects.get(uuid=state)
     esi_response = get_access_token_from_callback_code(code)
     decoded_access_token = decode_access_token(esi_response.access_token)
     save_esi_tokens(esi_response)
-    user_token = create_user_token(
-        state_code.app_token,
-        User.objects.get(character_id=decoded_access_token.character_id))
+
+    usr: User = User.objects.get(character_id=decoded_access_token.character_id)
+    if not is_authorized_to_login(usr):
+        state_code.delete()
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            detail=f'Character {usr.character_name} ({usr.character_id}) ' \
+                + 'is not allowed to login.',
+        )
+    user_token = create_user_token(state_code.app_token, usr)
+
     user_jwt_str = to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)

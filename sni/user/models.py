@@ -2,7 +2,7 @@
 Models
 """
 
-from typing import Iterator, List
+from typing import Iterator, List, Optional
 
 import mongoengine as me
 
@@ -166,6 +166,23 @@ class User(me.Document):
     discord_user_id = me.IntField(default=None, null=True)
     teamspeak_cldbid = me.IntField(default=None, null=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
+
+    @property
+    def alliance(self) -> Optional[Alliance]:
+        """
+        Returns the alliance the user is part of, if any
+        """
+        if self.corporation is not None:
+            return self.corporation.alliance
+        return None
+
+    def coalitions(self) -> List[Coalition]:
+        """
+        Returns the list of coalition this user is part of.
+        """
+        if self.alliance is not None:
+            return self.alliance.coalitions()
+        return []
 
     def is_ceo_of_alliance(self) -> bool:
         """
