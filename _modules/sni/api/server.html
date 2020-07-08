@@ -100,7 +100,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="does_not_exist_exception_handler"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.does_not_exist_exception_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">)</span>
+<div class="viewcode-block" id="does_not_exist_exception_handler"><a class="viewcode-back" href="../../../api.html#sni.api.server.does_not_exist_exception_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="n">mongoengine</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">does_not_exist_exception_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span>
                                      <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -116,7 +116,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="permission_error_handler"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.permission_error_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">PermissionError</span><span class="p">)</span>
+<div class="viewcode-block" id="permission_error_handler"><a class="viewcode-back" href="../../../api.html#sni.api.server.permission_error_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">PermissionError</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">permission_error_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span>
                              <span class="n">error</span><span class="p">:</span> <span class="ne">PermissionError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -133,7 +133,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="requests_httperror_handler"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.requests_httperror_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">)</span>
+<div class="viewcode-block" id="requests_httperror_handler"><a class="viewcode-back" href="../../../api.html#sni.api.server.requests_httperror_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">requests_httperror_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span>
                                <span class="n">error</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -152,7 +152,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="exception_handler"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.exception_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
+<div class="viewcode-block" id="exception_handler"><a class="viewcode-back" href="../../../api.html#sni.api.server.exception_handler">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exception_handler</span><span class="p">(</span><span class="n">_request</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Global exception handler.</span>
@@ -174,7 +174,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_ping"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.get_ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/ping&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Testing&#39;</span><span class="p">],</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Replies &quot;pong&quot;&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_ping"><a class="viewcode-back" href="../../../api.html#sni.api.server.get_ping">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/ping&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Testing&#39;</span><span class="p">],</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Replies &quot;pong&quot;&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ping</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Replies ``pong``. That is all.</span>
@@ -182,14 +182,14 @@
     <span class="k">return</span> <span class="s1">&#39;pong&#39;</span></div>
 
 
-<div class="viewcode-block" id="print_openapi_spec"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.print_openapi_spec">[docs]</a><span class="k">def</span> <span class="nf">print_openapi_spec</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="print_openapi_spec"><a class="viewcode-back" href="../../../api.html#sni.api.server.print_openapi_spec">[docs]</a><span class="k">def</span> <span class="nf">print_openapi_spec</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Print the OpenAPI specification of the server in YAML.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">openapi</span><span class="p">()))</span></div>
 
 
-<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../../apiserver.html#sni.api.server.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../../api.html#sni.api.server.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs the API server.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

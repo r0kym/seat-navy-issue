@@ -1,7 +1,17 @@
-Teamspeak module
-================
+Teamspeak
+=========
 
-Module documentation
---------------------
+Main module
+-----------
 
-.. automodule:: sni.teamspeak
+.. automodule:: sni.teamspeak.teamspeak
+
+Database models
+---------------
+
+.. automodule:: sni.teamspeak.models
+
+Jobs
+----
+
+.. automodule:: sni.teamspeak.jobs

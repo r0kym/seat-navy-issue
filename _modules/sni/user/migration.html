@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.user.migration &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.user.migration</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Migration methode for user related collections</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
+
+<span class="kn">from</span> <span class="nn">sni.db.mongodb</span> <span class="kn">import</span> <span class="n">get_pymongo_collection</span>
+<span class="kn">from</span> <span class="nn">sni.db.migration</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ensure_minimum_version</span><span class="p">,</span>
+    <span class="n">has_outdated_documents</span><span class="p">,</span>
+    <span class="n">set_if_not_exist</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">COALITION_SCHEMA_VERSION</span><span class="p">,</span>
+    <span class="n">Coalition</span><span class="p">,</span>
+    <span class="n">GROUP_SCHEMA_VERSION</span><span class="p">,</span>
+    <span class="n">Group</span><span class="p">,</span>
+    <span class="n">USER_SCHEMA_VERSION</span><span class="p">,</span>
+    <span class="n">User</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="ensure_root"><a class="viewcode-back" href="../../../user.html#sni.user.migration.ensure_root">[docs]</a><span class="k">def</span> <span class="nf">ensure_root</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create root user if it does not exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating root user&#39;</span><span class="p">)</span>
+        <span class="n">User</span><span class="p">(</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
+            <span class="n">clearance_level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ensure_superuser_group"><a class="viewcode-back" href="../../../user.html#sni.user.migration.ensure_superuser_group">[docs]</a><span class="k">def</span> <span class="nf">ensure_superuser_group</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensure that the ``superusers`` group exists and makes sure that root is the</span>
+<span class="sd">    owner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;superusers&#39;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">superusers</span><span class="p">:</span> <span class="n">Group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">)</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">discord_role_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">map_to_discord</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">map_to_teamspeak</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">teamspeak_sgid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">superusers</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">me</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating superuser group&#39;</span><span class="p">)</span>
+        <span class="n">Group</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Superuser group.&quot;</span><span class="p">,</span>
+            <span class="n">discord_role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">,</span>
+            <span class="n">map_to_discord</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">root</span><span class="p">],</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">teamspeak_sgid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="migrate"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate">[docs]</a><span class="k">def</span> <span class="nf">migrate</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrates all schema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ensure_root</span><span class="p">()</span>
+    <span class="n">ensure_superuser_group</span><span class="p">()</span>
+    <span class="n">migrate_coalition</span><span class="p">()</span>
+    <span class="n">migrate_group</span><span class="p">()</span>
+    <span class="n">migrate_user</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="migrate_coalition"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_coalition">[docs]</a><span class="k">def</span> <span class="nf">migrate_coalition</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate the coalition documents to the latest schema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Coalition</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">COALITION_SCHEMA_VERSION</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;coalition&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="n">COALITION_SCHEMA_VERSION</span><span class="p">)</span>
+
+    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
+
+    <span class="c1"># v0 to v1</span>
+    <span class="c1"># Set _version field to 1</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># v1 to v2</span>
+    <span class="c1"># Set name field to coalition_name</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
+        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;$rename&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;coalition_name&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Finally</span>
+    <span class="n">Coalition</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="migrate_group"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_group">[docs]</a><span class="k">def</span> <span class="nf">migrate_group</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate the group collection from 10 to v2.</span>
+
+<span class="sd">    Renames the ``name`` field to ``group_name``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Group</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">GROUP_SCHEMA_VERSION</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;group&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">GROUP_SCHEMA_VERSION</span><span class="p">)</span>
+
+    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
+
+    <span class="c1"># v0 to v1</span>
+    <span class="c1"># Set _version field to 1</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># v1 to v2</span>
+    <span class="c1"># Rename name field to group_name</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
+        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;$rename&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;group_name&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="c1"># v2 to v3</span>
+    <span class="c1"># Ensures that</span>
+    <span class="c1"># * discord_role_id exists (if not, sets it to None)</span>
+    <span class="c1"># * teamspeak_sgid exists (if not, sets it to None)</span>
+    <span class="c1"># * map_to_discord exists (if not, sets it to True)</span>
+    <span class="c1"># * map_to_teamspeak exists (if not, sets it to True)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;group_name&#39;</span><span class="p">:</span> <span class="s1">&#39;superusers&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s1">&#39;discord_role_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;map_to_discord&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;map_to_teamspeak&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;teamspeak_sgid&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;discord_role_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;teamspeak_sgid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;map_to_discord&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;map_to_teamspeak&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Finally</span>
+    <span class="n">Group</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="migrate_user"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_user">[docs]</a><span class="k">def</span> <span class="nf">migrate_user</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate the user documents to the latest schema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">USER_SCHEMA_VERSION</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;user&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">USER_SCHEMA_VERSION</span><span class="p">)</span>
+
+    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
+
+    <span class="c1"># v0 to v1</span>
+    <span class="c1"># Set _version field to 1</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># v1 to v2</span>
+    <span class="c1"># Add discord_user_id and teamspeak_cldbid fields, and set them to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;discord_user_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;teamspeak_cldbid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Finally</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

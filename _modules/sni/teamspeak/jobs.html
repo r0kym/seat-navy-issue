@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.teamspeak.jobs &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.teamspeak.jobs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Recurrent teamspeak jobs</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">ts3.query</span>
+
+<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="kn">from</span> <span class="nn">.teamspeak</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">client_list</span><span class="p">,</span>
+    <span class="n">ensure_group</span><span class="p">,</span>
+    <span class="n">new_connection</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="message_registered_clients_with_wrong_name"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.jobs.message_registered_clients_with_wrong_name">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">message_registered_clients_with_wrong_name</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterates through all users that are registered in Teamspeak, and checks</span>
+<span class="sd">    their nickname. If it doesn&#39;t match, sends a message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ts_client</span> <span class="ow">in</span> <span class="n">client_list</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span> <span class="o">==</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">teamspeak_cldbid</span><span class="o">=</span><span class="n">ts_client</span><span class="o">.</span><span class="n">client_database_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">usr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># TS client is unknown</span>
+            <span class="k">continue</span>
+        <span class="n">tickered_name</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span>
+        <span class="k">if</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span> <span class="o">!=</span> <span class="n">tickered_name</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Wrong nickname found </span><span class="si">%s</span><span class="s1">; should be </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                          <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span><span class="p">,</span> <span class="n">tickered_name</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Hello </span><span class="si">{ts_client.client_nickname}</span><span class="s1">. &#39;</span> \
+                <span class="o">+</span> <span class="s1">&#39;Please change your Teamspeak nickname to &#39;</span> \
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{tickered_name}</span><span class="s1">&quot; (without the quotes). Thank you :)&#39;</span> \
+                <span class="o">+</span> <span class="s1">&#39; -- SeAT Navy Issue Teamspeak Bot; This is an automated&#39;</span> \
+                <span class="o">+</span> <span class="s1">&#39; message, please do not respond.&#39;</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">catch_all</span><span class="p">(</span>
+                <span class="n">connection</span><span class="o">.</span><span class="n">sendtextmessage</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;Failed to notify teamspeak user </span><span class="si">{ts_client.client_nickname}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;targetmode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">clid</span><span class="p">,</span>
+                    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
+                <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="map_teamspeak_groups"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.jobs.map_teamspeak_groups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">map_teamspeak_groups</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates all groups on Teamspeak.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Mapping group </span><span class="si">%s</span><span class="s1"> to Teamspeak&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
+        <span class="n">tsgrp</span> <span class="o">=</span> <span class="n">ensure_group</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
+        <span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span> <span class="o">=</span> <span class="n">tsgrp</span><span class="o">.</span><span class="n">sgid</span>
+        <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_teamspeak_groups"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.jobs.update_teamspeak_groups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update_teamspeak_groups</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates group memberships on Teamspeak</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="n">teamspeak_sgid__exists</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating Teamspeak group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
+        <span class="n">current_cldbids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s1">&#39;cldbid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">connection</span><span class="o">.</span><span class="n">servergroupclientlist</span><span class="p">(</span>
+                <span class="n">sgid</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">)</span><span class="o">.</span><span class="n">parsed</span>
+        <span class="p">]</span>
+        <span class="n">allowed_cldbids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">teamspeak_cldbid</span> <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span>
+            <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">teamspeak_cldbid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">cldbid</span> <span class="ow">in</span> <span class="n">current_cldbids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cldbid</span> <span class="ow">in</span> <span class="n">allowed_cldbids</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">connection</span><span class="o">.</span><span class="n">servergroupdelclient</span><span class="p">(</span>
+                    <span class="n">cldbid</span><span class="o">=</span><span class="n">cldbid</span><span class="p">,</span>
+                    <span class="n">sgid</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">ts3</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">TS3QueryError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;Could not remove client </span><span class="si">%d</span><span class="s1"> from Teamspeak group </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">cldbid</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">cldbid</span> <span class="ow">in</span> <span class="n">allowed_cldbids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cldbid</span> <span class="ow">in</span> <span class="n">current_cldbids</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">connection</span><span class="o">.</span><span class="n">servergroupaddclient</span><span class="p">(</span>
+                    <span class="n">sgid</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">,</span>
+                    <span class="n">cldbid</span><span class="o">=</span><span class="n">cldbid</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">ts3</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">TS3QueryError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;Could not add client </span><span class="si">%d</span><span class="s1"> to Teamspeak group </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">cldbid</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

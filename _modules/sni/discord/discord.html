@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.discord.discord &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.discord.discord</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Discord related functionalities</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">discord</span>
+<span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
+
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+
+<div class="viewcode-block" id="DiscordAuthenticationChallenge"><a class="viewcode-back" href="../../../discord.html#sni.discord.discord.DiscordAuthenticationChallenge">[docs]</a><span class="k">class</span> <span class="nc">DiscordAuthenticationChallenge</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a pending authentication challenge.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;created_on&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="complete_authentication_challenge"><a class="viewcode-back" href="../../../discord.html#sni.discord.discord.complete_authentication_challenge">[docs]</a><span class="k">def</span> <span class="nf">complete_authentication_challenge</span><span class="p">(</span><span class="n">discord_user</span><span class="p">:</span> <span class="n">discord</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Complete an authentication challenge, see</span>
+<span class="sd">    :meth:`sni.discord.discord.new_authentication_challenge`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">challenge</span> <span class="o">=</span> <span class="n">DiscordAuthenticationChallenge</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">usr</span> <span class="o">=</span> <span class="n">challenge</span><span class="o">.</span><span class="n">user</span>
+    <span class="n">usr</span><span class="o">.</span><span class="n">discord_user_id</span> <span class="o">=</span> <span class="n">discord_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Authenticated Discord user </span><span class="si">%d</span><span class="s1"> to user </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">discord_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                 <span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">)</span>
+    <span class="n">challenge</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="new_authentication_challenge"><a class="viewcode-back" href="../../../discord.html#sni.discord.discord.new_authentication_challenge">[docs]</a><span class="k">def</span> <span class="nf">new_authentication_challenge</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new authentication challenge.</span>
+
+<span class="sd">    The challenge proceeds as follows:</span>
+
+<span class="sd">    1. A user (:class:`sni.user`) asks to start a challenge by</span>
+<span class="sd">       calling this method.</span>
+
+<span class="sd">    2. This methods returns a random code, and the user has 60 seconds type</span>
+<span class="sd">       ``!auth &lt;code&gt;`` in the dedicated authentication channel.</span>
+
+<span class="sd">    3. The Discord client is notified, and check this code against the pending</span>
+<span class="sd">       Discort authentication challenges.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting Discord authentication challenge for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
+    <span class="n">challenge</span> <span class="o">=</span> <span class="n">DiscordAuthenticationChallenge</span><span class="p">(</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span>
+        <span class="n">code</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">random_code</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">challenge</span><span class="o">.</span><span class="n">code</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

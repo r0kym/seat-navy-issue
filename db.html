@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Database modules &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User management" href="user.html" />
+    <link rel="prev" title="Main SNI modules" href="sni.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="user.html" title="User management"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sni.html" title="Main SNI modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="database-modules">
+<h1>Database modules<a class="headerlink" href="#database-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sni.db.mongodb">
+<span id="mongodb"></span><h2>Mongodb<a class="headerlink" href="#module-sni.db.mongodb" title="Permalink to this headline">¶</a></h2>
+<p>Database layer</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="http://docs.org/index.html">MongoEngine User Documentation</a></p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="sni.db.mongodb.get_pymongo_collection">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">get_pymongo_collection</code><span class="sig-paren">(</span><em class="sig-param">collection_name: str</em>, <em class="sig-param">client: Optional[pymongo.mongo_client.MongoClient] = None</em><span class="sig-paren">)</span> &#x2192; pymongo.collection.Collection<a class="reference internal" href="_modules/sni/db/mongodb.html#get_pymongo_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.get_pymongo_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pymongo collection handler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.mongodb.init">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/mongodb.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to the MongoDB instance.</p>
+<p>Does not return anything. Any call to <code class="docutils literal notranslate"><span class="pre">mongoengine</span></code> will act on that
+connection. It’s magic.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.mongodb.new_pymongo_client">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">new_pymongo_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pymongo.mongo_client.MongoClient<a class="reference internal" href="_modules/sni/db/mongodb.html#new_pymongo_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.new_pymongo_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to the MongoDB database using pymongo and returns a client object.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient">pymongo.mongo_client.MongoClient documentation</a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.mongodb.on_pre_save">
+<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">on_pre_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">document: mongoengine.document.Document</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/mongodb.html#on_pre_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.on_pre_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the document has a <cite>updated_on</cite>, sets it to the current datetime.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.db.migration">
+<span id="mongodb-migration-utilities"></span><h2>Mongodb migration utilities<a class="headerlink" href="#module-sni.db.migration" title="Permalink to this headline">¶</a></h2>
+<p>Database migration utilities</p>
+<dl class="function">
+<dt id="sni.db.migration.ensure_minimum_version">
+<code class="sig-prename descclassname">sni.db.migration.</code><code class="sig-name descname">ensure_minimum_version</code><span class="sig-paren">(</span><em class="sig-param">collection: pymongo.collection.Collection</em>, <em class="sig-param">version: int</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/migration.html#ensure_minimum_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migration.ensure_minimum_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>For all documents in the collection, if its <code class="docutils literal notranslate"><span class="pre">_version</span></code> field is less than
+the given version, sets it to that version.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migration.has_outdated_documents">
+<code class="sig-prename descclassname">sni.db.migration.</code><code class="sig-name descname">has_outdated_documents</code><span class="sig-paren">(</span><em class="sig-param">collection: pymongo.collection.Collection</em>, <em class="sig-param">schema_version: int</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/db/migration.html#has_outdated_documents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migration.has_outdated_documents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether a (pymongo) collection has documents whose <code class="docutils literal notranslate"><span class="pre">_version</span></code> field
+have value less than the given schema version.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migration.set_if_not_exist">
+<code class="sig-prename descclassname">sni.db.migration.</code><code class="sig-name descname">set_if_not_exist</code><span class="sig-paren">(</span><em class="sig-param">collection: pymongo.collection.Collection</em>, <em class="sig-param">field_name: str</em>, <em class="sig-param">value: Any</em>, <em class="sig-param">*</em>, <em class="sig-param">version: Optional[int] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/migration.html#set_if_not_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migration.set_if_not_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a field with a given value in all documents, if that field does not
+already exist. If the version kwargs if specified, only update documents of
+that version.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.db.redis">
+<span id="redis"></span><h2>Redis<a class="headerlink" href="#module-sni.db.redis" title="Permalink to this headline">¶</a></h2>
+<p>Redis related module</p>
+<dl class="function">
+<dt id="sni.db.redis.new_connection">
+<code class="sig-prename descclassname">sni.db.redis.</code><code class="sig-name descname">new_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; redis.client.Redis<a class="reference internal" href="_modules/sni/db/redis.html#new_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.redis.new_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new redis connection handler</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Database modules</a><ul>
+<li><a class="reference internal" href="#module-sni.db.mongodb">Mongodb</a></li>
+<li><a class="reference internal" href="#module-sni.db.migration">Mongodb migration utilities</a></li>
+<li><a class="reference internal" href="#module-sni.db.redis">Redis</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sni.html"
+                        title="previous chapter">Main SNI modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="user.html"
+                        title="next chapter">User management</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/db.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="user.html" title="User management"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sni.html" title="Main SNI modules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

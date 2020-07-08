@@ -1,5 +1,30 @@
-ESI requests layer
-==================
+ESI management
+==============
+
+Main module
+-----------
+
+.. automodule:: sni.esi.esi
+
+EVE SSO
+-------
+
+.. automodule:: sni.esi.sso
+
+ESI Token management
+--------------------
+
+.. automodule:: sni.esi.token
+
+Database models
+---------------
+
+.. automodule:: sni.esi.models
+
+Jobs
+----
+
+.. automodule:: sni.esi.jobs
 
 ESI scopes
 ----------
@@ -76,22 +101,3 @@ ESI scopes
     esi-wallet.read_corporation_wallet.v1
     esi-wallet.read_corporation_wallets.v1
     publicData
-
-
-ESI modules documentation
--------------------------
-
-``sni.esi.esi``
-~~~~~~~~~~~~~~~
-
-.. automodule:: sni.esi.esi
-
-``sni.esi.sso``
-~~~~~~~~~~~~~~~
-
-.. automodule:: sni.esi.sso
-
-``sni.esi.token``
-~~~~~~~~~~~~~~~~~
-
-.. automodule:: sni.esi.token

@@ -38,14 +38,61 @@
             
   <h1>Source code for sni.uac.clearance</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Clearance management and verification</span>
+<span class="sd">Clearance management and verification. Each user has a **clearance level**,</span>
+<span class="sd">which is an integer:</span>
+
+<span class="sd">* Level 0: User only have access to public data and read-write access to its</span>
+<span class="sd">  own ESI.</span>
+
+<span class="sd">* Level 1: User has access to read-only ESI (i.e. ``GET`` calls) of all members</span>
+<span class="sd">  of his corporation.</span>
+
+<span class="sd">* Level 2: User has access to read-write ESI (i.e. all http methods) of all</span>
+<span class="sd">  members of his corporation.</span>
+
+<span class="sd">* Level 3: User has access to read-only ESI (i.e. ``GET`` calls) of all members</span>
+<span class="sd">  of his alliance.</span>
+
+<span class="sd">* Level 4: User has access to read-write ESI (i.e. all http methods) of all</span>
+<span class="sd">  members of his alliance.</span>
+
+<span class="sd">* Level 5: User has access to read-only ESI (i.e. ``GET`` calls) of all members</span>
+<span class="sd">  of his coalition.</span>
+
+<span class="sd">* Level 6: User has access to read-write ESI (i.e. all http methods) of all</span>
+<span class="sd">  members of his coalition.</span>
+
+<span class="sd">* Level 7: User has access to read-only ESI (i.e. ``GET`` calls) of all members</span>
+<span class="sd">  regisered on this SNI instance.</span>
+
+<span class="sd">* Level 8: User has access to read-write ESI (i.e. all http methods) of all</span>
+<span class="sd">  members regisered on this SNI instance.</span>
+
+<span class="sd">* Level 9: User has clearance level 8 and some administrative priviledges.</span>
+
+<span class="sd">* Level 10: Superuser.</span>
+
+<span class="sd">Furthermore, note that</span>
+
+<span class="sd">* Any user can raise any other to its own clearance level, provided they are in</span>
+<span class="sd">  the same corporation (for levels 1 and 2), alliance (for levels 3 and 4), or</span>
+<span class="sd">  coalition (for levels 5 and 6).</span>
+
+<span class="sd">* Demoting users is considered an administrative task and requires a clearance</span>
+<span class="sd">  of at least 9.</span>
+
+<span class="sd">* Clearance levels are public informations.</span>
+
+<span class="sd">See :meth:`sni.uac.clearance.has_clearance` for a precise specification of how</span>
+<span class="sd">clearance levels are checked, and :const:`sni.uac.clearance.SCOPE_LEVELS` for</span>
+<span class="sd">the declaration of all scopes.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">sni.user.user</span> <span class="k">as</span> <span class="nn">user</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Coalition</span><span class="p">,</span> <span class="n">User</span>
 
 
 <div class="viewcode-block" id="AbstractScope"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbstractScope">[docs]</a><span class="k">class</span> <span class="nc">AbstractScope</span><span class="p">:</span>
@@ -54,8 +101,7 @@
 <span class="sd">    wether a *source* user is authorized to perform an action against a</span>
 <span class="sd">    *target* user (see :meth:`sni.uac.clearance.AbstractScope.has_clearance`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="AbstractScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbstractScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
-                      <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="AbstractScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbstractScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pure virtual methode, raises a ``NotImplementedError``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -71,8 +117,7 @@
 
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
 
-<div class="viewcode-block" id="AbsoluteScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbsoluteScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
-                      <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="AbsoluteScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbsoluteScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Absolute scopes should not have targets&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">&lt;=</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span></div></div>
@@ -87,8 +132,7 @@
 
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
 
-<div class="viewcode-block" id="ClearanceModificationScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.ClearanceModificationScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
-                      <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="ClearanceModificationScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.ClearanceModificationScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        For the source user to change the clearance level of the target user at</span>
 <span class="sd">        the level indicated in</span>
@@ -118,8 +162,7 @@
 
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
 
-<div class="viewcode-block" id="ESIScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.ESIScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
-                      <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="ESIScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.ESIScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;ESI scopes must have a target&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -244,7 +287,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="are_in_same_alliance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_alliance">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_alliance</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="are_in_same_alliance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_alliance">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_alliance</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tells wether two users are in the same alliance. Users that have no</span>
 <span class="sd">    alliance are considered in a different alliance as everyone else.</span>
@@ -254,7 +297,7 @@
     <span class="k">return</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">==</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span></div>
 
 
-<div class="viewcode-block" id="are_in_same_coalition"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_coalition">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_coalition</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="are_in_same_coalition"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_coalition">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_coalition</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tells wether two users have a coalition in common.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -262,13 +305,13 @@
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">coa</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">coa</span> <span class="ow">in</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">in</span> <span class="n">coa</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="are_in_same_corporation"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_corporation">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_corporation</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="are_in_same_corporation"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.are_in_same_corporation">[docs]</a><span class="k">def</span> <span class="nf">are_in_same_corporation</span><span class="p">(</span><span class="n">user1</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user2</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tells wether two users are in the same corporation. Users that have no</span>
 <span class="sd">    corporation are considered in different a corporation as everyone else.</span>
@@ -278,9 +321,9 @@
     <span class="k">return</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="o">==</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span></div>
 
 
-<div class="viewcode-block" id="assert_has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.assert_has_clearance">[docs]</a><span class="k">def</span> <span class="nf">assert_has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+<div class="viewcode-block" id="assert_has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.assert_has_clearance">[docs]</a><span class="k">def</span> <span class="nf">assert_has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
                          <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                         <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                         <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Like :meth:`sni.uac.clearance.has_clearance` but raises a</span>
 <span class="sd">    :class:`PermissionError` if the result is ``False``.</span>
@@ -289,7 +332,7 @@
         <span class="k">raise</span> <span class="ne">PermissionError</span></div>
 
 
-<div class="viewcode-block" id="distance_penalty"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.distance_penalty">[docs]</a><span class="k">def</span> <span class="nf">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="distance_penalty"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.distance_penalty">[docs]</a><span class="k">def</span> <span class="nf">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns 0 if both users are the same user; returns 1 if they are not the</span>
 <span class="sd">    same but in the same corporation; 3 if they are not in the same corporation</span>
@@ -307,9 +350,9 @@
     <span class="k">return</span> <span class="mi">7</span></div>
 
 
-<div class="viewcode-block" id="has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.has_clearance">[docs]</a><span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span>
+<div class="viewcode-block" id="has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.has_clearance">[docs]</a><span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
                   <span class="n">scope_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                  <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+                  <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check wether the *source* user has sufficient clearance to perform a given</span>
 <span class="sd">    action (or *scope*) against the *target* user.</span>
@@ -329,7 +372,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="reset_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.reset_clearance">[docs]</a><span class="k">def</span> <span class="nf">reset_clearance</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">,</span> <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="reset_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.reset_clearance">[docs]</a><span class="k">def</span> <span class="nf">reset_clearance</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resets a user&#39;s clearance.</span>
 

@@ -59,8 +59,6 @@ High level documentation
    openapi
    authentication
    configuration
-   teamspeak
-   uac
    todos
 
 
@@ -71,11 +69,13 @@ Module documentation
    :maxdepth: 2
 
    sni
-   configuration
-   apiserver
+   db
+   user
+   uac
+   api
    esi
-   database
-   scheduler
+   teamspeak
+   discord
 
 
 Indices and tables

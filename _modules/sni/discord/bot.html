@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.discord.bot &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.discord.bot</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Discord Bot management. The bot requires the ``bot`` scope, and the</span>
+<span class="sd">``Manage Roles``, ``Change Nickname``, ``Manage Nicknames``, ``Send Messages``</span>
+<span class="sd">permissions.</span>
+
+<span class="sd">See also: `Creating a Bot Account</span>
+<span class="sd">    &lt;https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro&gt;`_</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+
+<span class="kn">from</span> <span class="nn">apscheduler.jobstores.memory</span> <span class="kn">import</span> <span class="n">MemoryJobStore</span>
+<span class="kn">from</span> <span class="nn">apscheduler.schedulers.asyncio</span> <span class="kn">import</span> <span class="n">AsyncIOScheduler</span>
+<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">Bot</span>
+<span class="kn">import</span> <span class="nn">discord</span>
+
+<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="n">bot</span> <span class="o">=</span> <span class="n">Bot</span><span class="p">(</span><span class="n">command_prefix</span><span class="o">=</span><span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue Discord Bot&#39;</span><span class="p">)</span>
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">AsyncIOScheduler</span><span class="p">(</span>
+    <span class="n">event_loop</span><span class="o">=</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span>
+    <span class="n">job_defaults</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;coalesce&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;executor&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;jitter&#39;</span><span class="p">:</span> <span class="s1">&#39;60&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;jobstore&#39;</span><span class="p">:</span> <span class="s1">&#39;discord&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;max_instances&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;misfire_grace_time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">jobstores</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;discord&#39;</span><span class="p">:</span> <span class="n">MemoryJobStore</span><span class="p">(),</span>
+    <span class="p">},</span>
+    <span class="n">timezone</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">utc</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_guild"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.get_guild">[docs]</a><span class="k">def</span> <span class="nf">get_guild</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">discord</span><span class="o">.</span><span class="n">Guild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a guild handler corresponding to the ``discord.server_id`` setting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">bot</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.server_id&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_member"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.get_member">[docs]</a><span class="k">def</span> <span class="nf">get_member</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">discord</span><span class="o">.</span><span class="n">Member</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets a guild member by its user ID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_guild</span><span class="p">()</span><span class="o">.</span><span class="n">get_member</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.log">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends a message on the logging channel. If configuration key</span>
+<span class="sd">    ``discord.log_channel_id`` is ``None``, does&#39;t do anything.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log_channel_id</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.log_channel_id&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">log_channel_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">log_channel</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">get_channel</span><span class="p">(</span><span class="n">log_channel_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">log_channel</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs the discord client in a different thread.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_start</span><span class="p">():</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.token&#39;</span><span class="p">))</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting Discord client&#39;</span><span class="p">)</span>
+    <span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">_start</span><span class="p">())</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span> <span class="p">),</span>
+        <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;discord_client&#39;</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">BaseEventLoop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

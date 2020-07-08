@@ -75,30 +75,33 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.api.server</span> <span class="k">as</span> <span class="nn">apiserver</span>
-        <span class="n">apiserver</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">()</span>
+        <span class="kn">import</span> <span class="nn">sni.api.server</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
-    <span class="c1"># Database migration, pre scheduler init</span>
+    <span class="c1"># Database migration</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="kn">import</span> <span class="nn">sni.db</span>
-    <span class="kn">import</span> <span class="nn">sni.user</span>
-    <span class="kn">import</span> <span class="nn">sni.uac</span>
-    <span class="kn">import</span> <span class="nn">sni.esi</span>
+    <span class="kn">import</span> <span class="nn">sni.db.mongodb</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">mongodb</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">sni.teamspeak</span>
+    <span class="kn">import</span> <span class="nn">sni.uac.migration</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">uac</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">sni.discord</span>
+    <span class="kn">import</span> <span class="nn">sni.user.migration</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Post database migration, pre sheduler start</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reload_esi_openapi_spec</span><span class="p">:</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">load_esi_openapi</span><span class="p">()</span>
+        <span class="kn">import</span> <span class="nn">sni.esi.esi</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">load_esi_openapi</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">:</span>
@@ -111,12 +114,30 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
-    <span class="c1"># Scheduler init, and start</span>
+    <span class="c1"># Scheduler start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">import</span> <span class="nn">sni.scheduler</span>
-
     <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
+    <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.jobs</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Pre API server start</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.bot</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.commands</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.events</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server start</span>

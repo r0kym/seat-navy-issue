@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.api.esi &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.api.esi</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ESI related paths</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">APIRouter</span><span class="p">,</span>
+    <span class="n">Depends</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pydantic</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="kn">from</span> <span class="nn">sni.esi.esi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">esi_get</span><span class="p">,</span>
+    <span class="n">get_esi_path_scope</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.esi.sso</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">decode_access_token</span><span class="p">,</span>
+    <span class="n">get_access_token_from_callback_code</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_access_token</span><span class="p">,</span>
+    <span class="n">save_esi_tokens</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
+<span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_user_token</span><span class="p">,</span>
+    <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
+    <span class="n">StateCode</span><span class="p">,</span>
+    <span class="n">to_jwt</span><span class="p">,</span>
+    <span class="n">Token</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="EsiRequestIn"><a class="viewcode-back" href="../../../api.html#sni.api.esi.EsiRequestIn">[docs]</a><span class="k">class</span> <span class="nc">EsiRequestIn</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data to be forwarded to the ESI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">on_behalf_of</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="EsiRequestOut"><a class="viewcode-back" href="../../../api.html#sni.api.esi.EsiRequestOut">[docs]</a><span class="k">class</span> <span class="nc">EsiRequestOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SNI response to an ESI request</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+    <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+<div class="viewcode-block" id="PostCallbackEsiOut"><a class="viewcode-back" href="../../../api.html#sni.api.esi.PostCallbackEsiOut">[docs]</a><span class="k">class</span> <span class="nc">PostCallbackEsiOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Notification model to the app when receiving a callback from the ESI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">user_token</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="get_callback_esi"><a class="viewcode-back" href="../../../api.html#sni.api.esi.get_callback_esi">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/callback/esi&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;ESI callback&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Callbacks&#39;</span><span class="p">,</span> <span class="s1">&#39;ESI&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_callback_esi</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ESI callback. You should not manually call this.</span>
+
+<span class="sd">    Upon receiving a notification from EVE SSO, SNI notifies the appropriate</span>
+<span class="sd">    app by issuing a `POST` request to the predefined app callback, using the</span>
+<span class="sd">    `PostCallbackEsiOut` model.</span>
+
+<span class="sd">    Reference: OAuth 2.0 for Web Based Applications</span>
+<span class="sd">    https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="n">StateCode</span> <span class="o">=</span> <span class="n">StateCode</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+    <span class="n">esi_response</span> <span class="o">=</span> <span class="n">get_access_token_from_callback_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">decoded_access_token</span> <span class="o">=</span> <span class="n">decode_access_token</span><span class="p">(</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
+    <span class="n">save_esi_tokens</span><span class="p">(</span><span class="n">esi_response</span><span class="p">)</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">create_user_token</span><span class="p">(</span>
+        <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">))</span>
+    <span class="n">user_jwt_str</span> <span class="o">=</span> <span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Issuing token </span><span class="si">%s</span><span class="s1"> to app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span>
+                 <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">catch_all</span><span class="p">(</span>
+        <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s1">&#39;Failed to notify application </span><span class="si">{state_code.app_token.uuid}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">],</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+            <span class="n">PostCallbackEsiOut</span><span class="p">(</span>
+                <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+                <span class="n">user_token</span><span class="o">=</span><span class="n">user_jwt_str</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../../api.html#sni.api.esi.get_esi_latest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/esi/{esi_path:path}&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">EsiRequestOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Proxy path to the ESI&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ESI&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_esi_latest</span><span class="p">(</span>
+        <span class="n">esi_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">EsiRequestIn</span> <span class="o">=</span> <span class="n">EsiRequestIn</span><span class="p">(),</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Forwards a `GET` request to the ESI. The required clearance level depends</span>
+<span class="sd">    on the user making the request and the user specified on the</span>
+<span class="sd">    `on_behalf_of` field. See also `EsiRequestIn`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">esi_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">:</span>
+        <span class="n">esi_scope</span> <span class="o">=</span> <span class="n">get_esi_path_scope</span><span class="p">(</span><span class="n">esi_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">esi_scope</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">)</span>
+            <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">esi_scope</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="n">esi_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">,</span>
+                <span class="n">esi_scope</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span>
+        <span class="n">esi_path</span><span class="p">,</span>
+        <span class="n">esi_token</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">EsiRequestOut</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span>
+        <span class="n">headers</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>User management &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Access Control" href="uac.html" />
+    <link rel="prev" title="Database modules" href="db.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="uac.html" title="User Access Control"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="db.html" title="Database modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-management">
+<h1>User management<a class="headerlink" href="#user-management" title="Permalink to this headline">¶</a></h1>
+<img alt="_images/users.png" src="_images/users.png" />
+<div class="section" id="module-sni.user.user">
+<span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.user.user" title="Permalink to this headline">¶</a></h2>
+<p>User (aka character), corporation, and alliance management</p>
+<dl class="function">
+<dt id="sni.user.user.ensure_alliance">
+<code class="sig-prename descclassname">sni.user.user.</code><code class="sig-name descname">ensure_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em><span class="sig-paren">)</span> &#x2192; sni.user.models.Alliance<a class="reference internal" href="_modules/sni/user/user.html#ensure_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.ensure_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures that an alliance exists, and returns it. It it does not, creates
+it by fetching relevant data from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.user.ensure_autogroup">
+<code class="sig-prename descclassname">sni.user.user.</code><code class="sig-name descname">ensure_autogroup</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; sni.user.models.Group<a class="reference internal" href="_modules/sni/user/user.html#ensure_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.ensure_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensured that an automatically created group exists. Automatic groups are
+owned by root.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.user.ensure_corporation">
+<code class="sig-prename descclassname">sni.user.user.</code><code class="sig-name descname">ensure_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em><span class="sig-paren">)</span> &#x2192; sni.user.models.Corporation<a class="reference internal" href="_modules/sni/user/user.html#ensure_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.ensure_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures that a corporation exists, and returns it. It it does not, creates
+it by fetching relevant data from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.user.ensure_user">
+<code class="sig-prename descclassname">sni.user.user.</code><code class="sig-name descname">ensure_user</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em><span class="sig-paren">)</span> &#x2192; sni.user.models.User<a class="reference internal" href="_modules/sni/user/user.html#ensure_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.user.ensure_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures that a user (with a valid ESI character ID) exists, and returns it.
+It it does not, creates it by fetching relevant data from the ESI. Also
+creates the character’s corporation and alliance (if applicable).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.user.models">
+<span id="database-models"></span><h2>Database models<a class="headerlink" href="#module-sni.user.models" title="Permalink to this headline">¶</a></h2>
+<p>Models</p>
+<dl class="class">
+<dt id="sni.user.models.Alliance">
+<em class="property">class </em><code class="sig-prename descclassname">sni.user.models.</code><code class="sig-name descname">Alliance</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/models.html#Alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>EVE alliance database model.</p>
+<dl class="exception">
+<dt id="sni.user.models.Alliance.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.user.models.Alliance.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.user.models.Alliance.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.user.models.Alliance.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.alliance_id">
+<code class="sig-name descname">alliance_id</code><a class="headerlink" href="#sni.user.models.Alliance.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.alliance_name">
+<code class="sig-name descname">alliance_name</code><a class="headerlink" href="#sni.user.models.Alliance.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Alliance.coalitions">
+<code class="sig-name descname">coalitions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.Coalition]<a class="reference internal" href="_modules/sni/user/models.html#Alliance.coalitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Alliance.coalitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of coalition this alliance is part of.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Paginate the results</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Alliance.executor">
+<em class="property">property </em><code class="sig-name descname">executor</code><a class="headerlink" href="#sni.user.models.Alliance.executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the alliance’s executor corporation as a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.Corporation</span></code> object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.executor_corporation_id">
+<code class="sig-name descname">executor_corporation_id</code><a class="headerlink" href="#sni.user.models.Alliance.executor_corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Alliance.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.user.models.Alliance.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.ticker">
+<code class="sig-name descname">ticker</code><a class="headerlink" href="#sni.user.models.Alliance.ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Alliance.updated_on">
+<code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.user.models.Alliance.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Alliance.user_iterator">
+<code class="sig-name descname">user_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Alliance.user_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Alliance.user_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all the members of this alliance, according to
+the database. This may not be up to date with the ESI.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Alliance.users">
+<code class="sig-name descname">users</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Alliance.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Alliance.users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the member list of this alliance, according to the database.
+This may not be up to date with the ESI.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.user.models.Coalition">
+<em class="property">class </em><code class="sig-prename descclassname">sni.user.models.</code><code class="sig-name descname">Coalition</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/models.html#Coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>EVE coalition. Coalitions are not formally represented in EVE, so they have
+to be created manually. An alliance can be part of multiple coalitions.</p>
+<dl class="exception">
+<dt id="sni.user.models.Coalition.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.user.models.Coalition.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.user.models.Coalition.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.user.models.Coalition.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.user.models.Coalition._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.coalition_name">
+<code class="sig-name descname">coalition_name</code><a class="headerlink" href="#sni.user.models.Coalition.coalition_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.user.models.Coalition.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Coalition.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.members">
+<code class="sig-name descname">members</code><a class="headerlink" href="#sni.user.models.Coalition.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list field that wraps a standard field, allowing multiple instances
+of the field to be used as a list in the database.</p>
+<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.user.models.Coalition.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.ticker">
+<code class="sig-name descname">ticker</code><a class="headerlink" href="#sni.user.models.Coalition.ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.updated_on">
+<code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.user.models.Coalition.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Coalition.user_iterator">
+<code class="sig-name descname">user_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Coalition.user_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Coalition.user_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all the members of this coalition.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Coalition.users">
+<code class="sig-name descname">users</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Coalition.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Coalition.users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the member list of this coalition.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.user.models.Corporation">
+<em class="property">class </em><code class="sig-prename descclassname">sni.user.models.</code><code class="sig-name descname">Corporation</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/models.html#Corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>EVE corporation database model.</p>
+<dl class="exception">
+<dt id="sni.user.models.Corporation.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.user.models.Corporation.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.user.models.Corporation.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.user.models.Corporation.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.alliance">
+<code class="sig-name descname">alliance</code><a class="headerlink" href="#sni.user.models.Corporation.alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Corporation.ceo">
+<em class="property">property </em><code class="sig-name descname">ceo</code><a class="headerlink" href="#sni.user.models.Corporation.ceo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the corporation’s ceo as a <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user</span></code> object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.ceo_character_id">
+<code class="sig-name descname">ceo_character_id</code><a class="headerlink" href="#sni.user.models.Corporation.ceo_character_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.corporation_id">
+<code class="sig-name descname">corporation_id</code><a class="headerlink" href="#sni.user.models.Corporation.corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.corporation_name">
+<code class="sig-name descname">corporation_name</code><a class="headerlink" href="#sni.user.models.Corporation.corporation_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Corporation.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.user.models.Corporation.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.ticker">
+<code class="sig-name descname">ticker</code><a class="headerlink" href="#sni.user.models.Corporation.ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Corporation.updated_on">
+<code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.user.models.Corporation.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Corporation.user_iterator">
+<code class="sig-name descname">user_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Corporation.user_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation.user_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all the members of this corporation, according
+to the database. This may not be up to date with the ESI.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Corporation.users">
+<code class="sig-name descname">users</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Corporation.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation.users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the member list of this corporation, according to the database.
+This may not be up to date with the ESI.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.user.models.Group">
+<em class="property">class </em><code class="sig-prename descclassname">sni.user.models.</code><code class="sig-name descname">Group</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/models.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Group model. A group is simply a collection of users.</p>
+<dl class="exception">
+<dt id="sni.user.models.Group.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.user.models.Group.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.user.models.Group.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.user.models.Group.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.user.models.Group._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.user.models.Group.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.description">
+<code class="sig-name descname">description</code><a class="headerlink" href="#sni.user.models.Group.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.discord_role_id">
+<code class="sig-name descname">discord_role_id</code><a class="headerlink" href="#sni.user.models.Group.discord_role_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.group_name">
+<code class="sig-name descname">group_name</code><a class="headerlink" href="#sni.user.models.Group.group_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.Group.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.is_autogroup">
+<code class="sig-name descname">is_autogroup</code><a class="headerlink" href="#sni.user.models.Group.is_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.map_to_discord">
+<code class="sig-name descname">map_to_discord</code><a class="headerlink" href="#sni.user.models.Group.map_to_discord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.map_to_teamspeak">
+<code class="sig-name descname">map_to_teamspeak</code><a class="headerlink" href="#sni.user.models.Group.map_to_teamspeak" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean field type.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.1.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.members">
+<code class="sig-name descname">members</code><a class="headerlink" href="#sni.user.models.Group.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list field that wraps a standard field, allowing multiple instances
+of the field to be used as a list in the database.</p>
+<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Required means it cannot be empty - as the default for ListFields is []</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.user.models.Group.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.owner">
+<code class="sig-name descname">owner</code><a class="headerlink" href="#sni.user.models.Group.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.teamspeak_sgid">
+<code class="sig-name descname">teamspeak_sgid</code><a class="headerlink" href="#sni.user.models.Group.teamspeak_sgid" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Group.updated_on">
+<code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.user.models.Group.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.user.models.User">
+<em class="property">class </em><code class="sig-prename descclassname">sni.user.models.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/models.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>User model.</p>
+<p>A user corresponds to a single EVE character.</p>
+<dl class="exception">
+<dt id="sni.user.models.User.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.user.models.User.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.user.models.User.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.user.models.User.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.user.models.User._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.character_id">
+<code class="sig-name descname">character_id</code><a class="headerlink" href="#sni.user.models.User.character_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.character_name">
+<code class="sig-name descname">character_name</code><a class="headerlink" href="#sni.user.models.User.character_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.clearance_level">
+<code class="sig-name descname">clearance_level</code><a class="headerlink" href="#sni.user.models.User.clearance_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.corporation">
+<code class="sig-name descname">corporation</code><a class="headerlink" href="#sni.user.models.User.corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.user.models.User.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.discord_user_id">
+<code class="sig-name descname">discord_user_id</code><a class="headerlink" href="#sni.user.models.User.discord_user_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.user.models.User.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.User.is_ceo_of_alliance">
+<code class="sig-name descname">is_ceo_of_alliance</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/user/models.html#User.is_ceo_of_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.User.is_ceo_of_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether the user is the ceo of its corporation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.User.is_ceo_of_corporation">
+<code class="sig-name descname">is_ceo_of_corporation</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/user/models.html#User.is_ceo_of_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.User.is_ceo_of_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether the user is the ceo of its corporation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.user.models.User.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.teamspeak_cldbid">
+<code class="sig-name descname">teamspeak_cldbid</code><a class="headerlink" href="#sni.user.models.User.teamspeak_cldbid" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.User.tickered_name">
+<em class="property">property </em><code class="sig-name descname">tickered_name</code><a class="headerlink" href="#sni.user.models.User.tickered_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the user’s character name with its alliance ticker as a prefix.
+If the user is not in an alliance, then the corporation’s ticker is
+used instead. If the user is not in any coproration (e.g. root), then
+there is no prefix.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.User.updated_on">
+<code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.user.models.User.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.user.signals">
+<span id="database-signal-handlers"></span><h2>Database signal handlers<a class="headerlink" href="#module-sni.user.signals" title="Permalink to this headline">¶</a></h2>
+<p>ODM signal handlers</p>
+</div>
+<div class="section" id="module-sni.user.migration">
+<span id="database-migration"></span><h2>Database migration<a class="headerlink" href="#module-sni.user.migration" title="Permalink to this headline">¶</a></h2>
+<p>Migration methode for user related collections</p>
+<dl class="function">
+<dt id="sni.user.migration.ensure_root">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">ensure_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/user/migration.html#ensure_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.ensure_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create root user if it does not exist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.migration.ensure_superuser_group">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">ensure_superuser_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/user/migration.html#ensure_superuser_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.ensure_superuser_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that the <code class="docutils literal notranslate"><span class="pre">superusers</span></code> group exists and makes sure that root is the
+owner.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.migration.migrate">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrates all schema</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.migration.migrate_coalition">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_coalition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate the coalition documents to the latest schema</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.migration.migrate_group">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate the group collection from 10 to v2.</p>
+<p>Renames the <code class="docutils literal notranslate"><span class="pre">name</span></code> field to <code class="docutils literal notranslate"><span class="pre">group_name</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.migration.migrate_user">
+<code class="sig-prename descclassname">sni.user.migration.</code><code class="sig-name descname">migrate_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/migration.html#migrate_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.migration.migrate_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate the user documents to the latest schema</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.user.jobs">
+<span id="jobs"></span><h2>Jobs<a class="headerlink" href="#module-sni.user.jobs" title="Permalink to this headline">¶</a></h2>
+<p>User and eve player structure management jobs.</p>
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates an alliance’s properties from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance_autogroup">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_autogroup</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates an alliance autogroup.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance_autogroups">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_autogroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all the alliance autogroup. Instead of querying the ESI, it queries
+the database for all user in the corporations in that alliance, assuming
+the user and corporation records are up-to-date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_members</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure all members of a given alliance exist in the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliances">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the alliances properties from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliances_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliances_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliances_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliances_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through all alliances (in the database) and makes sure their
+member corporations exist in the database. See
+<a class="reference internal" href="#sni.user.jobs.update_alliance_members" title="sni.user.jobs.update_alliance_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.jobs.update_alliance_members()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_coalition_autogroups">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_coalition_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_coalition_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_coalition_autogroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the coalition autogroups. Instead of querying the ESI, it queries
+the database for all user in that coalition, assuming the user, coalition,
+and alliance records are up-to-date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_coropration_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_coropration_members</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_coropration_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_coropration_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that all members of a corporation exist in the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporation">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a corporation properties from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporation_autogroups">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation_autogroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the corporations autogroup. Instead of querying the ESI, it queries
+the database for all user in that corporation, assuming the user records
+are up-to-date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporations">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates corporations properties. (yes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporations_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporations_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporations_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporations_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through all corporations (in the database) and makes sure their
+members exist in the database. See
+<a class="reference internal" href="#sni.user.jobs.update_coropration_members" title="sni.user.jobs.update_coropration_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.jobs.update_coropration_members()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_users">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterated through all users and updates their field from ESI.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">User management</a><ul>
+<li><a class="reference internal" href="#module-sni.user.user">Main module</a></li>
+<li><a class="reference internal" href="#module-sni.user.models">Database models</a></li>
+<li><a class="reference internal" href="#module-sni.user.signals">Database signal handlers</a></li>
+<li><a class="reference internal" href="#module-sni.user.migration">Database migration</a></li>
+<li><a class="reference internal" href="#module-sni.user.jobs">Jobs</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="db.html"
+                        title="previous chapter">Database modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="uac.html"
+                        title="next chapter">User Access Control</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/user.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="uac.html" title="User Access Control"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="db.html" title="Database modules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

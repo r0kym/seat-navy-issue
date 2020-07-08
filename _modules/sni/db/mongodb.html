@@ -57,7 +57,7 @@
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 
-<div class="viewcode-block" id="init_mongodb"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.init_mongodb">[docs]</a><span class="k">def</span> <span class="nf">init_mongodb</span><span class="p">():</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../db.html#sni.db.mongodb.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Connects to the MongoDB instance.</span>
 
@@ -77,7 +77,7 @@
     <span class="n">me_signals</span><span class="o">.</span><span class="n">pre_save</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_pre_save</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_pymongo_collection"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.get_pymongo_collection">[docs]</a><span class="k">def</span> <span class="nf">get_pymongo_collection</span><span class="p">(</span>
+<div class="viewcode-block" id="get_pymongo_collection"><a class="viewcode-back" href="../../../db.html#sni.db.mongodb.get_pymongo_collection">[docs]</a><span class="k">def</span> <span class="nf">get_pymongo_collection</span><span class="p">(</span>
     <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Collection</span><span class="p">:</span>
@@ -89,7 +89,7 @@
     <span class="k">return</span> <span class="n">client</span><span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">)][</span><span class="n">collection_name</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="new_pymongo_client"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.new_pymongo_client">[docs]</a><span class="k">def</span> <span class="nf">new_pymongo_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
+<div class="viewcode-block" id="new_pymongo_client"><a class="viewcode-back" href="../../../db.html#sni.db.mongodb.new_pymongo_client">[docs]</a><span class="k">def</span> <span class="nf">new_pymongo_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Connects to the MongoDB database using pymongo and returns a client object.</span>
 
@@ -107,7 +107,7 @@
     <span class="k">return</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="on_pre_save"><a class="viewcode-back" href="../../../database.html#sni.db.mongodb.on_pre_save">[docs]</a><span class="k">def</span> <span class="nf">on_pre_save</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+<div class="viewcode-block" id="on_pre_save"><a class="viewcode-back" href="../../../db.html#sni.db.mongodb.on_pre_save">[docs]</a><span class="k">def</span> <span class="nf">on_pre_save</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If the document has a `updated_on`, sets it to the current datetime.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -16,8 +16,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Todo list" href="todos.html" />
-    <link rel="prev" title="Teamspeak module" href="teamspeak.html" /> 
+    <link rel="next" title="API Server" href="api.html" />
+    <link rel="prev" title="User management" href="user.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,10 +29,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="todos.html" title="Todo list"
+          <a href="api.html" title="API Server"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="teamspeak.html" title="Teamspeak module"
+          <a href="user.html" title="User management"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -45,13 +45,10 @@
             
   <div class="section" id="user-access-control">
 <h1>User Access Control<a class="headerlink" href="#user-access-control" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="users-groups-etc">
-<span id="id1"></span><h2>Users, groups, etc.<a class="headerlink" href="#users-groups-etc" title="Permalink to this headline">¶</a></h2>
-<img alt="_images/users.png" src="_images/users.png" />
-</div>
-<div class="section" id="clearance-levels">
-<h2>Clearance levels<a class="headerlink" href="#clearance-levels" title="Permalink to this headline">¶</a></h2>
-<p>Each user has a <strong>clearance level</strong>, which is an integer:</p>
+<div class="section" id="module-sni.uac.clearance">
+<span id="clearance-management"></span><h2>Clearance management<a class="headerlink" href="#module-sni.uac.clearance" title="Permalink to this headline">¶</a></h2>
+<p>Clearance management and verification. Each user has a <strong>clearance level</strong>,
+which is an integer:</p>
 <ul class="simple">
 <li><p>Level 0: User only have access to public data and read-write access to its
 own ESI.</p></li>
@@ -83,24 +80,571 @@ coalition (for levels 5 and 6).</p></li>
 of at least 9.</p></li>
 <li><p>Clearance levels are public informations.</p></li>
 </ul>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.has_clearance()</span></code> for a precise specification of how
+<p>See <a class="reference internal" href="#sni.uac.clearance.has_clearance" title="sni.uac.clearance.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.has_clearance()</span></code></a> for a precise specification of how
 clearance levels are checked, and <code class="xref py py-const docutils literal notranslate"><span class="pre">sni.uac.clearance.SCOPE_LEVELS</span></code> for
 the declaration of all scopes.</p>
+<dl class="class">
+<dt id="sni.uac.clearance.AbsoluteScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">AbsoluteScope</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#AbsoluteScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbsoluteScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sni.uac.clearance.AbstractScope" title="sni.uac.clearance.AbstractScope"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope</span></code></a></p>
+<p>An absolute scope asserts that the source user has at least a pretermined
+clearance level.</p>
+<dl class="method">
+<dt id="sni.uac.clearance.AbsoluteScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User, target: Optional[sni.user.models.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#AbsoluteScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbsoluteScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.clearance.AbsoluteScope.level">
+<code class="sig-name descname">level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.uac.clearance.AbsoluteScope.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.clearance.AbstractScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">AbstractScope</code><a class="reference internal" href="_modules/sni/uac/clearance.html#AbstractScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbstractScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an abstract scope. In SNI, a scope is a class that determines
+wether a <em>source</em> user is authorized to perform an action against a
+<em>target</em> user (see <a class="reference internal" href="#sni.uac.clearance.AbstractScope.has_clearance" title="sni.uac.clearance.AbstractScope.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope.has_clearance()</span></code></a>).</p>
+<dl class="method">
+<dt id="sni.uac.clearance.AbstractScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User, target: Optional[sni.user.models.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#AbstractScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.AbstractScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pure virtual methode, raises a <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.clearance.ClearanceModificationScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">ClearanceModificationScope</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#ClearanceModificationScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ClearanceModificationScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sni.uac.clearance.AbstractScope" title="sni.uac.clearance.AbstractScope"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope</span></code></a></p>
+<p>This scope determines when a user is authorized to change the clearance
+level of another user. See <a class="reference internal" href="#sni.uac.clearance.ClearanceModificationScope.has_clearance" title="sni.uac.clearance.ClearanceModificationScope.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.ClearanceModificationScope.has_clearance()</span></code></a>.</p>
+<dl class="method">
+<dt id="sni.uac.clearance.ClearanceModificationScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User, target: Optional[sni.user.models.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#ClearanceModificationScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ClearanceModificationScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>For the source user to change the clearance level of the target user at
+the level indicated in
+<a class="reference internal" href="#sni.uac.clearance.ClearanceModificationScope.level" title="sni.uac.clearance.ClearanceModificationScope.level"><code class="xref py py-data docutils literal notranslate"><span class="pre">sni.uac.clearance.ClearanceModificationScope.level</span></code></a>, the
+clearance level of the source must be hierarchically superior to the
+target, and have read-write access to the target’s corporation,
+alliance, or coalition, whichever is most global. In addition, the
+source must have at least the same clearance level than the target.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.clearance.ClearanceModificationScope.level">
+<code class="sig-name descname">level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.uac.clearance.ClearanceModificationScope.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.clearance.ESIScope">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">ESIScope</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#ESIScope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ESIScope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sni.uac.clearance.AbstractScope" title="sni.uac.clearance.AbstractScope"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.clearance.AbstractScope</span></code></a></p>
+<p>This scope determines when a user is authorized to read or write ESI data.</p>
+<dl class="method">
+<dt id="sni.uac.clearance.ESIScope.has_clearance">
+<code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User, target: Optional[sni.user.models.User]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#ESIScope.has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.ESIScope.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.clearance.ESIScope.level">
+<code class="sig-name descname">level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.uac.clearance.ESIScope.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.are_in_same_alliance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_alliance</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.user.models.User</em>, <em class="sig-param">user2: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether two users are in the same alliance. Users that have no
+alliance are considered in a different alliance as everyone else.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.are_in_same_coalition">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_coalition</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.user.models.User</em>, <em class="sig-param">user2: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether two users have a coalition in common.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.are_in_same_corporation">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">are_in_same_corporation</code><span class="sig-paren">(</span><em class="sig-param">user1: sni.user.models.User</em>, <em class="sig-param">user2: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#are_in_same_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.are_in_same_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether two users are in the same corporation. Users that have no
+corporation are considered in different a corporation as everyone else.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.assert_has_clearance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">assert_has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User</em>, <em class="sig-param">scope: str</em>, <em class="sig-param">target: Optional[sni.user.models.User] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/uac/clearance.html#assert_has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.assert_has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference internal" href="#sni.uac.clearance.has_clearance" title="sni.uac.clearance.has_clearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.clearance.has_clearance()</span></code></a> but raises a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionError</span></code> if the result is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.distance_penalty">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">distance_penalty</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User</em>, <em class="sig-param">target: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/sni/uac/clearance.html#distance_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.distance_penalty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 0 if both users are the same user; returns 1 if they are not the
+same but in the same corporation; 3 if they are not in the same corporation
+but in the same alliance; 5 if they are not in the same alliance but in the
+same coalition; and otherwise, returns 7.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.has_clearance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">has_clearance</code><span class="sig-paren">(</span><em class="sig-param">source: sni.user.models.User</em>, <em class="sig-param">scope_name: str</em>, <em class="sig-param">target: Optional[sni.user.models.User] = None</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/uac/clearance.html#has_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.has_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check wether the <em>source</em> user has sufficient clearance to perform a given
+action (or <em>scope</em>) against the <em>target</em> user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.clearance.reset_clearance">
+<code class="sig-prename descclassname">sni.uac.clearance.</code><code class="sig-name descname">reset_clearance</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em>, <em class="sig-param">save: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/clearance.html#reset_clearance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.clearance.reset_clearance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets a user’s clearance.</p>
+<p>If a user is the CEO of its corporation, then a clearance level of 2 is
+granted. If its corporation is the executor of the alliance, then a level
+of 4 is granted instead. If the user is root or has a clearance level of
+10, then a level of 10 is applied (so that superusers are preserved no
+matter what). Otherwise, the user’s clearance level is set to 0.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="uac-modules-documentation">
-<h2>UAC modules documentation<a class="headerlink" href="#uac-modules-documentation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="sni-uac-token">
-<h3><code class="docutils literal notranslate"><span class="pre">sni.uac.token</span></code><a class="headerlink" href="#sni-uac-token" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-sni.uac.token">
+<span id="sni-token-management"></span><h2>SNI token management<a class="headerlink" href="#module-sni.uac.token" title="Permalink to this headline">¶</a></h2>
+<p>Token management</p>
+<dl class="function">
+<dt id="sni.uac.token.create_dynamic_app_token">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">create_dynamic_app_token</code><span class="sig-paren">(</span><em class="sig-param">owner: sni.user.models.User</em>, <em class="sig-param">*</em>, <em class="sig-param">callback: Optional[str] = None</em>, <em class="sig-param">comments: Optional[str] = None</em>, <em class="sig-param">parent: Optional[sni.uac.models.Token] = None</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.Token<a class="reference internal" href="_modules/sni/uac/token.html#create_dynamic_app_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.create_dynamic_app_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new dynamic app token for that user.</p>
+<p>Warning: Does not check that the user is allowed to actually do that.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.create_permanent_app_token">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">create_permanent_app_token</code><span class="sig-paren">(</span><em class="sig-param">owner: sni.user.models.User</em>, <em class="sig-param">*</em>, <em class="sig-param">callback: Optional[str] = None</em>, <em class="sig-param">comments: Optional[str] = None</em>, <em class="sig-param">parent: Optional[sni.uac.models.Token] = None</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.Token<a class="reference internal" href="_modules/sni/uac/token.html#create_permanent_app_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.create_permanent_app_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new permanent app token for that user.</p>
+<p>Warning: Does not check that the user is allowed to actually do that.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.create_state_code">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">create_state_code</code><span class="sig-paren">(</span><em class="sig-param">app_token: sni.uac.models.Token</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.StateCode<a class="reference internal" href="_modules/sni/uac/token.html#create_state_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.create_state_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new state code.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.token.StateCode</span></code></p>
 </div>
-<div class="section" id="sni-user-user">
-<h3><code class="docutils literal notranslate"><span class="pre">sni.user.user</span></code><a class="headerlink" href="#sni-user-user" title="Permalink to this headline">¶</a></h3>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.create_user_token">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">create_user_token</code><span class="sig-paren">(</span><em class="sig-param">app_token: sni.uac.models.Token</em>, <em class="sig-param">owner: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.Token<a class="reference internal" href="_modules/sni/uac/token.html#create_user_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.create_user_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derives a new user token from an existing app token, and set the owner to
+be the user given in argument.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.from_authotization_header">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">from_authotization_header</code><span class="sig-paren">(</span><em class="sig-param">authorization: str = Header(None)</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.Token<a class="reference internal" href="_modules/sni/uac/token.html#from_authotization_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.from_authotization_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates an <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span></code> header and returns a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.token.Token</span></code>. If the token string is invalid, raises a
+<code class="docutils literal notranslate"><span class="pre">401</span></code>. Should be used as a FastAPI dependency.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.from_authotization_header_nondyn">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">from_authotization_header_nondyn</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header)</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.Token<a class="reference internal" href="_modules/sni/uac/token.html#from_authotization_header_nondyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.from_authotization_header_nondyn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates an <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span></code> header and returns a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.token.Token</span></code>. If the token string is invalid, or if the
+token is dynamic, raises a <code class="docutils literal notranslate"><span class="pre">401</span></code>. Should be used as a FastAPI dependency.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.get_token_from_jwt">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">get_token_from_jwt</code><span class="sig-paren">(</span><em class="sig-param">token_str: str</em><span class="sig-paren">)</span> &#x2192; Optional[sni.uac.models.Token]<a class="reference internal" href="_modules/sni/uac/token.html#get_token_from_jwt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.get_token_from_jwt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a token from its JWT string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.token.to_jwt">
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">to_jwt</code><span class="sig-paren">(</span><em class="sig-param">model: sni.uac.models.Token</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/uac/token.html#to_jwt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.to_jwt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derives a JWT token byte array from the a token model.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="sni-user-group">
-<h3><code class="docutils literal notranslate"><span class="pre">sni.user.group</span></code><a class="headerlink" href="#sni-user-group" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-sni.uac.models">
+<span id="database-models"></span><h2>Database models<a class="headerlink" href="#module-sni.uac.models" title="Permalink to this headline">¶</a></h2>
+<p>Models</p>
+<dl class="class">
+<dt id="sni.uac.models.StateCode">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.models.</code><code class="sig-name descname">StateCode</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/models.html#StateCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.models.StateCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a state code and related metadatas.</p>
+<p>A state code is issued when a new user token is issued from a dynamic app
+token, and is a way for SNI to remeber about the authentication while the
+end user logs in to EVE SSO.</p>
+<dl class="exception">
+<dt id="sni.uac.models.StateCode.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.uac.models.StateCode.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.uac.models.StateCode.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.uac.models.StateCode.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode.app_token">
+<code class="sig-name descname">app_token</code><a class="headerlink" href="#sni.uac.models.StateCode.app_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="sni-uac-clearance">
-<h3><code class="docutils literal notranslate"><span class="pre">sni.uac.clearance</span></code><a class="headerlink" href="#sni-uac-clearance" title="Permalink to this headline">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
 </div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.uac.models.StateCode.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.uac.models.StateCode.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.uac.models.StateCode.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode.uuid">
+<code class="sig-name descname">uuid</code><a class="headerlink" href="#sni.uac.models.StateCode.uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A UUID field.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.models.Token">
+<em class="property">class </em><code class="sig-prename descclassname">sni.uac.models.</code><code class="sig-name descname">Token</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/models.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.models.Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a token issued by SNI.</p>
+<dl class="exception">
+<dt id="sni.uac.models.Token.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.uac.models.Token.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.uac.models.Token.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.uac.models.Token.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.uac.models.Token.TokenType">
+<em class="property">class </em><code class="sig-name descname">TokenType</code><a class="reference internal" href="_modules/sni/uac/models.html#Token.TokenType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.models.Token.TokenType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enumeration containing the various token types.</p>
+<dl class="method">
+<dt id="sni.uac.models.Token.TokenType._generate_next_value_">
+<code class="sig-name descname">_generate_next_value_</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">count</em>, <em class="sig-param">last_values</em><span class="sig-paren">)</span><a class="headerlink" href="#sni.uac.models.Token.TokenType._generate_next_value_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType._member_map_">
+<code class="sig-name descname">_member_map_</code><em class="property"> = {'dyn': &lt;TokenType.dyn: 'dyn'&gt;, 'per': &lt;TokenType.per: 'per'&gt;, 'use': &lt;TokenType.use: 'use'&gt;}</em><a class="headerlink" href="#sni.uac.models.Token.TokenType._member_map_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType._member_names_">
+<code class="sig-name descname">_member_names_</code><em class="property"> = ['dyn', 'per', 'use']</em><a class="headerlink" href="#sni.uac.models.Token.TokenType._member_names_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType._member_type_">
+<code class="sig-name descname">_member_type_</code><a class="headerlink" href="#sni.uac.models.Token.TokenType._member_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.str</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType._value2member_map_">
+<code class="sig-name descname">_value2member_map_</code><em class="property"> = {'dyn': &lt;TokenType.dyn: 'dyn'&gt;, 'per': &lt;TokenType.per: 'per'&gt;, 'use': &lt;TokenType.use: 'use'&gt;}</em><a class="headerlink" href="#sni.uac.models.Token.TokenType._value2member_map_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType.dyn">
+<code class="sig-name descname">dyn</code><em class="property"> = 'dyn'</em><a class="headerlink" href="#sni.uac.models.Token.TokenType.dyn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType.per">
+<code class="sig-name descname">per</code><em class="property"> = 'per'</em><a class="headerlink" href="#sni.uac.models.Token.TokenType.per" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.TokenType.use">
+<code class="sig-name descname">use</code><em class="property"> = 'use'</em><a class="headerlink" href="#sni.uac.models.Token.TokenType.use" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.callback">
+<code class="sig-name descname">callback</code><a class="headerlink" href="#sni.uac.models.Token.callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field that validates input as an URL.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.comments">
+<code class="sig-name descname">comments</code><a class="headerlink" href="#sni.uac.models.Token.comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.created_on">
+<code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.uac.models.Token.created_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.expires_on">
+<code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.uac.models.Token.expires_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.uac.models.Token.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.uac.models.Token.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.owner">
+<code class="sig-name descname">owner</code><a class="headerlink" href="#sni.uac.models.Token.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#sni.uac.models.Token.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a document that will be automatically dereferenced on
+access (lazily).</p>
+<p>Note this means you will get a database I/O access everytime you access
+this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
+which precise type can depend of the value of the <cite>_cls</cite> field present in the
+document in database.
+In short, using this type of field can lead to poor performances (especially
+if you access this field only to retrieve it <cite>pk</cite> field which is already
+known before dereference). To solve this you should consider using the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
+<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
+the field is referencing is deleted.  EmbeddedDocuments, DictFields and
+MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
+will be raised if trying to set on one of these Document / Field types.</p>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
+<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
+<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
+<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
+<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
+</ul>
+</div></blockquote>
+<p>Alternative syntax for registering delete rules (useful when implementing
+bi-directional delete rules)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
+
+<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.token_type">
+<code class="sig-name descname">token_type</code><a class="headerlink" href="#sni.uac.models.Token.token_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.Token.uuid">
+<code class="sig-name descname">uuid</code><a class="headerlink" href="#sni.uac.models.Token.uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A UUID field.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.uac.migration">
+<span id="database-migration"></span><h2>Database migration<a class="headerlink" href="#module-sni.uac.migration" title="Permalink to this headline">¶</a></h2>
+<p>UAC specific migrations</p>
+<dl class="function">
+<dt id="sni.uac.migration.ensure_root_dyn_token">
+<code class="sig-prename descclassname">sni.uac.migration.</code><code class="sig-name descname">ensure_root_dyn_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/uac/migration.html#ensure_root_dyn_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.migration.ensure_root_dyn_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dynamic app token owned by root, if none exist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.migration.ensure_root_per_token">
+<code class="sig-prename descclassname">sni.uac.migration.</code><code class="sig-name descname">ensure_root_per_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/uac/migration.html#ensure_root_per_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.migration.ensure_root_per_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a permanent app token owned by root, if none exist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.migration.migrate">
+<code class="sig-prename descclassname">sni.uac.migration.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/migration.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.migration.migrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrates all schema and ensures basic documents</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -113,25 +657,20 @@ the declaration of all scopes.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">User Access Control</a><ul>
-<li><a class="reference internal" href="#users-groups-etc">Users, groups, etc.</a></li>
-<li><a class="reference internal" href="#clearance-levels">Clearance levels</a></li>
-<li><a class="reference internal" href="#uac-modules-documentation">UAC modules documentation</a><ul>
-<li><a class="reference internal" href="#sni-uac-token"><code class="docutils literal notranslate"><span class="pre">sni.uac.token</span></code></a></li>
-<li><a class="reference internal" href="#sni-user-user"><code class="docutils literal notranslate"><span class="pre">sni.user.user</span></code></a></li>
-<li><a class="reference internal" href="#sni-user-group"><code class="docutils literal notranslate"><span class="pre">sni.user.group</span></code></a></li>
-<li><a class="reference internal" href="#sni-uac-clearance"><code class="docutils literal notranslate"><span class="pre">sni.uac.clearance</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#module-sni.uac.clearance">Clearance management</a></li>
+<li><a class="reference internal" href="#module-sni.uac.token">SNI token management</a></li>
+<li><a class="reference internal" href="#module-sni.uac.models">Database models</a></li>
+<li><a class="reference internal" href="#module-sni.uac.migration">Database migration</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="teamspeak.html"
-                        title="previous chapter">Teamspeak module</a></p>
+  <p class="topless"><a href="user.html"
+                        title="previous chapter">User management</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="todos.html"
-                        title="next chapter">Todo list</a></p>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">API Server</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -163,10 +702,10 @@ the declaration of all scopes.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="todos.html" title="Todo list"
+          <a href="api.html" title="API Server"
              >next</a> |</li>
         <li class="right" >
-          <a href="teamspeak.html" title="Teamspeak module"
+          <a href="user.html" title="User management"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>

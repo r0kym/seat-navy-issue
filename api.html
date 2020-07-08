@@ -1,0 +1,928 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>API Server &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ESI management" href="esi.html" />
+    <link rel="prev" title="User Access Control" href="uac.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="esi.html" title="ESI management"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="uac.html" title="User Access Control"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-server">
+<h1>API Server<a class="headerlink" href="#api-server" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sni.api.server">
+<span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.api.server" title="Permalink to this headline">¶</a></h2>
+<p>API Server</p>
+<dl class="function">
+<dt id="sni.api.server.does_not_exist_exception_handler">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">does_not_exist_exception_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: Exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#does_not_exist_exception_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.does_not_exist_exception_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.DoesNotExist</span></code> exceptions and forwards them as
+<code class="docutils literal notranslate"><span class="pre">404</span></code>’s.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.server.exception_handler">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">exception_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: Exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#exception_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.exception_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Global exception handler.</p>
+<p>Prints trace for all others.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.server.get_ping">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">get_ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#get_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.get_ping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replies <code class="docutils literal notranslate"><span class="pre">pong</span></code>. That is all.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.server.permission_error_handler">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">permission_error_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: PermissionError</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#permission_error_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.permission_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionError</span></code> exceptions and forwards them as
+<code class="docutils literal notranslate"><span class="pre">403</span></code>’s.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.server.print_openapi_spec">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">print_openapi_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/api/server.html#print_openapi_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.print_openapi_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the OpenAPI specification of the server in YAML.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.server.requests_httperror_handler">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">requests_httperror_handler</code><span class="sig-paren">(</span><em class="sig-param">_request: requests.models.Request</em>, <em class="sig-param">error: requests.exceptions.HTTPError</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#requests_httperror_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.requests_httperror_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catches <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.exceptions.HTTPError</span></code> exceptions and forwards them
+as <code class="docutils literal notranslate"><span class="pre">500</span></code>’s.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.server.start">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the API server.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="routers">
+<h2>Routers<a class="headerlink" href="#routers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sni.api.coalition">
+<span id="sni-api-coalition"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.coalition</span></code><a class="headerlink" href="#module-sni.api.coalition" title="Permalink to this headline">¶</a></h3>
+<p>Coalition management paths</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Code is too similar to <code class="xref py py-mod docutils literal notranslate"><span class="pre">sni.routers.group</span></code></p>
+</div>
+<dl class="class">
+<dt id="sni.api.coalition.GetCoalitionOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">GetCoalitionOut</code><a class="reference internal" href="_modules/sni/api/coalition.html#GetCoalitionOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>GET /coalition/{coalition_id}</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.coalition_id">
+<code class="sig-name descname">coalition_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.coalition_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.coalition_name">
+<code class="sig-name descname">coalition_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.coalition_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.members">
+<code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.coalition.GetCoalitionShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">GetCoalitionShortOut</code><a class="reference internal" href="_modules/sni/api/coalition.html#GetCoalitionShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.GetCoalitionShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for an element of a <cite>GET /coalition</cite> response.</p>
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionShortOut.coalition_id">
+<code class="sig-name descname">coalition_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionShortOut.coalition_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.GetCoalitionShortOut.coalition_name">
+<code class="sig-name descname">coalition_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.GetCoalitionShortOut.coalition_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.coalition.PostCoalitionIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">PostCoalitionIn</code><a class="reference internal" href="_modules/sni/api/coalition.html#PostCoalitionIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.PostCoalitionIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /coalition</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.coalition.PostCoalitionIn.coalition_name">
+<code class="sig-name descname">coalition_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PostCoalitionIn.coalition_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.PostCoalitionIn.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PostCoalitionIn.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.coalition.PutCoalitionIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">PutCoalitionIn</code><a class="reference internal" href="_modules/sni/api/coalition.html#PutCoalitionIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /coalition</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.coalition.PutCoalitionIn.add_members">
+<code class="sig-name descname">add_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.PutCoalitionIn.members">
+<code class="sig-name descname">members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.PutCoalitionIn.remove_members">
+<code class="sig-name descname">remove_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.remove_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.coalition.PutCoalitionIn.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.coalition.coalition_record_to_response">
+<code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">coalition_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">coalition: sni.user.models.Coalition</em><span class="sig-paren">)</span> &#x2192; sni.api.coalition.GetCoalitionOut<a class="reference internal" href="_modules/sni/api/coalition.html#coalition_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.coalition_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a coalition database record to a response.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.coalition.delete_coalition">
+<code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">delete_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/coalition.html#delete_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.delete_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a coalition. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.coalition.get_coalition">
+<code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">get_coalition</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/coalition.html#get_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.get_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists all the coalition names. Requires a clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.coalition.get_coalition_name">
+<code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">get_coalition_name</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/coalition.html#get_coalition_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.get_coalition_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns details about a given coalition. Requires a clearance level of 0 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.coalition.post_coalitions">
+<code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">post_coalitions</code><span class="sig-paren">(</span><em class="sig-param">data: sni.api.coalition.PostCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/coalition.html#post_coalitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.post_coalitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a coalition. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.coalition.put_coalition">
+<code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">put_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">data: sni.api.coalition.PutCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/coalition.html#put_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.put_coalition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a coalition. All fields in the request body are optional. The
+<cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
+<cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
+<cite>remove_members</cite>. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.api.esi">
+<span id="sni-api-esi"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.esi</span></code><a class="headerlink" href="#module-sni.api.esi" title="Permalink to this headline">¶</a></h3>
+<p>ESI related paths</p>
+<dl class="class">
+<dt id="sni.api.esi.EsiRequestIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.esi.</code><code class="sig-name descname">EsiRequestIn</code><a class="reference internal" href="_modules/sni/api/esi.html#EsiRequestIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.esi.EsiRequestIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Data to be forwarded to the ESI</p>
+<dl class="attribute">
+<dt id="sni.api.esi.EsiRequestIn.on_behalf_of">
+<code class="sig-name descname">on_behalf_of</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.EsiRequestIn.on_behalf_of" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.esi.EsiRequestIn.params">
+<code class="sig-name descname">params</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.EsiRequestIn.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.esi.EsiRequestOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.esi.</code><code class="sig-name descname">EsiRequestOut</code><a class="reference internal" href="_modules/sni/api/esi.html#EsiRequestOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.esi.EsiRequestOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>SNI response to an ESI request</p>
+<dl class="attribute">
+<dt id="sni.api.esi.EsiRequestOut.data">
+<code class="sig-name descname">data</code><em class="property">: Any</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.EsiRequestOut.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.esi.EsiRequestOut.headers">
+<code class="sig-name descname">headers</code><em class="property">: Optional[dict]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.EsiRequestOut.headers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.esi.EsiRequestOut.status_code">
+<code class="sig-name descname">status_code</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.EsiRequestOut.status_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.esi.PostCallbackEsiOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.esi.</code><code class="sig-name descname">PostCallbackEsiOut</code><a class="reference internal" href="_modules/sni/api/esi.html#PostCallbackEsiOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.esi.PostCallbackEsiOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Notification model to the app when receiving a callback from the ESI.</p>
+<dl class="attribute">
+<dt id="sni.api.esi.PostCallbackEsiOut.state_code">
+<code class="sig-name descname">state_code</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.PostCallbackEsiOut.state_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.esi.PostCallbackEsiOut.user_token">
+<code class="sig-name descname">user_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.esi.PostCallbackEsiOut.user_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.esi.get_callback_esi">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.esi.</code><code class="sig-name descname">get_callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/esi.html#get_callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.esi.get_callback_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>ESI callback. You should not manually call this.</p>
+<p>Upon receiving a notification from EVE SSO, SNI notifies the appropriate
+app by issuing a <cite>POST</cite> request to the predefined app callback, using the
+<cite>PostCallbackEsiOut</cite> model.</p>
+<p>Reference: OAuth 2.0 for Web Based Applications
+<a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.esi.get_esi_latest">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.api.esi.EsiRequestIn = EsiRequestIn(on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forwards a <cite>GET</cite> request to the ESI. The required clearance level depends
+on the user making the request and the user specified on the
+<cite>on_behalf_of</cite> field. See also <cite>EsiRequestIn</cite>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.api.group">
+<span id="sni-api-group"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.group</span></code><a class="headerlink" href="#module-sni.api.group" title="Permalink to this headline">¶</a></h3>
+<p>Group management paths</p>
+<dl class="class">
+<dt id="sni.api.group.GetGroupOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">GetGroupOut</code><a class="reference internal" href="_modules/sni/api/group.html#GetGroupOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.GetGroupOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>GET /group/{group_id}</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.description">
+<code class="sig-name descname">description</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.group_id">
+<code class="sig-name descname">group_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.group_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.group_name">
+<code class="sig-name descname">group_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.is_autogroup">
+<code class="sig-name descname">is_autogroup</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.is_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.members">
+<code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.owner">
+<code class="sig-name descname">owner</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.owner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.group.GetGroupShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">GetGroupShortOut</code><a class="reference internal" href="_modules/sni/api/group.html#GetGroupShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.GetGroupShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for an element of <cite>GET /group</cite> responses</p>
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupShortOut.group_id">
+<code class="sig-name descname">group_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupShortOut.group_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.GetGroupShortOut.group_name">
+<code class="sig-name descname">group_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.GetGroupShortOut.group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.group.PostGroupIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">PostGroupIn</code><a class="reference internal" href="_modules/sni/api/group.html#PostGroupIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.PostGroupIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /group</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.group.PostGroupIn.description">
+<code class="sig-name descname">description</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PostGroupIn.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.PostGroupIn.group_name">
+<code class="sig-name descname">group_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PostGroupIn.group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.group.PutGroupIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">PutGroupIn</code><a class="reference internal" href="_modules/sni/api/group.html#PutGroupIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.PutGroupIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /group</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.group.PutGroupIn.add_members">
+<code class="sig-name descname">add_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.PutGroupIn.description">
+<code class="sig-name descname">description</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.PutGroupIn.members">
+<code class="sig-name descname">members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.PutGroupIn.owner">
+<code class="sig-name descname">owner</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.owner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.group.PutGroupIn.remove_members">
+<code class="sig-name descname">remove_members</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.group.PutGroupIn.remove_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.group.delete_group">
+<code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">delete_group</code><span class="sig-paren">(</span><em class="sig-param">group_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/group.html#delete_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.delete_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a group. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.group.get_group">
+<code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">get_group</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/group.html#get_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.get_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists all the group names. Requires a clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.group.get_group_name">
+<code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">get_group_name</code><span class="sig-paren">(</span><em class="sig-param">group_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/group.html#get_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.get_group_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns details about a given group. Requires a clearance level of 0 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.group.group_record_to_response">
+<code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">group_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">grp: sni.user.models.Group</em><span class="sig-paren">)</span> &#x2192; sni.api.group.GetGroupOut<a class="reference internal" href="_modules/sni/api/group.html#group_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.group_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a group database record to a response.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.group.post_groups">
+<code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">post_groups</code><span class="sig-paren">(</span><em class="sig-param">data: sni.api.group.PostGroupIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/group.html#post_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.post_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a group. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.group.put_group">
+<code class="sig-prename descclassname">sni.api.group.</code><code class="sig-name descname">put_group</code><span class="sig-paren">(</span><em class="sig-param">group_id: str</em>, <em class="sig-param">data: sni.api.group.PutGroupIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/group.html#put_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.group.put_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a group. All fields in the request body are optional. The
+<cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
+<cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
+<cite>remove_members</cite>. Requires a clearance level of 9 or more of for the user
+to be the owner of the group.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.api.teamspeak">
+<span id="sni-api-teamspeak"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.teamspeak</span></code><a class="headerlink" href="#module-sni.api.teamspeak" title="Permalink to this headline">¶</a></h3>
+<p>Teamspeak related paths</p>
+<dl class="class">
+<dt id="sni.api.teamspeak.PostAuthStartOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.teamspeak.</code><code class="sig-name descname">PostAuthStartOut</code><a class="reference internal" href="_modules/sni/api/teamspeak.html#PostAuthStartOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.teamspeak.PostAuthStartOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <cite>POST /teamspeak/auth/start</cite> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.teamspeak.PostAuthStartOut.challenge_nickname">
+<code class="sig-name descname">challenge_nickname</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.teamspeak.PostAuthStartOut.challenge_nickname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.teamspeak.PostAuthStartOut.expiration_datetime">
+<code class="sig-name descname">expiration_datetime</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.teamspeak.PostAuthStartOut.expiration_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.teamspeak.PostAuthStartOut.user">
+<code class="sig-name descname">user</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.teamspeak.PostAuthStartOut.user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.teamspeak.port_auth_start">
+<code class="sig-prename descclassname">sni.api.teamspeak.</code><code class="sig-name descname">port_auth_start</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/teamspeak.html#port_auth_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.teamspeak.port_auth_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a new authentication challenge for the owner of the token. A random
+nickname is returned (see <cite>PostAuthStartOut</cite> for more details), and the
+user has 1 minute to update its teamspeak nickname to it, and then call
+<cite>POST /teamspeak/auth/complete</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.teamspeak.post_auth_complete">
+<code class="sig-prename descclassname">sni.api.teamspeak.</code><code class="sig-name descname">post_auth_complete</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/teamspeak.html#post_auth_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.teamspeak.post_auth_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Completes an authentication challenge for the owner of the token. See the
+<cite>POST /teamspeak/auth/start</cite> documentation.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.api.token">
+<span id="sni-api-token"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.token</span></code><a class="headerlink" href="#module-sni.api.token" title="Permalink to this headline">¶</a></h3>
+<p>Token management paths</p>
+<dl class="class">
+<dt id="sni.api.token.GetTokenOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">GetTokenOut</code><a class="reference internal" href="_modules/sni/api/token.html#GetTokenOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.GetTokenOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/token</span></code> responses.</p>
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.callback">
+<code class="sig-name descname">callback</code><em class="property">: Optional[pdt.AnyHttpUrl]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.comments">
+<code class="sig-name descname">comments</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.comments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.expires_on">
+<code class="sig-name descname">expires_on</code><em class="property">: Optional[datetime]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.expires_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.owner_character_id">
+<code class="sig-name descname">owner_character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.owner_character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.owner_character_name">
+<code class="sig-name descname">owner_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.owner_character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.parent">
+<code class="sig-name descname">parent</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.token_type">
+<code class="sig-name descname">token_type</code><em class="property">: Token.TokenType</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.token_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.GetTokenOut.uuid">
+<code class="sig-name descname">uuid</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.GetTokenOut.uuid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostTokenDynIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostTokenDynIn</code><a class="reference internal" href="_modules/sni/api/token.html#PostTokenDynIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostTokenDynIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/dyn</span></code> requests.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenDynIn.callback">
+<code class="sig-name descname">callback</code><em class="property">: pdt.AnyHttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenDynIn.callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenDynIn.comments">
+<code class="sig-name descname">comments</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenDynIn.comments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostTokenDynOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostTokenDynOut</code><a class="reference internal" href="_modules/sni/api/token.html#PostTokenDynOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostTokenDynOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/dyn</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenDynOut.tkn">
+<code class="sig-name descname">tkn</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenDynOut.tkn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostTokenPerIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostTokenPerIn</code><a class="reference internal" href="_modules/sni/api/token.html#PostTokenPerIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostTokenPerIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/per</span></code> requests.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenPerIn.callback">
+<code class="sig-name descname">callback</code><em class="property">: pdt.AnyHttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenPerIn.callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenPerIn.comments">
+<code class="sig-name descname">comments</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenPerIn.comments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostTokenPerOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostTokenPerOut</code><a class="reference internal" href="_modules/sni/api/token.html#PostTokenPerOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostTokenPerOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/per</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenPerOut.tkn">
+<code class="sig-name descname">tkn</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenPerOut.tkn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostTokenUseFromDynIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostTokenUseFromDynIn</code><a class="reference internal" href="_modules/sni/api/token.html#PostTokenUseFromDynIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostTokenUseFromDynIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/use/from/dyn</span></code> requests.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenUseFromDynIn.scopes">
+<code class="sig-name descname">scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenUseFromDynIn.scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostTokenUseFromDynOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostTokenUseFromDynOut</code><a class="reference internal" href="_modules/sni/api/token.html#PostTokenUseFromDynOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostTokenUseFromDynOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/use/from/dyn</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenUseFromDynOut.login_url">
+<code class="sig-name descname">login_url</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenUseFromDynOut.login_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.token.PostTokenUseFromDynOut.state_code">
+<code class="sig-name descname">state_code</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostTokenUseFromDynOut.state_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.token.PostUseFromPerOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">PostUseFromPerOut</code><a class="reference internal" href="_modules/sni/api/token.html#PostUseFromPerOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.PostUseFromPerOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/token/use/from/per</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.api.token.PostUseFromPerOut.user_token">
+<code class="sig-name descname">user_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.token.PostUseFromPerOut.user_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.token.delete_token">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">delete_token</code><span class="sig-paren">(</span><em class="sig-param">uuid: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/token.html#delete_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.delete_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually deletes a token (of any type). Requires a clearance level of 10.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.token.get_token">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">get_token</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/token.html#get_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.get_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns informations about the token currently being used. Requires a
+clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.token.post_token_dyn">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">post_token_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.api.token.PostTokenDynIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/token.html#post_token_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.post_token_dyn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new dynamic app token. Must be called with a permanent app token,
+and the owner must have a clearance level of 10.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.token.post_token_per">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">post_token_per</code><span class="sig-paren">(</span><em class="sig-param">data: sni.api.token.PostTokenPerIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/token.html#post_token_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.post_token_per" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new permanent app token. Must be called with a permanent app
+token, and the owner must have a clearance level of 10.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.token.post_token_use_from_dyn">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">post_token_use_from_dyn</code><span class="sig-paren">(</span><em class="sig-param">data: sni.api.token.PostTokenUseFromDynIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/token.html#post_token_use_from_dyn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.post_token_use_from_dyn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates an application dynamic token and returns a <cite>state code</cite> and
+an URL at which the user can authenticate to the EVE SSO. Once that is
+done, SNI issues a GET request to the app predefined callback, with that
+state code and the user token. Requires the owner of the token to have a
+clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.token.post_token_use_from_per">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.token.</code><code class="sig-name descname">post_token_use_from_per</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/token.html#post_token_use_from_per"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.token.post_token_use_from_per" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates an application permanent token and returns a user token tied
+to the owner of that app token.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.api.user">
+<span id="sni-api-user"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.user</span></code><a class="headerlink" href="#module-sni.api.user" title="Permalink to this headline">¶</a></h3>
+<p>User management paths</p>
+<dl class="class">
+<dt id="sni.api.user.GetUserOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">GetUserOut</code><a class="reference internal" href="_modules/sni/api/user.html#GetUserOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.GetUserOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/user/{character_name}</span></code> responses</p>
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.alliance">
+<code class="sig-name descname">alliance</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.alliance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.character_id">
+<code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.character_name">
+<code class="sig-name descname">character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.clearance_level">
+<code class="sig-name descname">clearance_level</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.clearance_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.coalitions">
+<code class="sig-name descname">coalitions</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.coalitions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.corporation">
+<code class="sig-name descname">corporation</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.corporation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.created_on">
+<code class="sig-name descname">created_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.created_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.is_ceo_of_alliance">
+<code class="sig-name descname">is_ceo_of_alliance</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.is_ceo_of_alliance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.is_ceo_of_corporation">
+<code class="sig-name descname">is_ceo_of_corporation</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.is_ceo_of_corporation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.tickered_name">
+<code class="sig-name descname">tickered_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.tickered_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.user.GetUserShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">GetUserShortOut</code><a class="reference internal" href="_modules/sni/api/user.html#GetUserShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.GetUserShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for an element of <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/user</span></code> response</p>
+<dl class="attribute">
+<dt id="sni.api.user.GetUserShortOut.character_id">
+<code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserShortOut.character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserShortOut.character_name">
+<code class="sig-name descname">character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserShortOut.character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.user.PutUserIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">PutUserIn</code><a class="reference internal" href="_modules/sni/api/user.html#PutUserIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.PutUserIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/user/{character_id}</span></code> requests</p>
+<dl class="attribute">
+<dt id="sni.api.user.PutUserIn.clearance_level">
+<code class="sig-name descname">clearance_level</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.PutUserIn.clearance_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.user.delete_user">
+<code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">delete_user</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/user.html#delete_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.delete_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a user. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.user.get_user">
+<code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">get_user</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/user.html#get_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.get_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of all user names. Requires a clearance level of 0 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.user.get_user_name">
+<code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">get_user_name</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/user.html#get_user_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.get_user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns details about a character. Requires a clearance level of 0 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.user.put_user_name">
+<code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">put_user_name</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">data: sni.api.user.PutUserIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/user.html#put_user_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.put_user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually updates non ESI data about a character. The required clearance
+level depends on the modification.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.user.user_record_to_response">
+<code class="sig-prename descclassname">sni.api.user.</code><code class="sig-name descname">user_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; sni.api.user.GetUserOut<a class="reference internal" href="_modules/sni/api/user.html#user_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.user.user_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates a new <code class="xref py py-class docutils literal notranslate"><span class="pre">sni.routers.user.GetUserOut</span></code> with the information
+contained in a user database record.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Server</a><ul>
+<li><a class="reference internal" href="#module-sni.api.server">Main module</a></li>
+<li><a class="reference internal" href="#routers">Routers</a><ul>
+<li><a class="reference internal" href="#module-sni.api.coalition"><code class="docutils literal notranslate"><span class="pre">sni.api.coalition</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.esi"><code class="docutils literal notranslate"><span class="pre">sni.api.esi</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.group"><code class="docutils literal notranslate"><span class="pre">sni.api.group</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.teamspeak"><code class="docutils literal notranslate"><span class="pre">sni.api.teamspeak</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.token"><code class="docutils literal notranslate"><span class="pre">sni.api.token</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.user"><code class="docutils literal notranslate"><span class="pre">sni.api.user</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="uac.html"
+                        title="previous chapter">User Access Control</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="esi.html"
+                        title="next chapter">ESI management</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="esi.html" title="ESI management"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="uac.html" title="User Access Control"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>
