@@ -4,9 +4,13 @@ User and eve player structure management jobs.
 
 import logging
 
-from sni.esi import esi_get, EsiRefreshToken, get_access_token
+from sni.esi.esi import esi_get
+from sni.esi.token import (
+    EsiRefreshToken,
+    get_access_token,
+)
 from sni.scheduler import scheduler
-from sni.uac import reset_clearance
+from sni.uac.clearance import reset_clearance
 import sni.utils as utils
 
 from .models import (

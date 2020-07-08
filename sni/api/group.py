@@ -13,12 +13,12 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.user import Group, User
-from sni.uac import (
-    assert_has_clearance,
+from sni.user.models import Group, User
+
+from sni.uac.clearance import assert_has_clearance, has_clearance
+from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
-    has_clearance,
 )
 
 router = APIRouter()

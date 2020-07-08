@@ -8,8 +8,7 @@ from typing import List
 import ts3.query
 
 from sni.scheduler import scheduler
-from sni.user import Group
-from sni.user import User
+from sni.user.models import Group, User
 import sni.conf as conf
 import sni.utils as utils
 

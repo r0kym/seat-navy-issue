@@ -12,19 +12,22 @@ from fastapi import (
 import pydantic
 import requests
 
-from sni.user import User
+from sni.user.models import User
 
-from sni.esi import (
-    decode_access_token,
+from sni.esi.esi import (
     esi_get,
-    get_access_token,
-    get_access_token_from_callback_code,
     get_esi_path_scope,
+)
+from sni.esi.sso import (
+    decode_access_token,
+    get_access_token_from_callback_code,
+)
+from sni.esi.token import (
+    get_access_token,
     save_esi_tokens,
 )
-
-from sni.uac import (
-    assert_has_clearance,
+from sni.uac.clearance import assert_has_clearance
+from sni.uac.token import (
     create_user_token,
     from_authotization_header_nondyn,
     StateCode,

@@ -18,7 +18,7 @@ import sni.conf as conf
 import sni.utils as utils
 
 
-def init_mongodb():
+def init():
     """
     Connects to the MongoDB instance.
 

@@ -36,31 +36,33 @@ def main():
     # --------------------------------------------------------------------------
 
     if arguments.print_openapi_spec:
-        import sni.api.server as apiserver
-        apiserver.print_openapi_spec()
+        import sni.api.server
+        sni.api.server.print_openapi_spec()
         sys.exit()
 
     # --------------------------------------------------------------------------
-    # Database migration, pre scheduler init
+    # Database migration
     # --------------------------------------------------------------------------
 
-    import sni.db
+    import sni.db.mongodb
+    sni.db.mongodb.init()
 
-    import sni.user
-    import sni.uac
-    import sni.esi
+    import sni.uac.migration
+    sni.uac.migration.migrate()
+
+    import sni.user.migration
+    sni.user.migration.migrate()
 
     if arguments.migrate_database:
         sys.exit()
 
-    if conf.get('teamspeak.enabled'):
-        import sni.teamspeak
-
-    if conf.get('discord.enabled'):
-        import sni.discord
+    # --------------------------------------------------------------------------
+    # Post database migration, pre sheduler start
+    # --------------------------------------------------------------------------
 
     if arguments.reload_esi_openapi_spec:
-        sni.esi.load_esi_openapi()
+        import sni.esi.esi
+        sni.esi.esi.load_esi_openapi()
         sys.exit()
 
     if arguments.run_job:
@@ -73,12 +75,30 @@ def main():
         sys.exit()
 
     # --------------------------------------------------------------------------
-    # Scheduler init, and start
+    # Scheduler start
     # --------------------------------------------------------------------------
 
     import sni.scheduler
-
     sni.scheduler.scheduler.start()
+
+    import sni.esi.jobs
+    import sni.user.jobs
+
+    if conf.get('teamspeak.enabled'):
+        import sni.teamspeak.jobs
+
+    if conf.get('discord.enabled'):
+        import sni.discord.jobs
+
+    # --------------------------------------------------------------------------
+    # Pre API server start
+    # --------------------------------------------------------------------------
+
+    if conf.get('discord.enabled'):
+        import sni.discord.bot
+        import sni.discord.commands
+        import sni.discord.events
+        sni.discord.bot.start()
 
     # --------------------------------------------------------------------------
     # API server start
@@ -92,7 +112,6 @@ def main():
     # --------------------------------------------------------------------------
 
     sni.scheduler.scheduler.shutdown()
-
 
 
 def parse_command_line_arguments() -> argparse.Namespace:

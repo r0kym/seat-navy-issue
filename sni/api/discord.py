@@ -10,9 +10,13 @@ from fastapi import (
 )
 import pydantic as pdt
 
-import sni.discord as discord
+from sni.discord.discord import new_authentication_challenge
 import sni.utils as utils
-from sni.uac import assert_has_clearance, from_authotization_header_nondyn, Token
+from sni.uac.clearance import assert_has_clearance
+from sni.uac.token import (
+    from_authotization_header_nondyn,
+    Token,
+)
 
 router = APIRouter()
 
@@ -41,6 +45,6 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     assert_has_clearance(tkn.owner, 'sni.discord.auth')
     return PostAuthStartOut(
         expiration_datetime=utils.now_plus(seconds=60),
-        code=discord.new_authentication_challenge(tkn.owner),
+        code=new_authentication_challenge(tkn.owner),
         user=tkn.owner.character_name,
     )

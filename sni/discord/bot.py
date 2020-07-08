@@ -64,7 +64,7 @@ async def log(message: str):
     await log_channel.send(message)
 
 
-def start_discord_bot():
+def start():
     """
     Runs the discord client in a different thread.
     """

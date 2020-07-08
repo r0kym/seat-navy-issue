@@ -13,9 +13,17 @@ from fastapi import (
 import mongoengine as me
 import pydantic as pdt
 
-import sni.teamspeak.teamspeak as teamspeak
+from sni.teamspeak.teamspeak import (
+    complete_authentication_challenge,
+    new_authentication_challenge,
+    new_connection,
+)
 import sni.utils as utils
-from sni.uac import assert_has_clearance, from_authotization_header_nondyn, Token
+from sni.uac.clearance import assert_has_clearance
+from sni.uac.token import (
+    from_authotization_header_nondyn,
+    Token,
+)
 
 router = APIRouter()
 
@@ -44,7 +52,7 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
     return PostAuthStartOut(
         expiration_datetime=utils.now_plus(seconds=60),
-        challenge_nickname=teamspeak.new_authentication_challenge(tkn.owner),
+        challenge_nickname=new_authentication_challenge(tkn.owner),
         user=tkn.owner.character_name,
     )
 
@@ -61,10 +69,7 @@ def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
     try:
-        teamspeak.complete_authentication_challenge(
-            teamspeak.new_connection(),
-            tkn.owner,
-        )
+        complete_authentication_challenge(new_connection(), tkn.owner)
     except LookupError:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND,

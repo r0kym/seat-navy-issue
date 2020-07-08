@@ -16,8 +16,12 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.uac import assert_has_clearance, from_authotization_header_nondyn, Token
-from sni.user import Alliance, Coalition
+from sni.uac.clearance import assert_has_clearance
+from sni.uac.token import (
+    from_authotization_header_nondyn,
+    Token,
+)
+from sni.user.models import Alliance, Coalition
 
 router = APIRouter()
 

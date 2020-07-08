@@ -8,7 +8,7 @@ from discord import Member
 from discord.ext.commands import Context
 
 import sni.conf as conf
-from sni.user import User
+from sni.user.models import User
 
 from .discord import complete_authentication_challenge
 from .bot import bot

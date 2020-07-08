@@ -14,9 +14,9 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.esi import get_auth_url
-from sni.uac import (
-    assert_has_clearance,
+from sni.esi.sso import get_auth_url
+from sni.uac.clearance import assert_has_clearance
+from sni.uac.token import (
     create_dynamic_app_token,
     create_permanent_app_token,
     create_state_code,
@@ -26,7 +26,7 @@ from sni.uac import (
     to_jwt,
     Token,
 )
-from sni.user import User
+from sni.user.models import User
 
 router = APIRouter()
 

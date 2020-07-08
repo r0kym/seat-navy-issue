@@ -11,7 +11,8 @@ from typing import List, Optional
 import pydantic as pdt
 from ts3.query import TS3Connection, TS3QueryError
 
-from sni.user import ensure_autogroup, User
+from sni.user.models import User
+from sni.user.user import ensure_autogroup
 import sni.conf as conf
 import sni.utils as utils
 

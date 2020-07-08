@@ -7,7 +7,7 @@ import logging
 import discord
 import mongoengine as me
 
-from sni.user import User
+from sni.user.models import User
 import sni.utils as utils
 
 
