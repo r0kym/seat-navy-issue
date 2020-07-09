@@ -60,11 +60,11 @@ class PutCoalitionIn(pdt.BaseModel):
     """
     Model for `POST /coalition` responses.
     """
-    add_members: Optional[List[str]] = None
+    add_members: Optional[List[int]] = None
     authorized_to_login: Optional[bool]
     mandatory_esi_scopes: Optional[List[str]]
-    members: Optional[List[str]] = None
-    remove_members: Optional[List[str]] = None
+    members: Optional[List[int]] = None
+    remove_members: Optional[List[int]] = None
     ticker: Optional[str] = None
 
 
@@ -182,8 +182,8 @@ def put_coalition(
                   coalition_id)
     if data.add_members is not None:
         coalition.members += [
-            Alliance.objects.get(alliance_name=member_name)
-            for member_name in set(data.add_members)
+            Alliance.objects.get(alliance_id=member_id)
+            for member_id in set(data.add_members)
         ]
     if data.authorized_to_login is not None:
         assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
@@ -192,13 +192,13 @@ def put_coalition(
         coalition.mandatory_esi_scopes = data.mandatory_esi_scopes
     if data.members is not None:
         coalition.members = [
-            Alliance.objects.get(alliance_name=member_name)
-            for member_name in set(data.members)
+            Alliance.objects.get(alliance_id=member_id)
+            for member_id in set(data.members)
         ]
     if data.remove_members is not None:
         coalition.members = [
             member for member in coalition.members
-            if member.alliance_name not in data.remove_members
+            if member.alliance_id not in data.remove_members
         ]
     if data.ticker is not None:
         coalition.ticker = data.ticker
