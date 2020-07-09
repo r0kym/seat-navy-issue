@@ -2,35 +2,25 @@ database:
     host: mongodb
     password: snipassword
     username: sni
+discord:
+    auth_channel_id: 000000000000000000
+    auth_role_name: SNI AUTH
+    enabled: true
+    log_channel_id: 111111111111111111
+    server_id: 222222222222222222
+    token: tokentokentokentokentokentokentokentokentokentokentoken0000
 esi:
     client_id: idididididididididididididididid
     client_secret: secretsecretsecretsecretsecretsecret0000
 general:
     debug: false
+    root_url: 'https://sni.example.com'
 jwt:
     secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecret0000
-logging:
-    version: 1
-    disable_existing_loggers: true
-    formatters:
-        standard:
-            format: '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
-    handlers:
-        default:
-            level: INFO
-            formatter: standard
-            class: logging.StreamHandler
-            stream: 'ext://sys.stdout'
-    loggers:
-        "":
-            handlers:
-                - default
-            level: DEBUG
-            propagate: false
 redis:
     host: redis
 teamspeak:
-    enabled: True
-    host: 1.2.3.4
-    password: 6eG8e7z4
+    enabled: true
+    host: 100.200.300.400
+    password: aaaaaaaa
     username: sni

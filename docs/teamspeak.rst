@@ -15,3 +15,13 @@ Jobs
 ----
 
 .. automodule:: sni.teamspeak.jobs
+
+Database signals
+----------------
+
+.. automodule:: sni.teamspeak.signals
+
+Migration
+---------
+
+.. automodule:: sni.teamspeak.migration

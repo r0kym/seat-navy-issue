@@ -11,7 +11,6 @@ Clearance management
 
 .. automodule:: sni.uac.clearance
 
-
 SNI token management
 --------------------
 
@@ -21,6 +20,11 @@ Database models
 ---------------
 
 .. automodule:: sni.uac.models
+
+Database signals
+----------------
+
+.. automodule:: sni.uac.signals
 
 Database migration
 ------------------

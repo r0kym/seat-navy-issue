@@ -27,6 +27,7 @@ CONFIGURATION: Dict[str, Any] = {
     'teamspeak.enabled': False,
     'teamspeak.port': 10011,
     'teamspeak.server_id': 0,
+    'teamspeak.username': 'sni',
 }
 
 

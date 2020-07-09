@@ -30,6 +30,9 @@ components:
     GetCoalitionOut:
       description: Model for `GET /coalition/{coalition_id}` responses.
       properties:
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
         coalition_id:
           title: Coalition Id
           type: string
@@ -40,6 +43,11 @@ components:
           format: date-time
           title: Created On
           type: string
+        mandatory_esi_scopes:
+          items:
+            type: string
+          title: Mandatory Esi Scopes
+          type: array
         members:
           items:
             type: string
@@ -55,6 +63,7 @@ components:
       required:
       - coalition_id
       - created_on
+      - mandatory_esi_scopes
       - members
       - coalition_name
       - ticker
@@ -78,6 +87,9 @@ components:
     GetGroupOut:
       description: Model for `GET /group/{group_id}` responses.
       properties:
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
         created_on:
           format: date-time
           title: Created On
@@ -183,7 +195,15 @@ components:
       properties:
         alliance:
           title: Alliance
-          type: string
+          type: integer
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        available_esi_scopes:
+          items:
+            type: string
+          title: Available Esi Scopes
+          type: array
         character_id:
           title: Character Id
           type: integer
@@ -205,6 +225,11 @@ components:
           format: date-time
           title: Created On
           type: string
+        cumulated_mandatory_esi_scopes:
+          items:
+            type: string
+          title: Cumulated Mandatory Esi Scopes
+          type: array
         is_ceo_of_alliance:
           title: Is Ceo Of Alliance
           type: boolean
@@ -219,11 +244,13 @@ components:
           title: Updated On
           type: string
       required:
+      - available_esi_scopes
       - character_id
       - character_name
       - clearance_level
       - coalitions
       - created_on
+      - cumulated_mandatory_esi_scopes
       - is_ceo_of_alliance
       - is_ceo_of_corporation
       - tickered_name
@@ -252,6 +279,25 @@ components:
           title: Detail
           type: array
       title: HTTPValidationError
+      type: object
+    PostAuthStartOut:
+      description: Model for `POST /teamspeak/auth/start` responses.
+      properties:
+        challenge_nickname:
+          title: Challenge Nickname
+          type: string
+        expiration_datetime:
+          format: date-time
+          title: Expiration Datetime
+          type: string
+        user:
+          title: User
+          type: string
+      required:
+      - expiration_datetime
+      - challenge_nickname
+      - user
+      title: PostAuthStartOut
       type: object
     PostCoalitionIn:
       description: Model for `POST /coalition` responses.
@@ -370,21 +416,29 @@ components:
       title: PostUseFromPerOut
       type: object
     PutCoalitionIn:
-      description: Model for `POST /coalition` responses.
+      description: Model for `PUT /coalition/{coalition_id}` responses.
       properties:
         add_members:
           items:
-            type: string
+            type: integer
           title: Add Members
+          type: array
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        mandatory_esi_scopes:
+          items:
+            type: string
+          title: Mandatory Esi Scopes
           type: array
         members:
           items:
-            type: string
+            type: integer
           title: Members
           type: array
         remove_members:
           items:
-            type: string
+            type: integer
           title: Remove Members
           type: array
         ticker:
@@ -400,6 +454,9 @@ components:
             type: string
           title: Add Members
           type: array
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
         description:
           title: Description
           type: string
@@ -421,6 +478,9 @@ components:
     PutUserIn:
       description: Model for ``PUT /user/{character_id}`` requests
       properties:
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
         clearance_level:
           title: Clearance Level
           type: integer
@@ -444,44 +504,6 @@ components:
       - msg
       - type
       title: ValidationError
-      type: object
-    sni__api__discord__PostAuthStartOut:
-      description: Model for `POST /discord/auth/start` responses.
-      properties:
-        code:
-          title: Code
-          type: string
-        expiration_datetime:
-          format: date-time
-          title: Expiration Datetime
-          type: string
-        user:
-          title: User
-          type: string
-      required:
-      - code
-      - expiration_datetime
-      - user
-      title: PostAuthStartOut
-      type: object
-    sni__api__teamspeak__PostAuthStartOut:
-      description: Model for `POST /teamspeak/auth/start` responses.
-      properties:
-        challenge_nickname:
-          title: Challenge Nickname
-          type: string
-        expiration_datetime:
-          format: date-time
-          title: Expiration Datetime
-          type: string
-        user:
-          title: User
-          type: string
-      required:
-      - expiration_datetime
-      - challenge_nickname
-      - user
-      title: PostAuthStartOut
       type: object
 info:
   title: FastAPI
@@ -708,40 +730,6 @@ paths:
       summary: Update a coalition
       tags:
       - Coalition management
-  /discord/auth/start:
-    post:
-      description: 'Starts a new authentication challenge for the owner of the token.
-        A random
-
-        code is returned (see `PostAuthStartOut` for more details), and the user
-
-        has 1 minute to post it as `!auth <code>` in the dedicated authentication
-
-        chanel.'
-      operationId: port_auth_start_discord_auth_start_post
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/sni__api__discord__PostAuthStartOut'
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Starts a Discord authentication challenge
-      tags:
-      - Discord
   /esi/{esi_path}:
     get:
       description: 'Forwards a `GET` request to the ESI. The required clearance level
@@ -1021,7 +1009,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sni__api__teamspeak__PostAuthStartOut'
+                $ref: '#/components/schemas/PostAuthStartOut'
           description: Successful Response
         '422':
           content:

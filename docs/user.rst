@@ -13,6 +13,11 @@ Database models
 
 .. automodule:: sni.user.models
 
+Jobs
+----
+
+.. automodule:: sni.user.jobs
+
 Database signal handlers
 ------------------------
 
@@ -22,8 +27,3 @@ Database migration
 ------------------
 
 .. automodule:: sni.user.migration
-
-Jobs
-----
-
-.. automodule:: sni.user.jobs

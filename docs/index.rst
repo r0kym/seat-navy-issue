@@ -56,9 +56,10 @@ High level documentation
 .. toctree::
    :maxdepth: 2
 
-   openapi
-   authentication
+   command-line-arguments
    configuration
+   authentication
+   openapi
    todos
 
 
