@@ -288,11 +288,6 @@
     <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
-    <span class="c1"># v4 to v5</span>
-    <span class="c1"># Set mandatory_esi_scopes to []</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-
     <span class="c1"># Finally</span>
     <span class="n">Group</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
 

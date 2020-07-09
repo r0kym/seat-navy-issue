@@ -52,22 +52,10 @@
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../sni.html#sni.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="viewcode-block" id="configure_logging"><a class="viewcode-back" href="../../sni.html#sni.__main__.configure_logging">[docs]</a><span class="k">def</span> <span class="nf">configure_logging</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Entry point.</span>
+<span class="sd">    Basic configuration of the logging facility</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># --------------------------------------------------------------------------</span>
-    <span class="c1"># Parsing command line arguments and loading configuration file</span>
-    <span class="c1"># --------------------------------------------------------------------------</span>
-
-    <span class="n">arguments</span> <span class="o">=</span> <span class="n">parse_command_line_arguments</span><span class="p">()</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
     <span class="n">logging_level</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;CRITICAL&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
         <span class="s1">&#39;DEBUG&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
@@ -79,6 +67,36 @@
         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> [</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
         <span class="n">level</span><span class="o">=</span><span class="n">logging_level</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;apscheduler&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;discord&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;fastapi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;uvicorn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="migrate_database"><a class="viewcode-back" href="../../sni.html#sni.__main__.migrate_database">[docs]</a><span class="k">def</span> <span class="nf">migrate_database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inits and migrate the MongoDB database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">sni.uac.migration</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">uac</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+
+    <span class="kn">import</span> <span class="nn">sni.user.migration</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../sni.html#sni.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Entry point.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1"># Parsing command line arguments and loading configuration file</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+
+    <span class="n">arguments</span> <span class="o">=</span> <span class="n">parse_command_line_arguments</span><span class="p">()</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">configure_logging</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Pre database</span>
@@ -96,11 +114,7 @@
     <span class="kn">import</span> <span class="nn">sni.db.mongodb</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">mongodb</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
 
-    <span class="kn">import</span> <span class="nn">sni.uac.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">uac</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="kn">import</span> <span class="nn">sni.user.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+    <span class="n">migrate_database</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
@@ -128,17 +142,9 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">import</span> <span class="nn">sni.scheduler</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;apscheduler&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-    <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
-
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
-
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.jobs</span>
+    <span class="n">schedule_all_jobs</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Pre API server start</span>
@@ -148,7 +154,6 @@
         <span class="kn">import</span> <span class="nn">sni.discord.bot</span>
         <span class="kn">import</span> <span class="nn">sni.discord.commands</span>
         <span class="kn">import</span> <span class="nn">sni.discord.events</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;discord&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
         <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -156,8 +161,6 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">import</span> <span class="nn">sni.api.server</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;fastapi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;uvicorn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -205,6 +208,20 @@
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Runs a job and exists&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">argument_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="schedule_all_jobs"><a class="viewcode-back" href="../../sni.html#sni.__main__.schedule_all_jobs">[docs]</a><span class="k">def</span> <span class="nf">schedule_all_jobs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schedules jobs from all subpackages</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
+    <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.jobs</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
