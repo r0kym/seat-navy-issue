@@ -32,13 +32,12 @@ scheduler = AsyncIOScheduler(
         'misfire_grace_time': None,
     },
     jobstores={
-        'discord': RedisJobStore(
-            db=conf.get('redis.database'),
-            host=conf.get('redis.host'),
-            jobs_key='scheduler.discord.jobs',
-            port=conf.get('redis.port'),
-            run_times_key='scheduler.discord.run_times'
-        ),
+        'discord':
+        RedisJobStore(db=conf.get('redis.database'),
+                      host=conf.get('redis.host'),
+                      jobs_key='scheduler.discord.jobs',
+                      port=conf.get('redis.port'),
+                      run_times_key='scheduler.discord.run_times'),
     },
     timezone=utils.utc,
 )

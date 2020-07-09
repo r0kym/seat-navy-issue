@@ -30,13 +30,12 @@ scheduler = BackgroundScheduler(
         'misfire_grace_time': None,
     },
     jobstores={
-        'default': RedisJobStore(
-            db=conf.get('redis.database'),
-            host=conf.get('redis.host'),
-            jobs_key='scheduler.default.jobs',
-            port=conf.get('redis.port'),
-            run_times_key='scheduler.default.run_times'
-        ),
+        'default':
+        RedisJobStore(db=conf.get('redis.database'),
+                      host=conf.get('redis.host'),
+                      jobs_key='scheduler.default.jobs',
+                      port=conf.get('redis.port'),
+                      run_times_key='scheduler.default.run_times'),
     },
     timezone=utils.utc,
 )
