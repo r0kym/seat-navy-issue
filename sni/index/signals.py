@@ -4,5 +4,3 @@ Database signals. See `Mongoengine signals
 """
 
 # import mongoengine.signals as signals
-
-# from sni.scheduler import run_scheduled

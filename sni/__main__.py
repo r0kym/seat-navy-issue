@@ -122,7 +122,17 @@ def main():
         sni.esi.esi.load_esi_openapi()
         sys.exit()
 
+    import sni.scheduler
+
+    if arguments.clear_jobs:
+        logging.info('Clearing scheduler job lists')
+        sni.scheduler.scheduler.remove_all_jobs()
+        if conf.get('discord.enabled'):
+            import sni.discord.bot
+            sni.discord.bot.scheduler.remove_all_jobs()
+
     if arguments.run_job:
+        sni.scheduler.ENABLED = False
         module_name, function_name = arguments.run_job.split(':')
         logging.info('Manually running job %s (%s)', function_name,
                      module_name)
@@ -134,15 +144,6 @@ def main():
     # --------------------------------------------------------------------------
     # Scheduler start
     # --------------------------------------------------------------------------
-
-    import sni.scheduler
-
-    if arguments.clear_jobs:
-        logging.info('Clearing scheduler job lists')
-        sni.scheduler.scheduler.remove_all_jobs()
-        if conf.get('discord.enabled'):
-            import sni.discord.bot
-            sni.discord.bot.scheduler.remove_all_jobs()
 
     sni.scheduler.scheduler.start()
 

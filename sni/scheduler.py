@@ -16,6 +16,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import sni.conf as conf
 import sni.utils as utils
 
+ENABLED: bool = True
+
 scheduler = BackgroundScheduler(
     executors={
         'default':
@@ -31,14 +33,27 @@ scheduler = BackgroundScheduler(
     },
     jobstores={
         'default':
-        RedisJobStore(db=conf.get('redis.database'),
-                      host=conf.get('redis.host'),
-                      jobs_key='scheduler.default.jobs',
-                      port=conf.get('redis.port'),
-                      run_times_key='scheduler.default.run_times'),
+        RedisJobStore(
+            db=conf.get('redis.database'),
+            host=conf.get('redis.host'),
+            jobs_key='scheduler.default.jobs',
+            port=conf.get('redis.port'),
+            run_times_key='scheduler.default.run_times',
+        ),
     },
     timezone=utils.utc,
 )
+
+
+def add_job(func: Callable, args=list(), kwargs=dict(), **kw):
+    """
+    Adds a job to the scheduler. If the scheduler is disable, runs the job
+    immediately.
+    """
+    if ENABLED:
+        scheduler.add_job(func, args=args, kwargs=kwargs, **kw)
+    else:
+        func(*args, **kwargs)
 
 
 def run_scheduled(function: Callable) -> Callable:
