@@ -136,6 +136,13 @@
 <p><a class="reference external" href="https://apscheduler.readthedocs.io/en/stable/">APScheduler documentation</a></p>
 </div>
 <dl class="function">
+<dt id="sni.scheduler.add_job">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">add_job</code><span class="sig-paren">(</span><em class="sig-param">func: Callable</em>, <em class="sig-param">args=[]</em>, <em class="sig-param">kwargs={}</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/scheduler.html#add_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.add_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a job to the scheduler. If the scheduler is disable, runs the job
+immediately.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.scheduler.run_scheduled">
 <code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">run_scheduled</code><span class="sig-paren">(</span><em class="sig-param">function: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/sni/scheduler.html#run_scheduled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.run_scheduled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that makes a function scheduled to run immediately when called.</p>

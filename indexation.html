@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ESI data indexation &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Teamspeak" href="teamspeak.html" />
+    <link rel="prev" title="ESI management" href="esi.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="teamspeak.html" title="Teamspeak"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="esi.html" title="ESI management"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="esi-data-indexation">
+<h1>ESI data indexation<a class="headerlink" href="#esi-data-indexation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sni.index.models">
+<span id="database-models"></span><h2>Database models<a class="headerlink" href="#module-sni.index.models" title="Permalink to this headline">¶</a></h2>
+<p>Database models</p>
+<dl class="class">
+<dt id="sni.index.models.EsiMail">
+<em class="property">class </em><code class="sig-prename descclassname">sni.index.models.</code><code class="sig-name descname">EsiMail</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/models.html#EsiMail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.models.EsiMail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a EVE mail. This collection has a text search index on the
+<code class="docutils literal notranslate"><span class="pre">body</span></code> and <code class="docutils literal notranslate"><span class="pre">subject</span></code> fields (see <a class="reference external" href="http://docs.mongoengine.org/guide/text-indexes.html">here</a>)</p>
+<dl class="exception">
+<dt id="sni.index.models.EsiMail.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.index.models.EsiMail.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="sni.index.models.EsiMail.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.index.models.EsiMail.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.index.models.EsiMail._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.body">
+<code class="sig-name descname">body</code><a class="headerlink" href="#sni.index.models.EsiMail.body" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.from_id">
+<code class="sig-name descname">from_id</code><a class="headerlink" href="#sni.index.models.EsiMail.from_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#sni.index.models.EsiMail.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.mail_id">
+<code class="sig-name descname">mail_id</code><a class="headerlink" href="#sni.index.models.EsiMail.mail_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.objects">
+<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.index.models.EsiMail.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default QuerySet Manager.</p>
+<p>Custom QuerySet Manager functions can extend this class and users can
+add extra queryset functionality.  Any custom manager methods must accept a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
+<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
+, probably the same one that was passed in, but modified in some way.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.recipients">
+<code class="sig-name descname">recipients</code><a class="headerlink" href="#sni.index.models.EsiMail.recipients" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> designed specially to hold a list of
+embedded documents to provide additional query helpers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The only valid list values are subclasses of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddedDocument</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.subject">
+<code class="sig-name descname">subject</code><a class="headerlink" href="#sni.index.models.EsiMail.subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMail.timestamp">
+<code class="sig-name descname">timestamp</code><a class="headerlink" href="#sni.index.models.EsiMail.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Datetime field.</p>
+<p>Uses the python-dateutil library if available alternatively use time.strptime
+to parse the dates.  Note: python-dateutil’s parser is fully featured and when
+installed you can utilise it to convert varying types of date formats into valid
+python datetime objects.</p>
+<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
+<dl class="simple">
+<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
+need accurate microsecond support.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.index.models.EsiMailRecipient">
+<em class="property">class </em><code class="sig-prename descclassname">sni.index.models.</code><code class="sig-name descname">EsiMailRecipient</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/models.html#EsiMailRecipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.models.EsiMailRecipient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.EmbeddedDocument</span></code></p>
+<p>An email recipient</p>
+<dl class="attribute">
+<dt id="sni.index.models.EsiMailRecipient._instance">
+<code class="sig-name descname">_instance</code><a class="headerlink" href="#sni.index.models.EsiMailRecipient._instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMailRecipient.recipient_id">
+<code class="sig-name descname">recipient_id</code><a class="headerlink" href="#sni.index.models.EsiMailRecipient.recipient_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit integer field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiMailRecipient.recipient_type">
+<code class="sig-name descname">recipient_type</code><a class="headerlink" href="#sni.index.models.EsiMailRecipient.recipient_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unicode string field.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.index.jobs">
+<span id="jobs"></span><h2>Jobs<a class="headerlink" href="#module-sni.index.jobs" title="Permalink to this headline">¶</a></h2>
+<p>Scheduled indexaction jobs</p>
+<dl class="function">
+<dt id="sni.index.jobs.format_mail_body">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">format_mail_body</code><span class="sig-paren">(</span><em class="sig-param">body: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/index/jobs.html#format_mail_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.format_mail_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats a mail body by removing most of the HTML tags.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.index.jobs.index_user_mails">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_user_mails</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_user_mails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_user_mails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pulls a character’s email</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.index.jobs.index_users_mails">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_users_mails</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_users_mails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_users_mails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index all user emails.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.index.signals">
+<span id="database-signals"></span><h2>Database signals<a class="headerlink" href="#module-sni.index.signals" title="Permalink to this headline">¶</a></h2>
+<p>Database signals. See <a class="reference external" href="http://docs.mongoengine.org/guide/signals.html">Mongoengine signals</a></p>
+</div>
+<div class="section" id="module-sni.index.migration">
+<span id="migration"></span><h2>Migration<a class="headerlink" href="#module-sni.index.migration" title="Permalink to this headline">¶</a></h2>
+<p>Database migrations</p>
+<dl class="function">
+<dt id="sni.index.migration.migrate">
+<code class="sig-prename descclassname">sni.index.migration.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/index/migration.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.migration.migrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs migration tasks</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ESI data indexation</a><ul>
+<li><a class="reference internal" href="#module-sni.index.models">Database models</a></li>
+<li><a class="reference internal" href="#module-sni.index.jobs">Jobs</a></li>
+<li><a class="reference internal" href="#module-sni.index.signals">Database signals</a></li>
+<li><a class="reference internal" href="#module-sni.index.migration">Migration</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="esi.html"
+                        title="previous chapter">ESI management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="teamspeak.html"
+                        title="next chapter">Teamspeak</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/indexation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="teamspeak.html" title="Teamspeak"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="esi.html" title="ESI management"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SeAT Navy Issue alpha documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

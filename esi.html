@@ -16,7 +16,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Teamspeak" href="teamspeak.html" />
+    <link rel="next" title="ESI data indexation" href="indexation.html" />
     <link rel="prev" title="API Server" href="api.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -29,7 +29,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="teamspeak.html" title="Teamspeak"
+          <a href="indexation.html" title="ESI data indexation"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="api.html" title="API Server"
@@ -305,6 +305,37 @@ token.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.esi.token.esi_delete_on_befalf_of">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_delete_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_delete_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_delete_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for DELETE
+requests.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.token.esi_get_on_befalf_of">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_get_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_get_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_get_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for GET requests.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.token.esi_post_on_befalf_of">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_post_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_post_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_post_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for POST requests.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.token.esi_put_on_befalf_of">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_put_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_put_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_put_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for PUT requests.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.token.esi_request_on_behalf_of">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_request_on_behalf_of</code><span class="sig-paren">(</span><em class="sig-param">http_method: str</em>, <em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_request_on_behalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_request_on_behalf_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for GET requests.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.esi.token.get_access_token">
 <code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">get_access_token</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">scope: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; sni.esi.models.EsiAccessToken<a class="reference internal" href="_modules/sni/esi/token.html#get_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.get_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an access token, refreshes if needed</p>
@@ -312,6 +343,12 @@ token.</p>
 <p class="admonition-title">Todo</p>
 <p>Support multiple scopes.</p>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.token.has_esi_scope">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">has_esi_scope</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em>, <em class="sig-param">scope: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/esi/token.html#has_esi_scope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.has_esi_scope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether the user has a refresh token with the given scope.</p>
 </dd></dl>
 
 <dl class="function">
@@ -797,8 +834,8 @@ access tokens.</p>
   <p class="topless"><a href="api.html"
                         title="previous chapter">API Server</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="teamspeak.html"
-                        title="next chapter">Teamspeak</a></p>
+  <p class="topless"><a href="indexation.html"
+                        title="next chapter">ESI data indexation</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -830,7 +867,7 @@ access tokens.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="teamspeak.html" title="Teamspeak"
+          <a href="indexation.html" title="ESI data indexation"
              >next</a> |</li>
         <li class="right" >
           <a href="api.html" title="API Server"
