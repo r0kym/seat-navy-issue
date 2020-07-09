@@ -6,16 +6,14 @@ Reference:
 """
 
 import logging
-from typing import Any, Optional
+from typing import Optional
 from urllib.parse import quote_plus
 
 import mongoengine as me
-import mongoengine.signals as me_signals
 import pymongo
 import pymongo.collection
 
 import sni.conf as conf
-import sni.utils as utils
 
 
 def init():
@@ -35,7 +33,6 @@ def init():
         port=conf.get('database.port'),
         username=conf.get('database.username'),
     )
-    me_signals.pre_save.connect(on_pre_save)
 
 
 def get_pymongo_collection(
@@ -66,11 +63,3 @@ def new_pymongo_client() -> pymongo.MongoClient:
     uri = f'mongodb://{username}:{password}@{host}:{port}/' + \
         f'?authSource={authentication_database}'
     return pymongo.MongoClient(uri)
-
-
-def on_pre_save(_sender: Any, document: me.Document):
-    """
-    If the document has a `updated_on`, sets it to the current datetime.
-    """
-    if 'updated_on' in document:
-        document.updated_on = utils.now()

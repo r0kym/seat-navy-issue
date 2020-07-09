@@ -73,9 +73,7 @@ def user_record_to_response(usr: User) -> GetUserOut:
         character_id=usr.character_id,
         character_name=usr.character_name,
         clearance_level=usr.clearance_level,
-        coalitions=[
-            str(coalition.pk) for coalition in usr.coalitions()
-        ],
+        coalitions=[str(coalition.pk) for coalition in usr.coalitions()],
         corporation=(usr.corporation.corporation_id
                      if usr.corporation is not None else None),
         created_on=usr.created_on,
