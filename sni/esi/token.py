@@ -3,7 +3,7 @@ EVE token (access and refresh) management
 """
 
 import logging
-from typing import Optional
+from typing import List, Optional, Set
 
 from sni.user.models import User
 from sni.user.user import ensure_user
@@ -76,3 +76,14 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
         owner=owner,
         scopes=decoded_access_token.scp,
     ).save()
+
+
+def available_esi_scopes(usr: User) -> Set[str]:
+    """
+    Given a user, returns all the scopes for which SNI has a valid refresh
+    token.
+    """
+    scopes: List[str] = []
+    for refresh_token in EsiRefreshToken.objects(owner=usr):
+        scopes += refresh_token.scopes
+    return set(scopes)

@@ -13,12 +13,13 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.user.models import User
+from sni.esi.token import available_esi_scopes
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
+from sni.user.models import User
 
 router = APIRouter()
 
@@ -37,6 +38,7 @@ class GetUserOut(pdt.BaseModel):
     """
     alliance: Optional[int]
     authorized_to_login: Optional[bool]
+    available_esi_scopes: List[str]
     character_id: int
     character_name: str
     clearance_level: int
@@ -67,6 +69,7 @@ def user_record_to_response(usr: User) -> GetUserOut:
         alliance=(usr.alliance.alliance_id
                   if usr.alliance is not None else None),
         authorized_to_login=usr.authorized_to_login,
+        available_esi_scopes=available_esi_scopes(usr),
         character_id=usr.character_id,
         character_name=usr.character_name,
         clearance_level=usr.clearance_level,

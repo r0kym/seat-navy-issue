@@ -58,11 +58,11 @@ class PostCoalitionIn(pdt.BaseModel):
 
 class PutCoalitionIn(pdt.BaseModel):
     """
-    Model for `POST /coalition` responses.
+    Model for `PUT /coalition/{coalition_id}` responses.
     """
     add_members: Optional[List[int]] = None
-    authorized_to_login: Optional[bool]
-    mandatory_esi_scopes: Optional[List[str]]
+    authorized_to_login: Optional[bool] = None
+    mandatory_esi_scopes: Optional[List[str]] = None
     members: Optional[List[int]] = None
     remove_members: Optional[List[int]] = None
     ticker: Optional[str] = None
@@ -202,5 +202,6 @@ def put_coalition(
         ]
     if data.ticker is not None:
         coalition.ticker = data.ticker
+    coalition.members = list(set(coalition.members))
     coalition.save()
     return coalition_record_to_response(coalition)

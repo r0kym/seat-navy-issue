@@ -24,9 +24,7 @@ class Alliance(me.Document):
     alliance_name = me.StringField(required=True)
     authorized_to_login = me.BooleanField(default=None, null=True)
     executor_corporation_id = me.IntField(required=True)
-    mandatory_esi_scopes = me.ListField(me.StringField(),
-                                        default=list,
-                                        required=True)
+    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
     ticker = me.StringField(required=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 
@@ -73,9 +71,7 @@ class Coalition(me.Document):
     _version = me.IntField(default=COALITION_SCHEMA_VERSION)
     authorized_to_login = me.BooleanField(default=True, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
-    mandatory_esi_scopes = me.ListField(me.StringField(),
-                                        default=list,
-                                        required=True)
+    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
     members = me.ListField(me.ReferenceField(Alliance), default=list)
     coalition_name = me.StringField(required=True, unique=True)
     ticker = me.StringField(default=str)
@@ -109,9 +105,7 @@ class Corporation(me.Document):
     ceo_character_id = me.IntField(required=True)
     corporation_id = me.IntField(unique=True)
     corporation_name = me.StringField(required=True)
-    mandatory_esi_scopes = me.ListField(me.StringField(),
-                                        default=list,
-                                        required=True)
+    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
     ticker = me.StringField(required=True)
     updated_on = me.DateTimeField(default=utils.now, required=True)
 
