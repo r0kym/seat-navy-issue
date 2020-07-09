@@ -75,6 +75,7 @@ Module documentation
    uac
    api
    esi
+   indexation
    teamspeak
    discord
 

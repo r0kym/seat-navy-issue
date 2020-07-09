@@ -5,16 +5,70 @@ EVE token (access and refresh) management
 import logging
 from typing import List, Optional, Set
 
+from requests import Response
+
 from sni.user.models import User
 from sni.user.user import ensure_user
 import sni.utils as utils
 
+from .esi import get_esi_path_scope, esi_request
 from .models import EsiAccessToken, EsiRefreshToken
 from .sso import (
     AuthorizationCodeResponse,
     decode_access_token,
     refresh_access_token,
 )
+
+
+def available_esi_scopes(usr: User) -> Set[str]:
+    """
+    Given a user, returns all the scopes for which SNI has a valid refresh
+    token.
+    """
+    scopes: List[str] = []
+    for refresh_token in EsiRefreshToken.objects(owner=usr):
+        scopes += refresh_token.scopes
+    return set(scopes)
+
+
+def esi_delete_on_befalf_of(path: str, character_id: int,
+                            **kwargs) -> Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE
+    requests.
+    """
+    return esi_request_on_behalf_of('delete', path, character_id, **kwargs)
+
+
+def esi_get_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
+    """
+    return esi_request_on_behalf_of('get', path, character_id, **kwargs)
+
+
+def esi_post_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.
+    """
+    return esi_request_on_behalf_of('post', path, character_id, **kwargs)
+
+
+def esi_put_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.
+    """
+    return esi_request_on_behalf_of('put', path, character_id, **kwargs)
+
+
+def esi_request_on_behalf_of(http_method: str, path: str, character_id: int,
+                             **kwargs) -> Response:
+    """
+    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
+    """
+    esi_scope = get_esi_path_scope(path)
+    token = get_access_token(character_id, esi_scope).access_token
+    return esi_request(http_method, path, token, **kwargs)
 
 
 def get_access_token(character_id: int,
@@ -44,6 +98,13 @@ def get_access_token(character_id: int,
         esi_access_token = save_esi_tokens(
             refresh_access_token(esi_refresh_token.refresh_token))
     return esi_access_token
+
+
+def has_esi_scope(usr: User, scope: str) -> bool:
+    """
+    Tells wether the user has a refresh token with the given scope.
+    """
+    return EsiRefreshToken.objects(owner=usr, scopes=scope).first() is not None
 
 
 def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
@@ -76,14 +137,3 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
         owner=owner,
         scopes=decoded_access_token.scp,
     ).save()
-
-
-def available_esi_scopes(usr: User) -> Set[str]:
-    """
-    Given a user, returns all the scopes for which SNI has a valid refresh
-    token.
-    """
-    scopes: List[str] = []
-    for refresh_token in EsiRefreshToken.objects(owner=usr):
-        scopes += refresh_token.scopes
-    return set(scopes)

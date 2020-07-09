@@ -7,7 +7,7 @@ import re
 from typing import Optional
 
 import mongoengine as me
-import requests
+from requests import request, Response
 
 import sni.conf as conf
 
@@ -17,36 +17,28 @@ ESI_BASE = 'https://esi.evetech.net/'
 ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
 
 
-def esi_delete(path: str,
-               token: Optional[str] = None,
-               **kwargs) -> requests.Response:
+def esi_delete(path: str, token: Optional[str] = None, **kwargs) -> Response:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for DELETE requests.
     """
     return esi_request('delete', path, token, **kwargs)
 
 
-def esi_get(path: str,
-            token: Optional[str] = None,
-            **kwargs) -> requests.Response:
+def esi_get(path: str, token: Optional[str] = None, **kwargs) -> Response:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for GET requests.
     """
     return esi_request('get', path, token, **kwargs)
 
 
-def esi_post(path: str,
-             token: Optional[str] = None,
-             **kwargs) -> requests.Response:
+def esi_post(path: str, token: Optional[str] = None, **kwargs) -> Response:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for POST requests.
     """
     return esi_request('post', path, token, **kwargs)
 
 
-def esi_put(path: str,
-            token: Optional[str] = None,
-            **kwargs) -> requests.Response:
+def esi_put(path: str, token: Optional[str] = None, **kwargs) -> Response:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for PUT requests.
     """
@@ -56,22 +48,19 @@ def esi_put(path: str,
 def esi_request(http_method: str,
                 path: str,
                 token: Optional[str] = None,
-                **kwargs) -> requests.Response:
+                **kwargs) -> Response:
     """
     Makes an HTTP request to the ESI, and returns the response object.
     """
     kwargs['headers'] = {
         'Accept-Encoding': 'gzip',
         'accept': 'application/json',
-        'User-Agent': 'SeAT Navy Issue @ ' \
-            + conf.get('general.root_url'),
-        ** kwargs.get('headers', {})
+        'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
+        **kwargs.get('headers', {})
     }
-    if 'headers' not in kwargs:
-        kwargs['headers'] = {}
     if token:
         kwargs['headers']['Authorization'] = 'Bearer ' + token
-    response = requests.request(http_method, ESI_BASE + path, **kwargs)
+    response = request(http_method, ESI_BASE + path, **kwargs)
     response.raise_for_status()
     return response
 
@@ -92,6 +81,7 @@ def get_esi_path_scope(path: str) -> Optional[str]:
     """
     esi_path: EsiPath
     for esi_path in EsiPath.objects:
+        # print(esi_path.to_json())
         if re.search(esi_path.path_re, path):
             return esi_path.scope
     raise me.DoesNotExist
@@ -109,7 +99,7 @@ def load_esi_openapi() -> None:
         `EVE Swagger Interface (JSON) <https://esi.evetech.net/latest/swagger.json>`_
     """
     logging.info('Loading ESI swagger specifications %s', ESI_SWAGGER)
-    swagger = requests.get(ESI_SWAGGER).json()
+    swagger = request('GET', ESI_SWAGGER).json()
     base_path = swagger['basePath'][1:]
     for path, path_data in swagger['paths'].items():
         for method, method_data in path_data.items():
