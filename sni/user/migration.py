@@ -249,11 +249,6 @@ def migrate_group():
     set_if_not_exist(collection, 'authorized_to_login', None, version=3)
     ensure_minimum_version(collection, 4)
 
-    # v4 to v5
-    # Set mandatory_esi_scopes to []
-    set_if_not_exist(collection, 'mandatory_esi_scopes', [], version=4)
-    ensure_minimum_version(collection, 5)
-
     # Finally
     Group.ensure_indexes()
 

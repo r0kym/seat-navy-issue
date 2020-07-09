@@ -13,22 +13,10 @@ import sys
 import sni.conf as conf
 
 
-def main():
+def configure_logging() -> None:
     """
-    Entry point.
+    Basic configuration of the logging facility
     """
-
-    # --------------------------------------------------------------------------
-    # Parsing command line arguments and loading configuration file
-    # --------------------------------------------------------------------------
-
-    arguments = parse_command_line_arguments()
-    try:
-        conf.load_configuration_file(arguments.file)
-    except RuntimeError as error:
-        logging.fatal(str(error))
-        sys.exit(-1)
-
     logging_level = {
         'CRITICAL': logging.CRITICAL,
         'DEBUG': logging.DEBUG,
@@ -40,6 +28,36 @@ def main():
         format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
         level=logging_level,
     )
+    logging.getLogger('apscheduler').setLevel(logging_level)
+    logging.getLogger('discord').setLevel(logging_level)
+    logging.getLogger('fastapi').setLevel(logging_level)
+    logging.getLogger('uvicorn').setLevel(logging_level)
+
+
+def migrate_database() -> None:
+    """
+    Inits and migrate the MongoDB database.
+    """
+
+    import sni.uac.migration
+    sni.uac.migration.migrate()
+
+    import sni.user.migration
+    sni.user.migration.migrate()
+
+
+def main():
+    """
+    Entry point.
+    """
+
+    # --------------------------------------------------------------------------
+    # Parsing command line arguments and loading configuration file
+    # --------------------------------------------------------------------------
+
+    arguments = parse_command_line_arguments()
+    conf.load_configuration_file(arguments.file)
+    configure_logging()
 
     # --------------------------------------------------------------------------
     # Pre database
@@ -57,11 +75,7 @@ def main():
     import sni.db.mongodb
     sni.db.mongodb.init()
 
-    import sni.uac.migration
-    sni.uac.migration.migrate()
-
-    import sni.user.migration
-    sni.user.migration.migrate()
+    migrate_database()
 
     if arguments.migrate_database:
         sys.exit()
@@ -89,17 +103,9 @@ def main():
     # --------------------------------------------------------------------------
 
     import sni.scheduler
-    logging.getLogger('apscheduler').setLevel(logging_level)
     sni.scheduler.scheduler.start()
 
-    import sni.esi.jobs
-    import sni.user.jobs
-
-    if conf.get('teamspeak.enabled'):
-        import sni.teamspeak.jobs
-
-    if conf.get('discord.enabled'):
-        import sni.discord.jobs
+    schedule_all_jobs()
 
     # --------------------------------------------------------------------------
     # Pre API server start
@@ -109,7 +115,6 @@ def main():
         import sni.discord.bot
         import sni.discord.commands
         import sni.discord.events
-        logging.getLogger('discord').setLevel(logging_level)
         sni.discord.bot.start()
 
     # --------------------------------------------------------------------------
@@ -117,8 +122,6 @@ def main():
     # --------------------------------------------------------------------------
 
     import sni.api.server
-    logging.getLogger('fastapi').setLevel(logging_level)
-    logging.getLogger('uvicorn').setLevel(logging_level)
     sni.api.server.start()
 
     # --------------------------------------------------------------------------
@@ -166,6 +169,20 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Runs a job and exists',
     )
     return argument_parser.parse_args()
+
+
+def schedule_all_jobs() -> None:
+    """
+    Schedules jobs from all subpackages
+    """
+    import sni.esi.jobs
+    import sni.user.jobs
+
+    if conf.get('teamspeak.enabled'):
+        import sni.teamspeak.jobs
+
+    if conf.get('discord.enabled'):
+        import sni.discord.jobs
 
 
 if __name__ == '__main__':
