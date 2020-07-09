@@ -10,7 +10,7 @@ See also:
 from typing import Any, Callable
 
 from apscheduler.executors.pool import ThreadPoolExecutor
-from apscheduler.jobstores.memory import MemoryJobStore
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import sni.conf as conf
@@ -22,15 +22,21 @@ scheduler = BackgroundScheduler(
         ThreadPoolExecutor(conf.get('general.scheduler_thread_count')),
     },
     job_defaults={
-        'coalesce': False,
+        'coalesce': True,
         'executor': 'default',
-        'jitter': '60',
+        'jitter': 60,
         'jobstore': 'default',
         'max_instances': 3,
         'misfire_grace_time': None,
     },
     jobstores={
-        'default': MemoryJobStore(),
+        'default': RedisJobStore(
+            db=conf.get('redis.database'),
+            host=conf.get('redis.host'),
+            jobs_key='scheduler.default.jobs',
+            port=conf.get('redis.port'),
+            run_times_key='scheduler.default.run_times'
+        ),
     },
     timezone=utils.utc,
 )

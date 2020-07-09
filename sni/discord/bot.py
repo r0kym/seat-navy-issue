@@ -11,7 +11,7 @@ import asyncio
 import logging
 from threading import Thread
 
-from apscheduler.jobstores.memory import MemoryJobStore
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Bot
 import discord
@@ -24,15 +24,21 @@ bot = Bot(command_prefix='!', description='SeAT Navy Issue Discord Bot')
 scheduler = AsyncIOScheduler(
     event_loop=bot.loop,
     job_defaults={
-        'coalesce': False,
+        'coalesce': True,
         'executor': 'default',
-        'jitter': '60',
+        'jitter': 60,
         'jobstore': 'discord',
         'max_instances': 3,
         'misfire_grace_time': None,
     },
     jobstores={
-        'discord': MemoryJobStore(),
+        'discord': RedisJobStore(
+            db=conf.get('redis.database'),
+            host=conf.get('redis.host'),
+            jobs_key='scheduler.discord.jobs',
+            port=conf.get('redis.port'),
+            run_times_key='scheduler.discord.run_times'
+        ),
     },
     timezone=utils.utc,
 )
