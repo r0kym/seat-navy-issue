@@ -35,7 +35,7 @@ class GetUserOut(pdt.BaseModel):
     """
     Model for ``GET /user/{character_name}`` responses
     """
-    alliance: Optional[str]
+    alliance: Optional[int]
     authorized_to_login: Optional[bool]
     character_id: int
     character_name: str
@@ -64,16 +64,16 @@ def user_record_to_response(usr: User) -> GetUserOut:
     contained in a user database record.
     """
     return GetUserOut(
-        alliance=(usr.alliance.alliance_name
+        alliance=(usr.alliance.alliance_id
                   if usr.alliance is not None else None),
         authorized_to_login=usr.authorized_to_login,
         character_id=usr.character_id,
         character_name=usr.character_name,
         clearance_level=usr.clearance_level,
         coalitions=[
-            coalition.coalition_name for coalition in usr.coalitions()
+            str(coalition.pk) for coalition in usr.coalitions()
         ],
-        corporation=(usr.corporation.corporation_name
+        corporation=(usr.corporation.corporation_id
                      if usr.corporation is not None else None),
         created_on=usr.created_on,
         cumulated_mandatory_esi_scopes=usr.cumulated_mandatory_esi_scopes(),
