@@ -915,9 +915,132 @@ need accurate microsecond support.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-sni.user.jobs">
+<span id="jobs"></span><h2>Jobs<a class="headerlink" href="#module-sni.user.jobs" title="Permalink to this headline">¶</a></h2>
+<p>User and eve player structure management jobs.</p>
+<dl class="function">
+<dt id="sni.user.jobs.ensure_alliance_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">ensure_alliance_members</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#ensure_alliance_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.ensure_alliance_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure all members of a given alliance exist in the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.ensure_alliances_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">ensure_alliances_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#ensure_alliances_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.ensure_alliances_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through all alliances (in the database) and makes sure their
+member corporations exist in the database. See
+<a class="reference internal" href="#sni.user.jobs.ensure_alliance_members" title="sni.user.jobs.ensure_alliance_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.jobs.ensure_alliance_members()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.ensure_corporation_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">ensure_corporation_members</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#ensure_corporation_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.ensure_corporation_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that all members of a corporation exist in the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.ensure_corporations_members">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">ensure_corporations_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#ensure_corporations_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.ensure_corporations_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through all corporations (in the database) and makes sure their
+members exist in the database. See
+<a class="reference internal" href="#sni.user.jobs.ensure_corporation_members" title="sni.user.jobs.ensure_corporation_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.jobs.ensure_corporation_members()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance_autogroup">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_autogroup</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates an alliance autogroup.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance_autogroups">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_autogroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all the alliance autogroup. Instead of querying the ESI, it queries
+the database for all user in the corporations in that alliance, assuming
+the user and corporation records are up-to-date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliance_from_esi">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_from_esi</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_from_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_from_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates an alliance’s properties from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_alliances_from_esi">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliances_from_esi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliances_from_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliances_from_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the alliances properties from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_coalition_autogroup">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_coalition_autogroup</code><span class="sig-paren">(</span><em class="sig-param">coalition: sni.user.models.Coalition</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_coalition_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_coalition_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the coalition autogroup. Instead of querying the ESI, it queries
+the database for all user in that coalition, assuming the user, coalition,
+and alliance records are up-to-date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_coalition_autogroups">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_coalition_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_coalition_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_coalition_autogroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the coalition autogroups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporation">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a corporation properties from the ESI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporation_autogroup">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation_autogroup</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the corporations autogroup. Instead of querying the ESI, it queries
+the database for all user in that corporation, assuming the user records
+are up-to-date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporation_autogroups">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation_autogroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the corporations autogroups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_corporations">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates corporations properties. (yes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_user_autogroup">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_user_autogroup</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_user_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_user_autogroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure a user belongs to its corporation, alliance, and coalitions
+autogroups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_user_from_esi">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_user_from_esi</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_user_from_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_user_from_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a user’s information from the ESI</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.user.jobs.update_users_from_esi">
+<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_users_from_esi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_users_from_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_users_from_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterated through all users and updates their field from ESI.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.user.signals">
 <span id="database-signal-handlers"></span><h2>Database signal handlers<a class="headerlink" href="#module-sni.user.signals" title="Permalink to this headline">¶</a></h2>
 <p>ODM signal handlers</p>
+<dl class="function">
+<dt id="sni.user.signals.on_user_post_save">
+<code class="sig-prename descclassname">sni.user.signals.</code><code class="sig-name descname">on_user_post_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/signals.html#on_user_post_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.signals.on_user_post_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whenever a NEW user is saved in the database.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.user.migration">
 <span id="database-migration"></span><h2>Database migration<a class="headerlink" href="#module-sni.user.migration" title="Permalink to this headline">¶</a></h2>
@@ -972,98 +1095,6 @@ owner.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-sni.user.jobs">
-<span id="jobs"></span><h2>Jobs<a class="headerlink" href="#module-sni.user.jobs" title="Permalink to this headline">¶</a></h2>
-<p>User and eve player structure management jobs.</p>
-<dl class="function">
-<dt id="sni.user.jobs.update_alliance">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates an alliance’s properties from the ESI.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_alliance_autogroup">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_autogroup</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_autogroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_autogroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates an alliance autogroup.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_alliance_autogroups">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_autogroups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets all the alliance autogroup. Instead of querying the ESI, it queries
-the database for all user in the corporations in that alliance, assuming
-the user and corporation records are up-to-date.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_alliance_members">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliance_members</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliance_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliance_members" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes sure all members of a given alliance exist in the database.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_alliances">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliances" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the alliances properties from the ESI.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_alliances_members">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_alliances_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_alliances_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_alliances_members" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterates through all alliances (in the database) and makes sure their
-member corporations exist in the database. See
-<a class="reference internal" href="#sni.user.jobs.update_alliance_members" title="sni.user.jobs.update_alliance_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.jobs.update_alliance_members()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_coalition_autogroups">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_coalition_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_coalition_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_coalition_autogroups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets the coalition autogroups. Instead of querying the ESI, it queries
-the database for all user in that coalition, assuming the user, coalition,
-and alliance records are up-to-date.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_coropration_members">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_coropration_members</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_coropration_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_coropration_members" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ensure that all members of a corporation exist in the database.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_corporation">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates a corporation properties from the ESI.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_corporation_autogroups">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporation_autogroups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporation_autogroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporation_autogroups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets the corporations autogroup. Instead of querying the ESI, it queries
-the database for all user in that corporation, assuming the user records
-are up-to-date.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_corporations">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates corporations properties. (yes)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_corporations_members">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_corporations_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_corporations_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_corporations_members" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterates through all corporations (in the database) and makes sure their
-members exist in the database. See
-<a class="reference internal" href="#sni.user.jobs.update_coropration_members" title="sni.user.jobs.update_coropration_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.jobs.update_coropration_members()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.user.jobs.update_users">
-<code class="sig-prename descclassname">sni.user.jobs.</code><code class="sig-name descname">update_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/user/jobs.html#update_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.jobs.update_users" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterated through all users and updates their field from ESI.</p>
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -1077,9 +1108,9 @@ members exist in the database. See
 <li><a class="reference internal" href="#">User management</a><ul>
 <li><a class="reference internal" href="#module-sni.user.user">Main module</a></li>
 <li><a class="reference internal" href="#module-sni.user.models">Database models</a></li>
+<li><a class="reference internal" href="#module-sni.user.jobs">Jobs</a></li>
 <li><a class="reference internal" href="#module-sni.user.signals">Database signal handlers</a></li>
 <li><a class="reference internal" href="#module-sni.user.migration">Database migration</a></li>
-<li><a class="reference internal" href="#module-sni.user.jobs">Jobs</a></li>
 </ul>
 </li>
 </ul>

@@ -16,7 +16,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="OpenAPI specification" href="openapi.html" /> 
+    <link rel="next" title="Command line arguments" href="command-line-arguments.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -28,7 +28,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="openapi.html" title="OpenAPI specification"
+          <a href="command-line-arguments.html" title="Command line arguments"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>
@@ -114,13 +114,14 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <h2>High level documentation<a class="headerlink" href="#high-level-documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="openapi.html">OpenAPI specification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command-line-arguments.html">Command line arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration file reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#reference">Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#example">Example</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="openapi.html">OpenAPI specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="todos.html">Todo list</a></li>
 </ul>
 </div>
@@ -138,6 +139,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 </li>
 <li class="toctree-l1"><a class="reference internal" href="db.html">Database modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="db.html#module-sni.db.mongodb">Mongodb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html#module-sni.db.signals">Mongodb signal handlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db.html#module-sni.db.migration">Mongodb migration utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db.html#module-sni.db.redis">Redis</a></li>
 </ul>
@@ -145,9 +147,9 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <li class="toctree-l1"><a class="reference internal" href="user.html">User management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user.html#module-sni.user.user">Main module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html#module-sni.user.models">Database models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user.html#module-sni.user.jobs">Jobs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html#module-sni.user.signals">Database signal handlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html#module-sni.user.migration">Database migration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user.html#module-sni.user.jobs">Jobs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="uac.html">User Access Control</a><ul>
@@ -155,6 +157,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <li class="toctree-l2"><a class="reference internal" href="uac.html#module-sni.uac.clearance">Clearance management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="uac.html#module-sni.uac.token">SNI token management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="uac.html#module-sni.uac.models">Database models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uac.html#module-sni.uac.signals">Database signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="uac.html#module-sni.uac.migration">Database migration</a></li>
 </ul>
 </li>
@@ -169,6 +172,8 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <li class="toctree-l2"><a class="reference internal" href="esi.html#module-sni.esi.token">ESI Token management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="esi.html#module-sni.esi.models">Database models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="esi.html#module-sni.esi.jobs">Jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="esi.html#module-sni.esi.signals">Database signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="esi.html#module-sni.esi.migration">Migration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="esi.html#esi-scopes">ESI scopes</a></li>
 </ul>
 </li>
@@ -176,6 +181,8 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <li class="toctree-l2"><a class="reference internal" href="teamspeak.html#module-sni.teamspeak.teamspeak">Main module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="teamspeak.html#module-sni.teamspeak.models">Database models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="teamspeak.html#module-sni.teamspeak.jobs">Jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teamspeak.html#module-sni.teamspeak.signals">Database signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teamspeak.html#module-sni.teamspeak.migration">Migration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="discord.html">Discord</a><ul>
@@ -184,6 +191,8 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 <li class="toctree-l2"><a class="reference internal" href="discord.html#module-sni.discord.commands">Discord bot commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="discord.html#module-sni.discord.events">Discord bot events</a></li>
 <li class="toctree-l2"><a class="reference internal" href="discord.html#module-sni.discord.jobs">Jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discord.html#module-sni.discord.signals">Database signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discord.html#module-sni.discord.migration">Migration</a></li>
 </ul>
 </li>
 </ul>
@@ -217,8 +226,8 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="openapi.html"
-                        title="next chapter">OpenAPI specification</a></p>
+  <p class="topless"><a href="command-line-arguments.html"
+                        title="next chapter">Command line arguments</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -250,7 +259,7 @@ that of your <code class="docutils literal notranslate"><span class="pre">sni.ym
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="openapi.html" title="OpenAPI specification"
+          <a href="command-line-arguments.html" title="Command line arguments"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">SeAT Navy Issue alpha documentation</a> &#187;</li> 
       </ul>

@@ -298,6 +298,13 @@ authorization code.</p>
 <span id="esi-token-management"></span><h2>ESI Token management<a class="headerlink" href="#module-sni.esi.token" title="Permalink to this headline">¶</a></h2>
 <p>EVE token (access and refresh) management</p>
 <dl class="function">
+<dt id="sni.esi.token.available_esi_scopes">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">available_esi_scopes</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; Set[str]<a class="reference internal" href="_modules/sni/esi/token.html#available_esi_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.available_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a user, returns all the scopes for which SNI has a valid refresh
+token.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.esi.token.get_access_token">
 <code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">get_access_token</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">scope: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; sni.esi.models.EsiAccessToken<a class="reference internal" href="_modules/sni/esi/token.html#get_access_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.get_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an access token, refreshes if needed</p>
@@ -674,6 +681,20 @@ access tokens.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-sni.esi.signals">
+<span id="database-signals"></span><h2>Database signals<a class="headerlink" href="#module-sni.esi.signals" title="Permalink to this headline">¶</a></h2>
+<p>Database signals. See <a class="reference external" href="http://docs.mongoengine.org/guide/signals.html">Mongoengine signals</a></p>
+</div>
+<div class="section" id="module-sni.esi.migration">
+<span id="migration"></span><h2>Migration<a class="headerlink" href="#module-sni.esi.migration" title="Permalink to this headline">¶</a></h2>
+<p>Database migrations</p>
+<dl class="function">
+<dt id="sni.esi.migration.migrate">
+<code class="sig-prename descclassname">sni.esi.migration.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/esi/migration.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.migration.migrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs migration tasks</p>
+</dd></dl>
+
+</div>
 <div class="section" id="esi-scopes">
 <h2>ESI scopes<a class="headerlink" href="#esi-scopes" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">esi</span><span class="o">-</span><span class="n">alliances</span><span class="o">.</span><span class="n">read_contacts</span><span class="o">.</span><span class="n">v1</span>
@@ -765,6 +786,8 @@ access tokens.</p>
 <li><a class="reference internal" href="#module-sni.esi.token">ESI Token management</a></li>
 <li><a class="reference internal" href="#module-sni.esi.models">Database models</a></li>
 <li><a class="reference internal" href="#module-sni.esi.jobs">Jobs</a></li>
+<li><a class="reference internal" href="#module-sni.esi.signals">Database signals</a></li>
+<li><a class="reference internal" href="#module-sni.esi.migration">Migration</a></li>
 <li><a class="reference internal" href="#esi-scopes">ESI scopes</a></li>
 </ul>
 </li>

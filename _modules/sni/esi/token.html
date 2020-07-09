@@ -42,7 +42,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_user</span>
@@ -115,6 +115,17 @@
         <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
         <span class="n">scopes</span><span class="o">=</span><span class="n">decoded_access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="available_esi_scopes"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.available_esi_scopes">[docs]</a><span class="k">def</span> <span class="nf">available_esi_scopes</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a user, returns all the scopes for which SNI has a valid refresh</span>
+<span class="sd">    token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">refresh_token</span> <span class="ow">in</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">usr</span><span class="p">):</span>
+        <span class="n">scopes</span> <span class="o">+=</span> <span class="n">refresh_token</span><span class="o">.</span><span class="n">scopes</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">scopes</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

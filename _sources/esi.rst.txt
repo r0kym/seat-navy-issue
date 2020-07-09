@@ -26,6 +26,16 @@ Jobs
 
 .. automodule:: sni.esi.jobs
 
+Database signals
+----------------
+
+.. automodule:: sni.esi.signals
+
+Migration
+---------
+
+.. automodule:: sni.esi.migration
+
 ESI scopes
 ----------
 

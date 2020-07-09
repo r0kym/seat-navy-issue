@@ -25,3 +25,13 @@ Jobs
 ----
 
 .. automodule:: sni.discord.jobs
+
+Database signals
+----------------
+
+.. automodule:: sni.discord.signals
+
+Migration
+---------
+
+.. automodule:: sni.discord.migration

@@ -76,9 +76,13 @@ connection. It’s magic.</p>
 </div>
 </dd></dl>
 
+</div>
+<div class="section" id="module-sni.db.signals">
+<span id="mongodb-signal-handlers"></span><h2>Mongodb signal handlers<a class="headerlink" href="#module-sni.db.signals" title="Permalink to this headline">¶</a></h2>
+<p>Database signals. See <a class="reference external" href="http://docs.mongoengine.org/guide/signals.html">Mongoengine signals</a></p>
 <dl class="function">
-<dt id="sni.db.mongodb.on_pre_save">
-<code class="sig-prename descclassname">sni.db.mongodb.</code><code class="sig-name descname">on_pre_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">document: mongoengine.document.Document</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/mongodb.html#on_pre_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.mongodb.on_pre_save" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.db.signals.on_pre_save">
+<code class="sig-prename descclassname">sni.db.signals.</code><code class="sig-name descname">on_pre_save</code><span class="sig-paren">(</span><em class="sig-param">_sender: Any</em>, <em class="sig-param">document: mongoengine.document.Document</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/db/signals.html#on_pre_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.signals.on_pre_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the document has a <cite>updated_on</cite>, sets it to the current datetime.</p>
 </dd></dl>
 
@@ -131,6 +135,7 @@ that version.</p>
   <ul>
 <li><a class="reference internal" href="#">Database modules</a><ul>
 <li><a class="reference internal" href="#module-sni.db.mongodb">Mongodb</a></li>
+<li><a class="reference internal" href="#module-sni.db.signals">Mongodb signal handlers</a></li>
 <li><a class="reference internal" href="#module-sni.db.migration">Mongodb migration utilities</a></li>
 <li><a class="reference internal" href="#module-sni.db.redis">Redis</a></li>
 </ul>

@@ -97,11 +97,11 @@
 
 <div class="viewcode-block" id="PutCoalitionIn"><a class="viewcode-back" href="../../../api.html#sni.api.coalition.PutCoalitionIn">[docs]</a><span class="k">class</span> <span class="nc">PutCoalitionIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for `POST /coalition` responses.</span>
+<span class="sd">    Model for `PUT /coalition/{coalition_id}` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">add_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">remove_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">ticker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -241,6 +241,7 @@
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ticker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">ticker</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ticker</span>
+    <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">members</span><span class="p">))</span>
     <span class="n">coalition</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">coalition_record_to_response</span><span class="p">(</span><span class="n">coalition</span><span class="p">)</span></div>
 </pre></div>

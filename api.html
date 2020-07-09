@@ -189,7 +189,7 @@ as <code class="docutils literal notranslate"><span class="pre">500</span></code
 <dt id="sni.api.coalition.PutCoalitionIn">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.coalition.</code><code class="sig-name descname">PutCoalitionIn</code><a class="reference internal" href="_modules/sni/api/coalition.html#PutCoalitionIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Model for <cite>POST /coalition</cite> responses.</p>
+<p>Model for <cite>PUT /coalition/{coalition_id}</cite> responses.</p>
 <dl class="attribute">
 <dt id="sni.api.coalition.PutCoalitionIn.add_members">
 <code class="sig-name descname">add_members</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.coalition.PutCoalitionIn.add_members" title="Permalink to this definition">¶</a></dt>
@@ -767,6 +767,11 @@ to the owner of that app token.</p>
 <dl class="attribute">
 <dt id="sni.api.user.GetUserOut.authorized_to_login">
 <code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.user.GetUserOut.available_esi_scopes">
+<code class="sig-name descname">available_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.user.GetUserOut.available_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

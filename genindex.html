@@ -134,10 +134,10 @@
 </li>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_alliance">are_in_same_alliance() (in module sni.uac.clearance)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_coalition">are_in_same_coalition() (in module sni.uac.clearance)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_corporation">are_in_same_corporation() (in module sni.uac.clearance)</a>
 </li>
       <li><a href="uac.html#sni.uac.clearance.assert_has_clearance">assert_has_clearance() (in module sni.uac.clearance)</a>
@@ -170,6 +170,10 @@
         <li><a href="user.html#sni.user.models.User.authorized_to_login">(sni.user.models.User attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api.html#sni.api.user.GetUserOut.available_esi_scopes">available_esi_scopes (sni.api.user.GetUserOut attribute)</a>
+</li>
+      <li><a href="esi.html#sni.esi.token.available_esi_scopes">available_esi_scopes() (in module sni.esi.token)</a>
+</li>
       <li><a href="esi.html#sni.esi.sso.DecodedAccessToken.azp">azp (sni.esi.sso.DecodedAccessToken attribute)</a>
 </li>
   </ul></td>
@@ -264,10 +268,10 @@
       </ul></li>
       <li><a href="api.html#sni.api.coalition.coalition_record_to_response">coalition_record_to_response() (in module sni.api.coalition)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.user.GetUserOut.coalitions">coalitions (sni.api.user.GetUserOut attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="user.html#sni.user.models.Alliance.coalitions">coalitions() (sni.user.models.Alliance method)</a>
 
       <ul>
@@ -293,6 +297,8 @@
 </li>
       </ul></li>
       <li><a href="sni.html#sni.__main__.configure_logging">configure_logging() (in module sni.__main__)</a>
+</li>
+      <li><a href="sni.html#sni.__main__.connect_database_signals">connect_database_signals() (in module sni.__main__)</a>
 </li>
       <li><a href="user.html#sni.user.models.Corporation">Corporation (class in sni.user.models)</a>
 </li>
@@ -406,9 +412,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="user.html#sni.user.user.ensure_alliance">ensure_alliance() (in module sni.user.user)</a>
 </li>
+      <li><a href="user.html#sni.user.jobs.ensure_alliance_members">ensure_alliance_members() (in module sni.user.jobs)</a>
+</li>
+      <li><a href="user.html#sni.user.jobs.ensure_alliances_members">ensure_alliances_members() (in module sni.user.jobs)</a>
+</li>
       <li><a href="user.html#sni.user.user.ensure_autogroup">ensure_autogroup() (in module sni.user.user)</a>
 </li>
       <li><a href="user.html#sni.user.user.ensure_corporation">ensure_corporation() (in module sni.user.user)</a>
+</li>
+      <li><a href="user.html#sni.user.jobs.ensure_corporation_members">ensure_corporation_members() (in module sni.user.jobs)</a>
+</li>
+      <li><a href="user.html#sni.user.jobs.ensure_corporations_members">ensure_corporations_members() (in module sni.user.jobs)</a>
 </li>
       <li><a href="teamspeak.html#sni.teamspeak.teamspeak.ensure_group">ensure_group() (in module sni.teamspeak.teamspeak)</a>
 </li>
@@ -436,12 +450,12 @@
 </li>
       <li><a href="esi.html#sni.esi.models.EsiAccessToken">EsiAccessToken (class in sni.esi.models)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="esi.html#sni.esi.models.EsiAccessToken.DoesNotExist">EsiAccessToken.DoesNotExist</a>
 </li>
       <li><a href="esi.html#sni.esi.models.EsiAccessToken.MultipleObjectsReturned">EsiAccessToken.MultipleObjectsReturned</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="esi.html#sni.esi.models.EsiPath">EsiPath (class in sni.esi.models)</a>
 </li>
       <li><a href="esi.html#sni.esi.models.EsiPath.DoesNotExist">EsiPath.DoesNotExist</a>
@@ -756,9 +770,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="teamspeak.html#sni.teamspeak.jobs.message_registered_clients_with_wrong_name">message_registered_clients_with_wrong_name() (in module sni.teamspeak.jobs)</a>
 </li>
-      <li><a href="uac.html#sni.uac.migration.migrate">migrate() (in module sni.uac.migration)</a>
+      <li><a href="discord.html#sni.discord.migration.migrate">migrate() (in module sni.discord.migration)</a>
 
       <ul>
+        <li><a href="esi.html#sni.esi.migration.migrate">(in module sni.esi.migration)</a>
+</li>
+        <li><a href="teamspeak.html#sni.teamspeak.migration.migrate">(in module sni.teamspeak.migration)</a>
+</li>
+        <li><a href="uac.html#sni.uac.migration.migrate">(in module sni.uac.migration)</a>
+</li>
         <li><a href="user.html#sni.user.migration.migrate">(in module sni.user.migration)</a>
 </li>
       </ul></li>
@@ -838,15 +858,17 @@
         <li><a href="user.html#sni.user.models.User.objects">(sni.user.models.User attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.esi.EsiRequestIn.on_behalf_of">on_behalf_of (sni.api.esi.EsiRequestIn attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="discord.html#sni.discord.events.on_disconnect">on_disconnect() (in module sni.discord.events)</a>
 </li>
-      <li><a href="db.html#sni.db.mongodb.on_pre_save">on_pre_save() (in module sni.db.mongodb)</a>
+      <li><a href="db.html#sni.db.signals.on_pre_save">on_pre_save() (in module sni.db.signals)</a>
 </li>
       <li><a href="discord.html#sni.discord.events.on_ready">on_ready() (in module sni.discord.events)</a>
+</li>
+      <li><a href="user.html#sni.user.signals.on_user_post_save">on_user_post_save() (in module sni.user.signals)</a>
 </li>
       <li><a href="api.html#sni.api.group.GetGroupOut.owner">owner (sni.api.group.GetGroupOut attribute)</a>
 
@@ -988,7 +1010,7 @@
 </li>
       <li><a href="teamspeak.html#sni.teamspeak.teamspeak.TeamspeakGroup.savedb">savedb (sni.teamspeak.teamspeak.TeamspeakGroup attribute)</a>
 </li>
-      <li><a href="sni.html#sni.__main__.schedule_all_jobs">schedule_all_jobs() (in module sni.__main__)</a>
+      <li><a href="sni.html#sni.__main__.schedule_jobs">schedule_jobs() (in module sni.__main__)</a>
 </li>
       <li><a href="esi.html#sni.esi.models.EsiPath.scope">scope (sni.esi.models.EsiPath attribute)</a>
 </li>
@@ -1030,6 +1052,8 @@
 </li>
       <li><a href="db.html#module-sni.db.redis">sni.db.redis (module)</a>
 </li>
+      <li><a href="db.html#module-sni.db.signals">sni.db.signals (module)</a>
+</li>
       <li><a href="discord.html#module-sni.discord.bot">sni.discord.bot (module)</a>
 </li>
       <li><a href="discord.html#module-sni.discord.commands">sni.discord.commands (module)</a>
@@ -1040,13 +1064,21 @@
 </li>
       <li><a href="discord.html#module-sni.discord.jobs">sni.discord.jobs (module)</a>
 </li>
+      <li><a href="discord.html#module-sni.discord.migration">sni.discord.migration (module)</a>
+</li>
+      <li><a href="discord.html#module-sni.discord.signals">sni.discord.signals (module)</a>
+</li>
       <li><a href="esi.html#module-sni.esi.esi">sni.esi.esi (module)</a>
+</li>
+      <li><a href="esi.html#module-sni.esi.jobs">sni.esi.jobs (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="esi.html#module-sni.esi.jobs">sni.esi.jobs (module)</a>
+      <li><a href="esi.html#module-sni.esi.migration">sni.esi.migration (module)</a>
 </li>
       <li><a href="esi.html#module-sni.esi.models">sni.esi.models (module)</a>
+</li>
+      <li><a href="esi.html#module-sni.esi.signals">sni.esi.signals (module)</a>
 </li>
       <li><a href="esi.html#module-sni.esi.sso">sni.esi.sso (module)</a>
 </li>
@@ -1056,7 +1088,11 @@
 </li>
       <li><a href="teamspeak.html#module-sni.teamspeak.jobs">sni.teamspeak.jobs (module)</a>
 </li>
+      <li><a href="teamspeak.html#module-sni.teamspeak.migration">sni.teamspeak.migration (module)</a>
+</li>
       <li><a href="teamspeak.html#module-sni.teamspeak.models">sni.teamspeak.models (module)</a>
+</li>
+      <li><a href="teamspeak.html#module-sni.teamspeak.signals">sni.teamspeak.signals (module)</a>
 </li>
       <li><a href="teamspeak.html#module-sni.teamspeak.teamspeak">sni.teamspeak.teamspeak (module)</a>
 </li>
@@ -1065,6 +1101,8 @@
       <li><a href="uac.html#module-sni.uac.migration">sni.uac.migration (module)</a>
 </li>
       <li><a href="uac.html#module-sni.uac.models">sni.uac.models (module)</a>
+</li>
+      <li><a href="uac.html#module-sni.uac.signals">sni.uac.signals (module)</a>
 </li>
       <li><a href="uac.html#module-sni.uac.token">sni.uac.token (module)</a>
 </li>
@@ -1176,29 +1214,25 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="user.html#sni.user.jobs.update_alliance">update_alliance() (in module sni.user.jobs)</a>
-</li>
       <li><a href="user.html#sni.user.jobs.update_alliance_autogroup">update_alliance_autogroup() (in module sni.user.jobs)</a>
 </li>
       <li><a href="user.html#sni.user.jobs.update_alliance_autogroups">update_alliance_autogroups() (in module sni.user.jobs)</a>
 </li>
-      <li><a href="user.html#sni.user.jobs.update_alliance_members">update_alliance_members() (in module sni.user.jobs)</a>
+      <li><a href="user.html#sni.user.jobs.update_alliance_from_esi">update_alliance_from_esi() (in module sni.user.jobs)</a>
 </li>
-      <li><a href="user.html#sni.user.jobs.update_alliances">update_alliances() (in module sni.user.jobs)</a>
+      <li><a href="user.html#sni.user.jobs.update_alliances_from_esi">update_alliances_from_esi() (in module sni.user.jobs)</a>
 </li>
-      <li><a href="user.html#sni.user.jobs.update_alliances_members">update_alliances_members() (in module sni.user.jobs)</a>
+      <li><a href="user.html#sni.user.jobs.update_coalition_autogroup">update_coalition_autogroup() (in module sni.user.jobs)</a>
 </li>
       <li><a href="user.html#sni.user.jobs.update_coalition_autogroups">update_coalition_autogroups() (in module sni.user.jobs)</a>
 </li>
-      <li><a href="user.html#sni.user.jobs.update_coropration_members">update_coropration_members() (in module sni.user.jobs)</a>
-</li>
       <li><a href="user.html#sni.user.jobs.update_corporation">update_corporation() (in module sni.user.jobs)</a>
+</li>
+      <li><a href="user.html#sni.user.jobs.update_corporation_autogroup">update_corporation_autogroup() (in module sni.user.jobs)</a>
 </li>
       <li><a href="user.html#sni.user.jobs.update_corporation_autogroups">update_corporation_autogroups() (in module sni.user.jobs)</a>
 </li>
       <li><a href="user.html#sni.user.jobs.update_corporations">update_corporations() (in module sni.user.jobs)</a>
-</li>
-      <li><a href="user.html#sni.user.jobs.update_corporations_members">update_corporations_members() (in module sni.user.jobs)</a>
 </li>
       <li><a href="discord.html#sni.discord.jobs.update_discord_role">update_discord_role() (in module sni.discord.jobs)</a>
 </li>
@@ -1210,7 +1244,11 @@
 </li>
       <li><a href="teamspeak.html#sni.teamspeak.jobs.update_teamspeak_groups">update_teamspeak_groups() (in module sni.teamspeak.jobs)</a>
 </li>
-      <li><a href="user.html#sni.user.jobs.update_users">update_users() (in module sni.user.jobs)</a>
+      <li><a href="user.html#sni.user.jobs.update_user_autogroup">update_user_autogroup() (in module sni.user.jobs)</a>
+</li>
+      <li><a href="user.html#sni.user.jobs.update_user_from_esi">update_user_from_esi() (in module sni.user.jobs)</a>
+</li>
+      <li><a href="user.html#sni.user.jobs.update_users_from_esi">update_users_from_esi() (in module sni.user.jobs)</a>
 </li>
       <li><a href="api.html#sni.api.coalition.GetCoalitionOut.updated_on">updated_on (sni.api.coalition.GetCoalitionOut attribute)</a>
 

@@ -52,12 +52,13 @@
 <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
-<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="n">available_esi_scopes</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
@@ -76,6 +77,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">alliance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="n">available_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">clearance_level</span><span class="p">:</span> <span class="nb">int</span>
@@ -106,12 +108,11 @@
         <span class="n">alliance</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span>
                   <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
         <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
+        <span class="n">available_esi_scopes</span><span class="o">=</span><span class="n">available_esi_scopes</span><span class="p">(</span><span class="n">usr</span><span class="p">),</span>
         <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
         <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
         <span class="n">clearance_level</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
-        <span class="n">coalitions</span><span class="o">=</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()</span>
-        <span class="p">],</span>
+        <span class="n">coalitions</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()],</span>
         <span class="n">corporation</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span>
                      <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
         <span class="n">created_on</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>

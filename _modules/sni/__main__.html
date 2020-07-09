@@ -52,6 +52,23 @@
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 
 
+<div class="viewcode-block" id="connect_database_signals"><a class="viewcode-back" href="../../sni.html#sni.__main__.connect_database_signals">[docs]</a><span class="k">def</span> <span class="nf">connect_database_signals</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports all ``signals`` submodules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting database signals&#39;</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">sni.db.signals</span>
+    <span class="kn">import</span> <span class="nn">sni.esi.signals</span>
+    <span class="kn">import</span> <span class="nn">sni.uac.signals</span>
+    <span class="kn">import</span> <span class="nn">sni.user.signals</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.signals</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.teamspeak.signals</span></div>
+
+
 <div class="viewcode-block" id="configure_logging"><a class="viewcode-back" href="../../sni.html#sni.__main__.configure_logging">[docs]</a><span class="k">def</span> <span class="nf">configure_logging</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic configuration of the logging facility</span>
@@ -77,12 +94,24 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inits and migrate the MongoDB database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating database&#39;</span><span class="p">)</span>
+
+    <span class="kn">import</span> <span class="nn">sni.esi.migration</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
     <span class="kn">import</span> <span class="nn">sni.uac.migration</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">uac</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
     <span class="kn">import</span> <span class="nn">sni.user.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span></div>
+    <span class="n">sni</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.discord.migration</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sni.teamspeak.migration</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../sni.html#sni.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -113,7 +142,7 @@
 
     <span class="kn">import</span> <span class="nn">sni.db.mongodb</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">mongodb</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
-
+    <span class="n">connect_database_signals</span><span class="p">()</span>
     <span class="n">migrate_database</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
@@ -142,9 +171,17 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">import</span> <span class="nn">sni.scheduler</span>
+
+    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">clear_jobs</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Clearing scheduler job lists&#39;</span><span class="p">)</span>
+        <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">remove_all_jobs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+            <span class="kn">import</span> <span class="nn">sni.discord.bot</span>
+            <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">remove_all_jobs</span><span class="p">()</span>
+
     <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-    <span class="n">schedule_all_jobs</span><span class="p">()</span>
+    <span class="n">schedule_jobs</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Pre API server start</span>
@@ -186,6 +223,12 @@
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Specify an alternate configuration file (default: ./sni.yml)&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--clear-jobs&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Clear scheduled job lists&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--migrate-database&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -210,11 +253,14 @@
     <span class="k">return</span> <span class="n">argument_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="schedule_all_jobs"><a class="viewcode-back" href="../../sni.html#sni.__main__.schedule_all_jobs">[docs]</a><span class="k">def</span> <span class="nf">schedule_all_jobs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="schedule_jobs"><a class="viewcode-back" href="../../sni.html#sni.__main__.schedule_jobs">[docs]</a><span class="k">def</span> <span class="nf">schedule_jobs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Schedules jobs from all subpackages</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Scheduling jobs&#39;</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">sni.db.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
+    <span class="kn">import</span> <span class="nn">sni.uac.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
 
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
