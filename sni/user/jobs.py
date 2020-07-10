@@ -4,6 +4,8 @@ User and eve player structure management jobs.
 
 import logging
 
+import mongoengine as me
+
 from sni.esi.esi import esi_get
 from sni.esi.token import (
     EsiRefreshToken,
@@ -33,7 +35,10 @@ def update_alliance_autogroup(alliance: Alliance):
     """
     logging.debug('Updating autogroup of alliance %s', alliance.alliance_name)
     grp = ensure_autogroup(alliance.alliance_name)
-    grp.owner = alliance.executor.ceo
+    try:
+        grp.owner = alliance.executor.ceo
+    except me.DoesNotExist:
+        grp.owner = None
     grp.members = list(alliance.user_iterator())
     grp.save()
 
@@ -125,7 +130,10 @@ def update_corporation_autogroup(corporation: Corporation):
     logging.debug('Updating autogroup of corporation %s',
                   corporation.corporation_name)
     grp = ensure_autogroup(corporation.corporation_name)
-    grp.owner = corporation.ceo
+    try:
+        grp.owner = corporation.ceo
+    except me.DoesNotExist:
+        grp.owner = None
     grp.members = list(corporation.user_iterator())
     grp.save()
 

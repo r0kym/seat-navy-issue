@@ -36,13 +36,7 @@ def ensure_autogroup(name: str) -> Group:
     """
     grp = Group.objects(group_name=name).first()
     if grp is None:
-        root = User.objects.get(character_id=0)
-        grp = Group(
-            is_autogroup=True,
-            members=[root],
-            group_name=name,
-            owner=root,
-        ).save()
+        grp = Group(is_autogroup=True, group_name=name).save()
     return grp
 
 
