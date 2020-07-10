@@ -7,8 +7,10 @@ import logging
 import discord
 import mongoengine as me
 
-from sni.user.models import User
+from sni.user.models import Group, User
 import sni.utils as utils
+
+from .bot import get_guild
 
 
 class DiscordAuthenticationChallenge(me.Document):
@@ -40,6 +42,23 @@ def complete_authentication_challenge(discord_user: discord.User, code: str):
     logging.info('Authenticated Discord user %d to user %s', discord_user.id,
                  usr.tickered_name)
     challenge.delete()
+
+
+async def ensure_role_for_group(grp: Group):
+    """
+    Ensure that a Discord role exists for the given group, and returns it.
+    """
+    if not grp.map_to_discord:
+        return
+    guild = get_guild()
+    current_roles = {role.name: role for role in guild.roles}
+    if grp.group_name in current_roles.keys():
+        role = current_roles[grp.group_name]
+    else:
+        role = await guild.create_role(name=grp.group_name)
+        grp.discord_role_id = role.id
+        grp.save()
+    return role
 
 
 def new_authentication_challenge(usr: User) -> str:

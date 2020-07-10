@@ -220,8 +220,7 @@ def run_job(job_name: str) -> None:
     Runs a job (or indeed, any function that doesn't take arguments)
     """
     module_name, function_name = job_name.split(':')
-    logging.info('Manually running job %s (%s)', function_name,
-                    module_name)
+    logging.info('Manually running job %s (%s)', function_name, module_name)
     module = __import__(module_name, fromlist=[None])
     function = getattr(module, function_name)
 

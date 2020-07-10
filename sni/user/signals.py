@@ -21,5 +21,5 @@ def on_user_post_save(_sender: Any, **kwargs):
         usr: User = kwargs['document']
         if usr.character_id == 0:
             return
-        add_job(update_user_from_esi, args=(usr, ))
+        # add_job(update_user_from_esi, args=(usr, ))
         add_job(update_user_autogroup, args=(usr, ))

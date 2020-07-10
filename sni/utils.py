@@ -28,10 +28,10 @@ def catch_all(function: Callable,
 
 
 async def catch_all_async(function: Callable,
-              error_message: str,
-              *,
-              args: list = [],
-              kwargs: dict = {}) -> None:
+                          error_message: str,
+                          *,
+                          args: list = [],
+                          kwargs: dict = {}) -> None:
     """
     Calls a function but catches all the exceptions. If any were raised, logs
     an error message, followed by the string representation of the exception.
