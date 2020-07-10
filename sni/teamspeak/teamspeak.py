@@ -18,6 +18,18 @@ import sni.utils as utils
 
 from .models import TeamspeakAuthenticationChallenge
 
+TS3_MAX_SIZE_AWAY_MESSAGE = 80
+TS3_MAX_SIZE_CLIENT_DESCRIPTION = 200
+TS3_MAX_SIZE_CLIENT_NICKNAME_NONSDK = 30
+TS3_MAX_SIZE_COMPLAIN_MESSAGE = 200
+TS3_MAX_SIZE_GROUP_NAME = 30
+TS3_MAX_SIZE_HOST_MESSAGE = 200
+TS3_MAX_SIZE_OFFLINE_MESSAGE = 4096
+TS3_MAX_SIZE_OFFLINE_MESSAGE_SUBJECT = 200
+TS3_MAX_SIZE_POKE_MESSAGE = 100
+TS3_MAX_SIZE_TALK_REQUEST_MESSAGE = 50
+TS3_MIN_SIZE_CLIENT_NICKNAME_NONSDK = 3
+
 
 class TeamspeakClient(pdt.BaseModel):
     """
@@ -73,6 +85,7 @@ def ensure_group(connection: TS3Connection, name: str) -> TeamspeakGroup:
     Ensures that a teamspeak group exists, and returns a
     :class:`sni.teamspeak.teamspeak.TeamspeakGroup`.
     """
+    name = name[:TS3_MAX_SIZE_GROUP_NAME]
     try:
         return find_group(connection, name=name)
     except LookupError:

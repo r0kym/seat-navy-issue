@@ -73,7 +73,7 @@ def update_teamspeak_groups():
     """
     connection = new_connection()
     for grp in Group.objects(map_to_teamspeak=True,
-                             teamspeak_sgid__exists=True):
+                             teamspeak_sgid__ne=None):
         logging.debug('Updating Teamspeak group %s', grp.group_name)
         current_cldbids: List[int] = [
             int(raw['cldbid']) for raw in connection.servergroupclientlist(
