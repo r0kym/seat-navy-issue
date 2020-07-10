@@ -117,6 +117,12 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.teamspeak.teamspeak.cached_teamspeak_query">
+<code class="sig-prename descclassname">sni.teamspeak.teamspeak.</code><code class="sig-name descname">cached_teamspeak_query</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em>, <em class="sig-param">query: Callable</em>, <em class="sig-param">ttl: int = 60</em>, <em class="sig-param">*</em>, <em class="sig-param">args=[]</em>, <em class="sig-param">kwargs={}</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/sni/teamspeak/teamspeak.html#cached_teamspeak_query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.teamspeak.cached_teamspeak_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a parsed query result, and caches the result.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.teamspeak.teamspeak.client_list">
 <code class="sig-prename descclassname">sni.teamspeak.teamspeak.</code><code class="sig-name descname">client_list</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em><span class="sig-paren">)</span> &#x2192; List[sni.teamspeak.teamspeak.TeamspeakClient]<a class="reference internal" href="_modules/sni/teamspeak/teamspeak.html#client_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.teamspeak.client_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of clients currently connected to the teamspeak server.</p>

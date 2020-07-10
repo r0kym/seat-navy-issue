@@ -155,6 +155,12 @@ bi-directional delete rules)</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.discord.discord.ensure_role_for_group">
+<em class="property">async </em><code class="sig-prename descclassname">sni.discord.discord.</code><code class="sig-name descname">ensure_role_for_group</code><span class="sig-paren">(</span><em class="sig-param">grp: sni.user.models.Group</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/discord.html#ensure_role_for_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.discord.ensure_role_for_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that a Discord role exists for the given group, and returns it.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.discord.discord.new_authentication_challenge">
 <code class="sig-prename descclassname">sni.discord.discord.</code><code class="sig-name descname">new_authentication_challenge</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/discord/discord.html#new_authentication_challenge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.discord.new_authentication_challenge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new authentication challenge.</p>
@@ -231,13 +237,6 @@ scheduler.</p>
 <span id="jobs"></span><h2>Jobs<a class="headerlink" href="#module-sni.discord.jobs" title="Permalink to this headline">¶</a></h2>
 <p>Discord jobs.</p>
 <p>These jobs run on a dedicated asyncio scheduler.</p>
-<dl class="function">
-<dt id="sni.discord.jobs.map_discord_roles">
-<em class="property">async </em><code class="sig-prename descclassname">sni.discord.jobs.</code><code class="sig-name descname">map_discord_roles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/jobs.html#map_discord_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.jobs.map_discord_roles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ensure that roles corresponding to SNI groups (whose <code class="docutils literal notranslate"><span class="pre">map_to_discord</span></code> is
-<code class="docutils literal notranslate"><span class="pre">True</span></code>) exist</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="sni.discord.jobs.update_discord_role">
 <em class="property">async </em><code class="sig-prename descclassname">sni.discord.jobs.</code><code class="sig-name descname">update_discord_role</code><span class="sig-paren">(</span><em class="sig-param">grp: sni.user.models.Group</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/jobs.html#update_discord_role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.jobs.update_discord_role" title="Permalink to this definition">¶</a></dt>

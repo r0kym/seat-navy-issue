@@ -45,17 +45,30 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 <span class="kn">from</span> <span class="nn">ts3.query</span> <span class="kn">import</span> <span class="n">TS3Connection</span><span class="p">,</span> <span class="n">TS3QueryError</span>
 
+<span class="kn">from</span> <span class="nn">sni.db.cache</span> <span class="kn">import</span> <span class="n">cache_get</span><span class="p">,</span> <span class="n">cache_set</span><span class="p">,</span> <span class="n">invalidate_cache</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_autogroup</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">TeamspeakAuthenticationChallenge</span>
+
+<span class="n">TS3_MAX_SIZE_AWAY_MESSAGE</span> <span class="o">=</span> <span class="mi">80</span>
+<span class="n">TS3_MAX_SIZE_CLIENT_DESCRIPTION</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">TS3_MAX_SIZE_CLIENT_NICKNAME_NONSDK</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">TS3_MAX_SIZE_COMPLAIN_MESSAGE</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">TS3_MAX_SIZE_GROUP_NAME</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">TS3_MAX_SIZE_HOST_MESSAGE</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">TS3_MAX_SIZE_OFFLINE_MESSAGE</span> <span class="o">=</span> <span class="mi">4096</span>
+<span class="n">TS3_MAX_SIZE_OFFLINE_MESSAGE_SUBJECT</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">TS3_MAX_SIZE_POKE_MESSAGE</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">TS3_MAX_SIZE_TALK_REQUEST_MESSAGE</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">TS3_MIN_SIZE_CLIENT_NICKNAME_NONSDK</span> <span class="o">=</span> <span class="mi">3</span>
 
 
 <div class="viewcode-block" id="TeamspeakClient"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.TeamspeakClient">[docs]</a><span class="k">class</span> <span class="nc">TeamspeakClient</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -80,6 +93,23 @@
     <span class="nb">type</span><span class="p">:</span> <span class="nb">int</span></div>
 
 
+<div class="viewcode-block" id="cached_teamspeak_query"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.cached_teamspeak_query">[docs]</a><span class="k">def</span> <span class="nf">cached_teamspeak_query</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">TS3Connection</span><span class="p">,</span>
+                           <span class="n">query</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                           <span class="n">ttl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+                           <span class="o">*</span><span class="p">,</span>
+                           <span class="n">args</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span>
+                           <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a parsed query result, and caches the result.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">query</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">parsed</span>
+        <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ttl</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
 <div class="viewcode-block" id="client_list"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.client_list">[docs]</a><span class="k">def</span> <span class="nf">client_list</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">TS3Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TeamspeakClient</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the list of clients currently connected to the teamspeak server.</span>
@@ -87,7 +117,13 @@
 <span class="sd">    See also:</span>
 <span class="sd">        :class:`sni.teamspeak.TeamspeakClient`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">TeamspeakClient</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">connection</span><span class="o">.</span><span class="n">clientlist</span><span class="p">()]</span></div>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">TeamspeakClient</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">cached_teamspeak_query</span><span class="p">(</span>
+            <span class="n">connection</span><span class="p">,</span>
+            <span class="n">TS3Connection</span><span class="o">.</span><span class="n">clientlist</span><span class="p">,</span>
+            <span class="mi">300</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="complete_authentication_challenge"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.complete_authentication_challenge">[docs]</a><span class="k">def</span> <span class="nf">complete_authentication_challenge</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">TS3Connection</span><span class="p">,</span> <span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -112,9 +148,11 @@
 <span class="sd">    Ensures that a teamspeak group exists, and returns a</span>
 <span class="sd">    :class:`sni.teamspeak.teamspeak.TeamspeakGroup`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="n">TS3_MAX_SIZE_GROUP_NAME</span><span class="p">]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">find_group</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+        <span class="n">invalidate_cache</span><span class="p">([</span><span class="n">TS3Connection</span><span class="o">.</span><span class="n">servergrouplist</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}])</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">servergroupadd</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Created Teamspeak group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">find_group</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
@@ -163,7 +201,13 @@
 <span class="sd">    See also:</span>
 <span class="sd">        :class:`sni.teamspeak.TeamspeakGroup`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">TeamspeakGroup</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">connection</span><span class="o">.</span><span class="n">servergrouplist</span><span class="p">()]</span></div>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">TeamspeakGroup</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">cached_teamspeak_query</span><span class="p">(</span>
+            <span class="n">connection</span><span class="p">,</span>
+            <span class="n">TS3Connection</span><span class="o">.</span><span class="n">servergrouplist</span><span class="p">,</span>
+            <span class="mi">3600</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="new_authentication_challenge"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.new_authentication_challenge">[docs]</a><span class="k">def</span> <span class="nf">new_authentication_challenge</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

@@ -44,7 +44,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">ts3.query</span>
+<span class="kn">from</span> <span class="nn">ts3.query</span> <span class="kn">import</span> <span class="n">TS3Connection</span><span class="p">,</span> <span class="n">TS3QueryError</span>
 
 <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">User</span>
@@ -52,6 +52,7 @@
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="kn">from</span> <span class="nn">.teamspeak</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cached_teamspeak_query</span><span class="p">,</span>
     <span class="n">client_list</span><span class="p">,</span>
     <span class="n">ensure_group</span><span class="p">,</span>
     <span class="n">new_connection</span><span class="p">,</span>
@@ -67,6 +68,7 @@
     <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">ts_client</span> <span class="ow">in</span> <span class="n">client_list</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span> <span class="o">==</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">):</span>
+            <span class="c1"># TS client is the bot</span>
             <span class="k">continue</span>
         <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
             <span class="n">teamspeak_cldbid</span><span class="o">=</span><span class="n">ts_client</span><span class="o">.</span><span class="n">client_database_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -89,7 +91,8 @@
                     <span class="s1">&#39;targetmode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
                     <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">clid</span><span class="p">,</span>
                     <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
-                <span class="p">})</span></div>
+                <span class="p">})</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="map_teamspeak_groups"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.jobs.map_teamspeak_groups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -102,7 +105,8 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Mapping group </span><span class="si">%s</span><span class="s1"> to Teamspeak&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
         <span class="n">tsgrp</span> <span class="o">=</span> <span class="n">ensure_group</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span> <span class="o">=</span> <span class="n">tsgrp</span><span class="o">.</span><span class="n">sgid</span>
-        <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+        <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="update_teamspeak_groups"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.jobs.update_teamspeak_groups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -111,12 +115,15 @@
 <span class="sd">    Updates group memberships on Teamspeak</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                             <span class="n">teamspeak_sgid__exists</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">teamspeak_sgid__ne</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating Teamspeak group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
         <span class="n">current_cldbids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s1">&#39;cldbid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">connection</span><span class="o">.</span><span class="n">servergroupclientlist</span><span class="p">(</span>
-                <span class="n">sgid</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">)</span><span class="o">.</span><span class="n">parsed</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s1">&#39;cldbid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">cached_teamspeak_query</span><span class="p">(</span>
+                <span class="n">connection</span><span class="p">,</span>
+                <span class="n">TS3Connection</span><span class="o">.</span><span class="n">servergroupclientlist</span><span class="p">,</span>
+                <span class="mi">300</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;sgid&#39;</span><span class="p">:</span> <span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">},</span>
+            <span class="p">)</span>
         <span class="p">]</span>
         <span class="n">allowed_cldbids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">teamspeak_cldbid</span> <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span>
@@ -130,7 +137,7 @@
                     <span class="n">cldbid</span><span class="o">=</span><span class="n">cldbid</span><span class="p">,</span>
                     <span class="n">sgid</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">except</span> <span class="n">ts3</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">TS3QueryError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">TS3QueryError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                     <span class="s1">&#39;Could not remove client </span><span class="si">%d</span><span class="s1"> from Teamspeak group </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
                     <span class="n">cldbid</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
@@ -142,7 +149,7 @@
                     <span class="n">sgid</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">teamspeak_sgid</span><span class="p">,</span>
                     <span class="n">cldbid</span><span class="o">=</span><span class="n">cldbid</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">except</span> <span class="n">ts3</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">TS3QueryError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">TS3QueryError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                     <span class="s1">&#39;Could not add client </span><span class="si">%d</span><span class="s1"> to Teamspeak group </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
                     <span class="n">cldbid</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span></div>

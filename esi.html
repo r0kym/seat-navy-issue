@@ -48,33 +48,55 @@
 <div class="section" id="module-sni.esi.esi">
 <span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.esi.esi" title="Permalink to this headline">¶</a></h2>
 <p>EVE ESI (public API) layer</p>
+<dl class="class">
+<dt id="sni.esi.esi.EsiResponse">
+<em class="property">class </em><code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">EsiResponse</code><a class="reference internal" href="_modules/sni/esi/esi.html#EsiResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.EsiResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>A model for ESI responses</p>
+<dl class="attribute">
+<dt id="sni.esi.esi.EsiResponse.data">
+<code class="sig-name descname">data</code><em class="property">: Any</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.esi.EsiResponse.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.esi.esi.EsiResponse.headers">
+<code class="sig-name descname">headers</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.esi.EsiResponse.headers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.esi.esi.EsiResponse.status_code">
+<code class="sig-name descname">status_code</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.esi.EsiResponse.status_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.esi.esi.esi_delete">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_delete</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/esi.html#esi_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_delete</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#sni.esi.esi.esi_request" title="sni.esi.esi.esi_request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request()</span></code></a> for DELETE requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.esi.esi_get">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_get</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/esi.html#esi_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_get</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#sni.esi.esi.esi_request" title="sni.esi.esi.esi_request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request()</span></code></a> for GET requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.esi.esi_post">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_post</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/esi.html#esi_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_post</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#sni.esi.esi.esi_request" title="sni.esi.esi.esi_request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request()</span></code></a> for POST requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.esi.esi_put">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_put</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/esi.html#esi_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_put" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_put</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#sni.esi.esi.esi_request" title="sni.esi.esi.esi_request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request()</span></code></a> for PUT requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.esi.esi_request">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_request</code><span class="sig-paren">(</span><em class="sig-param">http_method: str</em>, <em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/esi.html#esi_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_request" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_request</code><span class="sig-paren">(</span><em class="sig-param">http_method: str</em>, <em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes an HTTP request to the ESI, and returns the response object.</p>
 </dd></dl>
 
@@ -105,6 +127,13 @@
 <a class="reference external" href="https://esi.evetech.net/ui">EVE Swagger Interface</a>
 <a class="reference external" href="https://esi.evetech.net/latest/swagger.json">EVE Swagger Interface (JSON)</a></p>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.esi.to_esi_response">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">to_esi_response</code><span class="sig-paren">(</span><em class="sig-param">response: requests.models.Response</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#to_esi_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.to_esi_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <code class="xref py py-class docutils literal notranslate"><span class="pre">request.Response</span></code> object to a
+<a class="reference internal" href="#sni.esi.esi.EsiResponse" title="sni.esi.esi.EsiResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.esi.esi.EsiResponse</span></code></a>.</p>
 </dd></dl>
 
 </div>
@@ -306,32 +335,32 @@ token.</p>
 
 <dl class="function">
 <dt id="sni.esi.token.esi_delete_on_befalf_of">
-<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_delete_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_delete_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_delete_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_delete_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/token.html#esi_delete_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_delete_on_befalf_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for DELETE
 requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.token.esi_get_on_befalf_of">
-<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_get_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_get_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_get_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_get_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/token.html#esi_get_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_get_on_befalf_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for GET requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.token.esi_post_on_befalf_of">
-<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_post_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_post_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_post_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_post_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/token.html#esi_post_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_post_on_befalf_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for POST requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.token.esi_put_on_befalf_of">
-<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_put_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_put_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_put_on_befalf_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_put_on_befalf_of</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/token.html#esi_put_on_befalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_put_on_befalf_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for PUT requests.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.esi.token.esi_request_on_behalf_of">
-<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_request_on_behalf_of</code><span class="sig-paren">(</span><em class="sig-param">http_method: str</em>, <em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; requests.models.Response<a class="reference internal" href="_modules/sni/esi/token.html#esi_request_on_behalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_request_on_behalf_of" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">esi_request_on_behalf_of</code><span class="sig-paren">(</span><em class="sig-param">http_method: str</em>, <em class="sig-param">path: str</em>, <em class="sig-param">character_id: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/token.html#esi_request_on_behalf_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.esi_request_on_behalf_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request_on_behalf_of()</span></code> for GET requests.</p>
 </dd></dl>
 

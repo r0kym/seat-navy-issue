@@ -48,7 +48,21 @@
 <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">add_job</span><span class="p">,</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">EsiMail</span><span class="p">,</span> <span class="n">EsiMailRecipient</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EsiMail</span><span class="p">,</span>
+    <span class="n">EsiMailRecipient</span><span class="p">,</span>
+    <span class="n">EsiSkillPoints</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="format_mail_body"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.format_mail_body">[docs]</a><span class="k">def</span> <span class="nf">format_mail_body</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Formats a mail body by removing most of the HTML tags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;br&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;.*?&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">body</span></div>
 
 
 <div class="viewcode-block" id="index_user_mails"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_user_mails">[docs]</a><span class="k">def</span> <span class="nf">index_user_mails</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -57,13 +71,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">character_id</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span>
     <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">/mail&#39;</span><span class="p">,</span> <span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">/mail&#39;</span><span class="p">,</span> <span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
         <span class="n">mail_id</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;mail_id&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">EsiMail</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mail_id</span><span class="o">=</span><span class="n">mail_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">break</span>
         <span class="n">mail</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">/mail/</span><span class="si">{mail_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiMail</span><span class="p">(</span>
             <span class="n">body</span><span class="o">=</span><span class="n">format_mail_body</span><span class="p">(</span><span class="n">mail</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]),</span>
             <span class="n">from_id</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s1">&#39;from&#39;</span><span class="p">],</span>
@@ -84,14 +98,30 @@
             <span class="n">add_job</span><span class="p">(</span><span class="n">index_user_mails</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="format_mail_body"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.format_mail_body">[docs]</a><span class="k">def</span> <span class="nf">format_mail_body</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="measure_user_skillpoints"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.measure_user_skillpoints">[docs]</a><span class="k">def</span> <span class="nf">measure_user_skillpoints</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Formats a mail body by removing most of the HTML tags.</span>
+<span class="sd">    Measures a user&#39;s skillpoints. See</span>
+<span class="sd">    :class:`sni.index.models.EsiSkillPoints`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;br&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;.*?&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">body</span></div>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">/skills/&#39;</span><span class="p">,</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">EsiSkillPoints</span><span class="p">(</span>
+        <span class="n">total_sp</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;total_sp&#39;</span><span class="p">],</span>
+        <span class="n">unallocated_sp</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unallocated_sp&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="measure_users_skillpoints"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.measure_users_skillpoints">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">measure_users_skillpoints</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measures all users skillpoints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-skills.read_skills.v1&#39;</span><span class="p">):</span>
+            <span class="n">add_job</span><span class="p">(</span><span class="n">measure_user_skillpoints</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
 </pre></div>
 
           </div>

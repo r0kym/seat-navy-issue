@@ -44,13 +44,15 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
 
-<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Response</span>
-
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_user</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
-<span class="kn">from</span> <span class="nn">.esi</span> <span class="kn">import</span> <span class="n">get_esi_path_scope</span><span class="p">,</span> <span class="n">esi_request</span>
+<span class="kn">from</span> <span class="nn">.esi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">esi_request</span><span class="p">,</span>
+    <span class="n">EsiResponse</span><span class="p">,</span>
+    <span class="n">get_esi_path_scope</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">EsiAccessToken</span><span class="p">,</span> <span class="n">EsiRefreshToken</span>
 <span class="kn">from</span> <span class="nn">.sso</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AuthorizationCodeResponse</span><span class="p">,</span>
@@ -71,7 +73,7 @@
 
 
 <div class="viewcode-block" id="esi_delete_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_delete_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_delete_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE</span>
 <span class="sd">    requests.</span>
@@ -79,21 +81,24 @@
     <span class="k">return</span> <span class="n">esi_request_on_behalf_of</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">character_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="esi_get_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_get_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_get_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<div class="viewcode-block" id="esi_get_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_get_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_get_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">esi_request_on_behalf_of</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">character_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="esi_post_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_post_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_post_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<div class="viewcode-block" id="esi_post_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_post_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_post_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">esi_request_on_behalf_of</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">character_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="esi_put_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_put_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_put_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<div class="viewcode-block" id="esi_put_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_put_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_put_on_befalf_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -101,7 +106,7 @@
 
 
 <div class="viewcode-block" id="esi_request_on_behalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_request_on_behalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_request_on_behalf_of</span><span class="p">(</span><span class="n">http_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

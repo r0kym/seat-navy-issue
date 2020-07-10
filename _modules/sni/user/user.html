@@ -58,7 +58,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/alliances/</span><span class="si">{alliance_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/alliances/</span><span class="si">{alliance_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="p">(</span>
             <span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">,</span>
             <span class="n">alliance_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
@@ -75,13 +75,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">grp</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">grp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grp</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span>
-            <span class="n">is_autogroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">root</span><span class="p">],</span>
-            <span class="n">group_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">grp</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">is_autogroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">grp</span></div>
 
 
@@ -92,7 +86,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;alliance_id&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;alliance_id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="p">(</span>
@@ -113,7 +107,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">usr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span>
             <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">character_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
