@@ -4,7 +4,11 @@ Database models
 
 import mongoengine as me
 
+from sni.user.models import User
+import sni.utils as utils
+
 ESIMAIL_SCHEMA_VERSION = 1
+ESISKILLPOINTS_SCHEMA_VERSION = 1
 
 
 class EsiMailRecipient(me.EmbeddedDocument):
@@ -39,4 +43,24 @@ class EsiMail(me.Document):
                 },
             },
         ]
+    }
+
+
+class EsiSkillPoints(me.Document):
+    """
+    Represents a measurment of a character's skill points
+    """
+    _version = me.IntField(default=ESISKILLPOINTS_SCHEMA_VERSION)
+    timestamp = me.DateTimeField(default=utils.now)
+    total_sp = me.IntField()
+    unallocated_sp = me.IntField()
+    user = me.ReferenceField(User)
+    meta = {
+        'index': [
+            ('user', '-timestamp'),
+            {
+                'fields': ['timestamp'],
+                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
+            },
+        ],
     }

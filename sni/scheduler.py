@@ -45,6 +45,7 @@ scheduler = BackgroundScheduler(
 )
 
 
+# pylint: disable=dangerous-default-value
 def add_job(func: Callable, args=list(), kwargs=dict(), **kw):
     """
     Adds a job to the scheduler. If the scheduler is disable, runs the job
