@@ -69,7 +69,9 @@ def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
     try:
-        complete_authentication_challenge(new_connection(), tkn.owner)
+        connection = new_connection()
+        complete_authentication_challenge(connection, tkn.owner)
+        connection.close()
     except LookupError:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND,

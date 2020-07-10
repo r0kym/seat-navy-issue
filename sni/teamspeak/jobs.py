@@ -51,6 +51,7 @@ def message_registered_clients_with_wrong_name():
                     'target': ts_client.clid,
                     'msg': message,
                 })
+    connection.close()
 
 
 @scheduler.scheduled_job('interval', minutes=10)
@@ -64,6 +65,7 @@ def map_teamspeak_groups():
         tsgrp = ensure_group(connection, grp.group_name)
         grp.teamspeak_sgid = tsgrp.sgid
         grp.save()
+    connection.close()
 
 
 @scheduler.scheduled_job('interval', minutes=10)
@@ -107,3 +109,4 @@ def update_teamspeak_groups():
                 logging.error(
                     'Could not add client %d to Teamspeak group %s: %s',
                     cldbid, grp.group_name, str(error))
+    connection.close()
