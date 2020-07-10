@@ -7,9 +7,6 @@ import mongoengine as me
 from sni.user.models import User
 import sni.utils as utils
 
-ESIMAIL_SCHEMA_VERSION = 1
-ESISKILLPOINTS_SCHEMA_VERSION = 1
-
 
 class EsiMailRecipient(me.EmbeddedDocument):
     """
@@ -25,7 +22,9 @@ class EsiMail(me.Document):
     ``body`` and ``subject`` fields (see `here
     <http://docs.mongoengine.org/guide/text-indexes.html>`_)
     """
-    _version = me.IntField(default=ESIMAIL_SCHEMA_VERSION)
+    SCHEMA_VERSION = 1
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     body = me.StringField()
     from_id = me.IntField()
     mail_id = me.IntField()
@@ -50,7 +49,9 @@ class EsiSkillPoints(me.Document):
     """
     Represents a measurment of a character's skill points
     """
-    _version = me.IntField(default=ESISKILLPOINTS_SCHEMA_VERSION)
+    SCHEMA_VERSION = 1
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     timestamp = me.DateTimeField(default=utils.now)
     total_sp = me.IntField()
     unallocated_sp = me.IntField()

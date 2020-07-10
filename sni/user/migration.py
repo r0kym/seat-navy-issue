@@ -11,15 +11,10 @@ from sni.db.migration import (
 )
 
 from .models import (
-    ALLIANCE_SCHEMA_VERSION,
     Alliance,
-    COALITION_SCHEMA_VERSION,
     Coalition,
-    CORPORATION_SCHEMA_VERSION,
     Corporation,
-    GROUP_SCHEMA_VERSION,
     Group,
-    USER_SCHEMA_VERSION,
     User,
 )
 
@@ -79,11 +74,11 @@ def migrate_alliance():
     # pylint: disable=protected-access
     collection = get_pymongo_collection(Alliance._get_collection_name())
 
-    if not has_outdated_documents(collection, ALLIANCE_SCHEMA_VERSION):
+    if not has_outdated_documents(collection, Alliance.SCHEMA_VERSION):
         return
 
     logging.info('Migrating collection "alliance" to v%d',
-                 COALITION_SCHEMA_VERSION)
+                 Alliance.SCHEMA_VERSION)
 
     collection.drop_indexes()
 
@@ -112,11 +107,11 @@ def migrate_coalition():
     # pylint: disable=protected-access
     collection = get_pymongo_collection(Coalition._get_collection_name())
 
-    if not has_outdated_documents(collection, COALITION_SCHEMA_VERSION):
+    if not has_outdated_documents(collection, Coalition.SCHEMA_VERSION):
         return
 
     logging.info('Migrating collection "coalition" to v%d',
-                 COALITION_SCHEMA_VERSION)
+                 Coalition.SCHEMA_VERSION)
 
     collection.drop_indexes()
 
@@ -159,11 +154,11 @@ def migrate_corporation():
     # pylint: disable=protected-access
     collection = get_pymongo_collection(Corporation._get_collection_name())
 
-    if not has_outdated_documents(collection, CORPORATION_SCHEMA_VERSION):
+    if not has_outdated_documents(collection, Corporation.SCHEMA_VERSION):
         return
 
     logging.info('Migrating collection "corporation" to v%d',
-                 CORPORATION_SCHEMA_VERSION)
+                 Corporation.SCHEMA_VERSION)
 
     collection.drop_indexes()
 
@@ -192,10 +187,10 @@ def migrate_group():
     # pylint: disable=protected-access
     collection = get_pymongo_collection(Group._get_collection_name())
 
-    if not has_outdated_documents(collection, GROUP_SCHEMA_VERSION):
+    if not has_outdated_documents(collection, Group.SCHEMA_VERSION):
         return
 
-    logging.info('Migrating collection "group" to v%d', GROUP_SCHEMA_VERSION)
+    logging.info('Migrating collection "group" to v%d', Group.SCHEMA_VERSION)
 
     collection.drop_indexes()
 
@@ -260,10 +255,10 @@ def migrate_user():
     # pylint: disable=protected-access
     collection = get_pymongo_collection(User._get_collection_name())
 
-    if not has_outdated_documents(collection, USER_SCHEMA_VERSION):
+    if not has_outdated_documents(collection, User.SCHEMA_VERSION):
         return
 
-    logging.info('Migrating collection "user" to v%d', USER_SCHEMA_VERSION)
+    logging.info('Migrating collection "user" to v%d', User.SCHEMA_VERSION)
 
     collection.drop_indexes()
 

@@ -8,18 +8,14 @@ import mongoengine as me
 
 import sni.utils as utils
 
-ALLIANCE_SCHEMA_VERSION = 3
-COALITION_SCHEMA_VERSION = 4
-CORPORATION_SCHEMA_VERSION = 3
-GROUP_SCHEMA_VERSION = 4
-USER_SCHEMA_VERSION = 3
-
 
 class Alliance(me.Document):
     """
     EVE alliance database model.
     """
-    _version = me.IntField(default=ALLIANCE_SCHEMA_VERSION)
+    SCHEMA_VERSION = 3
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     alliance_id = me.IntField(unique=True)
     alliance_name = me.StringField(required=True)
     authorized_to_login = me.BooleanField(default=None, null=True)
@@ -68,7 +64,9 @@ class Coalition(me.Document):
     EVE coalition. Coalitions are not formally represented in EVE, so they have
     to be created manually. An alliance can be part of multiple coalitions.
     """
-    _version = me.IntField(default=COALITION_SCHEMA_VERSION)
+    SCHEMA_VERSION = 4
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     authorized_to_login = me.BooleanField(default=True, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
     mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
@@ -96,7 +94,9 @@ class Corporation(me.Document):
     """
     EVE corporation database model.
     """
-    _version = me.IntField(default=CORPORATION_SCHEMA_VERSION)
+    SCHEMA_VERSION = 3
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     authorized_to_login = me.BooleanField(default=None, null=True)
     alliance = me.ReferenceField(Alliance,
                                  default=None,
@@ -136,7 +136,9 @@ class Group(me.Document):
     """
     Group model. A group is simply a collection of users.
     """
-    _version = me.IntField(default=GROUP_SCHEMA_VERSION)
+    SCHEMA_VERSION = 4
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     authorized_to_login = me.BooleanField(default=None, null=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
     discord_role_id = me.IntField(null=True)
@@ -159,7 +161,9 @@ class User(me.Document):
 
     A user corresponds to a single EVE character.
     """
-    _version = me.IntField(default=USER_SCHEMA_VERSION)
+    SCHEMA_VERSION = 3
+
+    _version = me.IntField(default=SCHEMA_VERSION)
     authorized_to_login = me.BooleanField(default=None, null=True)
     character_id = me.IntField(unique=True)
     character_name = me.StringField(required=True)
