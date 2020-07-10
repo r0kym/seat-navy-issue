@@ -3,7 +3,7 @@ ESI related paths
 """
 
 import logging
-from typing import Any, Optional
+from typing import Optional
 
 from fastapi import (
     APIRouter,
@@ -18,6 +18,7 @@ from sni.user.models import User
 
 from sni.esi.esi import (
     esi_get,
+    EsiResponse,
     get_esi_path_scope,
 )
 from sni.esi.sso import (
@@ -48,15 +49,6 @@ class EsiRequestIn(pydantic.BaseModel):
     """
     on_behalf_of: Optional[int] = None
     params: dict = {}
-
-
-class EsiRequestOut(pydantic.BaseModel):
-    """
-    SNI response to an ESI request
-    """
-    data: Any
-    headers: Optional[dict]
-    status_code: int
 
 
 class PostCallbackEsiOut(pydantic.BaseModel):
@@ -126,7 +118,7 @@ async def get_callback_esi(code: str, state: str):
 
 @router.get(
     '/esi/{esi_path:path}',
-    response_model=EsiRequestOut,
+    response_model=EsiResponse,
     summary='Proxy path to the ESI',
     tags=['ESI'],
 )
@@ -150,13 +142,4 @@ async def get_esi_latest(
                 data.on_behalf_of,
                 esi_scope,
             ).access_token
-    response = esi_get(
-        esi_path,
-        esi_token,
-        params=data.params,
-    )
-    return EsiRequestOut(
-        data=response.json(),
-        headers=response.headers,
-        status_code=response.status_code,
-    )
+    return esi_get(esi_path, esi_token, params=data.params)

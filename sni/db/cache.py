@@ -4,6 +4,7 @@ Redis based TTL cache
 
 import hashlib
 import json
+import logging
 
 from typing import Any, Optional
 
@@ -17,8 +18,10 @@ def cache_get(key: Any) -> Optional[Any]:
     Retrieves a value from the cache, or returns None if the key is unknown.
     The key must be a JSON-dumpable variable.
     """
-    result = connection.get(hash_key(key))
+    hashed_key = hash_key(key)
+    result = connection.get(hashed_key)
     if result is not None:
+        logging.debug('Cache hit %s %s', hashed_key, key)
         return json.loads(result)
     return None
 

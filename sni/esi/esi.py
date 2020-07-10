@@ -2,14 +2,18 @@
 EVE ESI (public API) layer
 """
 
+from typing import Any, Optional
 import logging
 import re
-from typing import Optional
 
+from dateutil import parser
 import mongoengine as me
+import pydantic as pdt
 from requests import request, Response
 
 import sni.conf as conf
+import sni.utils as utils
+from sni.db.cache import cache_get, cache_set
 
 from .models import EsiPath
 
@@ -17,28 +21,39 @@ ESI_BASE = 'https://esi.evetech.net/'
 ESI_SWAGGER = ESI_BASE + 'latest/swagger.json'
 
 
-def esi_delete(path: str, token: Optional[str] = None, **kwargs) -> Response:
+class EsiResponse(pdt.BaseModel):
+    """
+    A model for ESI responses
+    """
+    data: Any
+    headers: dict
+    status_code: int
+
+
+def esi_delete(path: str,
+               token: Optional[str] = None,
+               **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for DELETE requests.
     """
     return esi_request('delete', path, token, **kwargs)
 
 
-def esi_get(path: str, token: Optional[str] = None, **kwargs) -> Response:
+def esi_get(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for GET requests.
     """
     return esi_request('get', path, token, **kwargs)
 
 
-def esi_post(path: str, token: Optional[str] = None, **kwargs) -> Response:
+def esi_post(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for POST requests.
     """
     return esi_request('post', path, token, **kwargs)
 
 
-def esi_put(path: str, token: Optional[str] = None, **kwargs) -> Response:
+def esi_put(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for PUT requests.
     """
@@ -48,7 +63,7 @@ def esi_put(path: str, token: Optional[str] = None, **kwargs) -> Response:
 def esi_request(http_method: str,
                 path: str,
                 token: Optional[str] = None,
-                **kwargs) -> Response:
+                **kwargs) -> EsiResponse:
     """
     Makes an HTTP request to the ESI, and returns the response object.
     """
@@ -60,8 +75,27 @@ def esi_request(http_method: str,
     }
     if token:
         kwargs['headers']['Authorization'] = 'Bearer ' + token
-    response = request(http_method, ESI_BASE + path, **kwargs)
-    response.raise_for_status()
+
+    if http_method.upper() != 'GET':
+        raw = request(http_method, ESI_BASE + path, **kwargs)
+        raw.raise_for_status()
+        return to_esi_response(raw)
+
+    key = [path, token, kwargs.get('params')]
+    response = cache_get(key)
+    if response is not None:
+        return EsiResponse(**response)
+
+    raw = request(http_method, ESI_BASE + path, **kwargs)
+    raw.raise_for_status()
+    response = to_esi_response(raw)
+
+    ttl = 60
+    if 'Expires' in response.headers:
+        ttl = int((parser.parse(response.headers['Expires']) -
+                   utils.now()).total_seconds())
+    cache_set(key, response.dict(), ttl)
+
     return response
 
 
@@ -119,3 +153,15 @@ def load_esi_openapi() -> None:
                 set__version='latest',
                 upsert=True,
             )
+
+
+def to_esi_response(response: Response) -> EsiResponse:
+    """
+    Converts a :class:`request.Response` object to a
+    :class:`sni.esi.esi.EsiResponse`.
+    """
+    return EsiResponse(
+        data=response.json(),
+        headers=response.headers,
+        status_code=response.status_code,
+    )

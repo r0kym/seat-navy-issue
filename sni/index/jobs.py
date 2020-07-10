@@ -32,13 +32,13 @@ def index_user_mails(usr: User):
     """
     character_id = usr.character_id
     for header in esi_get_on_befalf_of(
-            f'latest/characters/{character_id}/mail', character_id).json():
+            f'latest/characters/{character_id}/mail', character_id).data:
         mail_id = header['mail_id']
         if EsiMail.objects(mail_id=mail_id).first() is not None:
             break
         mail = esi_get_on_befalf_of(
             f'latest/characters/{character_id}/mail/{mail_id}',
-            character_id).json()
+            character_id).data
         EsiMail(
             body=format_mail_body(mail['body']),
             from_id=mail['from'],
@@ -67,7 +67,7 @@ def measure_user_skillpoints(usr: User):
     data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/skills/',
         usr.character_id,
-    ).json()
+    ).data
     EsiSkillPoints(
         total_sp=data['total_sp'],
         unallocated_sp=data.get('unallocated_sp', 0),

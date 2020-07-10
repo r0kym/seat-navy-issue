@@ -58,7 +58,7 @@ def ensure_alliance_members(alliance: Alliance):
     logging.debug('Updating members of alliance %s', alliance.alliance_name)
     response = esi_get(
         f'latest/alliances/{alliance.alliance_id}/corporations/')
-    for corporation_id in response.json():
+    for corporation_id in response.data:
         ensure_corporation(corporation_id)
 
 
@@ -78,7 +78,7 @@ def update_alliance_from_esi(alliance: Alliance):
     Updates an alliance's properties from the ESI.
     """
     logging.debug('Updating properties of alliance %s', alliance.alliance_name)
-    data = esi_get(f'latest/alliances/{alliance.alliance_id}').json()
+    data = esi_get(f'latest/alliances/{alliance.alliance_id}').data
     alliance.executor_corporation_id = data['executor_corporation_id']
     alliance.save()
 
@@ -178,7 +178,7 @@ def ensure_corporation_members(corporation: Corporation):
         f'latest/corporations/{corporation.corporation_id}/members/',
         esi_access_token.access_token,
     )
-    for character_id in response.json():
+    for character_id in response.data:
         add_job(ensure_user, args=(character_id, ))
 
 
@@ -199,7 +199,7 @@ def update_corporation(corporation: Corporation):
     """
     logging.debug('Updating properties of corproation %s',
                   corporation.corporation_name)
-    data = esi_get(f'latest/corporations/{corporation.corporation_id}').json()
+    data = esi_get(f'latest/corporations/{corporation.corporation_id}').data
     corporation.alliance = ensure_alliance(
         data['alliance_id']) if 'alliance_id' in data else None
     corporation.ceo_character_id = int(data['ceo_id'])
@@ -235,7 +235,7 @@ def update_user_from_esi(usr: User):
     """
     Updates a user's information from the ESI
     """
-    data = esi_get(f'latest/characters/{usr.character_id}').json()
+    data = esi_get(f'latest/characters/{usr.character_id}').data
     old_corporation = usr.corporation
     usr.corporation = ensure_corporation(data['corporation_id'])
     usr.updated_on = utils.now()

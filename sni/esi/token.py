@@ -5,13 +5,15 @@ EVE token (access and refresh) management
 import logging
 from typing import List, Optional, Set
 
-from requests import Response
-
 from sni.user.models import User
 from sni.user.user import ensure_user
 import sni.utils as utils
 
-from .esi import get_esi_path_scope, esi_request
+from .esi import (
+    esi_request,
+    EsiResponse,
+    get_esi_path_scope,
+)
 from .models import EsiAccessToken, EsiRefreshToken
 from .sso import (
     AuthorizationCodeResponse,
@@ -32,7 +34,7 @@ def available_esi_scopes(usr: User) -> Set[str]:
 
 
 def esi_delete_on_befalf_of(path: str, character_id: int,
-                            **kwargs) -> Response:
+                            **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE
     requests.
@@ -40,21 +42,24 @@ def esi_delete_on_befalf_of(path: str, character_id: int,
     return esi_request_on_behalf_of('delete', path, character_id, **kwargs)
 
 
-def esi_get_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
+def esi_get_on_befalf_of(path: str, character_id: int,
+                         **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
     """
     return esi_request_on_behalf_of('get', path, character_id, **kwargs)
 
 
-def esi_post_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
+def esi_post_on_befalf_of(path: str, character_id: int,
+                          **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.
     """
     return esi_request_on_behalf_of('post', path, character_id, **kwargs)
 
 
-def esi_put_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
+def esi_put_on_befalf_of(path: str, character_id: int,
+                         **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.
     """
@@ -62,7 +67,7 @@ def esi_put_on_befalf_of(path: str, character_id: int, **kwargs) -> Response:
 
 
 def esi_request_on_behalf_of(http_method: str, path: str, character_id: int,
-                             **kwargs) -> Response:
+                             **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
     """
