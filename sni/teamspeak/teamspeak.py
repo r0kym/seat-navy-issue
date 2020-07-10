@@ -6,11 +6,12 @@ See also:
 """
 
 import logging
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
 import pydantic as pdt
 from ts3.query import TS3Connection, TS3QueryError
 
+from sni.db.cache import cache_get, cache_set, invalidate_cache
 from sni.user.models import User
 from sni.user.user import ensure_autogroup
 import sni.conf as conf
@@ -53,6 +54,23 @@ class TeamspeakGroup(pdt.BaseModel):
     type: int
 
 
+def cached_teamspeak_query(connection: TS3Connection,
+                           query: Callable,
+                           ttl: int = 60,
+                           *,
+                           args=list(),
+                           kwargs=dict()) -> Any:
+    """
+    Returns a parsed query result, and caches the result.
+    """
+    key = [query.__name__, args, kwargs]
+    result = cache_get(key)
+    if result is None:
+        result = query(connection, *args, **kwargs).parsed
+        cache_set(key, result, ttl)
+    return result
+
+
 def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
     """
     Returns the list of clients currently connected to the teamspeak server.
@@ -60,7 +78,13 @@ def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
     See also:
         :class:`sni.teamspeak.TeamspeakClient`
     """
-    return [TeamspeakClient(**raw) for raw in connection.clientlist()]
+    return [
+        TeamspeakClient(**raw) for raw in cached_teamspeak_query(
+            connection,
+            TS3Connection.clientlist,
+            300,
+        )
+    ]
 
 
 def complete_authentication_challenge(connection: TS3Connection, usr: User):
@@ -89,6 +113,7 @@ def ensure_group(connection: TS3Connection, name: str) -> TeamspeakGroup:
     try:
         return find_group(connection, name=name)
     except LookupError:
+        invalidate_cache([TS3Connection.servergrouplist.__name__, [], {}])
         connection.servergroupadd(name=name)
         logging.debug('Created Teamspeak group %s', name)
         return find_group(connection, name=name)
@@ -137,7 +162,13 @@ def group_list(connection: TS3Connection) -> List[TeamspeakGroup]:
     See also:
         :class:`sni.teamspeak.TeamspeakGroup`
     """
-    return [TeamspeakGroup(**raw) for raw in connection.servergrouplist()]
+    return [
+        TeamspeakGroup(**raw) for raw in cached_teamspeak_query(
+            connection,
+            TS3Connection.servergrouplist,
+            3600,
+        )
+    ]
 
 
 def new_authentication_challenge(usr: User) -> str:

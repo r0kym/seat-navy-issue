@@ -5,7 +5,7 @@ Recurrent teamspeak jobs
 import logging
 from typing import List
 
-import ts3.query
+from ts3.query import TS3Connection, TS3QueryError
 
 from sni.scheduler import scheduler
 from sni.user.models import Group, User
@@ -13,6 +13,7 @@ import sni.conf as conf
 import sni.utils as utils
 
 from .teamspeak import (
+    cached_teamspeak_query,
     client_list,
     ensure_group,
     new_connection,
@@ -28,6 +29,7 @@ def message_registered_clients_with_wrong_name():
     connection = new_connection()
     for ts_client in client_list(connection):
         if ts_client.client_nickname == conf.get('teamspeak.bot_name'):
+            # TS client is the bot
             continue
         usr: User = User.objects(
             teamspeak_cldbid=ts_client.client_database_id).first()
@@ -74,12 +76,15 @@ def update_teamspeak_groups():
     Updates group memberships on Teamspeak
     """
     connection = new_connection()
-    for grp in Group.objects(map_to_teamspeak=True,
-                             teamspeak_sgid__ne=None):
+    for grp in Group.objects(map_to_teamspeak=True, teamspeak_sgid__ne=None):
         logging.debug('Updating Teamspeak group %s', grp.group_name)
         current_cldbids: List[int] = [
-            int(raw['cldbid']) for raw in connection.servergroupclientlist(
-                sgid=grp.teamspeak_sgid).parsed
+            int(raw['cldbid']) for raw in cached_teamspeak_query(
+                connection,
+                TS3Connection.servergroupclientlist,
+                300,
+                kwargs={'sgid': grp.teamspeak_sgid},
+            )
         ]
         allowed_cldbids: List[int] = [
             usr.teamspeak_cldbid for usr in grp.members
@@ -93,7 +98,7 @@ def update_teamspeak_groups():
                     cldbid=cldbid,
                     sgid=grp.teamspeak_sgid,
                 )
-            except ts3.query.TS3QueryError as error:
+            except TS3QueryError as error:
                 logging.error(
                     'Could not remove client %d from Teamspeak group %s: %s',
                     cldbid, grp.group_name, str(error))
@@ -105,8 +110,7 @@ def update_teamspeak_groups():
                     sgid=grp.teamspeak_sgid,
                     cldbid=cldbid,
                 )
-            except ts3.query.TS3QueryError as error:
+            except TS3QueryError as error:
                 logging.error(
                     'Could not add client %d to Teamspeak group %s: %s',
                     cldbid, grp.group_name, str(error))
-    connection.close()
