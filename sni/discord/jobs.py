@@ -22,11 +22,14 @@ async def map_discord_roles():
     ``True``) exist
     """
     guild = get_guild()
-    current_role_names = [role.name for role in guild.roles]
+    current_roles = {role.name: role for role in guild.roles}
     for grp in Group.objects(map_to_discord=True):
-        if grp.group_name in current_role_names:
-            continue
-        await guild.create_role(name=grp.group_name)
+        if grp.group_name in current_roles.keys():
+            grp.discord_role_id = current_roles[grp.group_name].id
+        else:
+            role = await guild.create_role(name=grp.group_name)
+            grp.discord_role_id = role.id
+        grp.save()
 
 
 async def update_discord_user(usr: User):
@@ -46,7 +49,7 @@ async def update_discord_users():
     Updates all discord users.
     """
     for usr in User.objects(discord_user_id__ne=None):
-        await utils.catch_all(
+        await utils.catch_all_async(
             update_discord_user,
             f'Could not update Discord properties of user {usr.character_name}',
             args=[usr],
@@ -74,7 +77,7 @@ async def update_discord_role(grp: Group):
         await member.edit(roles=member.roles + [role])
 
 
-@scheduler.scheduled_job('interval', hours=1)
+@scheduler.scheduled_job('interval', minutes=10)
 async def update_discord_roles():
     """
     Updates discord role. A SNI group is mapped to a discord role unless that
@@ -82,7 +85,7 @@ async def update_discord_roles():
     """
     await map_discord_roles()
     for grp in Group.objects(map_to_discord=True):
-        await utils.catch_all(
+        await utils.catch_all_async(
             update_discord_role,
             f'Could not update Discord role {grp.group_name}',
             args=[grp],

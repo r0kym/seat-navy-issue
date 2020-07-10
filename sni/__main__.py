@@ -7,6 +7,8 @@ This module contains the entry point to SNI.
 """
 
 import argparse
+import asyncio
+import inspect
 import logging
 import sys
 
@@ -132,13 +134,7 @@ def main():
             sni.discord.bot.scheduler.remove_all_jobs()
 
     if arguments.run_job:
-        sni.scheduler.ENABLED = False
-        module_name, function_name = arguments.run_job.split(':')
-        logging.info('Manually running job %s (%s)', function_name,
-                     module_name)
-        module = __import__(module_name, fromlist=[None])
-        function = getattr(module, function_name)
-        function()
+        run_job(arguments.run_job)
         sys.exit()
 
     # --------------------------------------------------------------------------
@@ -217,6 +213,25 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Runs a job and exists',
     )
     return argument_parser.parse_args()
+
+
+def run_job(job_name: str) -> None:
+    """
+    Runs a job (or indeed, any function that doesn't take arguments)
+    """
+    module_name, function_name = job_name.split(':')
+    logging.info('Manually running job %s (%s)', function_name,
+                    module_name)
+    module = __import__(module_name, fromlist=[None])
+    function = getattr(module, function_name)
+
+    if inspect.iscoroutinefunction(function):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(function())
+    else:
+        import sni.scheduler
+        sni.scheduler.ENABLED = False
+        function()
 
 
 def schedule_jobs() -> None:
