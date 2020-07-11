@@ -2,14 +2,10 @@
 ESI related database models
 """
 
-from traceback import format_exception
-
 import mongoengine as me
-from requests import Request
 
 import sni.utils as utils
 from sni.user.models import User
-from sni.uac.token import from_authotization_header
 
 
 class CrashReportRequest(me.EmbeddedDocument):
@@ -95,36 +91,3 @@ class CrashReport(me.Document):
             'token': self.token.to_dict(),
             'trace': self.trace,
         }
-
-
-def crash_report(request: Request, error: Exception) -> CrashReport:
-    """
-    Constructs a crash report
-    """
-    crtoken = None
-    try:
-        token = from_authotization_header(request.headers['authorization'])
-        crtoken = CrashReportToken(
-            created_on=token.created_on,
-            expires_on=token.expires_on,
-            owner=token.owner,
-            token_type=token.token_type,
-            uuid=token.uuid,
-        )
-    except Exception:
-        pass
-    trace = format_exception(
-        etype=type(error),
-        value=error,
-        tb=error.__traceback__,
-    )
-    return CrashReport(
-        request=CrashReportRequest(
-            headers=request.headers if hasattr(request, 'headers') else None,
-            method=str(request.method) if hasattr(request, 'method') else '?',
-            params=request.params if hasattr(request, 'params') else None,
-            url=str(request.url) if hasattr(request, 'url') else '?',
-        ),
-        token=crtoken,
-        trace=trace,
-    )

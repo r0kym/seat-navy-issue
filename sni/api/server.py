@@ -4,14 +4,8 @@ API Server
 
 import logging
 
-from fastapi import (
-    FastAPI,
-    status,
-)
-from fastapi.responses import JSONResponse
-import mongoengine
-import requests
-import requests.exceptions
+from fastapi import FastAPI
+
 import uvicorn
 import yaml
 
@@ -21,8 +15,6 @@ import sni.api.routers.esi
 import sni.api.routers.group
 import sni.api.routers.token
 import sni.api.routers.user
-
-from .models import crash_report
 
 app = FastAPI()
 app.include_router(
@@ -60,73 +52,6 @@ app.include_router(
     prefix='/user',
     tags=['User management'],
 )
-
-
-@app.exception_handler(mongoengine.DoesNotExist)
-def does_not_exist_exception_handler(_request: requests.Request,
-                                     error: Exception):
-    """
-    Catches :class:`mongoengine.DoesNotExist` exceptions and forwards them as
-    ``404``'s.
-    """
-    content = None
-    if conf.get('general.debug'):
-        content = {'details': str(error)}
-    return JSONResponse(
-        content=content,
-        status_code=status.HTTP_404_NOT_FOUND,
-    )
-
-
-@app.exception_handler(PermissionError)
-def permission_error_handler(_request: requests.Request,
-                             error: PermissionError):
-    """
-    Catches :class:`PermissionError` exceptions and forwards them as
-    ``403``'s.
-    """
-    if conf.get('general.debug'):
-        content = {'details': 'Insufficient clearance level: ' + str(error)}
-    else:
-        content = {'details': 'Insufficient clearance level'}
-    return JSONResponse(
-        content=content,
-        status_code=status.HTTP_403_FORBIDDEN,
-    )
-
-
-@app.exception_handler(requests.exceptions.HTTPError)
-def requests_httperror_handler(_request: requests.Request,
-                               error: requests.exceptions.HTTPError):
-    """
-    Catches :class:`requests.exceptions.HTTPError` exceptions and forwards them
-    as ``500``'s.
-    """
-    if conf.get('general.debug') and error.request is not None:
-        req: requests.Request = error.request
-        content = {
-            'details':
-            f'Failed to issue {req.method} to "{req.url}": {str(error)}'
-        }
-    return JSONResponse(
-        content=content,
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    )
-
-
-@app.exception_handler(Exception)
-def exception_handler(request: requests.Request, error: Exception):
-    """
-    Global exception handler.
-
-    Prints trace for all others.
-    """
-    crash = crash_report(request, error)
-    crash.save()
-    return JSONResponse(
-        content=crash.to_dict() if conf.get('general.debug') else None,
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    )
 
 
 @app.get('/ping', tags=['Testing'], summary='Replies "pong"')
