@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>sni.user.signals &#8212; SeAT Navy Issue alpha documentation</title>
+    <title>sni.api.migration &#8212; SeAT Navy Issue alpha documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -36,32 +36,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for sni.user.signals</h1><div class="highlight"><pre>
+  <h1>Source code for sni.api.migration</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">ODM signal handlers</span>
+<span class="sd">Database migrations</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">mongoengine.signals</span> <span class="k">as</span> <span class="nn">signals</span>
-
-<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">add_job</span>
-
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">User</span>
-<span class="kn">from</span> <span class="nn">.jobs</span> <span class="kn">import</span> <span class="n">update_user_autogroup</span>
-
-
-<div class="viewcode-block" id="on_user_post_save"><a class="viewcode-back" href="../../../user.html#sni.user.signals.on_user_post_save">[docs]</a><span class="nd">@signals</span><span class="o">.</span><span class="n">post_save</span><span class="o">.</span><span class="n">connect_via</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">on_user_post_save</span><span class="p">(</span><span class="n">_sender</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="migrate"><a class="viewcode-back" href="../../../api.html#sni.api.migration.migrate">[docs]</a><span class="k">def</span> <span class="nf">migrate</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whenever a NEW user is saved in the database.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;created&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="c1"># add_job(update_user_from_esi, args=(usr, ))</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_user_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+<span class="sd">    Runs migration tasks</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 </pre></div>
 
           </div>

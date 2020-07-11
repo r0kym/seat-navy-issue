@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.api.routers.token &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.api.routers.token</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Token management paths</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">APIRouter</span><span class="p">,</span>
+    <span class="n">Depends</span><span class="p">,</span>
+    <span class="n">HTTPException</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
+
+<span class="kn">from</span> <span class="nn">sni.esi.sso</span> <span class="kn">import</span> <span class="n">get_auth_url</span>
+<span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
+<span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_dynamic_app_token</span><span class="p">,</span>
+    <span class="n">create_permanent_app_token</span><span class="p">,</span>
+    <span class="n">create_state_code</span><span class="p">,</span>
+    <span class="n">create_user_token</span><span class="p">,</span>
+    <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
+    <span class="n">from_authotization_header</span><span class="p">,</span>
+    <span class="n">to_jwt</span><span class="p">,</span>
+    <span class="n">Token</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="GetTokenOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.GetTokenOut">[docs]</a><span class="k">class</span> <span class="nc">GetTokenOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``GET /token`` responses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pdt</span><span class="o">.</span><span class="n">AnyHttpUrl</span><span class="p">]</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">expires_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="n">owner_character_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">owner_character_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">token_type</span><span class="p">:</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span>
+    <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="PostTokenUseFromDynIn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenUseFromDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/use/from/dyn`` requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">([</span><span class="s1">&#39;publicData&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="PostTokenUseFromDynOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenUseFromDynOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/use/from/dyn`` reponses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">login_url</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="PostUseFromPerOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostUseFromPerOut">[docs]</a><span class="k">class</span> <span class="nc">PostUseFromPerOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/use/from/per`` reponses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_token</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="PostTokenDynIn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenDynIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/dyn`` requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">AnyHttpUrl</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PostTokenDynOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenDynOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenDynOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/dyn`` reponses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="PostTokenPerIn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenPerIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenPerIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/per`` requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">AnyHttpUrl</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PostTokenPerOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenPerOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenPerOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /token/per`` reponses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="delete_token"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.delete_token">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+    <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Manually delete a token&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">delete_token</span><span class="p">(</span>
+        <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manually deletes a token (of any type). Requires a clearance level of 10.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tok</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tok</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.delete_dyn_token&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">tok</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.delete_per_token&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">tok</span><span class="o">.</span><span class="n">token_type</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.delete_use_token&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Token </span><span class="si">%s</span><span class="s1"> has unknown type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">token_type</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">PermissionError</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deleted token </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_token"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.get_token">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">GetTokenOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get basic informations about the current token&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns informations about the token currently being used. Requires a</span>
+<span class="sd">    clearance level of 0 or more.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_own_token&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">GetTokenOut</span><span class="p">(</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">comments</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
+        <span class="n">created_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
+        <span class="n">expires_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">expires_on</span><span class="p">,</span>
+        <span class="n">owner_character_id</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+        <span class="n">owner_character_name</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+        <span class="n">parent</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="n">token_type</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="post_token_dyn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.post_token_dyn">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/dyn&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostTokenDynOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Create a new dynamic app token&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_dyn</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">PostTokenDynIn</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new dynamic app token. Must be called with a permanent app token,</span>
+<span class="sd">    and the owner must have a clearance level of 10.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.create_dyn_token&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
+    <span class="n">new_token</span> <span class="o">=</span> <span class="n">create_dynamic_app_token</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">comments</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
+        <span class="n">parent</span><span class="o">=</span><span class="n">tkn</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">PostTokenDynOut</span><span class="p">(</span><span class="n">tkn</span><span class="o">=</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">new_token</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="post_token_per"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.post_token_per">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/per&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostTokenPerOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Create a new permanent app token&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_per</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">PostTokenPerIn</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new permanent app token. Must be called with a permanent app</span>
+<span class="sd">    token, and the owner must have a clearance level of 10.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.create_per_token&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
+    <span class="n">new_token</span> <span class="o">=</span> <span class="n">create_permanent_app_token</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">comments</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
+        <span class="n">parent</span><span class="o">=</span><span class="n">tkn</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">PostTokenPerOut</span><span class="p">(</span><span class="n">tkn</span><span class="o">=</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">new_token</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="post_token_use_from_dyn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.post_token_use_from_dyn">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/use/from/dyn&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostTokenUseFromDynOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Create a new user token with a dynamic app token&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_use_from_dyn</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">PostTokenUseFromDynIn</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Authenticates an application dynamic token and returns a `state code` and</span>
+<span class="sd">    an URL at which the user can authenticate to the EVE SSO. Once that is</span>
+<span class="sd">    done, SNI issues a GET request to the app predefined callback, with that</span>
+<span class="sd">    state code and the user token. Requires the owner of the token to have a</span>
+<span class="sd">    clearance level of 0 or more.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;Must use a dynamic app token for this path.&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.create_use_token&#39;</span><span class="p">)</span>
+    <span class="n">state_code</span> <span class="o">=</span> <span class="n">create_state_code</span><span class="p">(</span><span class="n">tkn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PostTokenUseFromDynOut</span><span class="p">(</span>
+        <span class="n">login_url</span><span class="o">=</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">)),</span>
+        <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="post_token_use_from_per"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.post_token_use_from_per">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/use/from/per&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostUseFromPerOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Create a new user token with a permanent app token&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">post_token_use_from_per</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Authenticates an application permanent token and returns a user token tied</span>
+<span class="sd">    to the owner of that app token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span> <span class="o">!=</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;Must use a permanent app token for this path.&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.create_use_token&#39;</span><span class="p">)</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">create_user_token</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="p">,</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">user_token_str</span> <span class="o">=</span> <span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PostUseFromPerOut</span><span class="p">(</span><span class="n">user_token</span><span class="o">=</span><span class="n">user_token_str</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>
