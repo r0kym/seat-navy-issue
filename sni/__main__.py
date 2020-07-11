@@ -6,9 +6,10 @@ Main module
 This module contains the entry point to SNI.
 """
 
+from importlib import import_module
 import argparse
 import asyncio
-import inspect
+from inspect import iscoroutinefunction
 import logging
 import sys
 
@@ -221,10 +222,10 @@ def run_job(job_name: str) -> None:
     """
     module_name, function_name = job_name.split(':')
     logging.info('Manually running job %s (%s)', function_name, module_name)
-    module = __import__(module_name, fromlist=[None])
+    module = import_module(module_name)
     function = getattr(module, function_name)
 
-    if inspect.iscoroutinefunction(function):
+    if iscoroutinefunction(function):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(function())
     else:
