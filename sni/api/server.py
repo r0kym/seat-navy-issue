@@ -17,45 +17,45 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
-import sni.api.coalition
-import sni.api.esi
-import sni.api.group
-import sni.api.token
-import sni.api.user
+import sni.api.routers.coalition
+import sni.api.routers.esi
+import sni.api.routers.group
+import sni.api.routers.token
+import sni.api.routers.user
 
 app = FastAPI()
 app.include_router(
-    sni.api.coalition.router,
+    sni.api.routers.coalition.router,
     prefix='/coalition',
     tags=['Coalition management'],
 )
 if conf.get('discord.enabled'):
-    import sni.api.discord
+    import sni.api.routers.discord
     app.include_router(
-        sni.api.discord.router,
+        sni.api.routers.discord.router,
         prefix='/discord',
         tags=['Discord'],
     )
-app.include_router(sni.api.esi.router)
+app.include_router(sni.api.routers.esi.router)
 app.include_router(
-    sni.api.group.router,
+    sni.api.routers.group.router,
     prefix='/group',
     tags=['Group management'],
 )
 if conf.get('teamspeak.enabled'):
-    import sni.api.teamspeak
+    import sni.api.routers.teamspeak
     app.include_router(
-        sni.api.teamspeak.router,
+        sni.api.routers.teamspeak.router,
         prefix='/teamspeak',
         tags=['Teamspeak'],
     )
 app.include_router(
-    sni.api.token.router,
+    sni.api.routers.token.router,
     prefix='/token',
     tags=['Authentication & tokens'],
 )
 app.include_router(
-    sni.api.user.router,
+    sni.api.routers.user.router,
     prefix='/user',
     tags=['User management'],
 )

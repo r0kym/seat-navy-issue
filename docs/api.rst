@@ -9,32 +9,32 @@ Main module
 Routers
 -------
 
-``sni.api.coalition``
+``sni.api.routers.coalition``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.api.coalition
+.. automodule:: sni.api.routers.coalition
 
-``sni.api.esi``
+``sni.api.routers.esi``
 ~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.api.esi
+.. automodule:: sni.api.routers.esi
 
-``sni.api.group``
+``sni.api.routers.group``
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.api.group
+.. automodule:: sni.api.routers.group
 
-``sni.api.teamspeak``
+``sni.api.routers.teamspeak``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.api.teamspeak
+.. automodule:: sni.api.routers.teamspeak
 
-``sni.api.token``
+``sni.api.routers.token``
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.api.token
+.. automodule:: sni.api.routers.token
 
-``sni.api.user``
+``sni.api.routers.user``
 ~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: sni.api.user
+.. automodule:: sni.api.routers.user
