@@ -3,7 +3,6 @@ API Server
 """
 
 import logging
-import traceback
 
 from fastapi import (
     FastAPI,
@@ -22,6 +21,8 @@ import sni.api.routers.esi
 import sni.api.routers.group
 import sni.api.routers.token
 import sni.api.routers.user
+
+from .models import crash_report
 
 app = FastAPI()
 app.include_router(
@@ -114,23 +115,16 @@ def requests_httperror_handler(_request: requests.Request,
 
 
 @app.exception_handler(Exception)
-def exception_handler(_request: requests.Request, error: Exception):
+def exception_handler(request: requests.Request, error: Exception):
     """
     Global exception handler.
 
     Prints trace for all others.
     """
-    content = None
-    if conf.get('general.debug'):
-        traceback_data = traceback.format_exception(
-            etype=type(error),
-            value=error,
-            tb=error.__traceback__,
-        )
-        logging.error(''.join(traceback_data))
-        content = traceback_data
+    crash = crash_report(request, error)
+    crash.save()
     return JSONResponse(
-        content=content,
+        content=crash.to_dict() if conf.get('general.debug') else None,
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )
 

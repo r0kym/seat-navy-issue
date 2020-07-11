@@ -26,6 +26,7 @@ def connect_database_signals() -> None:
     import sni.index.signals
     import sni.uac.signals
     import sni.user.signals
+    import sni.api.signals
 
     if conf.get('discord.enabled'):
         import sni.discord.signals
@@ -72,6 +73,9 @@ def migrate_database() -> None:
 
     import sni.user.migration
     sni.user.migration.migrate()
+
+    import sni.api.migration
+    sni.api.migration.migrate()
 
     if conf.get('discord.enabled'):
         import sni.discord.migration
@@ -241,9 +245,10 @@ def schedule_jobs() -> None:
     logging.info('Scheduling jobs')
     import sni.db.jobs
     import sni.esi.jobs
-    import sni.index.jobs
     import sni.uac.jobs
     import sni.user.jobs
+    import sni.index.jobs
+    import sni.api.jobs
 
     if conf.get('teamspeak.enabled'):
         import sni.teamspeak.jobs

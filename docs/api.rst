@@ -6,6 +6,26 @@ Main module
 
 .. automodule:: sni.api.server
 
+Database models
+---------------
+
+.. automodule:: sni.api.models
+
+Jobs
+----
+
+.. automodule:: sni.api.jobs
+
+Database signals
+----------------
+
+.. automodule:: sni.api.signals
+
+Migration
+---------
+
+.. automodule:: sni.api.migration
+
 Routers
 -------
 
