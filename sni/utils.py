@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from pytz import utc
 
 
+# pylint: disable=dangerous-default-value
 def catch_all(function: Callable,
               error_message: str,
               *,
@@ -27,6 +28,7 @@ def catch_all(function: Callable,
         logging.error('%s: %s', error_message, str(error))
 
 
+# pylint: disable=dangerous-default-value
 async def catch_all_async(function: Callable,
                           error_message: str,
                           *,

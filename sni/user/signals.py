@@ -9,7 +9,7 @@ import mongoengine.signals as signals
 from sni.scheduler import add_job
 
 from .models import User
-from .jobs import update_user_autogroup, update_user_from_esi
+from .jobs import update_user_autogroup
 
 
 @signals.post_save.connect_via(User)
