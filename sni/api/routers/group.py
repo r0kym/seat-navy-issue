@@ -79,7 +79,7 @@ def group_record_to_response(grp: Group) -> GetGroupOut:
         group_name=grp.group_name,
         is_autogroup=grp.is_autogroup,
         members=[member.character_name for member in grp.members],
-        owner=grp.owner.character_name,
+        owner=grp.owner.character_name if grp.owner is not None else None,
         updated_on=grp.updated_on,
     )
 
