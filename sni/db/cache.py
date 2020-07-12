@@ -21,7 +21,7 @@ def cache_get(key: Any) -> Optional[Any]:
     hashed_key = hash_key(key)
     result = connection.get(hashed_key)
     if result is not None:
-        logging.debug('Cache hit %s %s', hashed_key, key)
+        logging.debug('Cache hit %s %s', hashed_key, str(key)[:20])
         return json.loads(result)
     return None
 
