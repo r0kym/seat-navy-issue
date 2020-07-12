@@ -50,17 +50,26 @@
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.coalition</span>
+<span class="kn">import</span> <span class="nn">sni.api.routers.crash</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.esi</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.group</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.token</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.user</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">coalition</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/coalition&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Coalition management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">crash</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/crash&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Crash reports&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+
 <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">sni.api.routers.discord</span>
     <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
@@ -68,12 +77,15 @@
         <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/discord&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Discord&#39;</span><span class="p">],</span>
     <span class="p">)</span>
+
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
+
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/group&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Group management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
+
 <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">sni.api.routers.teamspeak</span>
     <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
@@ -81,11 +93,13 @@
         <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/teamspeak&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Teamspeak&#39;</span><span class="p">],</span>
     <span class="p">)</span>
+
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/token&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication &amp; tokens&#39;</span><span class="p">],</span>
 <span class="p">)</span>
+
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/user&#39;</span><span class="p">,</span>
