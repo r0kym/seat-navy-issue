@@ -119,6 +119,16 @@
     <span class="n">trace</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">())</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocumentField</span><span class="p">(</span><span class="n">CrashReportToken</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;-timestamp&#39;</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>  <span class="c1"># 90 days</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
 <div class="viewcode-block" id="CrashReport.to_dict"><a class="viewcode-back" href="../../../api.html#sni.api.models.CrashReport.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dict representation</span>
