@@ -80,6 +80,16 @@ class CrashReport(me.Document):
     trace = me.ListField(me.StringField())
     token = me.EmbeddedDocumentField(CrashReportToken, null=True)
 
+    meta = {
+        'indexes': [
+            '-timestamp',
+            {
+                'fields': ['timestamp'],
+                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
+            }
+        ]
+    }
+
     def to_dict(self) -> dict:
         """
         Returns a dict representation
