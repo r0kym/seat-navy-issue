@@ -12,8 +12,8 @@ components:
           type: object
       title: EsiRequestIn
       type: object
-    EsiRequestOut:
-      description: SNI response to an ESI request
+    EsiResponse:
+      description: A model for ESI responses
       properties:
         data:
           title: Data
@@ -24,8 +24,9 @@ components:
           title: Status Code
           type: integer
       required:
+      - headers
       - status_code
-      title: EsiRequestOut
+      title: EsiResponse
       type: object
     GetCoalitionOut:
       description: Model for `GET /coalition/{coalition_id}` responses.
@@ -83,6 +84,133 @@ components:
       - coalition_id
       - coalition_name
       title: GetCoalitionShortOut
+      type: object
+    GetCrashReportOut:
+      description: Response model for response for ``GET /crash/{crash_report_id}``.
+      properties:
+        id:
+          title: Id
+          type: string
+        request:
+          $ref: '#/components/schemas/GetCrashReportRequestOut'
+        timestamp:
+          format: date-time
+          title: Timestamp
+          type: string
+        token:
+          $ref: '#/components/schemas/GetCrashReportTokenOut'
+        trace:
+          items:
+            type: string
+          title: Trace
+          type: array
+      required:
+      - id
+      - request
+      - timestamp
+      - token
+      - trace
+      title: GetCrashReportOut
+      type: object
+    GetCrashReportRequestOut:
+      description: Embedded model for reponses for ``GET /crash/{crash_report_id}``.
+      properties:
+        headers:
+          title: Headers
+          type: object
+        method:
+          title: Method
+          type: string
+        params:
+          title: Params
+        url:
+          title: Url
+          type: string
+      required:
+      - method
+      - url
+      title: GetCrashReportRequestOut
+      type: object
+    GetCrashReportShortOut:
+      description: Model for an element of a ``GET /crash`` response
+      properties:
+        character_id:
+          title: Character Id
+          type: integer
+        id:
+          title: Id
+          type: string
+        timestamp:
+          format: date-time
+          title: Timestamp
+          type: string
+        url:
+          title: Url
+          type: string
+      required:
+      - character_id
+      - id
+      - timestamp
+      - url
+      title: GetCrashReportShortOut
+      type: object
+    GetCrashReportTokenOut:
+      description: Embedded model for reponses for ``GET /crash/{crash_report_id}``.
+      properties:
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        expires_on:
+          format: date-time
+          title: Expires On
+          type: string
+        owner:
+          $ref: '#/components/schemas/GetCrashReportTokenUserOut'
+        token_type:
+          title: Token Type
+          type: string
+        uuid:
+          title: Uuid
+          type: string
+      required:
+      - created_on
+      - owner
+      - token_type
+      - uuid
+      title: GetCrashReportTokenOut
+      type: object
+    GetCrashReportTokenUserOut:
+      description: Embedded model for reponses for ``GET /crash/{crash_report_id}``.
+      properties:
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        character_id:
+          title: Character Id
+          type: integer
+        character_name:
+          title: Character Name
+          type: string
+        clearance_level:
+          title: Clearance Level
+          type: integer
+        created_on:
+          format: date-time
+          title: Created On
+          type: string
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - authorized_to_login
+      - character_id
+      - character_name
+      - clearance_level
+      - created_on
+      - updated_on
+      title: GetCrashReportTokenUserOut
       type: object
     GetGroupOut:
       description: Model for `GET /group/{group_id}` responses.
@@ -279,25 +407,6 @@ components:
           title: Detail
           type: array
       title: HTTPValidationError
-      type: object
-    PostAuthStartOut:
-      description: Model for `POST /teamspeak/auth/start` responses.
-      properties:
-        challenge_nickname:
-          title: Challenge Nickname
-          type: string
-        expiration_datetime:
-          format: date-time
-          title: Expiration Datetime
-          type: string
-        user:
-          title: User
-          type: string
-      required:
-      - expiration_datetime
-      - challenge_nickname
-      - user
-      title: PostAuthStartOut
       type: object
     PostCoalitionIn:
       description: Model for `POST /coalition` responses.
@@ -730,6 +839,104 @@ paths:
       summary: Update a coalition
       tags:
       - Coalition management
+  /crash:
+    get:
+      description: 'Get the list of the 50 most recent crash reports, sorted from
+        most to least
+
+        recent. Requires a clearance level of 10.'
+      operationId: get_crash_reports_crash_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetCrashReportShortOut'
+                title: Response Get Crash Reports Crash Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get the list of the 50 most recent crash reports
+      tags:
+      - Crash reports
+  /crash/{crash_report_id}:
+    delete:
+      description: Deletes a crash report. Requires a clearance level of 10.
+      operationId: delete_crash_report_crash__crash_report_id__delete
+      parameters:
+      - in: path
+        name: crash_report_id
+        required: true
+        schema:
+          title: Crash Report Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete a crash report
+      tags:
+      - Crash reports
+    get:
+      description: Gets a crash report from its id. Requires a clearance level of
+        10.
+      operationId: get_crash_report_crash__crash_report_id__get
+      parameters:
+      - in: path
+        name: crash_report_id
+        required: true
+        schema:
+          title: Crash Report Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCrashReportOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get a crash report
+      tags:
+      - Crash reports
   /esi/{esi_path}:
     get:
       description: 'Forwards a `GET` request to the ESI. The required clearance level
@@ -757,7 +964,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EsiRequestOut'
+                $ref: '#/components/schemas/EsiResponse'
           description: Successful Response
         '422':
           content:
@@ -957,69 +1164,6 @@ paths:
       summary: Replies "pong"
       tags:
       - Testing
-  /teamspeak/auth/complete:
-    post:
-      description: 'Completes an authentication challenge for the owner of the token.
-        See the
-
-        `POST /teamspeak/auth/start` documentation.'
-      operationId: post_auth_complete_teamspeak_auth_complete_post
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '201':
-          content:
-            application/json:
-              schema: {}
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Completes a teamspeak authentication challenge
-      tags:
-      - Teamspeak
-  /teamspeak/auth/start:
-    post:
-      description: 'Starts a new authentication challenge for the owner of the token.
-        A random
-
-        nickname is returned (see `PostAuthStartOut` for more details), and the
-
-        user has 1 minute to update its teamspeak nickname to it, and then call
-
-        `POST /teamspeak/auth/complete`.'
-      operationId: port_auth_start_teamspeak_auth_start_post
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostAuthStartOut'
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Starts a teamspeak authentication challenge
-      tags:
-      - Teamspeak
   /token:
     delete:
       description: Manually deletes a token (of any type). Requires a clearance level

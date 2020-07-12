@@ -11,17 +11,26 @@ import yaml
 
 import sni.conf as conf
 import sni.api.routers.coalition
+import sni.api.routers.crash
 import sni.api.routers.esi
 import sni.api.routers.group
 import sni.api.routers.token
 import sni.api.routers.user
 
 app = FastAPI()
+
 app.include_router(
     sni.api.routers.coalition.router,
     prefix='/coalition',
     tags=['Coalition management'],
 )
+
+app.include_router(
+    sni.api.routers.crash.router,
+    prefix='/crash',
+    tags=['Crash reports'],
+)
+
 if conf.get('discord.enabled'):
     import sni.api.routers.discord
     app.include_router(
@@ -29,12 +38,15 @@ if conf.get('discord.enabled'):
         prefix='/discord',
         tags=['Discord'],
     )
+
 app.include_router(sni.api.routers.esi.router)
+
 app.include_router(
     sni.api.routers.group.router,
     prefix='/group',
     tags=['Group management'],
 )
+
 if conf.get('teamspeak.enabled'):
     import sni.api.routers.teamspeak
     app.include_router(
@@ -42,11 +54,13 @@ if conf.get('teamspeak.enabled'):
         prefix='/teamspeak',
         tags=['Teamspeak'],
     )
+
 app.include_router(
     sni.api.routers.token.router,
     prefix='/token',
     tags=['Authentication & tokens'],
 )
+
 app.include_router(
     sni.api.routers.user.router,
     prefix='/user',
