@@ -8,6 +8,19 @@ SeAT Navy Issue
 ![Python 3](https://badgen.net/badge/Python/3/blue)
 [![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
+SeAT Navy Issue is a simpler alternative to
+[SeAT](https://github.com/eveseat/seat). In short, it is an EVE Online
+community manager, in the form of a REST API. Its core functionalities include:
+
+* managing corporations, alliances, and even coalitions;
+* creating and managing custom groups;
+* storing and refreshing ESI tokens; making queries against the ESI;
+* a simplistic clearance system;
+* a Discord and Teamspeak connector.
+
+Note that this project is just a backend. For a nice web-based user interface,
+check out [SNI-frontend](https://github.com/r0kym/SNI-frontend).
+
 # Getting started
 
 ## Dependencies
