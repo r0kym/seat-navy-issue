@@ -19,6 +19,7 @@ class DiscordAuthenticationChallenge(me.Document):
     """
     code = me.StringField(required=True, unique=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the creation of this document"""
     user = me.ReferenceField(User, required=True, unique=True)
     meta = {
         'indexes': [

@@ -14,16 +14,31 @@ class Alliance(me.Document):
     EVE alliance database model.
     """
     SCHEMA_VERSION = 3
+    """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
-    alliance_id = me.IntField(unique=True)
-    alliance_name = me.StringField(required=True)
-    authorized_to_login = me.BooleanField(default=None, null=True)
-    executor_corporation_id = me.IntField(required=True)
-    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
-    ticker = me.StringField(required=True)
-    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Schema version of this document"""
 
+    alliance_id = me.IntField(unique=True)
+    """Alliance id (according to the ESI)"""
+
+    alliance_name = me.StringField(required=True)
+    """Self explanatory"""
+
+    authorized_to_login = me.BooleanField(default=None, null=True)
+    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+
+    executor_corporation_id = me.IntField(required=True)
+    """Id of the executor of this alliance"""
+
+    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
+    """Mandatory ESI scopes for the members of this alliance"""
+
+    ticker = me.StringField(required=True)
+    """Ticker of the alliance"""
+
+    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the last update of this document"""
     def coalitions(self) -> List['Coalition']:
         """
         Returns the list of coalition this alliance is part of.
@@ -65,16 +80,31 @@ class Coalition(me.Document):
     to be created manually. An alliance can be part of multiple coalitions.
     """
     SCHEMA_VERSION = 4
+    """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
-    authorized_to_login = me.BooleanField(default=True, null=True)
-    created_on = me.DateTimeField(default=utils.now, required=True)
-    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
-    members = me.ListField(me.ReferenceField(Alliance), default=list)
-    coalition_name = me.StringField(required=True, unique=True)
-    ticker = me.StringField(default=str)
-    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Schema version of this document"""
 
+    authorized_to_login = me.BooleanField(default=True, null=True)
+    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+
+    created_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the creation of this document"""
+
+    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
+    """Mandatory ESI scopes for the members of this coalition"""
+
+    members = me.ListField(me.ReferenceField(Alliance), default=list)
+    """List of references to the member alliances (NOT users, for that, see :meth:`sni.user.models.Coalition.users` and :meth:`sni.user.models.Coalition.user_iterator`."""
+
+    coalition_name = me.StringField(required=True, unique=True)
+    """Name of the coalition"""
+
+    ticker = me.StringField(default=str)
+    """Ticker of the coalition"""
+
+    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the last update of this document"""
     def users(self) -> List['User']:
         """
         Return the member list of this coalition.
@@ -95,20 +125,37 @@ class Corporation(me.Document):
     EVE corporation database model.
     """
     SCHEMA_VERSION = 3
+    """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
+    """Schema version of this document"""
+
     authorized_to_login = me.BooleanField(default=None, null=True)
+    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+
     alliance = me.ReferenceField(Alliance,
                                  default=None,
                                  null=True,
                                  required=False)
-    ceo_character_id = me.IntField(required=True)
-    corporation_id = me.IntField(unique=True)
-    corporation_name = me.StringField(required=True)
-    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
-    ticker = me.StringField(required=True)
-    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Optional reference to the alliance this corporation belongs to"""
 
+    ceo_character_id = me.IntField(required=True)
+    """Character id (according to the ESI) of the CEO. See also :meth:`sni.user.models.Corporation.ceo`."""
+
+    corporation_id = me.IntField(unique=True)
+    """Id of the corporation (according to the ESI)"""
+
+    corporation_name = me.StringField(required=True)
+    """Name of the corporation"""
+
+    mandatory_esi_scopes = me.ListField(me.StringField(), default=list)
+    """Mandatory ESI scopes for the members of this corporation"""
+
+    ticker = me.StringField(required=True)
+    """Ticker of the corporation"""
+
+    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the last update of this document"""
     @property
     def ceo(self) -> 'User':
         """
@@ -137,20 +184,46 @@ class Group(me.Document):
     Group model. A group is simply a collection of users.
     """
     SCHEMA_VERSION = 4
+    """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
+    """Schema version of this document"""
+
     authorized_to_login = me.BooleanField(default=None, null=True)
+    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+
     created_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the creation of this document"""
+
     discord_role_id = me.IntField(null=True)
+    """Id of the corresponding discord role"""
+
     description = me.StringField(default=str)
+    """Self explanatory"""
+
     is_autogroup = me.BooleanField(default=False, required=True)
+    """Wether this group was created automatically by SNI (e.g. group of a corporation)"""
+
     map_to_discord = me.BooleanField(default=True, required=True)
+    """Wether this group should be mapped as a Discord role"""
+
     map_to_teamspeak = me.BooleanField(default=True, required=True)
+    """Wether this group should be mapped as a Teamspeak group"""
+
     members = me.ListField(me.ReferenceField('User'), default=list)
+    """Member list"""
+
     group_name = me.StringField(required=True, unique=True)
-    owner = me.ReferenceField('User')
+    """Name of the group"""
+
+    owner = me.ReferenceField('User', null=True)
+    """Owner of the group. Can be ``None``."""
+
     teamspeak_sgid = me.IntField(null=True)
+    """Teamspeak group id, if applicable"""
+
     updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the last update of this document"""
 
 
 class User(me.Document):
@@ -160,18 +233,37 @@ class User(me.Document):
     A user corresponds to a single EVE character.
     """
     SCHEMA_VERSION = 3
+    """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
-    authorized_to_login = me.BooleanField(default=None, null=True)
-    character_id = me.IntField(unique=True)
-    character_name = me.StringField(required=True)
-    clearance_level = me.IntField(default=0, required=True)
-    corporation = me.ReferenceField(Corporation, default=None, null=True)
-    created_on = me.DateTimeField(default=utils.now, required=True)
-    discord_user_id = me.IntField(default=None, null=True)
-    teamspeak_cldbid = me.IntField(default=None, null=True)
-    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Schema version of this document"""
 
+    authorized_to_login = me.BooleanField(default=None, null=True)
+    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+
+    character_id = me.IntField(unique=True)
+    """Character id (according to the ESI)"""
+
+    character_name = me.StringField(required=True)
+    """Character name"""
+
+    clearance_level = me.IntField(default=0, required=True)
+    """Clearance level of this user. See :mod:`sni.uac.clearance`."""
+
+    corporation = me.ReferenceField(Corporation, default=None, null=True)
+    """Corporation this character belongs to, if applicable"""
+
+    created_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the creation of this document"""
+
+    discord_user_id = me.IntField(default=None, null=True)
+    """Discord user id associated to this user, if applicable"""
+
+    teamspeak_cldbid = me.IntField(default=None, null=True)
+    """Teamspeak user id associated to this user, if applicable"""
+
+    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the last update of this document"""
     @property
     def alliance(self) -> Optional[Alliance]:
         """

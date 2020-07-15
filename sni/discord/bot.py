@@ -3,8 +3,8 @@ Discord Bot management. The bot requires the ``bot`` scope, and the
 ``Manage Roles``, ``Change Nickname``, ``Manage Nicknames``, ``Send Messages``
 permissions.
 
-See also: `Creating a Bot Account
-    <https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro>`_
+See also:
+    `Creating a Bot Account <https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro>`_
 """
 
 import asyncio

@@ -17,12 +17,19 @@ class CrashReportRequest(me.EmbeddedDocument):
     # auth = me.DynamicField(default=None)
     # data = me.DynamicField(default=None, null=True)
     # files = me.DictField(default=None, null=True)
-    headers = me.DictField(default=None, null=True)
     # json = me.DynamicField(default=None, null=True)
-    method = me.StringField(default=None)
-    params = me.DynamicField(default=None, null=True)
-    url = me.StringField(default=None)
 
+    headers = me.DictField(default=None, null=True)
+    """Headers of the request"""
+
+    method = me.StringField(default=None)
+    """HTTP method of the request"""
+
+    params = me.DynamicField(default=None, null=True)
+    """URL parameters of the request"""
+
+    url = me.StringField(default=None)
+    """URL of the request"""
     def to_dict(self) -> dict:
         """
         Returns a dict representation
@@ -37,14 +44,22 @@ class CrashReportRequest(me.EmbeddedDocument):
 
 class CrashReportToken(me.EmbeddedDocument):
     """
-    Represents a token in a crash report
+    Represents a token in a crash report. See :class:`sni.uac.models.Token`
     """
     created_on = me.DateTimeField()
-    expires_on = me.DateTimeField()
-    owner = me.ReferenceField(User)
-    token_type = me.StringField()
-    uuid = me.UUIDField()
+    """See :class:`sni.uac.models.Token`"""
 
+    expires_on = me.DateTimeField()
+    """See :class:`sni.uac.models.Token`"""
+
+    owner = me.ReferenceField(User)
+    """See :class:`sni.uac.models.Token`"""
+
+    token_type = me.StringField()
+    """See :class:`sni.uac.models.Token`"""
+
+    uuid = me.UUIDField()
+    """See :class:`sni.uac.models.Token`"""
     def to_dict(self) -> dict:
         """
         Returns a dict representation
@@ -72,13 +87,24 @@ class CrashReport(me.Document):
     :meth:`sni.api.server.exception_handler` as a last resort, and this is
     where this class is used to save traces to the database).
     """
+
     SCHEMA_VERSION = 1
+    """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION, required=True)
+    """Schema version of this document"""
+
     request = me.EmbeddedDocumentField(CrashReportRequest, required=True)
+    """See :class:`sni.api.models.CrashReportRequest`"""
+
     timestamp = me.DateTimeField(default=utils.now, required=True)
+    """When the crash occured. This field is indexed in decreasing order."""
+
     trace = me.ListField(me.StringField())
+    """Python trace"""
+
     token = me.EmbeddedDocumentField(CrashReportToken, null=True)
+    """See :class:`sni.api.models.CrashReportToken`"""
 
     meta = {
         'indexes': [
