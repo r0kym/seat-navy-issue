@@ -62,14 +62,29 @@
 <span class="sd">    &lt;http://docs.mongoengine.org/guide/text-indexes.html&gt;`_)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
     <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
+
     <span class="n">body</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Body of the email&quot;&quot;&quot;</span>
+
     <span class="n">from_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Character id of the sender&quot;&quot;&quot;</span>
+
     <span class="n">mail_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Mail id (according to the ESI)&quot;&quot;&quot;</span>
+
     <span class="n">recipients</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocumentListField</span><span class="p">(</span><span class="n">EsiMailRecipient</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Recipient list. See :class:`sni.index.models.EsiMailRecipient`.&quot;&quot;&quot;</span>
+
     <span class="n">subject</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Subject of the email&quot;&quot;&quot;</span>
+
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;ESI timestamp of the email&quot;&quot;&quot;</span>
+
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
@@ -89,12 +104,23 @@
 <span class="sd">    Represents a measurment of a character&#39;s skill points</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
     <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
+
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp of this skillpoint measurment&quot;&quot;&quot;</span>
+
     <span class="n">total_sp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Total skillpoints&quot;&quot;&quot;</span>
+
     <span class="n">unallocated_sp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Unallocated skillpoints&quot;&quot;&quot;</span>
+
     <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Corresponding user&quot;&quot;&quot;</span>
+
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>

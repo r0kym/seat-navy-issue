@@ -402,129 +402,34 @@ requests.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>A model representing an ESI access token, along with its refresh token and
 relevant metadatas.</p>
-<dl class="exception">
-<dt id="sni.esi.models.EsiAccessToken.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="sni.esi.models.EsiAccessToken.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="sni.esi.models.EsiAccessToken.access_token">
 <code class="sig-name descname">access_token</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.access_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
+<dd><p>The ESI access token string</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiAccessToken.created_on">
 <code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.created_on" title="Permalink to this definition">¶</a></dt>
-<dd><p>Datetime field.</p>
-<p>Uses the python-dateutil library if available alternatively use time.strptime
-to parse the dates.  Note: python-dateutil’s parser is fully featured and when
-installed you can utilise it to convert varying types of date formats into valid
-python datetime objects.</p>
-<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
-<dl class="simple">
-<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
-Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
-need accurate microsecond support.</p>
-</dd>
-</dl>
+<dd><p>Timestamp of the creation of this access token (according to the ESI)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiAccessToken.expires_on">
 <code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.expires_on" title="Permalink to this definition">¶</a></dt>
-<dd><p>Datetime field.</p>
-<p>Uses the python-dateutil library if available alternatively use time.strptime
-to parse the dates.  Note: python-dateutil’s parser is fully featured and when
-installed you can utilise it to convert varying types of date formats into valid
-python datetime objects.</p>
-<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
-<dl class="simple">
-<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
-Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
-need accurate microsecond support.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.esi.models.EsiAccessToken.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.esi.models.EsiAccessToken.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default QuerySet Manager.</p>
-<p>Custom QuerySet Manager functions can extend this class and users can
-add extra queryset functionality.  Any custom manager methods must accept a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
-<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
-, probably the same one that was passed in, but modified in some way.</p>
+<dd><p>Expiration timestamp of this access token (according to the ESI)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiAccessToken.owner">
 <code class="sig-name descname">owner</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.owner" title="Permalink to this definition">¶</a></dt>
-<dd><p>A reference to a document that will be automatically dereferenced on
-access (lazily).</p>
-<p>Note this means you will get a database I/O access everytime you access
-this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
-which precise type can depend of the value of the <cite>_cls</cite> field present in the
-document in database.
-In short, using this type of field can lead to poor performances (especially
-if you access this field only to retrieve it <cite>pk</cite> field which is already
-known before dereference). To solve this you should consider using the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
-<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
-the field is referencing is deleted.  EmbeddedDocuments, DictFields and
-MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
-will be raised if trying to set on one of these Document / Field types.</p>
-<p>The options are:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
-<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
-<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
-<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
-<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
-</ul>
-</div></blockquote>
-<p>Alternative syntax for registering delete rules (useful when implementing
-bi-directional delete rules)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
-    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
-
-<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
-</div>
+<dd><p>Reference to the owner of this token</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiAccessToken.scopes">
 <code class="sig-name descname">scopes</code><a class="headerlink" href="#sni.esi.models.EsiAccessToken.scopes" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list field that wraps a standard field, allowing multiple instances
-of the field to be used as a list in the database.</p>
-<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Required means it cannot be empty - as the default for ListFields is []</p>
-</div>
+<dd><p>ESI scopes of the access token</p>
 </dd></dl>
 
 </dd></dl>
@@ -539,64 +444,34 @@ of the field to be used as a list in the database.</p>
 <p><a class="reference external" href="https://esi.evetech.net/ui">EVE Swagger Interface</a>
 <a class="reference external" href="https://esi.evetech.net/latest/swagger.json">EVE Swagger Interface (JSON)</a></p>
 </div>
-<dl class="exception">
-<dt id="sni.esi.models.EsiPath.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.esi.models.EsiPath.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="sni.esi.models.EsiPath.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.esi.models.EsiPath.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="sni.esi.models.EsiPath.http_method">
 <code class="sig-name descname">http_method</code><a class="headerlink" href="#sni.esi.models.EsiPath.http_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.esi.models.EsiPath.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.esi.models.EsiPath.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.esi.models.EsiPath.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.esi.models.EsiPath.objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default QuerySet Manager.</p>
-<p>Custom QuerySet Manager functions can extend this class and users can
-add extra queryset functionality.  Any custom manager methods must accept a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
-<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
-, probably the same one that was passed in, but modified in some way.</p>
+<dd><p>HTTP method</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiPath.path">
 <code class="sig-name descname">path</code><a class="headerlink" href="#sni.esi.models.EsiPath.path" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
+<dd><p>String form of the path, e.g. <code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiPath.path_re">
 <code class="sig-name descname">path_re</code><a class="headerlink" href="#sni.esi.models.EsiPath.path_re" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
+<dd><p>Regular expression for this path, in string form</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiPath.scope">
 <code class="sig-name descname">scope</code><a class="headerlink" href="#sni.esi.models.EsiPath.scope" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
+<dd><p>Scope required for this path</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiPath.version">
 <code class="sig-name descname">version</code><a class="headerlink" href="#sni.esi.models.EsiPath.version" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
+<dd><p>ESI version (NOT schema version)</p>
 </dd></dl>
 
 </dd></dl>
@@ -607,129 +482,34 @@ add extra queryset functionality.  Any custom manager methods must accept a
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>A model representing an ESI access token, along with its refresh token and
 relevant metadatas.</p>
-<dl class="exception">
-<dt id="sni.esi.models.EsiRefreshToken.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="sni.esi.models.EsiRefreshToken.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="sni.esi.models.EsiRefreshToken.created_on">
 <code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.created_on" title="Permalink to this definition">¶</a></dt>
-<dd><p>Datetime field.</p>
-<p>Uses the python-dateutil library if available alternatively use time.strptime
-to parse the dates.  Note: python-dateutil’s parser is fully featured and when
-installed you can utilise it to convert varying types of date formats into valid
-python datetime objects.</p>
-<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
-<dl class="simple">
-<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
-Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
-need accurate microsecond support.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.esi.models.EsiRefreshToken.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.esi.models.EsiRefreshToken.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default QuerySet Manager.</p>
-<p>Custom QuerySet Manager functions can extend this class and users can
-add extra queryset functionality.  Any custom manager methods must accept a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
-<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
-, probably the same one that was passed in, but modified in some way.</p>
+<dd><p>Timestamp of the creation of this document</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiRefreshToken.owner">
 <code class="sig-name descname">owner</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.owner" title="Permalink to this definition">¶</a></dt>
-<dd><p>A reference to a document that will be automatically dereferenced on
-access (lazily).</p>
-<p>Note this means you will get a database I/O access everytime you access
-this field. This is necessary because the field returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>
-which precise type can depend of the value of the <cite>_cls</cite> field present in the
-document in database.
-In short, using this type of field can lead to poor performances (especially
-if you access this field only to retrieve it <cite>pk</cite> field which is already
-known before dereference). To solve this you should consider using the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyReferenceField</span></code>.</p>
-<p>Use the <cite>reverse_delete_rule</cite> to handle what should happen if the document
-the field is referencing is deleted.  EmbeddedDocuments, DictFields and
-MapFields does not support reverse_delete_rule and an <cite>InvalidDocumentError</cite>
-will be raised if trying to set on one of these Document / Field types.</p>
-<p>The options are:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>DO_NOTHING (0)  - don’t do anything (default).</p></li>
-<li><p>NULLIFY    (1)  - Updates the reference to null.</p></li>
-<li><p>CASCADE    (2)  - Deletes the documents associated with the reference.</p></li>
-<li><p>DENY       (3)  - Prevent the deletion of the reference object.</p></li>
-<li><p>PULL       (4)  - Pull the reference from a <code class="xref py py-class docutils literal notranslate"><span class="pre">ListField</span></code> of references</p></li>
-</ul>
-</div></blockquote>
-<p>Alternative syntax for registering delete rules (useful when implementing
-bi-directional delete rules)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Org</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
-    <span class="n">org</span> <span class="o">=</span> <span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;Org&#39;</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">CASCADE</span><span class="p">)</span>
-
-<span class="n">User</span><span class="o">.</span><span class="n">register_delete_rule</span><span class="p">(</span><span class="n">Org</span><span class="p">,</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">DENY</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.5: </span>added <cite>reverse_delete_rule</cite></p>
-</div>
+<dd><p>Reference to the owner of this token</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiRefreshToken.refresh_token">
 <code class="sig-name descname">refresh_token</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.refresh_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>A unicode string field.</p>
+<dd><p>The ESI refresh token string</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiRefreshToken.scopes">
 <code class="sig-name descname">scopes</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.scopes" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list field that wraps a standard field, allowing multiple instances
-of the field to be used as a list in the database.</p>
-<p>If using with ReferenceFields see: <span class="xref std std-ref">one-to-many-with-listfields</span></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Required means it cannot be empty - as the default for ListFields is []</p>
-</div>
+<dd><p>ESI scopes of the refresh token</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="sni.esi.models.EsiRefreshToken.updated_on">
 <code class="sig-name descname">updated_on</code><a class="headerlink" href="#sni.esi.models.EsiRefreshToken.updated_on" title="Permalink to this definition">¶</a></dt>
-<dd><p>Datetime field.</p>
-<p>Uses the python-dateutil library if available alternatively use time.strptime
-to parse the dates.  Note: python-dateutil’s parser is fully featured and when
-installed you can utilise it to convert varying types of date formats into valid
-python datetime objects.</p>
-<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
-<dl class="simple">
-<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
-Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
-need accurate microsecond support.</p>
-</dd>
-</dl>
+<dd><p>Timestamp of the last update of this document</p>
 </dd></dl>
 
 </dd></dl>

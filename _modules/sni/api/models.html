@@ -56,12 +56,19 @@
     <span class="c1"># auth = me.DynamicField(default=None)</span>
     <span class="c1"># data = me.DynamicField(default=None, null=True)</span>
     <span class="c1"># files = me.DictField(default=None, null=True)</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DictField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># json = me.DynamicField(default=None, null=True)</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DynamicField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DictField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Headers of the request&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;HTTP method of the request&quot;&quot;&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DynamicField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;URL parameters of the request&quot;&quot;&quot;</span>
+
+    <span class="n">url</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;URL of the request&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="CrashReportRequest.to_dict"><a class="viewcode-back" href="../../../api.html#sni.api.models.CrashReportRequest.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dict representation</span>
@@ -76,14 +83,22 @@
 
 <div class="viewcode-block" id="CrashReportToken"><a class="viewcode-back" href="../../../api.html#sni.api.models.CrashReportToken">[docs]</a><span class="k">class</span> <span class="nc">CrashReportToken</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocument</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents a token in a crash report</span>
+<span class="sd">    Represents a token in a crash report. See :class:`sni.uac.models.Token`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
-    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
-    <span class="n">token_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
-    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.uac.models.Token`&quot;&quot;&quot;</span>
 
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.uac.models.Token`&quot;&quot;&quot;</span>
+
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.uac.models.Token`&quot;&quot;&quot;</span>
+
+    <span class="n">token_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.uac.models.Token`&quot;&quot;&quot;</span>
+
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.uac.models.Token`&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="CrashReportToken.to_dict"><a class="viewcode-back" href="../../../api.html#sni.api.models.CrashReportToken.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dict representation</span>
@@ -111,13 +126,24 @@
 <span class="sd">    :meth:`sni.api.server.exception_handler` as a last resort, and this is</span>
 <span class="sd">    where this class is used to save traces to the database).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
     <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
+
     <span class="n">request</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocumentField</span><span class="p">(</span><span class="n">CrashReportRequest</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.api.models.CrashReportRequest`&quot;&quot;&quot;</span>
+
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;When the crash occured. This field is indexed in decreasing order.&quot;&quot;&quot;</span>
+
     <span class="n">trace</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">())</span>
+    <span class="sd">&quot;&quot;&quot;Python trace&quot;&quot;&quot;</span>
+
     <span class="n">token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocumentField</span><span class="p">(</span><span class="n">CrashReportToken</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;See :class:`sni.api.models.CrashReportToken`&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>

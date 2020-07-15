@@ -49,18 +49,6 @@
 <em class="property">class </em><code class="sig-prename descclassname">sni.discord.discord.</code><code class="sig-name descname">DiscordAuthenticationChallenge</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/discord.html#DiscordAuthenticationChallenge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
 <p>Represents a pending authentication challenge.</p>
-<dl class="exception">
-<dt id="sni.discord.discord.DiscordAuthenticationChallenge.DoesNotExist">
-<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge.DoesNotExist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.DoesNotExist</span></code></p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="sni.discord.discord.DiscordAuthenticationChallenge.MultipleObjectsReturned">
-<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.errors.MultipleObjectsReturned</span></code></p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="sni.discord.discord.DiscordAuthenticationChallenge.code">
 <code class="sig-name descname">code</code><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge.code" title="Permalink to this definition">¶</a></dt>
@@ -70,36 +58,7 @@
 <dl class="attribute">
 <dt id="sni.discord.discord.DiscordAuthenticationChallenge.created_on">
 <code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge.created_on" title="Permalink to this definition">¶</a></dt>
-<dd><p>Datetime field.</p>
-<p>Uses the python-dateutil library if available alternatively use time.strptime
-to parse the dates.  Note: python-dateutil’s parser is fully featured and when
-installed you can utilise it to convert varying types of date formats into valid
-python datetime objects.</p>
-<p>Note: To default the field to the current datetime, use: DateTimeField(default=datetime.utcnow)</p>
-<dl class="simple">
-<dt>Note: Microseconds are rounded to the nearest millisecond.</dt><dd><p>Pre UTC microsecond support is effectively broken.
-Use <code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDateTimeField</span></code> if you
-need accurate microsecond support.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.discord.discord.DiscordAuthenticationChallenge.id">
-<code class="sig-name descname">id</code><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>A field wrapper around MongoDB’s ObjectIds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.discord.discord.DiscordAuthenticationChallenge.objects">
-<code class="sig-name descname">objects</code><a class="headerlink" href="#sni.discord.discord.DiscordAuthenticationChallenge.objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default QuerySet Manager.</p>
-<p>Custom QuerySet Manager functions can extend this class and users can
-add extra queryset functionality.  Any custom manager methods must accept a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> class as its first argument, and a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code> as its second argument.</p>
-<p>The method function should return a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuerySet</span></code>
-, probably the same one that was passed in, but modified in some way.</p>
+<dd><p>Timestamp of the creation of this document</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -181,10 +140,10 @@ Discort authentication challenges.</p></li>
 <p>Discord Bot management. The bot requires the <code class="docutils literal notranslate"><span class="pre">bot</span></code> scope, and the
 <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Roles</span></code>, <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Nickname</span></code>, <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Nicknames</span></code>, <code class="docutils literal notranslate"><span class="pre">Send</span> <span class="pre">Messages</span></code>
 permissions.</p>
-<dl class="simple">
-<dt>See also: <a href="#id1"><span class="problematic" id="id2">`</span></a>Creating a Bot Account</dt><dd><p>&lt;<a class="reference external" href="https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro">https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro</a>&gt;`_</p>
-</dd>
-</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro">Creating a Bot Account</a></p>
+</div>
 <dl class="function">
 <dt id="sni.discord.bot.get_guild">
 <code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">get_guild</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; discord.guild.Guild<a class="reference internal" href="_modules/sni/discord/bot.html#get_guild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.get_guild" title="Permalink to this definition">¶</a></dt>

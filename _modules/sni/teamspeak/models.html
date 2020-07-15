@@ -55,9 +55,16 @@
 <span class="sd">    See also:</span>
 <span class="sd">        :meth:`sni.teamspeak.new_authentication_challenge`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this document&quot;&quot;&quot;</span>
+
     <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;&quot;Corresponding user&quot;&quot;&quot;</span>
+
     <span class="n">challenge_nickname</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;See :meth:`sni.teamspeak.teamspeak.new_authentication_challenge`&quot;&quot;&quot;</span>
+
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>

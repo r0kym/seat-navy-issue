@@ -62,18 +62,40 @@
         <span class="n">use</span> <span class="o">=</span> <span class="s1">&#39;use&#39;</span>  <span class="c1"># User token</span></div>
 
     <span class="n">callback</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Callback URL of the application. When a new user token is issued, the</span>
+<span class="sd">    corresponding application is notified at this URL.&quot;&quot;&quot;</span>
+
     <span class="n">comments</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Comments&quot;&quot;&quot;</span>
+
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this document&quot;&quot;&quot;</span>
+
     <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Self explanatory&quot;&quot;&quot;</span>
+
     <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span>
                               <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Reference to the owner of this token&quot;&quot;&quot;</span>
+
     <span class="n">parent</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
                                <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Optional reference to the token that has been used to create this one&quot;&quot;&quot;</span>
+
     <span class="n">token_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">TokenType</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Token type, see :class:`sni.uac.models.Token.TokenType`&quot;&quot;&quot;</span>
+
     <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    UUID of this token</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        Use the document&#39;s ``_id`` field instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
@@ -92,9 +114,21 @@
 <span class="sd">    token, and is a way for SNI to remeber about the authentication while the</span>
 <span class="sd">    end user logs in to EVE SSO.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">app_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The app token that created this state code&quot;&quot;&quot;</span>
+
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this document&quot;&quot;&quot;</span>
+
     <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The state code</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        Use the document&#39;s ``_id`` field instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
