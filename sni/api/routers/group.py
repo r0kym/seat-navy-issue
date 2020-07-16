@@ -43,7 +43,7 @@ class GetGroupOut(pdt.BaseModel):
     group_name: str
     is_autogroup: bool
     members: List[str]
-    owner: str
+    owner: Optional[str]
     updated_on: datetime
 
 
