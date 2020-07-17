@@ -89,6 +89,7 @@ Module documentation
    uac
    api
    esi
+   sde
    indexation
    teamspeak
    discord

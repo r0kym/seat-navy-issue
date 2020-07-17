@@ -44,6 +44,11 @@ Routers
 
 .. automodule:: sni.api.routers.group
 
+``sni.api.routers.sde``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: sni.api.routers.sde
+
 ``sni.api.routers.teamspeak``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

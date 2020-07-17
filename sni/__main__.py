@@ -23,6 +23,7 @@ def connect_database_signals() -> None:
     logging.info('Connecting database signals')
     import sni.db.signals
     import sni.esi.signals
+    import sni.sde.signals
     import sni.index.signals
     import sni.uac.signals
     import sni.user.signals
@@ -64,6 +65,9 @@ def migrate_database() -> None:
 
     import sni.esi.migration
     sni.esi.migration.migrate()
+
+    import sni.sde.migration
+    sni.sde.migration.migrate()
 
     import sni.index.migration
     sni.index.migration.migrate()
@@ -246,6 +250,7 @@ def schedule_jobs() -> None:
     logging.info('Scheduling jobs')
     import sni.db.jobs
     import sni.esi.jobs
+    import sni.sde.jobs
     import sni.uac.jobs
     import sni.user.jobs
     import sni.index.jobs

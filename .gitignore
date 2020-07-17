@@ -2,6 +2,7 @@
 docs/*.png
 docs/command-line-args.txt
 # docs/openapi.yml
+sde.sqlite
 
 # VSCode
 *.code-workspace
