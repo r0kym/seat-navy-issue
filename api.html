@@ -615,6 +615,64 @@ to be the owner of the group.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-sni.api.routers.sde">
+<span id="sni-api-routers-sde"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.sde</span></code><a class="headerlink" href="#module-sni.api.routers.sde" title="Permalink to this headline">¶</a></h3>
+<p>SDE paths</p>
+<dl class="class">
+<dt id="sni.api.routers.sde.GetSdeTypeOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeTypeOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeTypeOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents an SDE type</p>
+<dl class="attribute">
+<dt id="sni.api.routers.sde.GetSdeTypeOut.category_name">
+<code class="sig-name descname">category_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.category_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.sde.GetSdeTypeOut.group_name">
+<code class="sig-name descname">group_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.sde.GetSdeTypeOut.type_name">
+<code class="sig-name descname">type_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.type_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.sde.get_sde_types">
+<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_types</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of SDE type ids, returns a dict with informations about these
+types. The return dict key set is guaranteed to be the same as the input
+list (up to repetition of keys).</p>
+<p>This method does not check the token.</p>
+<p class="rubric">Example</p>
+<p>Sending a request with <code class="docutils literal notranslate"><span class="pre">[21554,</span> <span class="pre">1,</span> <span class="pre">19722]</span></code> returns:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+    <span class="s2">&quot;21554&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Blueprint&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Projectile Weapon Blueprint&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;650mm Medium &#39;Jolt&#39; Artillery I Blueprint&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;19722&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ship&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Dreadnought&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Naglfar&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.sde.sde_type_record_to_response">
+<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">sde_type_record_to_response</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeType</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeTypeOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#sde_type_record_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.sde_type_record_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeType" title="sni.sde.models.SdeType"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeType</span></code></a> to <a class="reference internal" href="#sni.api.routers.sde.GetSdeTypeOut" title="sni.api.routers.sde.GetSdeTypeOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeTypeOut</span></code></a></p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.api.routers.teamspeak">
 <span id="sni-api-routers-teamspeak"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.teamspeak</span></code><a class="headerlink" href="#module-sni.api.routers.teamspeak" title="Permalink to this headline">¶</a></h3>
 <p>Teamspeak related paths</p>
@@ -1025,6 +1083,7 @@ contained in a user database record.</p>
 <li><a class="reference internal" href="#module-sni.api.routers.coalition"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.coalition</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.esi"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.esi</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.group"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.group</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.routers.sde"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.sde</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.teamspeak"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.teamspeak</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.token"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.token</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.user"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.user</span></code></a></li>

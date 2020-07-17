@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.sde.sde &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.sde.sde</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SDE (EVE Static Data Exporty) related module</span>
+
+<span class="sd">See also:</span>
+<span class="sd">    `EVE Developer Ressources &lt;https://developers.eveonline.com/resource/resources&gt;`_</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">bz2</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">SdeCategory</span><span class="p">,</span> <span class="n">SdeGroup</span><span class="p">,</span> <span class="n">SdeType</span>
+
+<span class="n">SDE_ROOT_URL</span> <span class="o">=</span> <span class="s1">&#39;https://www.fuzzwork.co.uk/dump/&#39;</span>
+<span class="n">SDE_SQLITE_MD5_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s1">&#39;sqlite-latest.sqlite.bz2.md5&#39;</span>
+<span class="n">SDE_SQLITE_DUMP_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s1">&#39;sqlite-latest.sqlite.bz2&#39;</span>
+
+
+<div class="viewcode-block" id="download_latest_sde"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.download_latest_sde">[docs]</a><span class="k">def</span> <span class="nf">download_latest_sde</span><span class="p">(</span><span class="n">dump_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Downloads and decompresses the latest SDE sqlite dump.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The MD5 checksum of the dump (before decompression).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading and decompressing SDE Sqlite dump to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SDE_SQLITE_DUMP_URL</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="n">decompressor</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2Decompressor</span><span class="p">()</span>
+    <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="s2">&quot;wb+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+            <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">decompressed_data</span> <span class="o">=</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">decompressed_data</span><span class="p">:</span>
+                <span class="n">dump</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">decompressed_data</span><span class="p">)</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Downloaded latest SDE with hash </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">md5</span></div>
+
+
+<div class="viewcode-block" id="get_latest_sde_md5"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.get_latest_sde_md5">[docs]</a><span class="k">def</span> <span class="nf">get_latest_sde_md5</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the latest md5 checksum of the bz2 sqlite dump</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SDE_SQLITE_MD5_URL</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">md5</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump</span><span class="p">(</span><span class="n">dump_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the relevant SDE table in to the database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sqlite_client</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">sqlite_client</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sqlite_client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invCategories;&#39;</span><span class="p">):</span>
+        <span class="n">SdeCategory</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">category_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">set__category_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">],</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryName&#39;</span><span class="p">],</span>
+            <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sqlite_client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invGroups;&#39;</span><span class="p">):</span>
+        <span class="n">category</span> <span class="o">=</span> <span class="n">SdeCategory</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">category_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">SdeGroup</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">set__category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
+            <span class="n">set__group_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">],</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupName&#39;</span><span class="p">],</span>
+            <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sqlite_client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invTypes;&#39;</span><span class="p">):</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">SdeGroup</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">SdeType</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">type_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">set__group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeName&#39;</span><span class="p">],</span>
+            <span class="n">set__type_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeID&#39;</span><span class="p">],</span>
+            <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">sqlite_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

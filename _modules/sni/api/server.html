@@ -53,6 +53,7 @@
 <span class="kn">import</span> <span class="nn">sni.api.routers.crash</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.esi</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.group</span>
+<span class="kn">import</span> <span class="nn">sni.api.routers.sde</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.token</span>
 <span class="kn">import</span> <span class="nn">sni.api.routers.user</span>
 
@@ -93,6 +94,12 @@
         <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/teamspeak&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Teamspeak&#39;</span><span class="p">],</span>
     <span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">sde</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/sde&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SDE methods&#39;</span><span class="p">],</span>
+<span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
