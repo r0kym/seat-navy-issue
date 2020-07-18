@@ -627,6 +627,44 @@ components:
       - type
       title: ValidationError
       type: object
+    sni__api__routers__discord__PostAuthStartOut:
+      description: Model for `POST /discord/auth/start` responses.
+      properties:
+        code:
+          title: Code
+          type: string
+        expiration_datetime:
+          format: date-time
+          title: Expiration Datetime
+          type: string
+        user:
+          title: User
+          type: string
+      required:
+      - code
+      - expiration_datetime
+      - user
+      title: PostAuthStartOut
+      type: object
+    sni__api__routers__teamspeak__PostAuthStartOut:
+      description: Model for `POST /teamspeak/auth/start` responses.
+      properties:
+        challenge_nickname:
+          title: Challenge Nickname
+          type: string
+        expiration_datetime:
+          format: date-time
+          title: Expiration Datetime
+          type: string
+        user:
+          title: User
+          type: string
+      required:
+      - expiration_datetime
+      - challenge_nickname
+      - user
+      title: PostAuthStartOut
+      type: object
 info:
   title: FastAPI
   version: 0.1.0
@@ -950,6 +988,40 @@ paths:
       summary: Get a crash report
       tags:
       - Crash reports
+  /discord/auth/start:
+    post:
+      description: 'Starts a new authentication challenge for the owner of the token.
+        A random
+
+        code is returned (see `PostAuthStartOut` for more details), and the user
+
+        has 1 minute to post it as `!auth <code>` in the dedicated authentication
+
+        chanel.'
+      operationId: port_auth_start_discord_auth_start_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sni__api__routers__discord__PostAuthStartOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Starts a Discord authentication challenge
+      tags:
+      - Discord
   /esi/{esi_path}:
     get:
       description: 'Forwards a `GET` request to the ESI. The required clearance level
@@ -1217,6 +1289,69 @@ paths:
       summary: Get information about a list of SDE types
       tags:
       - SDE methods
+  /teamspeak/auth/complete:
+    post:
+      description: 'Completes an authentication challenge for the owner of the token.
+        See the
+
+        `POST /teamspeak/auth/start` documentation.'
+      operationId: post_auth_complete_teamspeak_auth_complete_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Completes a teamspeak authentication challenge
+      tags:
+      - Teamspeak
+  /teamspeak/auth/start:
+    post:
+      description: 'Starts a new authentication challenge for the owner of the token.
+        A random
+
+        nickname is returned (see `PostAuthStartOut` for more details), and the
+
+        user has 1 minute to update its teamspeak nickname to it, and then call
+
+        `POST /teamspeak/auth/complete`.'
+      operationId: port_auth_start_teamspeak_auth_start_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sni__api__routers__teamspeak__PostAuthStartOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Starts a teamspeak authentication challenge
+      tags:
+      - Teamspeak
   /token:
     delete:
       description: Manually deletes a token (of any type). Requires a clearance level
