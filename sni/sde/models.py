@@ -45,6 +45,14 @@ class SdeGroup(me.Document):
         ],
     }
 
+    @property
+    def category_name(self) -> Optional[str]:
+        """
+        Returns the group name of this type, or ``None`` if the group does not
+        have any category
+        """
+        return self.category.name if self.category is not None else None
+
 
 class SdeType(me.Document):
     """
@@ -72,9 +80,7 @@ class SdeType(me.Document):
         Returns the group name of this type, or ``None`` if the type does not
         have any group
         """
-        if self.group is None:
-            return None
-        return self.group.category.name if self.group.category is not None else None
+        return self.group.category_name if self.group is not None else None
 
     @property
     def group_name(self) -> Optional[str]:

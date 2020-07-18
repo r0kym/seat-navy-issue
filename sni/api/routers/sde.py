@@ -12,9 +12,28 @@ from sni.uac.token import (
     Token,
 )
 
-from sni.sde.models import SdeType
+from sni.sde.models import (
+    SdeCategory,
+    SdeGroup,
+    SdeType,
+)
 
 router = APIRouter()
+
+
+class GetSdeCategoryOut(pdt.BaseModel):
+    """
+    Represents an SDE category
+    """
+    category_name: Optional[str]
+
+
+class GetSdeGroupOut(pdt.BaseModel):
+    """
+    Represents an SDE group
+    """
+    category_name: Optional[str]
+    group_name: Optional[str]
 
 
 class GetSdeTypeOut(pdt.BaseModel):
@@ -24,6 +43,23 @@ class GetSdeTypeOut(pdt.BaseModel):
     category_name: Optional[str]
     group_name: Optional[str]
     type_name: Optional[str]
+
+
+def sde_category_record_to_response(record: SdeCategory) -> GetSdeCategoryOut:
+    """
+    Converts an instance of :class:`sni.sde.models.SdeCategory` to :class:`sni.api.routers.sde.GetSdeCategoryOut`
+    """
+    return GetSdeCategoryOut(category_name=record.name)
+
+
+def sde_group_record_to_response(record: SdeGroup) -> GetSdeGroupOut:
+    """
+    Converts an instance of :class:`sni.sde.models.SdeType` to :class:`sni.api.routers.sde.GetSdeTypeOut`
+    """
+    return GetSdeGroupOut(
+        category_name=record.category_name,
+        group_name=record.name,
+    )
 
 
 def sde_type_record_to_response(record: SdeType) -> GetSdeTypeOut:
@@ -38,11 +74,90 @@ def sde_type_record_to_response(record: SdeType) -> GetSdeTypeOut:
 
 
 @router.get(
+    '/category',
+    response_model=Dict[int, Optional[GetSdeCategoryOut]],
+    summary='Get information about a list of SDE categories',
+)
+def get_sde_category(
+        data: List[int],
+        _tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Given a list of SDE category ids, returns a dict with informations about
+    these types. The return dict key set is guaranteed to be the same as the
+    input list (up to repetition of keys).
+
+    Example: Sending a request with ``[-1, 7, 8, 9]`` returns::
+
+        {
+            "8": {
+                "category_name": "Charge"
+            },
+            "9": {
+                "category_name": "Blueprint"
+            },
+            "-1": null,
+            "7": {
+                "category_name": "Module"
+            }
+        }
+
+    """
+    result: Dict[int, Optional[GetSdeCategoryOut]] = {}
+    for category_id in set(data):
+        record = SdeCategory.objects(category_id=category_id).first()
+        if record is None:
+            result[category_id] = None
+        else:
+            result[category_id] = sde_category_record_to_response(record)
+    return result
+
+
+@router.get(
+    '/group',
+    response_model=Dict[int, Optional[GetSdeGroupOut]],
+    summary='Get information about a list of SDE groups',
+)
+def get_sde_group(
+        data: List[int],
+        _tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Given a list of SDE group ids, returns a dict with informations about these
+    types. The return dict key set is guaranteed to be the same as the input
+    list (up to repetition of keys).
+
+    Example: Sending a request with ``[-1, 4060, 646]`` returns::
+
+        {
+            "646": {
+                "category_name": "Module",
+                "group_name": "Drone Tracking Modules"
+            },
+            "4060": {
+                "category_name": "Module",
+                "group_name": "Vorton Projector"
+            },
+            "-1": null
+        }
+
+    """
+    result: Dict[int, Optional[GetSdeGroupOut]] = {}
+    for group_id in set(data):
+        record = SdeGroup.objects(group_id=group_id).first()
+        if record is None:
+            result[group_id] = None
+        else:
+            result[group_id] = sde_group_record_to_response(record)
+    return result
+
+
+@router.get(
     '/type',
     response_model=Dict[int, Optional[GetSdeTypeOut]],
     summary='Get information about a list of SDE types',
 )
-def get_sde_types(
+def get_sde_type(
         data: List[int],
         _tkn: Token = Depends(from_authotization_header_nondyn),
 ):
@@ -50,8 +165,6 @@ def get_sde_types(
     Given a list of SDE type ids, returns a dict with informations about these
     types. The return dict key set is guaranteed to be the same as the input
     list (up to repetition of keys).
-
-    This method does not check the token.
 
     Example:
         Sending a request with ``[21554, 1, 19722]`` returns::
@@ -72,9 +185,9 @@ def get_sde_types(
     """
     result: Dict[int, Optional[GetSdeTypeOut]] = {}
     for type_id in set(data):
-        type_record = SdeType.objects(type_id=type_id).first()
-        if type_record is None:
+        record = SdeType.objects(type_id=type_id).first()
+        if record is None:
             result[type_id] = None
         else:
-            result[type_id] = sde_type_record_to_response(type_record)
+            result[type_id] = sde_type_record_to_response(record)
     return result
