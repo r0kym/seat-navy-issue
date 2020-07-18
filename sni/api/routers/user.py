@@ -51,6 +51,32 @@ class GetUserOut(pdt.BaseModel):
     tickered_name: str
     updated_on: datetime
 
+    @staticmethod
+    def from_record(usr: User) -> 'GetUserOut':
+        """
+        Populates a new :class:`sni.routers.user.GetUserOut` with the information
+        contained in a user database record.
+        """
+        return GetUserOut(
+            alliance=(usr.alliance.alliance_id
+                      if usr.alliance is not None else None),
+            authorized_to_login=usr.authorized_to_login,
+            available_esi_scopes=available_esi_scopes(usr),
+            character_id=usr.character_id,
+            character_name=usr.character_name,
+            clearance_level=usr.clearance_level,
+            coalitions=[str(coalition.pk) for coalition in usr.coalitions()],
+            corporation=(usr.corporation.corporation_id
+                         if usr.corporation is not None else None),
+            created_on=usr.created_on,
+            cumulated_mandatory_esi_scopes=usr.cumulated_mandatory_esi_scopes(
+            ),
+            is_ceo_of_alliance=usr.is_ceo_of_alliance(),
+            is_ceo_of_corporation=usr.is_ceo_of_corporation(),
+            tickered_name=usr.tickered_name,
+            updated_on=usr.updated_on,
+        )
+
 
 class PutUserIn(pdt.BaseModel):
     """
@@ -58,31 +84,6 @@ class PutUserIn(pdt.BaseModel):
     """
     authorized_to_login: Optional[bool]
     clearance_level: Optional[int]
-
-
-def user_record_to_response(usr: User) -> GetUserOut:
-    """
-    Populates a new :class:`sni.routers.user.GetUserOut` with the information
-    contained in a user database record.
-    """
-    return GetUserOut(
-        alliance=(usr.alliance.alliance_id
-                  if usr.alliance is not None else None),
-        authorized_to_login=usr.authorized_to_login,
-        available_esi_scopes=available_esi_scopes(usr),
-        character_id=usr.character_id,
-        character_name=usr.character_name,
-        clearance_level=usr.clearance_level,
-        coalitions=[str(coalition.pk) for coalition in usr.coalitions()],
-        corporation=(usr.corporation.corporation_id
-                     if usr.corporation is not None else None),
-        created_on=usr.created_on,
-        cumulated_mandatory_esi_scopes=usr.cumulated_mandatory_esi_scopes(),
-        is_ceo_of_alliance=usr.is_ceo_of_alliance(),
-        is_ceo_of_corporation=usr.is_ceo_of_corporation(),
-        tickered_name=usr.tickered_name,
-        updated_on=usr.updated_on,
-    )
 
 
 @router.get(
@@ -130,7 +131,7 @@ def get_user_name(character_id: int,
     """
     assert_has_clearance(tkn.owner, 'sni.read_user')
     usr = User.objects.get(character_id=character_id)
-    return user_record_to_response(usr)
+    return GetUserOut.from_record(usr)
 
 
 @router.put(
@@ -159,4 +160,4 @@ def put_user_name(character_id: int,
         assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
         usr.authorized_to_login = data.authorized_to_login
     usr.save()
-    return user_record_to_response(usr)
+    return GetUserOut.from_record(usr)

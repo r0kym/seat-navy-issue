@@ -30,6 +30,14 @@ class GetSdeCategoryOut(pdt.BaseModel):
     """
     category_name: Optional[str]
 
+    @staticmethod
+    def from_record(record: SdeCategory) -> 'GetSdeCategoryOut':
+        """
+        Converts an instance of :class:`sni.sde.models.SdeCategory` to
+        :class:`sni.api.routers.sde.GetSdeCategoryOut`
+        """
+        return GetSdeCategoryOut(category_name=record.name)
+
 
 class GetSdeGroupOut(pdt.BaseModel):
     """
@@ -37,6 +45,17 @@ class GetSdeGroupOut(pdt.BaseModel):
     """
     category_name: Optional[str]
     group_name: Optional[str]
+
+    @staticmethod
+    def from_record(record: SdeGroup) -> 'GetSdeGroupOut':
+        """
+        Converts an instance of :class:`sni.sde.models.SdeType` to
+        :class:`sni.api.routers.sde.GetSdeTypeOut`
+        """
+        return GetSdeGroupOut(
+            category_name=record.category_name,
+            group_name=record.name,
+        )
 
 
 class GetSdeTypeOut(pdt.BaseModel):
@@ -46,6 +65,18 @@ class GetSdeTypeOut(pdt.BaseModel):
     category_name: Optional[str]
     group_name: Optional[str]
     type_name: Optional[str]
+
+    @staticmethod
+    def from_record(record: SdeType) -> 'GetSdeTypeOut':
+        """
+        Converts an instance of :class:`sni.sde.models.SdeType` to
+        :class:`sni.api.routers.sde.GetSdeTypeOut`
+        """
+        return GetSdeTypeOut(
+            category_name=record.category_name,
+            group_name=record.group_name,
+            type_name=record.name,
+        )
 
 
 class GetSdeRegionOut(pdt.BaseModel):
@@ -103,34 +134,6 @@ class GetSdeSolarSystemOut(pdt.BaseModel):
         )
 
 
-def sde_category_record_to_response(record: SdeCategory) -> GetSdeCategoryOut:
-    """
-    Converts an instance of :class:`sni.sde.models.SdeCategory` to :class:`sni.api.routers.sde.GetSdeCategoryOut`
-    """
-    return GetSdeCategoryOut(category_name=record.name)
-
-
-def sde_group_record_to_response(record: SdeGroup) -> GetSdeGroupOut:
-    """
-    Converts an instance of :class:`sni.sde.models.SdeType` to :class:`sni.api.routers.sde.GetSdeTypeOut`
-    """
-    return GetSdeGroupOut(
-        category_name=record.category_name,
-        group_name=record.name,
-    )
-
-
-def sde_type_record_to_response(record: SdeType) -> GetSdeTypeOut:
-    """
-    Converts an instance of :class:`sni.sde.models.SdeType` to :class:`sni.api.routers.sde.GetSdeTypeOut`
-    """
-    return GetSdeTypeOut(
-        category_name=record.category_name,
-        group_name=record.group_name,
-        type_name=record.name,
-    )
-
-
 @router.get(
     '/category',
     response_model=Dict[int, Optional[GetSdeCategoryOut]],
@@ -167,7 +170,7 @@ def get_sde_category(
         if record is None:
             result[category_id] = None
         else:
-            result[category_id] = sde_category_record_to_response(record)
+            result[category_id] = GetSdeCategoryOut.from_record(record)
     return result
 
 
@@ -206,7 +209,7 @@ def get_sde_group(
         if record is None:
             result[group_id] = None
         else:
-            result[group_id] = sde_group_record_to_response(record)
+            result[group_id] = GetSdeGroupOut.from_record(record)
     return result
 
 
@@ -247,7 +250,7 @@ def get_sde_type(
         if record is None:
             result[type_id] = None
         else:
-            result[type_id] = sde_type_record_to_response(record)
+            result[type_id] = GetSdeTypeOut.from_record(record)
     return result
 
 

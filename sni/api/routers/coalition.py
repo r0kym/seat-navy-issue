@@ -47,6 +47,22 @@ class GetCoalitionOut(pdt.BaseModel):
     ticker: str
     updated_on: datetime
 
+    @staticmethod
+    def from_record(coalition: Coalition) -> 'GetCoalitionOut':
+        """
+        Converts a coalition database record to a response.
+        """
+        return GetCoalitionOut(
+            authorized_to_login=coalition.authorized_to_login,
+            coalition_id=str(coalition.pk),
+            created_on=coalition.created_on,
+            mandatory_esi_scopes=coalition.mandatory_esi_scopes,
+            members=[member.alliance_id for member in coalition.members],
+            coalition_name=coalition.coalition_name,
+            ticker=coalition.ticker,
+            updated_on=coalition.updated_on,
+        )
+
 
 class PostCoalitionIn(pdt.BaseModel):
     """
@@ -66,22 +82,6 @@ class PutCoalitionIn(pdt.BaseModel):
     members: Optional[List[int]] = None
     remove_members: Optional[List[int]] = None
     ticker: Optional[str] = None
-
-
-def coalition_record_to_response(coalition: Coalition) -> GetCoalitionOut:
-    """
-    Converts a coalition database record to a response.
-    """
-    return GetCoalitionOut(
-        authorized_to_login=coalition.authorized_to_login,
-        coalition_id=str(coalition.pk),
-        created_on=coalition.created_on,
-        mandatory_esi_scopes=coalition.mandatory_esi_scopes,
-        members=[member.alliance_id for member in coalition.members],
-        coalition_name=coalition.coalition_name,
-        ticker=coalition.ticker,
-        updated_on=coalition.updated_on,
-    )
 
 
 @router.delete(
@@ -133,7 +133,7 @@ def get_coalition_name(
     more.
     """
     assert_has_clearance(tkn.owner, 'sni.read_coalition')
-    return coalition_record_to_response(
+    return GetCoalitionOut.from_record(
         Coalition.objects(pk=coalition_id).get())
 
 
@@ -157,7 +157,7 @@ def post_coalitions(
     ).save()
     logging.debug('Created coalition %s (%s)', data.coalition_name,
                   str(coa.pk))
-    return coalition_record_to_response(coa)
+    return GetCoalitionOut.from_record(coa)
 
 
 @router.put(
@@ -204,4 +204,4 @@ def put_coalition(
         coalition.ticker = data.ticker
     coalition.members = list(set(coalition.members))
     coalition.save()
-    return coalition_record_to_response(coalition)
+    return GetCoalitionOut.from_record(coalition)

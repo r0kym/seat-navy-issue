@@ -62,6 +62,37 @@ class GetCrashReportOut(pdt.BaseModel):
     token: GetCrashReportTokenOut
     trace: List[str]
 
+    @staticmethod
+    def from_record(crash: CrashReport) -> 'GetCrashReportOut':
+        """
+        Converts a document of the crash report collection to a response model.
+        """
+        return GetCrashReportOut(
+            id=str(crash.pk),
+            request=GetCrashReportRequestOut(
+                headers=crash.request.headers,
+                method=crash.request.method,
+                params=crash.request.params,
+                url=crash.request.url,
+            ),
+            timestamp=crash.timestamp,
+            trace=crash.trace,
+            token=GetCrashReportTokenOut(
+                created_on=crash.token.created_on,
+                expires_on=crash.token.expires_on,
+                owner=GetCrashReportTokenUserOut(
+                    authorized_to_login=crash.token.owner.authorized_to_login,
+                    character_id=crash.token.owner.character_id,
+                    character_name=crash.token.owner.character_name,
+                    clearance_level=crash.token.owner.clearance_level,
+                    created_on=crash.token.owner.created_on,
+                    updated_on=crash.token.owner.updated_on,
+                ),
+                token_type=crash.token.token_type,
+                uuid=str(crash.token.uuid),
+            ),
+        )
+
 
 class GetCrashReportShortOut(pdt.BaseModel):
     """
@@ -71,37 +102,6 @@ class GetCrashReportShortOut(pdt.BaseModel):
     id: str
     timestamp: datetime
     url: str
-
-
-def crash_report_record_to_response(crash: CrashReport) -> GetCrashReportOut:
-    """
-    Converts a document of the crash report collection to a response model.
-    """
-    return GetCrashReportOut(
-        id=str(crash.pk),
-        request=GetCrashReportRequestOut(
-            headers=crash.request.headers,
-            method=crash.request.method,
-            params=crash.request.params,
-            url=crash.request.url,
-        ),
-        timestamp=crash.timestamp,
-        trace=crash.trace,
-        token=GetCrashReportTokenOut(
-            created_on=crash.token.created_on,
-            expires_on=crash.token.expires_on,
-            owner=GetCrashReportTokenUserOut(
-                authorized_to_login=crash.token.owner.authorized_to_login,
-                character_id=crash.token.owner.character_id,
-                character_name=crash.token.owner.character_name,
-                clearance_level=crash.token.owner.clearance_level,
-                created_on=crash.token.owner.created_on,
-                updated_on=crash.token.owner.updated_on,
-            ),
-            token_type=crash.token.token_type,
-            uuid=str(crash.token.uuid),
-        ),
-    )
 
 
 def crash_report_record_to_short_response(
@@ -163,5 +163,5 @@ def get_crash_report(
     Gets a crash report from its id. Requires a clearance level of 10.
     """
     assert_has_clearance(tkn.owner, 'sni.read_crash_report')
-    return crash_report_record_to_response(
+    return GetCrashReportOut.from_record(
         CrashReport.objects.get(pk=crash_report_id))

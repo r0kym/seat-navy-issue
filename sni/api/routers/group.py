@@ -46,6 +46,23 @@ class GetGroupOut(pdt.BaseModel):
     owner: Optional[str]
     updated_on: datetime
 
+    @staticmethod
+    def from_record(grp: Group) -> 'GetGroupOut':
+        """
+        Converts a group database record to a response.
+        """
+        return GetGroupOut(
+            authorized_to_login=grp.authorized_to_login,
+            created_on=grp.created_on,
+            description=grp.description,
+            group_id=str(grp.pk),
+            group_name=grp.group_name,
+            is_autogroup=grp.is_autogroup,
+            members=[member.character_name for member in grp.members],
+            owner=grp.owner.character_name if grp.owner is not None else None,
+            updated_on=grp.updated_on,
+        )
+
 
 class PostGroupIn(pdt.BaseModel):
     """
@@ -65,23 +82,6 @@ class PutGroupIn(pdt.BaseModel):
     members: Optional[List[str]] = None
     owner: Optional[str] = None
     remove_members: Optional[List[str]] = None
-
-
-def group_record_to_response(grp: Group) -> GetGroupOut:
-    """
-    Converts a group database record to a response.
-    """
-    return GetGroupOut(
-        authorized_to_login=grp.authorized_to_login,
-        created_on=grp.created_on,
-        description=grp.description,
-        group_id=str(grp.pk),
-        group_name=grp.group_name,
-        is_autogroup=grp.is_autogroup,
-        members=[member.character_name for member in grp.members],
-        owner=grp.owner.character_name if grp.owner is not None else None,
-        updated_on=grp.updated_on,
-    )
 
 
 @router.delete(
@@ -131,7 +131,7 @@ def get_group_name(
     more.
     """
     assert_has_clearance(tkn.owner, 'sni.read_group')
-    return group_record_to_response(Group.objects(pk=group_id).get())
+    return GetGroupOut.from_record(Group.objects(pk=group_id).get())
 
 
 @router.post(
@@ -156,7 +156,7 @@ def post_groups(
     ).save()
     logging.debug('Created group %s (%s) owned by %s', data.group_name,
                   str(grp.pk), tkn.owner.character_name)
-    return group_record_to_response(grp)
+    return GetGroupOut.from_record(grp)
 
 
 @router.put(
@@ -205,4 +205,4 @@ def put_group(
         ]
     grp.members = list(set(grp.members + [grp.owner]))
     grp.save()
-    return group_record_to_response(grp)
+    return GetGroupOut.from_record(grp)
