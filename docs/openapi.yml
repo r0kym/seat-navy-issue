@@ -270,6 +270,25 @@ components:
       - group_name
       title: GetGroupShortOut
       type: object
+    GetSdeCategoryOut:
+      description: Represents an SDE category
+      properties:
+        category_name:
+          title: Category Name
+          type: string
+      title: GetSdeCategoryOut
+      type: object
+    GetSdeGroupOut:
+      description: Represents an SDE group
+      properties:
+        category_name:
+          title: Category Name
+          type: string
+        group_name:
+          title: Group Name
+          type: string
+      title: GetSdeGroupOut
+      type: object
     GetSdeTypeOut:
       description: Represents an SDE type
       properties:
@@ -1249,20 +1268,93 @@ paths:
       summary: Replies "pong"
       tags:
       - Testing
+  /sde/category:
+    get:
+      description: "Given a list of SDE category ids, returns a dict with informations\
+        \ about\nthese types. The return dict key set is guaranteed to be the same\
+        \ as the\ninput list (up to repetition of keys).\n\nExample: Sending a request\
+        \ with ``[-1, 7, 8, 9]`` returns::\n\n    {\n        \"8\": {\n          \
+        \  \"category_name\": \"Charge\"\n        },\n        \"9\": {\n         \
+        \   \"category_name\": \"Blueprint\"\n        },\n        \"-1\": null,\n\
+        \        \"7\": {\n            \"category_name\": \"Module\"\n        }\n\
+        \    }"
+      operationId: get_sde_category_sde_category_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/GetSdeCategoryOut'
+                title: Response Get Sde Category Sde Category Get
+                type: object
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get information about a list of SDE categories
+      tags:
+      - SDE methods
+  /sde/group:
+    get:
+      description: "Given a list of SDE group ids, returns a dict with informations\
+        \ about these\ntypes. The return dict key set is guaranteed to be the same\
+        \ as the input\nlist (up to repetition of keys).\n\nExample: Sending a request\
+        \ with ``[-1, 4060, 646]`` returns::\n\n    {\n        \"646\": {\n      \
+        \      \"category_name\": \"Module\",\n            \"group_name\": \"Drone\
+        \ Tracking Modules\"\n        },\n        \"4060\": {\n            \"category_name\"\
+        : \"Module\",\n            \"group_name\": \"Vorton Projector\"\n        },\n\
+        \        \"-1\": null\n    }"
+      operationId: get_sde_group_sde_group_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/GetSdeGroupOut'
+                title: Response Get Sde Group Sde Group Get
+                type: object
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get information about a list of SDE groups
+      tags:
+      - SDE methods
   /sde/type:
     get:
       description: "Given a list of SDE type ids, returns a dict with informations\
         \ about these\ntypes. The return dict key set is guaranteed to be the same\
-        \ as the input\nlist (up to repetition of keys).\n\nThis method does not check\
-        \ the token.\n\nExample:\n    Sending a request with ``[21554, 1, 19722]``\
-        \ returns::\n\n        {\n            \"1\": null,\n            \"21554\"\
-        : {\n                \"category_name\": \"Blueprint\",\n                \"\
-        group_name\": \"Projectile Weapon Blueprint\",\n                \"type_name\"\
-        : \"650mm Medium 'Jolt' Artillery I Blueprint\"\n            },\n        \
-        \    \"19722\": {\n                \"category_name\": \"Ship\",\n        \
-        \        \"group_name\": \"Dreadnought\",\n                \"type_name\":\
-        \ \"Naglfar\"\n            }\n        }"
-      operationId: get_sde_types_sde_type_get
+        \ as the input\nlist (up to repetition of keys).\n\nExample:\n    Sending\
+        \ a request with ``[21554, 1, 19722]`` returns::\n\n        {\n          \
+        \  \"1\": null,\n            \"21554\": {\n                \"category_name\"\
+        : \"Blueprint\",\n                \"group_name\": \"Projectile Weapon Blueprint\"\
+        ,\n                \"type_name\": \"650mm Medium 'Jolt' Artillery I Blueprint\"\
+        \n            },\n            \"19722\": {\n                \"category_name\"\
+        : \"Ship\",\n                \"group_name\": \"Dreadnought\",\n          \
+        \      \"type_name\": \"Naglfar\"\n            }\n        }"
+      operationId: get_sde_type_sde_type_get
       parameters:
       - in: header
         name: authorization
@@ -1277,7 +1369,7 @@ paths:
               schema:
                 additionalProperties:
                   $ref: '#/components/schemas/GetSdeTypeOut'
-                title: Response Get Sde Types Sde Type Get
+                title: Response Get Sde Type Sde Type Get
                 type: object
           description: Successful Response
         '422':
