@@ -30,7 +30,7 @@ def is_authorized_to_login(usr: User) -> bool:
     if usr.authorized_to_login is False:
         return False
 
-    authorized_to_login: Optional[bool] = None
+    authorized_to_login: Optional[bool] = usr.authorized_to_login
 
     if usr.corporation is not None:
         if usr.corporation.authorized_to_login is False:
