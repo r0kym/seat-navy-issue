@@ -83,7 +83,24 @@
     <span class="n">is_autogroup</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">members</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span></div>
+    <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span>
+
+<div class="viewcode-block" id="GetGroupOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.GetGroupOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">grp</span><span class="p">:</span> <span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetGroupOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a group database record to a response.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetGroupOut</span><span class="p">(</span>
+            <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">group_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span>
+            <span class="n">group_name</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span>
+            <span class="n">is_autogroup</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">is_autogroup</span><span class="p">,</span>
+            <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">character_name</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span><span class="p">],</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span> <span class="k">if</span> <span class="n">grp</span><span class="o">.</span><span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">updated_on</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">updated_on</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="PostGroupIn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.PostGroupIn">[docs]</a><span class="k">class</span> <span class="nc">PostGroupIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -104,23 +121,6 @@
     <span class="n">members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">remove_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="group_record_to_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.group_record_to_response">[docs]</a><span class="k">def</span> <span class="nf">group_record_to_response</span><span class="p">(</span><span class="n">grp</span><span class="p">:</span> <span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetGroupOut</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a group database record to a response.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">GetGroupOut</span><span class="p">(</span>
-        <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
-        <span class="n">created_on</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-        <span class="n">group_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span>
-        <span class="n">group_name</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span>
-        <span class="n">is_autogroup</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">is_autogroup</span><span class="p">,</span>
-        <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">character_name</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span><span class="p">],</span>
-        <span class="n">owner</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span> <span class="k">if</span> <span class="n">grp</span><span class="o">.</span><span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">updated_on</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">updated_on</span><span class="p">,</span>
-    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="delete_group"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.delete_group">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
@@ -170,7 +170,7 @@
 <span class="sd">    more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_group&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">group_record_to_response</span><span class="p">(</span><span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+    <span class="k">return</span> <span class="n">GetGroupOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="post_groups"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.post_groups">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
@@ -195,7 +195,7 @@
     <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Created group </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) owned by </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span>
                   <span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span> <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">group_record_to_response</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">GetGroupOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="put_group"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.put_group">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
@@ -244,7 +244,7 @@
         <span class="p">]</span>
     <span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">+</span> <span class="p">[</span><span class="n">grp</span><span class="o">.</span><span class="n">owner</span><span class="p">]))</span>
     <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">group_record_to_response</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">GetGroupOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

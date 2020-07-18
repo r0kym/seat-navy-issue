@@ -75,6 +75,42 @@
 <dd><p>Imports the relevant SDE table in to the database</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.sde.sde.import_sde_dump_inv_categories">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">import_sde_dump_inv_categories</code><span class="sig-paren">(</span><em class="sig-param">client: sqlite3.Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/sde/sde.html#import_sde_dump_inv_categories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.import_sde_dump_inv_categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">invCategories</span></code> table</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.sde.sde.import_sde_dump_inv_constellations">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">import_sde_dump_inv_constellations</code><span class="sig-paren">(</span><em class="sig-param">client: sqlite3.Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/sde/sde.html#import_sde_dump_inv_constellations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.import_sde_dump_inv_constellations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">mapConstellations</span></code> table</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.sde.sde.import_sde_dump_inv_groups">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">import_sde_dump_inv_groups</code><span class="sig-paren">(</span><em class="sig-param">client: sqlite3.Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/sde/sde.html#import_sde_dump_inv_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.import_sde_dump_inv_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">invGroups</span></code> table</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.sde.sde.import_sde_dump_inv_solar_systems">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">import_sde_dump_inv_solar_systems</code><span class="sig-paren">(</span><em class="sig-param">client: sqlite3.Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/sde/sde.html#import_sde_dump_inv_solar_systems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.import_sde_dump_inv_solar_systems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">mapSolarSystems</span></code> table</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.sde.sde.import_sde_dump_inv_types">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">import_sde_dump_inv_types</code><span class="sig-paren">(</span><em class="sig-param">client: sqlite3.Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/sde/sde.html#import_sde_dump_inv_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.import_sde_dump_inv_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">invTypes</span></code> table</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.sde.sde.import_sde_dump_map_regions">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">import_sde_dump_map_regions</code><span class="sig-paren">(</span><em class="sig-param">client: sqlite3.Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/sde/sde.html#import_sde_dump_map_regions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.import_sde_dump_map_regions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">mapRegions</span></code> table</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.sde.models">
 <span id="database-models"></span><h2>Database models<a class="headerlink" href="#module-sni.sde.models" title="Permalink to this headline">¶</a></h2>
@@ -94,6 +130,39 @@
 <dt id="sni.sde.models.SdeCategory.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeCategory.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>SDE <code class="docutils literal notranslate"><span class="pre">categoryName</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.sde.models.SdeConstellation">
+<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeConstellation</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeConstellation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeConstellation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a constellation in EVE, i.e. an entry in the
+<code class="docutils literal notranslate"><span class="pre">mapConstellations</span></code> table.</p>
+<dl class="attribute">
+<dt id="sni.sde.models.SdeConstellation.constellation_id">
+<code class="sig-name descname">constellation_id</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.constellation_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Region ID (<code class="docutils literal notranslate"><span class="pre">constellationID</span></code> field)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.sde.models.SdeConstellation.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Region name (<code class="docutils literal notranslate"><span class="pre">constellationName</span></code> field)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.sde.models.SdeConstellation.region">
+<code class="sig-name descname">region</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Region of this constellation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.sde.models.SdeConstellation.region_name">
+<em class="property">property </em><code class="sig-name descname">region_name</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.region_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function that returns the name of the region of this
+constellation</p>
 </dd></dl>
 
 </dd></dl>
@@ -126,6 +195,65 @@ have any category</p>
 <dt id="sni.sde.models.SdeGroup.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeGroup.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>SDE <code class="docutils literal notranslate"><span class="pre">groupName</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.sde.models.SdeRegion">
+<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeRegion</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeRegion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a region in EVE, i.e. an entry in the <code class="docutils literal notranslate"><span class="pre">mapRegions</span></code> table.</p>
+<dl class="attribute">
+<dt id="sni.sde.models.SdeRegion.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeRegion.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Region name (<code class="docutils literal notranslate"><span class="pre">regionName</span></code> field)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.sde.models.SdeRegion.region_id">
+<code class="sig-name descname">region_id</code><a class="headerlink" href="#sni.sde.models.SdeRegion.region_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Region ID (<code class="docutils literal notranslate"><span class="pre">regionID</span></code> field)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.sde.models.SdeSolarSystem">
+<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeSolarSystem</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeSolarSystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeSolarSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a constellation in EVE, i.e. an entry in the
+<code class="docutils literal notranslate"><span class="pre">mapSolarSystems</span></code> table.</p>
+<dl class="attribute">
+<dt id="sni.sde.models.SdeSolarSystem.constellation">
+<code class="sig-name descname">constellation</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.constellation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constellation of this solar system</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.sde.models.SdeSolarSystem.constellation_name">
+<em class="property">property </em><code class="sig-name descname">constellation_name</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.constellation_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function that returns the name of the constellation of this
+solar system</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.sde.models.SdeSolarSystem.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solar system name (<code class="docutils literal notranslate"><span class="pre">solarSystemName</span></code> field)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.sde.models.SdeSolarSystem.region_name">
+<em class="property">property </em><code class="sig-name descname">region_name</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.region_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function that returns the name of the region of this solar
+system</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.sde.models.SdeSolarSystem.solar_system_id">
+<code class="sig-name descname">solar_system_id</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.solar_system_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solar system ID (<code class="docutils literal notranslate"><span class="pre">solarSystemID</span></code> field)</p>
 </dd></dl>
 
 </dd></dl>

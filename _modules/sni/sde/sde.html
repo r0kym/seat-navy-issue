@@ -51,7 +51,14 @@
 
 <span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">SdeCategory</span><span class="p">,</span> <span class="n">SdeGroup</span><span class="p">,</span> <span class="n">SdeType</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SdeCategory</span><span class="p">,</span>
+    <span class="n">SdeConstellation</span><span class="p">,</span>
+    <span class="n">SdeGroup</span><span class="p">,</span>
+    <span class="n">SdeRegion</span><span class="p">,</span>
+    <span class="n">SdeSolarSystem</span><span class="p">,</span>
+    <span class="n">SdeType</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">SDE_ROOT_URL</span> <span class="o">=</span> <span class="s1">&#39;https://www.fuzzwork.co.uk/dump/&#39;</span>
 <span class="n">SDE_SQLITE_MD5_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s1">&#39;sqlite-latest.sqlite.bz2.md5&#39;</span>
@@ -65,13 +72,13 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        The MD5 checksum of the dump (before decompression).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading and decompressing SDE Sqlite dump to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Downloading and decompressing SDE Sqlite dump to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
                   <span class="n">dump_path</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SDE_SQLITE_DUMP_URL</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
     <span class="n">decompressor</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2Decompressor</span><span class="p">()</span>
     <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="s2">&quot;wb+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dump</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dump</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
             <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="n">decompressed_data</span> <span class="o">=</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -96,31 +103,103 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the relevant SDE table in to the database</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sqlite_client</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dump_path</span><span class="p">)</span>
-    <span class="n">sqlite_client</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sqlite_client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invCategories;&#39;</span><span class="p">):</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
+    <span class="n">import_sde_dump_inv_categories</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">import_sde_dump_inv_groups</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">import_sde_dump_inv_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">import_sde_dump_map_regions</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">import_sde_dump_inv_constellations</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">import_sde_dump_inv_solar_systems</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump_inv_categories"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump_inv_categories">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump_inv_categories</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the ``invCategories`` table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table invCategories&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invCategories;&#39;</span><span class="p">):</span>
         <span class="n">SdeCategory</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">category_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set__category_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">],</span>
             <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryName&#39;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sqlite_client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invGroups;&#39;</span><span class="p">):</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump_inv_groups"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump_inv_groups">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump_inv_groups</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the ``invGroups`` table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table invGroups&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invGroups;&#39;</span><span class="p">):</span>
         <span class="n">category</span> <span class="o">=</span> <span class="n">SdeCategory</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">category_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
         <span class="n">SdeGroup</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set__category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
             <span class="n">set__group_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">],</span>
             <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupName&#39;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sqlite_client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invTypes;&#39;</span><span class="p">):</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump_inv_types"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump_inv_types">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump_inv_types</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the ``invTypes`` table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table invTypes&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invTypes;&#39;</span><span class="p">):</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">SdeGroup</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
         <span class="n">SdeType</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">type_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set__group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span>
             <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeName&#39;</span><span class="p">],</span>
             <span class="n">set__type_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeID&#39;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="n">sqlite_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump_map_regions"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump_map_regions">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump_map_regions</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the ``mapRegions`` table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table mapRegions&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM mapRegions;&#39;</span><span class="p">):</span>
+        <span class="n">SdeRegion</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">region_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">set__region_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionID&#39;</span><span class="p">],</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionName&#39;</span><span class="p">],</span>
+            <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump_inv_constellations"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump_inv_constellations">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump_inv_constellations</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the ``mapConstellations`` table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table mapConstellations&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM mapConstellations;&#39;</span><span class="p">):</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="n">SdeRegion</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">region_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">SdeConstellation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">constellation_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">set__constellation_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationID&#39;</span><span class="p">],</span>
+                <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationName&#39;</span><span class="p">],</span>
+                <span class="n">set__region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+                <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_sde_dump_inv_solar_systems"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.import_sde_dump_inv_solar_systems">[docs]</a><span class="k">def</span> <span class="nf">import_sde_dump_inv_solar_systems</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports the ``mapSolarSystems`` table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table mapSolarSystems&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM mapSolarSystems;&#39;</span><span class="p">):</span>
+        <span class="n">constellation</span> <span class="o">=</span> <span class="n">SdeConstellation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">constellation_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">SdeSolarSystem</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">solar_system_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;solarSystemID&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">set__constellation</span><span class="o">=</span><span class="n">constellation</span><span class="p">,</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;solarSystemName&#39;</span><span class="p">],</span>
+            <span class="n">set__solar_system_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;solarSystemID&#39;</span><span class="p">],</span>
+            <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </pre></div>
 
           </div>

@@ -128,6 +128,92 @@
 <span class="sd">        have any group</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="SdeRegion"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeRegion">[docs]</a><span class="k">class</span> <span class="nc">SdeRegion</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a region in EVE, i.e. an entry in the ``mapRegions`` table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Region name (``regionName`` field)&quot;&quot;&quot;</span>
+
+    <span class="n">region_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Region ID (``regionID`` field)&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;region_id&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="SdeConstellation"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeConstellation">[docs]</a><span class="k">class</span> <span class="nc">SdeConstellation</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a constellation in EVE, i.e. an entry in the</span>
+<span class="sd">    ``mapConstellations`` table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">constellation_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Region ID (``constellationID`` field)&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Region name (``constellationName`` field)&quot;&quot;&quot;</span>
+
+    <span class="n">region</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">SdeRegion</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Region of this constellation&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;constellation_id&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">region_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience function that returns the name of the region of this</span>
+<span class="sd">        constellation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="SdeSolarSystem"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeSolarSystem">[docs]</a><span class="k">class</span> <span class="nc">SdeSolarSystem</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a constellation in EVE, i.e. an entry in the</span>
+<span class="sd">    ``mapSolarSystems`` table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">constellation</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">SdeConstellation</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Constellation of this solar system&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Solar system name (``solarSystemName`` field)&quot;&quot;&quot;</span>
+
+    <span class="n">solar_system_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Solar system ID (``solarSystemID`` field)&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;solar_system_id&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">constellation_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience function that returns the name of the constellation of this</span>
+<span class="sd">        solar system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constellation</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">region_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience function that returns the name of the region of this solar</span>
+<span class="sd">        system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constellation</span><span class="o">.</span><span class="n">region_name</span></div>
 </pre></div>
 
           </div>
