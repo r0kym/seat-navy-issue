@@ -278,6 +278,20 @@ components:
           type: string
       title: GetSdeCategoryOut
       type: object
+    GetSdeConstellationOut:
+      description: Represents an SDE EVE constellation
+      properties:
+        constellation_name:
+          title: Constellation Name
+          type: string
+        region_name:
+          title: Region Name
+          type: string
+      required:
+      - constellation_name
+      - region_name
+      title: GetSdeConstellationOut
+      type: object
     GetSdeGroupOut:
       description: Represents an SDE group
       properties:
@@ -288,6 +302,34 @@ components:
           title: Group Name
           type: string
       title: GetSdeGroupOut
+      type: object
+    GetSdeRegionOut:
+      description: Represents an SDE EVE region
+      properties:
+        region_name:
+          title: Region Name
+          type: string
+      required:
+      - region_name
+      title: GetSdeRegionOut
+      type: object
+    GetSdeSolarSystemOut:
+      description: Represents an SDE EVE solar system
+      properties:
+        constellation_name:
+          title: Constellation Name
+          type: string
+        region_name:
+          title: Region Name
+          type: string
+        solar_system_name:
+          title: Solar System Name
+          type: string
+      required:
+      - constellation_name
+      - region_name
+      - solar_system_name
+      title: GetSdeSolarSystemOut
       type: object
     GetSdeTypeOut:
       description: Represents an SDE type
@@ -1305,6 +1347,44 @@ paths:
       summary: Get information about a list of SDE categories
       tags:
       - SDE methods
+  /sde/constellation:
+    get:
+      description: "Given a list of SDE constellation ids, returns a dict with informations\n\
+        about these types. The return dict key set is guaranteed to be the same as\n\
+        the input list (up to repetition of keys).\n\nExample:\n    Sending a request\
+        \ with ``[1, 20000352, 20000681]`` returns::\n\n        {\n            \"\
+        20000352\": {\n                \"constellation_name\": \"Besateoden\",\n \
+        \               \"region_name\": \"Molden Heath\"\n            },\n      \
+        \      \"1\": null,\n            \"20000681\": {\n                \"constellation_name\"\
+        : \"Basilisk\",\n                \"region_name\": \"Fountain\"\n         \
+        \   }\n        }"
+      operationId: get_sde_constellation_sde_constellation_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/GetSdeConstellationOut'
+                title: Response Get Sde Constellation Sde Constellation Get
+                type: object
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get information about a list of EVE constellations
+      tags:
+      - SDE methods
   /sde/group:
     get:
       description: "Given a list of SDE group ids, returns a dict with informations\
@@ -1340,6 +1420,81 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Get information about a list of SDE groups
+      tags:
+      - SDE methods
+  /sde/region:
+    get:
+      description: "Given a list of SDE region ids, returns a dict with informations\
+        \ about\nthese types. The return dict key set is guaranteed to be the same\
+        \ as the\ninput list (up to repetition of keys).\n\nExample:\n    Sending\
+        \ a request with ``[1, 10000060, 10000065]`` returns::\n\n        {\n    \
+        \        \"1\": null,\n            \"10000065\": {\n                \"region_name\"\
+        : \"Kor-Azor\"\n            },\n            \"10000060\": {\n            \
+        \    \"region_name\": \"Delve\"\n            }\n        }"
+      operationId: get_sde_region_sde_region_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/GetSdeRegionOut'
+                title: Response Get Sde Region Sde Region Get
+                type: object
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get information about a list of EVE regions
+      tags:
+      - SDE methods
+  /sde/solar_system:
+    get:
+      description: "Given a list of SDE solar system ids, returns a dict with informations\n\
+        about these types. The return dict key set is guaranteed to be the same as\n\
+        the input list (up to repetition of keys).\n\nExample:\n    Sending a request\
+        \ with ``[1, 30003878, 31001039]`` returns::\n\n        {\n            \"\
+        1\": null,\n            \"30003878\": {\n                \"constellation_name\"\
+        : \"Amdimmah\",\n                \"region_name\": \"Khanid\",\n          \
+        \      \"solar_system_name\": \"Palas\"\n            },\n            \"31001039\"\
+        : {\n                \"constellation_name\": \"C-C00100\",\n             \
+        \   \"region_name\": \"C-R00011\",\n                \"solar_system_name\"\
+        : \"J171549\"\n            }\n        }"
+      operationId: get_sde_solar_system_sde_solar_system_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/GetSdeSolarSystemOut'
+                title: Response Get Sde Solar System Sde Solar System Get
+                type: object
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get information about a list of EVE solar systems
       tags:
       - SDE methods
   /sde/type:
