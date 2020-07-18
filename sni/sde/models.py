@@ -89,3 +89,89 @@ class SdeType(me.Document):
         have any group
         """
         return self.group.name if self.group is not None else None
+
+
+class SdeRegion(me.Document):
+    """
+    Represents a region in EVE, i.e. an entry in the ``mapRegions`` table.
+    """
+
+    name = me.StringField()
+    """Region name (``regionName`` field)"""
+
+    region_id = me.IntField(unique=True)
+    """Region ID (``regionID`` field)"""
+
+    meta = {
+        'indexes': [
+            'region_id',
+        ],
+    }
+
+
+class SdeConstellation(me.Document):
+    """
+    Represents a constellation in EVE, i.e. an entry in the
+    ``mapConstellations`` table.
+    """
+
+    constellation_id = me.IntField(unique=True)
+    """Region ID (``constellationID`` field)"""
+
+    name = me.StringField()
+    """Region name (``constellationName`` field)"""
+
+    region = me.ReferenceField(SdeRegion)
+    """Region of this constellation"""
+
+    meta = {
+        'indexes': [
+            'constellation_id',
+        ],
+    }
+
+    @property
+    def region_name(self) -> str:
+        """
+        Convenience function that returns the name of the region of this
+        constellation
+        """
+        return self.region.name
+
+
+class SdeSolarSystem(me.Document):
+    """
+    Represents a constellation in EVE, i.e. an entry in the
+    ``mapSolarSystems`` table.
+    """
+
+    constellation = me.ReferenceField(SdeConstellation)
+    """Constellation of this solar system"""
+
+    name = me.StringField()
+    """Solar system name (``solarSystemName`` field)"""
+
+    solar_system_id = me.IntField(unique=True)
+    """Solar system ID (``solarSystemID`` field)"""
+
+    meta = {
+        'indexes': [
+            'solar_system_id',
+        ],
+    }
+
+    @property
+    def constellation_name(self) -> str:
+        """
+        Convenience function that returns the name of the constellation of this
+        solar system
+        """
+        return self.constellation.name
+
+    @property
+    def region_name(self) -> str:
+        """
+        Convenience function that returns the name of the region of this solar
+        system
+        """
+        return self.constellation.region_name
