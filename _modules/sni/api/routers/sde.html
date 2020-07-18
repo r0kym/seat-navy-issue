@@ -51,9 +51,28 @@
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">sni.sde.models</span> <span class="kn">import</span> <span class="n">SdeType</span>
+<span class="kn">from</span> <span class="nn">sni.sde.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SdeCategory</span><span class="p">,</span>
+    <span class="n">SdeGroup</span><span class="p">,</span>
+    <span class="n">SdeType</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="GetSdeCategoryOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.GetSdeCategoryOut">[docs]</a><span class="k">class</span> <span class="nc">GetSdeCategoryOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents an SDE category</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">category_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="GetSdeGroupOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.GetSdeGroupOut">[docs]</a><span class="k">class</span> <span class="nc">GetSdeGroupOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents an SDE group</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">category_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">group_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="GetSdeTypeOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.GetSdeTypeOut">[docs]</a><span class="k">class</span> <span class="nc">GetSdeTypeOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -63,6 +82,23 @@
     <span class="n">category_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">group_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">type_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="sde_category_record_to_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.sde_category_record_to_response">[docs]</a><span class="k">def</span> <span class="nf">sde_category_record_to_response</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n">SdeCategory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetSdeCategoryOut</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an instance of :class:`sni.sde.models.SdeCategory` to :class:`sni.api.routers.sde.GetSdeCategoryOut`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">GetSdeCategoryOut</span><span class="p">(</span><span class="n">category_name</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sde_group_record_to_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.sde_group_record_to_response">[docs]</a><span class="k">def</span> <span class="nf">sde_group_record_to_response</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n">SdeGroup</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetSdeGroupOut</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an instance of :class:`sni.sde.models.SdeType` to :class:`sni.api.routers.sde.GetSdeTypeOut`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">GetSdeGroupOut</span><span class="p">(</span>
+        <span class="n">category_name</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">category_name</span><span class="p">,</span>
+        <span class="n">group_name</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="sde_type_record_to_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.sde_type_record_to_response">[docs]</a><span class="k">def</span> <span class="nf">sde_type_record_to_response</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n">SdeType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetSdeTypeOut</span><span class="p">:</span>
@@ -76,12 +112,91 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_sde_types"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.get_sde_types">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sde_category"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.get_sde_category">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/category&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GetSdeCategoryOut</span><span class="p">]],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get information about a list of SDE categories&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_sde_category</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">_tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a list of SDE category ids, returns a dict with informations about</span>
+<span class="sd">    these types. The return dict key set is guaranteed to be the same as the</span>
+<span class="sd">    input list (up to repetition of keys).</span>
+
+<span class="sd">    Example: Sending a request with ``[-1, 7, 8, 9]`` returns::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;8&quot;: {</span>
+<span class="sd">                &quot;category_name&quot;: &quot;Charge&quot;</span>
+<span class="sd">            },</span>
+<span class="sd">            &quot;9&quot;: {</span>
+<span class="sd">                &quot;category_name&quot;: &quot;Blueprint&quot;</span>
+<span class="sd">            },</span>
+<span class="sd">            &quot;-1&quot;: null,</span>
+<span class="sd">            &quot;7&quot;: {</span>
+<span class="sd">                &quot;category_name&quot;: &quot;Module&quot;</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GetSdeCategoryOut</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">category_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">SdeCategory</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">category_id</span><span class="o">=</span><span class="n">category_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">record</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sde_category_record_to_response</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="get_sde_group"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.get_sde_group">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/group&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GetSdeGroupOut</span><span class="p">]],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get information about a list of SDE groups&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_sde_group</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">_tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a list of SDE group ids, returns a dict with informations about these</span>
+<span class="sd">    types. The return dict key set is guaranteed to be the same as the input</span>
+<span class="sd">    list (up to repetition of keys).</span>
+
+<span class="sd">    Example: Sending a request with ``[-1, 4060, 646]`` returns::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;646&quot;: {</span>
+<span class="sd">                &quot;category_name&quot;: &quot;Module&quot;,</span>
+<span class="sd">                &quot;group_name&quot;: &quot;Drone Tracking Modules&quot;</span>
+<span class="sd">            },</span>
+<span class="sd">            &quot;4060&quot;: {</span>
+<span class="sd">                &quot;category_name&quot;: &quot;Module&quot;,</span>
+<span class="sd">                &quot;group_name&quot;: &quot;Vorton Projector&quot;</span>
+<span class="sd">            },</span>
+<span class="sd">            &quot;-1&quot;: null</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GetSdeGroupOut</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">SdeGroup</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">record</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sde_group_record_to_response</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="get_sde_type"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.sde.get_sde_type">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="s1">&#39;/type&#39;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GetSdeTypeOut</span><span class="p">]],</span>
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get information about a list of SDE types&#39;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_sde_types</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">get_sde_type</span><span class="p">(</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">_tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
@@ -89,8 +204,6 @@
 <span class="sd">    Given a list of SDE type ids, returns a dict with informations about these</span>
 <span class="sd">    types. The return dict key set is guaranteed to be the same as the input</span>
 <span class="sd">    list (up to repetition of keys).</span>
-
-<span class="sd">    This method does not check the token.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        Sending a request with ``[21554, 1, 19722]`` returns::</span>
@@ -111,11 +224,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GetSdeTypeOut</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">type_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="n">type_record</span> <span class="o">=</span> <span class="n">SdeType</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">type_record</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">SdeType</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">record</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">result</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sde_type_record_to_response</span><span class="p">(</span><span class="n">type_record</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sde_type_record_to_response</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 </pre></div>
 

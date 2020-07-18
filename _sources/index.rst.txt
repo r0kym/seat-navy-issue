@@ -3,15 +3,19 @@ SeAT Navy Issue
 
 not affiliated with the original `SeAT <https://github.com/eveseat/seat>`_.
 
-.. image:: https://api.codeclimate.com/v1/badges/c96b3a343687b9a4a3fa/maintainability
-   :target: https://codeclimate.com/github/altaris/seat-navy-issue/maintainability
-   :alt: Maintainability
+.. image:: https://badgen.net/badge/openapi/3/red
+   :target: https://editor.swagger.io/?url=https://raw.githubusercontent.com/altaris/seat-navy-issue/master/docs/openapi.yml
+   :alt: OpenApi
 
 .. image:: https://badgen.net/badge/icon/GitHub?icon=github&label
    :target: https://github.com/altaris/seat-navy-issue
    :alt: Repository
 
-.. image:: https://badgen.net/badge/Python/3/blue
+.. image:: https://api.codeclimate.com/v1/badges/c96b3a343687b9a4a3fa/maintainability
+   :target: https://codeclimate.com/github/altaris/seat-navy-issue/maintainability
+   :alt: Maintainability
+
+.. image:: https://badgen.net/badge/python/3/blue
    :alt: Python 3
 
 .. image:: https://badgen.net/badge/license/MIT/blue
