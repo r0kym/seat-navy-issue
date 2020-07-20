@@ -1,10 +1,20 @@
 """
-Discord Bot management. The bot requires the ``bot`` scope, and the
-``Manage Roles``, ``Change Nickname``, ``Manage Nicknames``, ``Send Messages``
-permissions.
+Discord Bot management. The bot requires the ``bot`` scope, and the following
+permissions:
 
-See also:
-    `Creating a Bot Account <https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro>`_
+* ``Manage Roles``
+* ``Change Nickname``
+* ``Manage Nicknames``
+* ``Send Messages``
+* ``Manage Messages``
+
+which corresponds to the the permission integer ``469772288``. Therefore, the
+invitation link for the bot should look like this:
+``https://discord.com/api/oauth2/authorize?client_id=<bot_id>&permissions=469772288&scope=bot``.
+
+See also: `Discord developer portal
+    <https://discord.com/developers/applications>`_, `Creating a Bot Account
+    <https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro>`_
 """
 
 import asyncio
