@@ -27,6 +27,9 @@ author = 'Cédric HT'
 # The full version, including alpha/beta/rc tags
 release = 'alpha'
 
+html_logo = 'logo.256.png'
+html_favicon = 'logo.32.png'
+
 
 # -- General configuration ---------------------------------------------------
 

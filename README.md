@@ -9,6 +9,10 @@ SeAT Navy Issue
 ![Python 3](https://badgen.net/badge/Python/3/blue)
 [![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
+![Logo 256x256](res/logo.256.png)
+
+*logo derived from the work of [Smashicons](https://smashicons.com/)*
+
 SeAT Navy Issue is a simpler alternative to
 [SeAT](https://github.com/eveseat/seat). In short, it is an EVE Online
 community manager, in the form of a REST API. Its core functionalities include:
