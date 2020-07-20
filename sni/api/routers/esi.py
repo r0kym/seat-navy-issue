@@ -111,7 +111,7 @@ async def get_callback_esi(code: str, state: str):
             PostCallbackEsiOut(
                 state_code=str(state_code.uuid),
                 user_token=user_jwt_str,
-            )
+            ).dict()
         },
     )
 
