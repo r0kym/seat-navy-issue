@@ -13,7 +13,7 @@ command-line-args:
 	$(SNI) --help > $(SPHINX_PATH)/command-line-args.txt
 
 .PHONY: docs
-docs: docs_uml openapi-spec command-line-args
+docs: docs_uml command-line-args  # openapi-spec
 	sphinx-build -b html $(SPHINX_PATH)/ $(SPHINX_PATH)/_build
 	-@xdg-open $(SPHINX_PATH)/_build/index.html
 
