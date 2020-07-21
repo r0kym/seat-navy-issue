@@ -14,7 +14,7 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from sni.db.redis import new_connection
+from sni.db.redis import new_redis_connection
 import sni.conf as conf
 import sni.utils as utils
 
@@ -93,6 +93,13 @@ def start_scheduler() -> None:
     if not ENABLED:
         logging.warning("Not starting the scheduler since it is disabled")
         return
-    redis = new_connection()
+    redis = new_redis_connection()
     redis.delete(JOBS_KEY, RUN_TIMES_KEY)
     scheduler.start()
+
+
+def stop_scheduler() -> None:
+    """
+    Stops the scheduler and cleans up things
+    """
+    scheduler.shutdown()

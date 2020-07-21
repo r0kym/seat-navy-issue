@@ -108,16 +108,16 @@ def main():
     # --------------------------------------------------------------------------
 
     if arguments.print_openapi_spec:
-        import sni.api.server
-        sni.api.server.print_openapi_spec()
+        from sni.api.server import print_openapi_spec
+        print_openapi_spec()
         sys.exit()
 
     # --------------------------------------------------------------------------
     # Database migration
     # --------------------------------------------------------------------------
 
-    import sni.db.mongodb
-    sni.db.mongodb.init()
+    from sni.db.mongodb import init_mongodb
+    init_mongodb()
     connect_database_signals()
     migrate_database()
 
@@ -129,11 +129,11 @@ def main():
     # --------------------------------------------------------------------------
 
     if arguments.reload_esi_openapi_spec:
-        import sni.esi.esi
-        sni.esi.esi.load_esi_openapi()
+        from sni.esi.esi import load_esi_openapi
+        load_esi_openapi()
         sys.exit()
 
-    import sni.scheduler
+    from sni.scheduler import start_scheduler, stop_scheduler
 
     if arguments.run_job:
         run_job(arguments.run_job)
@@ -143,7 +143,7 @@ def main():
     # Scheduler start
     # --------------------------------------------------------------------------
 
-    sni.scheduler.start_scheduler()
+    start_scheduler()
     schedule_jobs()
 
     # --------------------------------------------------------------------------
@@ -151,24 +151,24 @@ def main():
     # --------------------------------------------------------------------------
 
     if conf.get('discord.enabled'):
-        import sni.discord.bot
+        from sni.discord.bot import start_bot
         import sni.discord.commands
         import sni.discord.events
-        sni.discord.bot.start()
+        start_bot()
 
     # --------------------------------------------------------------------------
     # API server start
     # --------------------------------------------------------------------------
 
-    import sni.api.server
+    from sni.api.server import start_api_server
     import sni.api.exception_handlers
-    sni.api.server.start()
+    start_api_server()
 
     # --------------------------------------------------------------------------
     # API server stopped, cleanup time
     # --------------------------------------------------------------------------
 
-    sni.scheduler.scheduler.shutdown()
+    stop_scheduler()
 
 
 def parse_command_line_arguments() -> argparse.Namespace:

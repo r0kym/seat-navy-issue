@@ -16,7 +16,7 @@ from .teamspeak import (
     cached_teamspeak_query,
     client_list,
     ensure_group,
-    new_connection,
+    new_teamspeak_connection,
 )
 
 
@@ -26,7 +26,7 @@ def message_registered_clients_with_wrong_name():
     Iterates through all users that are registered in Teamspeak, and checks
     their nickname. If it doesn't match, sends a message.
     """
-    connection = new_connection()
+    connection = new_teamspeak_connection()
     for ts_client in client_list(connection):
         if ts_client.client_nickname == conf.get('teamspeak.bot_name'):
             # TS client is the bot
@@ -61,7 +61,7 @@ def map_teamspeak_groups():
     """
     Creates all groups on Teamspeak.
     """
-    connection = new_connection()
+    connection = new_teamspeak_connection()
     for grp in Group.objects(map_to_teamspeak=True):
         logging.debug('Mapping group %s to Teamspeak', grp.group_name)
         tsgrp = ensure_group(connection, grp.group_name)
@@ -75,7 +75,7 @@ def update_teamspeak_groups():
     """
     Updates group memberships on Teamspeak
     """
-    connection = new_connection()
+    connection = new_teamspeak_connection()
     for grp in Group.objects(map_to_teamspeak=True, teamspeak_sgid__ne=None):
         logging.debug('Updating Teamspeak group %s', grp.group_name)
         current_cldbids: List[int] = [

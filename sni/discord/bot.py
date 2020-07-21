@@ -26,7 +26,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Bot
 import discord
 
-from sni.db.redis import new_connection
+from sni.db.redis import new_redis_connection
 import sni.conf as conf
 import sni.utils as utils
 
@@ -88,7 +88,7 @@ async def log(message: str):
     await log_channel.send(message)
 
 
-def start():
+def start_bot():
     """
     Runs the discord client in a different thread.
     """
@@ -110,6 +110,13 @@ def start_scheduler() -> None:
     """
     Clears the job store and starts the scheduler.
     """
-    redis = new_connection()
+    redis = new_redis_connection()
     redis.delete(JOBS_KEY, RUN_TIMES_KEY)
     scheduler.start()
+
+
+def stop_scheduler() -> None:
+    """
+    Stops the scheduler and cleans up things
+    """
+    scheduler.shutdown()

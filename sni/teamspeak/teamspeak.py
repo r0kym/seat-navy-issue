@@ -201,7 +201,7 @@ def new_authentication_challenge(usr: User) -> str:
     return challenge_nickname
 
 
-def new_connection() -> TS3Connection:
+def new_teamspeak_connection() -> TS3Connection:
     """
     Returns a new connection to the teamspeak server.
     """

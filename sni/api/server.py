@@ -90,7 +90,7 @@ def print_openapi_spec() -> None:
     print(yaml.dump(app.openapi()))
 
 
-def start():
+def start_api_server():
     """
     Runs the API server.
     """

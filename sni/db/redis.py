@@ -7,7 +7,7 @@ import redis
 import sni.conf as conf
 
 
-def new_connection() -> redis.Redis:
+def new_redis_connection() -> redis.Redis:
     """
     Returns a new redis connection handler
     """

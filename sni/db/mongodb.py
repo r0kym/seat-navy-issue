@@ -16,7 +16,7 @@ import pymongo.collection
 import sni.conf as conf
 
 
-def init():
+def init_mongodb():
     """
     Connects to the MongoDB instance.
 

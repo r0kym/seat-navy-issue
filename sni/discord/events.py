@@ -6,7 +6,7 @@ import logging
 
 import discord
 
-from .bot import bot, log, scheduler, start_scheduler
+from .bot import bot, log, start_scheduler, stop_scheduler
 
 
 @bot.event
@@ -15,8 +15,8 @@ async def on_disconnect():
     Called when the Discord client has been disconnected. Executes cleanup
     tasks.
     """
-    logging.info('Discord client disconnected')
-    scheduler.shutdown()
+    logging.debug('Discord client disconnected')
+    stop_scheduler()
 
 
 @bot.event
@@ -30,5 +30,5 @@ async def on_ready():
         status=discord.Status.online,
         activity=discord.Game('EVE Online'),
     )
-    logging.info('Discord client online')
+    logging.debug('Discord client online')
     await log('SeAT Navy Issue online o7')

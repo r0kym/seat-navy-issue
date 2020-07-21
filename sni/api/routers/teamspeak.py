@@ -16,7 +16,7 @@ import pydantic as pdt
 from sni.teamspeak.teamspeak import (
     complete_authentication_challenge,
     new_authentication_challenge,
-    new_connection,
+    new_teamspeak_connection,
 )
 import sni.utils as utils
 from sni.uac.clearance import assert_has_clearance
@@ -69,7 +69,7 @@ def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
     try:
-        connection = new_connection()
+        connection = new_teamspeak_connection()
         complete_authentication_challenge(connection, tkn.owner)
         connection.close()
     except LookupError:

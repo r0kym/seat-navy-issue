@@ -8,9 +8,9 @@ import logging
 
 from typing import Any, Optional
 
-from .redis import new_connection
+from .redis import new_redis_connection
 
-connection = new_connection()
+connection = new_redis_connection()
 
 
 def cache_get(key: Any) -> Optional[Any]:
