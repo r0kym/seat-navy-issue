@@ -124,6 +124,6 @@ class CrashReport(me.Document):
             'id': str(self.pk),
             'request': self.request.to_dict(),
             'timestamp': str(self.timestamp),
-            'token': self.token.to_dict(),
+            'token': self.token.to_dict() if self.token else None,
             'trace': self.trace,
         }
