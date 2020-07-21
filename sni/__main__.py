@@ -135,13 +135,6 @@ def main():
 
     import sni.scheduler
 
-    if arguments.clear_jobs:
-        logging.info('Clearing scheduler job lists')
-        sni.scheduler.scheduler.remove_all_jobs()
-        if conf.get('discord.enabled'):
-            import sni.discord.bot
-            sni.discord.bot.scheduler.remove_all_jobs()
-
     if arguments.run_job:
         run_job(arguments.run_job)
         sys.exit()
@@ -150,8 +143,7 @@ def main():
     # Scheduler start
     # --------------------------------------------------------------------------
 
-    sni.scheduler.scheduler.start()
-
+    sni.scheduler.start_scheduler()
     schedule_jobs()
 
     # --------------------------------------------------------------------------
@@ -193,12 +185,6 @@ def parse_command_line_arguments() -> argparse.Namespace:
         action='store',
         default='./sni.yml',
         help='Specify an alternate configuration file (default: ./sni.yml)',
-    )
-    argument_parser.add_argument(
-        '--clear-jobs',
-        action='store_true',
-        default=False,
-        help='Clear scheduled job lists',
     )
     argument_parser.add_argument(
         '--migrate-database',

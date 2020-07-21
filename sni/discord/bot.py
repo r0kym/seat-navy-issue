@@ -26,8 +26,15 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext.commands import Bot
 import discord
 
+from sni.db.redis import new_connection
 import sni.conf as conf
 import sni.utils as utils
+
+JOBS_KEY: str = 'scheduler.discord.jobs'
+"""The redis key for the job list"""
+
+RUN_TIMES_KEY: str = 'scheduler.discord.run_times'
+"""The redis key for the job run times"""
 
 bot = Bot(command_prefix='!', description='SeAT Navy Issue Discord Bot')
 
@@ -43,11 +50,13 @@ scheduler = AsyncIOScheduler(
     },
     jobstores={
         'discord':
-        RedisJobStore(db=conf.get('redis.database'),
-                      host=conf.get('redis.host'),
-                      jobs_key='scheduler.discord.jobs',
-                      port=conf.get('redis.port'),
-                      run_times_key='scheduler.discord.run_times'),
+        RedisJobStore(
+            db=conf.get('redis.database'),
+            host=conf.get('redis.host'),
+            jobs_key=JOBS_KEY,
+            port=conf.get('redis.port'),
+            run_times_key=RUN_TIMES_KEY,
+        ),
     },
     timezone=utils.utc,
 )
@@ -95,3 +104,12 @@ def start():
         target=asyncio.BaseEventLoop.run_forever,
     )
     thread.start()
+
+
+def start_scheduler() -> None:
+    """
+    Clears the job store and starts the scheduler.
+    """
+    redis = new_connection()
+    redis.delete(JOBS_KEY, RUN_TIMES_KEY)
+    scheduler.start()
