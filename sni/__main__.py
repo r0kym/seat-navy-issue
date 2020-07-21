@@ -13,12 +13,6 @@ import logging
 import logging.config
 import sys
 
-from sni.scheduler import (
-    scheduler,
-    start_scheduler,
-    stop_scheduler,
-    wait_until_job_store_is_empty,
-)
 import sni.conf as conf
 
 
@@ -165,6 +159,7 @@ def main():
     # Scheduler start
     # --------------------------------------------------------------------------
 
+    from sni.scheduler import start_scheduler, stop_scheduler
     start_scheduler()
 
     if arguments.run_job:
@@ -242,6 +237,7 @@ def run_job(job_name: str) -> None:
     """
     Runs a job (or indeed, any function that doesn't take arguments)
     """
+    from sni.scheduler import scheduler, wait_until_job_store_is_empty
     module_name, function_name = job_name.split(':')
     module = import_module(module_name)
     function = getattr(module, function_name)
@@ -256,6 +252,7 @@ def start_discord_bot() -> None:
     Starts the discord bot (or rather, schedules it to be started), and
     corrects the Discord command and event handlers.
     """
+    from sni.scheduler import scheduler
     from sni.discord.bot import start_bot
     import sni.discord.commands
     import sni.discord.events
