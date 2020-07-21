@@ -45,7 +45,7 @@
 
 <span class="kn">import</span> <span class="nn">mongoengine.signals</span> <span class="k">as</span> <span class="nn">signals</span>
 
-<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">add_job</span>
+<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">.jobs</span> <span class="kn">import</span> <span class="n">update_user_autogroup</span>
@@ -60,8 +60,8 @@
         <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="c1"># add_job(update_user_from_esi, args=(usr, ))</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_user_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="c1"># scheduler.add_job(update_user_from_esi, args=(usr, ))</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
 </pre></div>
 
           </div>

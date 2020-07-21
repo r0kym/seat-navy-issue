@@ -48,10 +48,16 @@
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">iscoroutinefunction</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
+<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">scheduler</span><span class="p">,</span>
+    <span class="n">start_scheduler</span><span class="p">,</span>
+    <span class="n">stop_scheduler</span><span class="p">,</span>
+    <span class="n">wait_until_job_store_is_empty</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 
 
@@ -86,14 +92,36 @@
         <span class="s1">&#39;INFO&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
         <span class="s1">&#39;WARNING&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
     <span class="p">}[</span><span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.logging_level&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> [</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="n">level</span><span class="o">=</span><span class="n">logging_level</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;apscheduler&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;discord&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;fastapi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;uvicorn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_level</span><span class="p">)</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">({</span>
+        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> [</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stderr&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">logging_level</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="c1"># &#39;discord&#39;: {</span>
+            <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
+            <span class="c1">#     &#39;level&#39;: logging.WARNING,</span>
+            <span class="c1"># },</span>
+            <span class="c1"># &#39;websockets&#39;: {</span>
+            <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
+            <span class="c1">#     &#39;level&#39;: logging.WARNING,</span>
+            <span class="c1"># },</span>
+        <span class="p">},</span>
+    <span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="migrate_database"><a class="viewcode-back" href="../../sni.html#sni.__main__.migrate_database">[docs]</a><span class="k">def</span> <span class="nf">migrate_database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -172,17 +200,16 @@
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reload_esi_openapi_spec</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-    <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">start_scheduler</span><span class="p">,</span> <span class="n">stop_scheduler</span>
-
-    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">:</span>
-        <span class="n">run_job</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Scheduler start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="n">start_scheduler</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">:</span>
+        <span class="n">run_job</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
     <span class="n">schedule_jobs</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -190,10 +217,7 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">sni.discord.bot</span> <span class="kn">import</span> <span class="n">start_bot</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.commands</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.events</span>
-        <span class="n">start_bot</span><span class="p">()</span>
+        <span class="n">start_discord_bot</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server start</span>
@@ -201,7 +225,10 @@
 
     <span class="kn">from</span> <span class="nn">sni.api.server</span> <span class="kn">import</span> <span class="n">start_api_server</span>
     <span class="kn">import</span> <span class="nn">sni.api.exception_handlers</span>
+
     <span class="n">start_api_server</span><span class="p">()</span>
+
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server stopped, cleanup time</span>
@@ -255,17 +282,23 @@
 <span class="sd">    Runs a job (or indeed, any function that doesn&#39;t take arguments)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">module_name</span><span class="p">,</span> <span class="n">function_name</span> <span class="o">=</span> <span class="n">job_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Manually running job </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
     <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
     <span class="n">function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">function_name</span><span class="p">)</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Manually running job </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
+        <span class="n">wait_until_job_store_is_empty</span><span class="p">())</span></div>
 
-    <span class="k">if</span> <span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
-        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-        <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">function</span><span class="p">())</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.scheduler</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">ENABLED</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">function</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="start_discord_bot"><a class="viewcode-back" href="../../sni.html#sni.__main__.start_discord_bot">[docs]</a><span class="k">def</span> <span class="nf">start_discord_bot</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Starts the discord bot (or rather, schedules it to be started), and</span>
+<span class="sd">    corrects the Discord command and event handlers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sni.discord.bot</span> <span class="kn">import</span> <span class="n">start_bot</span>
+    <span class="kn">import</span> <span class="nn">sni.discord.commands</span>
+    <span class="kn">import</span> <span class="nn">sni.discord.events</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">start_bot</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="schedule_jobs"><a class="viewcode-back" href="../../sni.html#sni.__main__.schedule_jobs">[docs]</a><span class="k">def</span> <span class="nf">schedule_jobs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

@@ -95,6 +95,13 @@
 <dd><p>Schedules jobs from all subpackages</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.__main__.start_discord_bot">
+<code class="sig-prename descclassname">sni.__main__.</code><code class="sig-name descname">start_discord_bot</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/__main__.html#start_discord_bot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.__main__.start_discord_bot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the discord bot (or rather, schedules it to be started), and
+corrects the Discord command and event handlers.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.conf">
 <span id="configuration-module"></span><h2>Configuration module<a class="headerlink" href="#module-sni.conf" title="Permalink to this headline">¶</a></h2>
@@ -160,10 +167,19 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.scheduler.add_job">
-<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">add_job</code><span class="sig-paren">(</span><em class="sig-param">func: Callable</em>, <em class="sig-param">args=[]</em>, <em class="sig-param">kwargs={}</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/scheduler.html#add_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.add_job" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a job to the scheduler. If the scheduler is disable, runs the job
-immediately.</p>
+<dt id="sni.scheduler._test_tick">
+<em class="property">async </em><code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">_test_tick</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/scheduler.html#_test_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler._test_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test function to check that the scheduler is really running.</p>
+<p>Schedule like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">_test_tick</span><span class="p">,</span> <span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.scheduler._test_tock">
+<em class="property">async </em><code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">_test_tock</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/scheduler.html#_test_tock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler._test_tock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test function to check that the scheduler is really running.</p>
 </dd></dl>
 
 <dl class="function">
@@ -191,6 +207,12 @@ immediately.</p>
 <dt id="sni.scheduler.stop_scheduler">
 <code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">stop_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/scheduler.html#stop_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.stop_scheduler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops the scheduler and cleans up things</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.scheduler.wait_until_job_store_is_empty">
+<em class="property">async </em><code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">wait_until_job_store_is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/scheduler.html#wait_until_job_store_is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.wait_until_job_store_is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loops and sleeps until the scheduler’s job store is empty</p>
 </dd></dl>
 
 </div>

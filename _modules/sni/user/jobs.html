@@ -50,7 +50,7 @@
     <span class="n">EsiRefreshToken</span><span class="p">,</span>
     <span class="n">get_access_token</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">add_job</span><span class="p">,</span> <span class="n">scheduler</span>
+<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">reset_clearance</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
@@ -92,7 +92,7 @@
 <span class="sd">    the user and corporation records are up-to-date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ensure_alliance_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_alliance_members">[docs]</a><span class="k">def</span> <span class="nf">ensure_alliance_members</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">):</span>
@@ -114,7 +114,7 @@
 <span class="sd">    :meth:`sni.user.jobs.ensure_alliance_members`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">ensure_alliance_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_alliance_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="update_alliance_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_alliance_from_esi">[docs]</a><span class="k">def</span> <span class="nf">update_alliance_from_esi</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">):</span>
@@ -133,7 +133,7 @@
 <span class="sd">    Updates the alliances properties from the ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="update_coalition_autogroup"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_coalition_autogroup">[docs]</a><span class="k">def</span> <span class="nf">update_coalition_autogroup</span><span class="p">(</span><span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span><span class="p">):</span>
@@ -157,7 +157,7 @@
 <span class="sd">    Resets the coalition autogroups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coalition</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coalition</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="update_corporation_autogroup"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_autogroup">[docs]</a><span class="k">def</span> <span class="nf">update_corporation_autogroup</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
@@ -185,7 +185,7 @@
 <span class="sd">    Resets the corporations autogroups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ensure_corporation_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporation_members">[docs]</a><span class="k">def</span> <span class="nf">ensure_corporation_members</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
@@ -226,7 +226,7 @@
         <span class="n">esi_access_token</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">character_id</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">ensure_user</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">character_id</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_user</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">character_id</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ensure_corporations_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporations_members">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -237,7 +237,7 @@
 <span class="sd">    :meth:`sni.user.jobs.ensure_corporation_members`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">ensure_corporation_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_corporation_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="update_corporation"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation">[docs]</a><span class="k">def</span> <span class="nf">update_corporation</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
@@ -259,7 +259,7 @@
 <span class="sd">    Updates corporations properties. (yes)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="update_user_autogroup"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_user_autogroup">[docs]</a><span class="k">def</span> <span class="nf">update_user_autogroup</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -298,7 +298,7 @@
 <span class="sd">    Iterated through all users and updates their field from ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id__gt</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">add_job</span><span class="p">(</span><span class="n">update_user_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
 </pre></div>
 
           </div>
