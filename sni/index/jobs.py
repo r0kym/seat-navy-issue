@@ -6,7 +6,7 @@ import html
 import re
 
 from sni.esi.token import esi_get_on_befalf_of, has_esi_scope
-from sni.scheduler import add_job, scheduler
+from sni.scheduler import scheduler
 from sni.user.models import User
 
 from .models import (
@@ -56,7 +56,7 @@ def index_users_mails():
     """
     for usr in User.objects():
         if has_esi_scope(usr, 'esi-mail.read_mail.v1'):
-            add_job(index_user_mails, args=(usr, ))
+            scheduler.add_job(index_user_mails, args=(usr, ))
 
 
 def measure_user_skillpoints(usr: User):
@@ -82,4 +82,4 @@ def measure_users_skillpoints():
     """
     for usr in User.objects():
         if has_esi_scope(usr, 'esi-skills.read_skills.v1'):
-            add_job(measure_user_skillpoints, args=(usr, ))
+            scheduler.add_job(measure_user_skillpoints, args=(usr, ))

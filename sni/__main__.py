@@ -7,17 +7,19 @@ This module contains the entry point to SNI.
 """
 
 from importlib import import_module
-from inspect import iscoroutinefunction
 import argparse
 import asyncio
 import logging
 import logging.config
 import sys
 
-from queue import SimpleQueue
-
+from sni.scheduler import (
+    scheduler,
+    start_scheduler,
+    stop_scheduler,
+    wait_until_job_store_is_empty,
+)
 import sni.conf as conf
-from sni.scheduler import add_job, start_scheduler, stop_scheduler
 
 
 def connect_database_signals() -> None:
@@ -159,15 +161,16 @@ def main():
     if arguments.reload_esi_openapi_spec:
         sys.exit()
 
-    if arguments.run_job:
-        run_job(arguments.run_job)
-        sys.exit()
-
     # --------------------------------------------------------------------------
     # Scheduler start
     # --------------------------------------------------------------------------
 
     start_scheduler()
+
+    if arguments.run_job:
+        run_job(arguments.run_job)
+        sys.exit()
+
     schedule_jobs()
 
     # --------------------------------------------------------------------------
@@ -175,10 +178,7 @@ def main():
     # --------------------------------------------------------------------------
 
     if conf.get('discord.enabled'):
-        from sni.discord.bot import start_bot
-        import sni.discord.commands
-        import sni.discord.events
-        add_job(start_bot)
+        start_discord_bot()
 
     # --------------------------------------------------------------------------
     # API server start
@@ -243,17 +243,23 @@ def run_job(job_name: str) -> None:
     Runs a job (or indeed, any function that doesn't take arguments)
     """
     module_name, function_name = job_name.split(':')
-    logging.info('Manually running job %s (%s)', function_name, module_name)
     module = import_module(module_name)
     function = getattr(module, function_name)
+    scheduler.add_job(function)
+    logging.info('Manually running job %s (%s)', function_name, module_name)
+    asyncio.get_event_loop().run_until_complete(
+        wait_until_job_store_is_empty())
 
-    if iscoroutinefunction(function):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(function())
-    else:
-        import sni.scheduler
-        sni.scheduler.ENABLED = False
-        function()
+
+def start_discord_bot() -> None:
+    """
+    Starts the discord bot (or rather, schedules it to be started), and
+    corrects the Discord command and event handlers.
+    """
+    from sni.discord.bot import start_bot
+    import sni.discord.commands
+    import sni.discord.events
+    scheduler.add_job(start_bot)
 
 
 def schedule_jobs() -> None:

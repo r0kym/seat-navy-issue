@@ -11,7 +11,7 @@ from sni.esi.token import (
     EsiRefreshToken,
     get_access_token,
 )
-from sni.scheduler import add_job, scheduler
+from sni.scheduler import scheduler
 from sni.uac.clearance import reset_clearance
 import sni.utils as utils
 
@@ -53,7 +53,7 @@ def update_alliance_autogroups():
     the user and corporation records are up-to-date.
     """
     for alliance in Alliance.objects():
-        add_job(update_alliance_autogroup, args=(alliance, ))
+        scheduler.add_job(update_alliance_autogroup, args=(alliance, ))
 
 
 def ensure_alliance_members(alliance: Alliance):
@@ -75,7 +75,7 @@ def ensure_alliances_members():
     :meth:`sni.user.jobs.ensure_alliance_members`.
     """
     for alliance in Alliance.objects:
-        add_job(ensure_alliance_members, args=(alliance, ))
+        scheduler.add_job(ensure_alliance_members, args=(alliance, ))
 
 
 def update_alliance_from_esi(alliance: Alliance):
@@ -94,7 +94,7 @@ def update_alliances_from_esi():
     Updates the alliances properties from the ESI.
     """
     for alliance in Alliance.objects:
-        add_job(update_alliance_from_esi, args=(alliance, ))
+        scheduler.add_job(update_alliance_from_esi, args=(alliance, ))
 
 
 def update_coalition_autogroup(coalition: Coalition):
@@ -118,7 +118,7 @@ def update_coalition_autogroups():
     Resets the coalition autogroups.
     """
     for coalition in Coalition.objects():
-        add_job(update_alliance_autogroup, args=(coalition, ))
+        scheduler.add_job(update_alliance_autogroup, args=(coalition, ))
 
 
 def update_corporation_autogroup(corporation: Corporation):
@@ -146,7 +146,7 @@ def update_corporation_autogroups():
     Resets the corporations autogroups.
     """
     for corporation in Corporation.objects():
-        add_job(update_corporation_autogroup, args=(corporation, ))
+        scheduler.add_job(update_corporation_autogroup, args=(corporation, ))
 
 
 def ensure_corporation_members(corporation: Corporation):
@@ -187,7 +187,7 @@ def ensure_corporation_members(corporation: Corporation):
         esi_access_token.access_token,
     )
     for character_id in response.data:
-        add_job(ensure_user, args=(character_id, ))
+        scheduler.add_job(ensure_user, args=(character_id, ))
 
 
 @scheduler.scheduled_job('interval', hours=1)
@@ -198,7 +198,7 @@ def ensure_corporations_members():
     :meth:`sni.user.jobs.ensure_corporation_members`.
     """
     for corporation in Corporation.objects:
-        add_job(ensure_corporation_members, args=(corporation, ))
+        scheduler.add_job(ensure_corporation_members, args=(corporation, ))
 
 
 def update_corporation(corporation: Corporation):
@@ -220,7 +220,7 @@ def update_corporations():
     Updates corporations properties. (yes)
     """
     for corporation in Corporation.objects:
-        add_job(update_corporation, args=(corporation, ))
+        scheduler.add_job(update_corporation, args=(corporation, ))
 
 
 def update_user_autogroup(usr: User):
@@ -259,4 +259,4 @@ def update_users_from_esi():
     Iterated through all users and updates their field from ESI.
     """
     for usr in User.objects(character_id__gt=0):
-        add_job(update_user_from_esi, args=(usr, ))
+        scheduler.add_job(update_user_from_esi, args=(usr, ))

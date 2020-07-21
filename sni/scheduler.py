@@ -58,18 +58,6 @@ scheduler = AsyncIOScheduler(
 )
 
 
-# pylint: disable=dangerous-default-value
-def add_job(func: Callable, args=list(), kwargs=dict(), **kw):
-    """
-    Adds a job to the scheduler. If the scheduler is disable, runs the job
-    immediately.
-    """
-    if ENABLED:
-        scheduler.add_job(func, args=args, kwargs=kwargs, **kw)
-    else:
-        func(*args, **kwargs)
-
-
 def run_scheduled(function: Callable) -> Callable:
     """
     Decorator that makes a function scheduled to run immediately when called.
@@ -95,6 +83,7 @@ def start_scheduler() -> None:
     Clears the job store and starts the scheduler.
     """
     redis = new_redis_connection()
+    scheduler.remove_all_jobs()
     redis.delete(JOBS_KEY, RUN_TIMES_KEY)
     scheduler.start()
     logging.debug('Started scheduler')
@@ -118,3 +107,20 @@ async def _test_tick() -> None:
 
     """
     logging.debug('Tick!')
+    scheduler.add_job(_test_tock)
+
+
+async def _test_tock() -> None:
+    """
+    Test function to check that the scheduler is really running.
+    """
+    logging.debug('Tock!')
+
+
+async def wait_until_job_store_is_empty():
+    """
+    Loops and sleeps until the scheduler's job store is empty
+    """
+    await asyncio.sleep(1)
+    while scheduler.get_jobs():
+        await asyncio.sleep(1)
