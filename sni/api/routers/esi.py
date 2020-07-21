@@ -97,12 +97,14 @@ async def get_callback_esi(code: str, state: str):
     if state_code.app_token.callback is None:
         return PlainTextResponse(content='Authentication successful')
     request = requests.Request(
+        'GET',
         state_code.app_token.callback,
         params={
             'state_code': str(state_code.uuid),
             'user_token': user_jwt_str,
         },
     )
+    print(state_code.app_token.callback)
     url = request.prepare().url
     if url is None:
         logging.error(
