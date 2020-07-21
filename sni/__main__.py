@@ -128,9 +128,9 @@ def main():
     # Post database migration, pre sheduler start
     # --------------------------------------------------------------------------
 
+    from sni.esi.esi import load_esi_openapi
+    load_esi_openapi()
     if arguments.reload_esi_openapi_spec:
-        from sni.esi.esi import load_esi_openapi
-        load_esi_openapi()
         sys.exit()
 
     from sni.scheduler import start_scheduler, stop_scheduler
