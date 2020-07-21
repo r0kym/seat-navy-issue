@@ -55,7 +55,7 @@
     <span class="n">cached_teamspeak_query</span><span class="p">,</span>
     <span class="n">client_list</span><span class="p">,</span>
     <span class="n">ensure_group</span><span class="p">,</span>
-    <span class="n">new_connection</span><span class="p">,</span>
+    <span class="n">new_teamspeak_connection</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -65,7 +65,7 @@
 <span class="sd">    Iterates through all users that are registered in Teamspeak, and checks</span>
 <span class="sd">    their nickname. If it doesn&#39;t match, sends a message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_teamspeak_connection</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">ts_client</span> <span class="ow">in</span> <span class="n">client_list</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span> <span class="o">==</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">):</span>
             <span class="c1"># TS client is the bot</span>
@@ -100,7 +100,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates all groups on Teamspeak.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_teamspeak_connection</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Mapping group </span><span class="si">%s</span><span class="s1"> to Teamspeak&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
         <span class="n">tsgrp</span> <span class="o">=</span> <span class="n">ensure_group</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
@@ -114,7 +114,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates group memberships on Teamspeak</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_connection</span><span class="p">()</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">new_teamspeak_connection</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_teamspeak</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">teamspeak_sgid__ne</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating Teamspeak group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
         <span class="n">current_cldbids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>

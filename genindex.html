@@ -439,6 +439,8 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sni.html#sni.scheduler.ENABLED">ENABLED (in module sni.scheduler)</a>
+</li>
       <li><a href="user.html#sni.user.user.ensure_alliance">ensure_alliance() (in module sni.user.user)</a>
 </li>
       <li><a href="user.html#sni.user.jobs.ensure_alliance_members">ensure_alliance_members() (in module sni.user.jobs)</a>
@@ -751,7 +753,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="indexation.html#sni.index.jobs.index_users_mails">index_users_mails() (in module sni.index.jobs)</a>
 </li>
-      <li><a href="db.html#sni.db.mongodb.init">init() (in module sni.db.mongodb)</a>
+      <li><a href="db.html#sni.db.mongodb.init_mongodb">init_mongodb() (in module sni.db.mongodb)</a>
 </li>
       <li><a href="uac.html#sni.uac.uac.is_authorized_to_login">is_authorized_to_login() (in module sni.uac.uac)</a>
 </li>
@@ -776,6 +778,14 @@
 
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="discord.html#sni.discord.bot.JOBS_KEY">JOBS_KEY (in module sni.discord.bot)</a>
+
+      <ul>
+        <li><a href="sni.html#sni.scheduler.JOBS_KEY">(in module sni.scheduler)</a>
+</li>
+      </ul></li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="esi.html#sni.esi.sso.DecodedAccessToken.jti">jti (sni.esi.sso.DecodedAccessToken attribute)</a>
 </li>
@@ -925,13 +935,11 @@
         <li><a href="teamspeak.html#sni.teamspeak.teamspeak.new_authentication_challenge">(in module sni.teamspeak.teamspeak)</a>
 </li>
       </ul></li>
-      <li><a href="db.html#sni.db.redis.new_connection">new_connection() (in module sni.db.redis)</a>
-
-      <ul>
-        <li><a href="teamspeak.html#sni.teamspeak.teamspeak.new_connection">(in module sni.teamspeak.teamspeak)</a>
-</li>
-      </ul></li>
       <li><a href="db.html#sni.db.mongodb.new_pymongo_client">new_pymongo_client() (in module sni.db.mongodb)</a>
+</li>
+      <li><a href="db.html#sni.db.redis.new_redis_connection">new_redis_connection() (in module sni.db.redis)</a>
+</li>
+      <li><a href="teamspeak.html#sni.teamspeak.teamspeak.new_teamspeak_connection">new_teamspeak_connection() (in module sni.teamspeak.teamspeak)</a>
 </li>
       <li><a href="sni.html#sni.utils.now">now() (in module sni.utils)</a>
 </li>
@@ -1085,8 +1093,6 @@
 </li>
       <li><a href="sde.html#sni.sde.models.SdeRegion.region_id">region_id (sni.sde.models.SdeRegion attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.routers.sde.GetSdeConstellationOut.region_name">region_name (sni.api.routers.sde.GetSdeConstellationOut attribute)</a>
 
       <ul>
@@ -1095,6 +1101,8 @@
         <li><a href="api.html#sni.api.routers.sde.GetSdeSolarSystemOut.region_name">(sni.api.routers.sde.GetSdeSolarSystemOut attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sde.html#sni.sde.models.SdeConstellation.region_name">region_name() (sni.sde.models.SdeConstellation property)</a>
 
       <ul>
@@ -1115,6 +1123,12 @@
 </li>
       <li><a href="sni.html#sni.scheduler.run_scheduled">run_scheduled() (in module sni.scheduler)</a>
 </li>
+      <li><a href="discord.html#sni.discord.bot.RUN_TIMES_KEY">RUN_TIMES_KEY (in module sni.discord.bot)</a>
+
+      <ul>
+        <li><a href="sni.html#sni.scheduler.RUN_TIMES_KEY">(in module sni.scheduler)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1217,12 +1231,12 @@
 </li>
       <li><a href="discord.html#module-sni.discord.events">sni.discord.events (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="discord.html#module-sni.discord.jobs">sni.discord.jobs (module)</a>
 </li>
       <li><a href="discord.html#module-sni.discord.migration">sni.discord.migration (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="discord.html#module-sni.discord.signals">sni.discord.signals (module)</a>
 </li>
       <li><a href="esi.html#module-sni.esi.esi">sni.esi.esi (module)</a>
@@ -1297,10 +1311,14 @@
 </li>
       <li><a href="api.html#sni.api.routers.sde.GetSdeSolarSystemOut.solar_system_name">solar_system_name (sni.api.routers.sde.GetSdeSolarSystemOut attribute)</a>
 </li>
-      <li><a href="api.html#sni.api.server.start">start() (in module sni.api.server)</a>
+      <li><a href="api.html#sni.api.server.start_api_server">start_api_server() (in module sni.api.server)</a>
+</li>
+      <li><a href="discord.html#sni.discord.bot.start_bot">start_bot() (in module sni.discord.bot)</a>
+</li>
+      <li><a href="discord.html#sni.discord.bot.start_scheduler">start_scheduler() (in module sni.discord.bot)</a>
 
       <ul>
-        <li><a href="discord.html#sni.discord.bot.start">(in module sni.discord.bot)</a>
+        <li><a href="sni.html#sni.scheduler.start_scheduler">(in module sni.scheduler)</a>
 </li>
       </ul></li>
       <li><a href="api.html#sni.api.routers.esi.PostCallbackEsiOut.state_code">state_code (sni.api.routers.esi.PostCallbackEsiOut attribute)</a>
@@ -1313,6 +1331,12 @@
 </li>
       <li><a href="esi.html#sni.esi.esi.EsiResponse.status_code">status_code (sni.esi.esi.EsiResponse attribute)</a>
 </li>
+      <li><a href="discord.html#sni.discord.bot.stop_scheduler">stop_scheduler() (in module sni.discord.bot)</a>
+
+      <ul>
+        <li><a href="sni.html#sni.scheduler.stop_scheduler">(in module sni.scheduler)</a>
+</li>
+      </ul></li>
       <li><a href="esi.html#sni.esi.sso.DecodedAccessToken.sub">sub (sni.esi.sso.DecodedAccessToken attribute)</a>
 </li>
       <li><a href="indexation.html#sni.index.models.EsiMail.subject">subject (sni.index.models.EsiMail attribute)</a>

@@ -147,16 +147,16 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.api.server</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">()</span>
+        <span class="kn">from</span> <span class="nn">sni.api.server</span> <span class="kn">import</span> <span class="n">print_openapi_spec</span>
+        <span class="n">print_openapi_spec</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Database migration</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="kn">import</span> <span class="nn">sni.db.mongodb</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">mongodb</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">sni.db.mongodb</span> <span class="kn">import</span> <span class="n">init_mongodb</span>
+    <span class="n">init_mongodb</span><span class="p">()</span>
     <span class="n">connect_database_signals</span><span class="p">()</span>
     <span class="n">migrate_database</span><span class="p">()</span>
 
@@ -167,19 +167,12 @@
     <span class="c1"># Post database migration, pre sheduler start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
+    <span class="kn">from</span> <span class="nn">sni.esi.esi</span> <span class="kn">import</span> <span class="n">load_esi_openapi</span>
+    <span class="n">load_esi_openapi</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reload_esi_openapi_spec</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.esi.esi</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">load_esi_openapi</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-    <span class="kn">import</span> <span class="nn">sni.scheduler</span>
-
-    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">clear_jobs</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Clearing scheduler job lists&#39;</span><span class="p">)</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">remove_all_jobs</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-            <span class="kn">import</span> <span class="nn">sni.discord.bot</span>
-            <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">remove_all_jobs</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">start_scheduler</span><span class="p">,</span> <span class="n">stop_scheduler</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">:</span>
         <span class="n">run_job</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">)</span>
@@ -189,8 +182,7 @@
     <span class="c1"># Scheduler start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-
+    <span class="n">start_scheduler</span><span class="p">()</span>
     <span class="n">schedule_jobs</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -198,24 +190,24 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.bot</span>
+        <span class="kn">from</span> <span class="nn">sni.discord.bot</span> <span class="kn">import</span> <span class="n">start_bot</span>
         <span class="kn">import</span> <span class="nn">sni.discord.commands</span>
         <span class="kn">import</span> <span class="nn">sni.discord.events</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">start_bot</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="kn">import</span> <span class="nn">sni.api.server</span>
+    <span class="kn">from</span> <span class="nn">sni.api.server</span> <span class="kn">import</span> <span class="n">start_api_server</span>
     <span class="kn">import</span> <span class="nn">sni.api.exception_handlers</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">start_api_server</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server stopped, cleanup time</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="n">sni</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+    <span class="n">stop_scheduler</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="parse_command_line_arguments"><a class="viewcode-back" href="../../sni.html#sni.__main__.parse_command_line_arguments">[docs]</a><span class="k">def</span> <span class="nf">parse_command_line_arguments</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
@@ -232,12 +224,6 @@
         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./sni.yml&#39;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Specify an alternate configuration file (default: ./sni.yml)&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--clear-jobs&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Clear scheduled job lists&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--migrate-database&#39;</span><span class="p">,</span>

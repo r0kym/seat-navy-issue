@@ -141,6 +141,24 @@
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://apscheduler.readthedocs.io/en/stable/">APScheduler documentation</a></p>
 </div>
+<dl class="data">
+<dt id="sni.scheduler.ENABLED">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">ENABLED</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#sni.scheduler.ENABLED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wether the scheduler is enabled</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sni.scheduler.JOBS_KEY">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">JOBS_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.default.jobs'</em><a class="headerlink" href="#sni.scheduler.JOBS_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>The redis key for the job list</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sni.scheduler.RUN_TIMES_KEY">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">RUN_TIMES_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.default.run_times'</em><a class="headerlink" href="#sni.scheduler.RUN_TIMES_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>The redis key for the job run times</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.scheduler.add_job">
 <code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">add_job</code><span class="sig-paren">(</span><em class="sig-param">func: Callable</em>, <em class="sig-param">args=[]</em>, <em class="sig-param">kwargs={}</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/scheduler.html#add_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.add_job" title="Permalink to this definition">¶</a></dt>
@@ -161,6 +179,18 @@ immediately.</p>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;User </span><span class="si">%s</span><span class="s1"> has been </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.scheduler.start_scheduler">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">start_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/scheduler.html#start_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.start_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the job store and starts the scheduler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.scheduler.stop_scheduler">
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">stop_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/scheduler.html#stop_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.scheduler.stop_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the scheduler and cleans up things</p>
 </dd></dl>
 
 </div>

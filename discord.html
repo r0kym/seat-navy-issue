@@ -153,6 +153,18 @@ invitation link for the bot should look like this:
 <dt>See also: <a href="#id1"><span class="problematic" id="id2">`</span></a>Discord developer portal</dt><dd><p>&lt;<a class="reference external" href="https://discord.com/developers/applications">https://discord.com/developers/applications</a>&gt;`_, <a class="reference external" href="https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro">Creating a Bot Account</a></p>
 </dd>
 </dl>
+<dl class="data">
+<dt id="sni.discord.bot.JOBS_KEY">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">JOBS_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.discord.jobs'</em><a class="headerlink" href="#sni.discord.bot.JOBS_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>The redis key for the job list</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sni.discord.bot.RUN_TIMES_KEY">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">RUN_TIMES_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.discord.run_times'</em><a class="headerlink" href="#sni.discord.bot.RUN_TIMES_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>The redis key for the job run times</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.discord.bot.get_guild">
 <code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">get_guild</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; discord.guild.Guild<a class="reference internal" href="_modules/sni/discord/bot.html#get_guild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.get_guild" title="Permalink to this definition">¶</a></dt>
@@ -173,9 +185,21 @@ invitation link for the bot should look like this:
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.discord.bot.start">
-<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/bot.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.start" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.discord.bot.start_bot">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">start_bot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/bot.html#start_bot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.start_bot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the discord client in a different thread.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.discord.bot.start_scheduler">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">start_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/discord/bot.html#start_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.start_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the job store and starts the scheduler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.discord.bot.stop_scheduler">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">stop_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/discord/bot.html#stop_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.stop_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the scheduler and cleans up things</p>
 </dd></dl>
 
 </div>
