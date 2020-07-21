@@ -2,7 +2,9 @@
 API Server
 """
 
+import asyncio
 import logging
+from multiprocessing import Process
 
 from fastapi import FastAPI
 
@@ -90,12 +92,11 @@ def print_openapi_spec() -> None:
     print(yaml.dump(app.openapi()))
 
 
-def start_api_server():
+def _start_api_server():
     """
-    Runs the API server.
+    Starts the API server for real. See
+    :meth:`sni.api.server.start_api_server`.
     """
-    logging.info('Starting API server on %s:%s', conf.get('general.host'),
-                 conf.get('general.port'))
     log_level = str(conf.get('general.logging_level')).upper()
     log_config = {
         'version': 1,
@@ -140,6 +141,13 @@ def start_api_server():
             },
         },
     }
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    logging.info(
+        'Starting API server on %s:%s',
+        conf.get('general.host'),
+        conf.get('general.port'),
+    )
     try:
         uvicorn.run(
             'sni.api.server:app',
@@ -150,3 +158,14 @@ def start_api_server():
         )
     finally:
         logging.info('API server stopped')
+
+
+def start_api_server():
+    """
+    Runs the API server in a dedicated process.
+    """
+    Process(
+        daemon=True,
+        name='api_server',
+        target=_start_api_server,
+    ).start()

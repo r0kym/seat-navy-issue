@@ -6,10 +6,11 @@ These jobs run on a dedicated asyncio scheduler.
 
 from discord import Member
 
-import sni.utils as utils
+from sni.scheduler import scheduler
 from sni.user.models import Group, User
+import sni.utils as utils
 
-from .bot import get_member, scheduler
+from .bot import get_member
 from .discord import ensure_role_for_group
 
 

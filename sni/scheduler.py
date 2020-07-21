@@ -7,12 +7,10 @@ See also:
     `APScheduler documentation <https://apscheduler.readthedocs.io/en/stable/>`_
 """
 
-from threading import Thread
 from typing import Any, Callable
 import asyncio
 import logging
 
-from apscheduler.executors.asyncio import AsyncIOExecutor
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -29,17 +27,15 @@ JOBS_KEY: str = 'scheduler.default.jobs'
 RUN_TIMES_KEY: str = 'scheduler.default.run_times'
 """The redis key for the job run times"""
 
-event_loop = asyncio.new_event_loop()
-
-thread = Thread(
-    args=(event_loop, ),
-    daemon=True,
-    name='default_scheduler',
-    target=asyncio.BaseEventLoop.run_forever,
-)
+# thread = Thread(
+#     args=(event_loop, ),
+#     daemon=True,
+#     name='default_scheduler',
+#     target=asyncio.BaseEventLoop.run_forever,
+# )
 
 scheduler = AsyncIOScheduler(
-    event_loop=event_loop,
+    event_loop=asyncio.get_event_loop(),
     job_defaults={
         'coalesce': True,
         'executor': 'default',
@@ -100,9 +96,8 @@ def start_scheduler() -> None:
     """
     redis = new_redis_connection()
     redis.delete(JOBS_KEY, RUN_TIMES_KEY)
-    thread.start()
     scheduler.start()
-    logging.debug('Started default scheduler')
+    logging.debug('Started scheduler')
 
 
 def stop_scheduler() -> None:
@@ -110,5 +105,16 @@ def stop_scheduler() -> None:
     Stops the scheduler and cleans up things
     """
     scheduler.shutdown()
-    thread.join(1)
-    logging.debug('Stopped default scheduler')
+    logging.debug('Stopped scheduler')
+
+
+async def _test_tick() -> None:
+    """
+    Test function to check that the scheduler is really running.
+
+    Schedule like this::
+
+        scheduler.add_job(_test_tick, 'interval', seconds=3, jitter=0)
+
+    """
+    logging.debug('Tick!')

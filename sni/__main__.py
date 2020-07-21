@@ -7,13 +7,17 @@ This module contains the entry point to SNI.
 """
 
 from importlib import import_module
+from inspect import iscoroutinefunction
 import argparse
 import asyncio
-from inspect import iscoroutinefunction
 import logging
+import logging.config
 import sys
 
+from queue import SimpleQueue
+
 import sni.conf as conf
+from sni.scheduler import add_job, start_scheduler, stop_scheduler
 
 
 def connect_database_signals() -> None:
@@ -47,14 +51,36 @@ def configure_logging() -> None:
         'INFO': logging.INFO,
         'WARNING': logging.WARNING,
     }[str(conf.get('general.logging_level')).upper()]
-    logging.basicConfig(
-        format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-        level=logging_level,
-    )
-    logging.getLogger('apscheduler').setLevel(logging_level)
-    logging.getLogger('discord').setLevel(logging_level)
-    logging.getLogger('fastapi').setLevel(logging_level)
-    logging.getLogger('uvicorn').setLevel(logging_level)
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': True,
+        'formatters': {
+            'default': {
+                'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+            },
+        },
+        'handlers': {
+            'default': {
+                'formatter': 'default',
+                'class': 'logging.StreamHandler',
+                'stream': 'ext://sys.stderr',
+            },
+        },
+        'loggers': {
+            '': {
+                'handlers': ['default'],
+                'level': logging_level,
+            },
+            # 'discord': {
+            #     'handlers': ['default'],
+            #     'level': logging.WARNING,
+            # },
+            # 'websockets': {
+            #     'handlers': ['default'],
+            #     'level': logging.WARNING,
+            # },
+        },
+    })
 
 
 def migrate_database() -> None:
@@ -133,8 +159,6 @@ def main():
     if arguments.reload_esi_openapi_spec:
         sys.exit()
 
-    from sni.scheduler import start_scheduler, stop_scheduler
-
     if arguments.run_job:
         run_job(arguments.run_job)
         sys.exit()
@@ -154,7 +178,7 @@ def main():
         from sni.discord.bot import start_bot
         import sni.discord.commands
         import sni.discord.events
-        start_bot()
+        add_job(start_bot)
 
     # --------------------------------------------------------------------------
     # API server start
@@ -162,7 +186,10 @@ def main():
 
     from sni.api.server import start_api_server
     import sni.api.exception_handlers
+
     start_api_server()
+
+    asyncio.get_event_loop().run_forever()
 
     # --------------------------------------------------------------------------
     # API server stopped, cleanup time
