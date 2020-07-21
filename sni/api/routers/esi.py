@@ -11,6 +11,7 @@ from fastapi import (
     HTTPException,
     status,
 )
+from fastapi.responses import PlainTextResponse, RedirectResponse
 import pydantic
 import requests
 
@@ -38,7 +39,6 @@ from sni.uac.token import (
     Token,
 )
 from sni.uac.uac import is_authorized_to_login
-import sni.utils as utils
 
 router = APIRouter()
 
@@ -51,14 +51,6 @@ class EsiRequestIn(pydantic.BaseModel):
     params: dict = {}
 
 
-class PostCallbackEsiOut(pydantic.BaseModel):
-    """
-    Notification model to the app when receiving a callback from the ESI.
-    """
-    state_code: str
-    user_token: str
-
-
 @router.get(
     '/callback/esi',
     summary='ESI callback',
@@ -68,12 +60,12 @@ async def get_callback_esi(code: str, state: str):
     """
     ESI callback. You should not manually call this.
 
-    Upon receiving a notification from EVE SSO, SNI notifies the appropriate
-    app by issuing a `POST` request to the predefined app callback, using the
-    `PostCallbackEsiOut` model.
+    Upon receiving a notification from EVE SSO, SNI redirects the client to the
+    appropriate frontend callback, with the state code and user token in URL
+    parameters.
 
-    Reference: OAuth 2.0 for Web Based Applications
-    https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html
+    Reference:
+        `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_
     """
     logging.info('Received callback from ESI for state %s', state)
 
@@ -102,18 +94,24 @@ async def get_callback_esi(code: str, state: str):
     user_jwt_str = to_jwt(user_token)
     logging.info('Issuing token %s to app %s', user_jwt_str,
                  state_code.app_token.uuid)
-    utils.catch_all(
-        requests.post,
-        f'Failed to notify application {state_code.app_token.uuid}',
-        args=[state_code.app_token.callback],
-        kwargs={
-            'data':
-            PostCallbackEsiOut(
-                state_code=str(state_code.uuid),
-                user_token=user_jwt_str,
-            ).dict()
+    if state_code.app_token.callback is None:
+        return PlainTextResponse(content='Authentication successful')
+    request = requests.Request(
+        state_code.app_token.callback,
+        params={
+            'state_code': str(state_code.uuid),
+            'user_token': user_jwt_str,
         },
     )
+    url = request.prepare().url
+    if url is None:
+        logging.error(
+            'Failed to redirect user to %s',
+            state_code.app_token.callback,
+        )
+        return PlainTextResponse(
+            f'Failed to redirect to {state_code.app_token.callback}')
+    return RedirectResponse(url=url)
 
 
 @router.get(

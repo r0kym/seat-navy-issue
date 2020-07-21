@@ -29,9 +29,8 @@ RUN_TIMES_KEY: str = 'scheduler.default.run_times'
 
 scheduler = BackgroundScheduler(
     executors={
-        'default': ThreadPoolExecutor(
-            conf.get('general.scheduler_thread_count'),
-        ),
+        'default':
+        ThreadPoolExecutor(conf.get('general.scheduler_thread_count'), ),
     },
     job_defaults={
         'coalesce': True,

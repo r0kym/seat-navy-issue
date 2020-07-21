@@ -17,5 +17,5 @@ group Standard EVE SSO authentication flow
     "EVE SSO" -> SNI : Access token + refresh token
 end
 
-SNI -> Application : POST state code + user token
+SNI -> Application : Redirects user
 note left: SNI notifies the application
