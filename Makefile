@@ -1,6 +1,6 @@
 SRC_PATH 		= sni
 SPHINX_PATH 	= docs
-RUN_ARGS	   ?= --clear-jobs
+RUN_ARGS	   ?=
 
 SNI				= python3 -m sni -f test/sni.yml
 
