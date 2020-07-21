@@ -410,32 +410,17 @@ more.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="sni.api.routers.esi.PostCallbackEsiOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">PostCallbackEsiOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#PostCallbackEsiOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.PostCallbackEsiOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Notification model to the app when receiving a callback from the ESI.</p>
-<dl class="attribute">
-<dt id="sni.api.routers.esi.PostCallbackEsiOut.state_code">
-<code class="sig-name descname">state_code</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.PostCallbackEsiOut.state_code" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.esi.PostCallbackEsiOut.user_token">
-<code class="sig-name descname">user_token</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.PostCallbackEsiOut.user_token" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="sni.api.routers.esi.get_callback_esi">
 <em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_callback_esi" title="Permalink to this definition">¶</a></dt>
 <dd><p>ESI callback. You should not manually call this.</p>
-<p>Upon receiving a notification from EVE SSO, SNI notifies the appropriate
-app by issuing a <cite>POST</cite> request to the predefined app callback, using the
-<cite>PostCallbackEsiOut</cite> model.</p>
-<p>Reference: OAuth 2.0 for Web Based Applications
-<a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html</a></p>
+<p>Upon receiving a notification from EVE SSO, SNI redirects the client to the
+appropriate frontend callback, with the state code and user token in URL
+parameters.</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">OAuth 2.0 for Web Based Applications</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">

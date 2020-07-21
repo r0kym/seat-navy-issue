@@ -68,9 +68,8 @@
 
 <span class="n">scheduler</span> <span class="o">=</span> <span class="n">BackgroundScheduler</span><span class="p">(</span>
     <span class="n">executors</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">),</span>
-        <span class="p">),</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+        <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">),</span> <span class="p">),</span>
     <span class="p">},</span>
     <span class="n">job_defaults</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;coalesce&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>

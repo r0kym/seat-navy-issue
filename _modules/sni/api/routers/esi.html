@@ -50,6 +50,7 @@
     <span class="n">HTTPException</span><span class="p">,</span>
     <span class="n">status</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">PlainTextResponse</span><span class="p">,</span> <span class="n">RedirectResponse</span>
 <span class="kn">import</span> <span class="nn">pydantic</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
@@ -77,7 +78,6 @@
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sni.uac.uac</span> <span class="kn">import</span> <span class="n">is_authorized_to_login</span>
-<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
@@ -90,14 +90,6 @@
     <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></div>
 
 
-<div class="viewcode-block" id="PostCallbackEsiOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.PostCallbackEsiOut">[docs]</a><span class="k">class</span> <span class="nc">PostCallbackEsiOut</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Notification model to the app when receiving a callback from the ESI.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state_code</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">user_token</span><span class="p">:</span> <span class="nb">str</span></div>
-
-
 <div class="viewcode-block" id="get_callback_esi"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_callback_esi">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="s1">&#39;/callback/esi&#39;</span><span class="p">,</span>
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;ESI callback&#39;</span><span class="p">,</span>
@@ -107,12 +99,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ESI callback. You should not manually call this.</span>
 
-<span class="sd">    Upon receiving a notification from EVE SSO, SNI notifies the appropriate</span>
-<span class="sd">    app by issuing a `POST` request to the predefined app callback, using the</span>
-<span class="sd">    `PostCallbackEsiOut` model.</span>
+<span class="sd">    Upon receiving a notification from EVE SSO, SNI redirects the client to the</span>
+<span class="sd">    appropriate frontend callback, with the state code and user token in URL</span>
+<span class="sd">    parameters.</span>
 
-<span class="sd">    Reference: OAuth 2.0 for Web Based Applications</span>
-<span class="sd">    https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html</span>
+<span class="sd">    Reference:</span>
+<span class="sd">        `OAuth 2.0 for Web Based Applications &lt;https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
 
@@ -141,18 +133,24 @@
     <span class="n">user_jwt_str</span> <span class="o">=</span> <span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Issuing token </span><span class="si">%s</span><span class="s1"> to app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span>
                  <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
-    <span class="n">utils</span><span class="o">.</span><span class="n">catch_all</span><span class="p">(</span>
-        <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s1">&#39;Failed to notify application </span><span class="si">{state_code.app_token.uuid}</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">],</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s1">&#39;data&#39;</span><span class="p">:</span>
-            <span class="n">PostCallbackEsiOut</span><span class="p">(</span>
-                <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
-                <span class="n">user_token</span><span class="o">=</span><span class="n">user_jwt_str</span><span class="p">,</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;Authentication successful&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span>
+        <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;state_code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+            <span class="s1">&#39;user_token&#39;</span><span class="p">:</span> <span class="n">user_jwt_str</span><span class="p">,</span>
         <span class="p">},</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span><span class="o">.</span><span class="n">url</span>
+    <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s1">&#39;Failed to redirect user to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Failed to redirect to </span><span class="si">{state_code.app_token.callback}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_esi_latest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
