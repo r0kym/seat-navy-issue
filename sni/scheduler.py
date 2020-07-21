@@ -7,12 +7,14 @@ See also:
     `APScheduler documentation <https://apscheduler.readthedocs.io/en/stable/>`_
 """
 
-import logging
+from threading import Thread
 from typing import Any, Callable
+import asyncio
+import logging
 
-from apscheduler.executors.pool import ThreadPoolExecutor
+from apscheduler.executors.asyncio import AsyncIOExecutor
 from apscheduler.jobstores.redis import RedisJobStore
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from sni.db.redis import new_redis_connection
 import sni.conf as conf
@@ -27,11 +29,17 @@ JOBS_KEY: str = 'scheduler.default.jobs'
 RUN_TIMES_KEY: str = 'scheduler.default.run_times'
 """The redis key for the job run times"""
 
-scheduler = BackgroundScheduler(
-    executors={
-        'default':
-        ThreadPoolExecutor(conf.get('general.scheduler_thread_count'), ),
-    },
+event_loop = asyncio.new_event_loop()
+
+thread = Thread(
+    args=(event_loop, ),
+    daemon=True,
+    name='default_scheduler',
+    target=asyncio.BaseEventLoop.run_forever,
+)
+
+scheduler = AsyncIOScheduler(
+    event_loop=event_loop,
     job_defaults={
         'coalesce': True,
         'executor': 'default',
@@ -90,12 +98,11 @@ def start_scheduler() -> None:
     """
     Clears the job store and starts the scheduler.
     """
-    if not ENABLED:
-        logging.warning("Not starting the scheduler since it is disabled")
-        return
     redis = new_redis_connection()
     redis.delete(JOBS_KEY, RUN_TIMES_KEY)
+    thread.start()
     scheduler.start()
+    logging.debug('Started default scheduler')
 
 
 def stop_scheduler() -> None:
@@ -103,3 +110,5 @@ def stop_scheduler() -> None:
     Stops the scheduler and cleans up things
     """
     scheduler.shutdown()
+    thread.join(1)
+    logging.debug('Stopped default scheduler')
