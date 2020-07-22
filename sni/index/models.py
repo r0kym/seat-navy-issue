@@ -8,6 +8,55 @@ from sni.user.models import User
 import sni.utils as utils
 
 
+class EsiCharacterLocation(me.Document):
+    """
+    Represents a character location, along with the ship it is currently
+    flying. Thus, it is a combination of the ESI
+    ``/characters/{character_id}/location``,
+    ``/characters/{character_id}/online``, and
+    ``/characters/{character_id}/ship`` paths.
+    """
+
+    online = me.BooleanField()
+    """Wether the character is online"""
+
+    ship_item_id = me.IntField()
+    """Ship item ID (this ID persists until repackaged)"""
+
+    ship_name = me.StringField()
+    """Ship name"""
+
+    ship_type_id = me.IntField()
+    """Ship type ID"""
+
+    solar_system_id = me.IntField()
+    """Solar system ID where the character is"""
+
+    station_id = me.IntField(null=True)
+    """Station ID, if applicable"""
+
+    structure_id = me.IntField(null=True)
+    """Structire ID, if applicable"""
+
+    timestamp = me.DateTimeField(default=utils.now)
+    """Timestamp"""
+
+    user = me.ReferenceField(User)
+    """Corresponding user"""
+
+    meta = {
+        'index': [
+            'online',
+            ('user', '-timestamp'),
+            ('solar_system_id', '-timestamp'),
+            {
+                'fields': ['timestamp'],
+                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
+            },
+        ],
+    }
+
+
 class EsiMailRecipient(me.EmbeddedDocument):
     """
     An email recipient

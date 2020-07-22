@@ -12,7 +12,6 @@ from .models import Coalition, User
 from .jobs import (
     update_coalition_autogroup,
     update_user_autogroup,
-    update_user_from_esi,
 )
 
 

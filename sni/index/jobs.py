@@ -10,6 +10,7 @@ from sni.scheduler import scheduler
 from sni.user.models import User
 
 from .models import (
+    EsiCharacterLocation,
     EsiMail,
     EsiMailRecipient,
     EsiSkillPoints,
@@ -24,6 +25,46 @@ def format_mail_body(body: str) -> str:
     body = re.sub(r'<.*?>', '', body)
     body = html.unescape(body)
     return body
+
+
+def index_user_location(usr: User):
+    """
+    Indexes a user's location, online status, and ship
+    """
+    location_data = esi_get_on_befalf_of(
+        f'latest/characters/{usr.character_id}/location/',
+        usr.character_id,
+    ).data
+    online_data = esi_get_on_befalf_of(
+        f'latest/characters/{usr.character_id}/online/',
+        usr.character_id,
+    ).data
+    ship_data = esi_get_on_befalf_of(
+        f'latest/characters/{usr.character_id}/ship/',
+        usr.character_id,
+    ).data
+    EsiCharacterLocation(
+        online=online_data['online'],
+        ship_item_id=ship_data['ship_item_id'],
+        ship_name=ship_data['ship_name'],
+        ship_type_id=ship_data['ship_type_id'],
+        solar_system_id=location_data['solar_system_id'],
+        station_id=location_data.get('station_id'),
+        structure_id=location_data.get('structure_id'),
+        user=usr,
+    ).save()
+
+
+@scheduler.scheduled_job('interval', hours=1)
+def index_users_location():
+    """
+    Indexes all user's location
+    """
+    for usr in User.objects():
+        if has_esi_scope(usr, 'esi-location.read_location.v1') and \
+            has_esi_scope(usr, 'esi-location.read_online.v1') and \
+            has_esi_scope(usr, 'esi-location.read_ship_type.v1'):
+            scheduler.add_job(index_user_location, args=(usr, ))
 
 
 def index_user_mails(usr: User):
