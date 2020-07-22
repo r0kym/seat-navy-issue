@@ -15,7 +15,7 @@ from sni.uac.token import (
     Token,
 )
 from sni.uac.clearance import assert_has_clearance
-from sni.utils import callable_from_name, now
+from sni.utils import callable_from_name
 
 router = APIRouter()
 

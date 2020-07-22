@@ -2,9 +2,8 @@
 API Server
 """
 
-import asyncio
 import logging
-from multiprocessing import Process
+# from multiprocessing import Process
 
 from fastapi import FastAPI
 
@@ -99,7 +98,7 @@ def print_openapi_spec() -> None:
     print(yaml.dump(app.openapi()))
 
 
-def _start_api_server():
+def start_api_server():
     """
     Starts the API server for real. See
     :meth:`sni.api.server.start_api_server`.
@@ -148,8 +147,6 @@ def _start_api_server():
             },
         },
     }
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     logging.info(
         'Starting API server on %s:%s',
         conf.get('general.host'),
@@ -167,12 +164,12 @@ def _start_api_server():
         logging.info('API server stopped')
 
 
-def start_api_server():
-    """
-    Runs the API server in a dedicated process.
-    """
-    Process(
-        daemon=True,
-        name='api_server',
-        target=_start_api_server,
-    ).start()
+# def start_api_server():
+#     """
+#     Runs the API server in a dedicated process.
+#     """
+#     Process(
+#         daemon=True,
+#         name='api_server',
+#         target=_start_api_server,
+#     ).start()

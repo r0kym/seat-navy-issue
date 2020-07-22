@@ -8,18 +8,15 @@ See also:
 """
 
 from typing import Any, Callable
-import asyncio
 import logging
 
+from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.redis import RedisJobStore
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from sni.db.redis import new_redis_connection
 import sni.conf as conf
 import sni.utils as utils
-
-ENABLED: bool = True
-"""Wether the scheduler is enabled"""
 
 JOBS_KEY: str = 'scheduler.default.jobs'
 """The redis key for the job list"""
@@ -27,15 +24,11 @@ JOBS_KEY: str = 'scheduler.default.jobs'
 RUN_TIMES_KEY: str = 'scheduler.default.run_times'
 """The redis key for the job run times"""
 
-# thread = Thread(
-#     args=(event_loop, ),
-#     daemon=True,
-#     name='default_scheduler',
-#     target=asyncio.BaseEventLoop.run_forever,
-# )
-
-scheduler = AsyncIOScheduler(
-    event_loop=asyncio.get_event_loop(),
+scheduler = BackgroundScheduler(
+    executors={
+        'default':
+        ThreadPoolExecutor(conf.get('general.scheduler_thread_count'), ),
+    },
     job_defaults={
         'coalesce': True,
         'executor': 'default',
@@ -97,7 +90,7 @@ def stop_scheduler() -> None:
     logging.debug('Stopped scheduler')
 
 
-async def _test_tick() -> None:
+def _test_tick() -> None:
     """
     Test function to check that the scheduler is really running.
 
@@ -110,17 +103,8 @@ async def _test_tick() -> None:
     scheduler.add_job(_test_tock)
 
 
-async def _test_tock() -> None:
+def _test_tock() -> None:
     """
     Test function to check that the scheduler is really running.
     """
     logging.debug('Tock!')
-
-
-async def wait_until_job_store_is_empty():
-    """
-    Loops and sleeps until the scheduler's job store is empty
-    """
-    await asyncio.sleep(1)
-    while scheduler.get_jobs():
-        await asyncio.sleep(1)

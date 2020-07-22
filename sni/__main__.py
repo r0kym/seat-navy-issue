@@ -7,7 +7,6 @@ This module contains the entry point to SNI.
 """
 
 import argparse
-import asyncio
 import logging
 import logging.config
 import sys
@@ -162,11 +161,6 @@ def main():
 
     from sni.scheduler import start_scheduler, stop_scheduler
     start_scheduler()
-
-    if arguments.run_job:
-        run_job(arguments.run_job)
-        sys.exit()
-
     schedule_jobs()
 
     # --------------------------------------------------------------------------
@@ -184,8 +178,6 @@ def main():
     import sni.api.exception_handlers
 
     start_api_server()
-
-    asyncio.get_event_loop().run_forever()
 
     # --------------------------------------------------------------------------
     # API server stopped, cleanup time
@@ -227,23 +219,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
         default=False,
         help='Reloads the ESI OpenAPI specification to the database and exits',
     )
-    argument_parser.add_argument(
-        '--run-job',
-        help='Runs a job and exists',
-    )
     return argument_parser.parse_args()
-
-
-def run_job(job_name: str) -> None:
-    """
-    Runs a job (or indeed, any function that doesn't take arguments)
-    """
-    from sni.scheduler import scheduler, wait_until_job_store_is_empty
-    function = callable_from_name(job_name)
-    scheduler.add_job(function)
-    logging.info('Manually running job %s', job_name)
-    asyncio.get_event_loop().run_until_complete(
-        wait_until_job_store_is_empty())
 
 
 def start_discord_bot() -> None:
