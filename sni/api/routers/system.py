@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from apscheduler.job import Job
-from fastapi import APIRouter, Depends
+from fastapi import (APIRouter, Depends, HTTPException, status,)
 import pydantic as pdt
 
 from sni.scheduler import scheduler
@@ -80,6 +80,9 @@ def post_job(
     Submits a job to the scheduler. Requires a clearance level of 10.
     """
     assert_has_clearance(tkn.owner, 'sni.system.submit_job')
-    function = callable_from_name(callable_name)
-    job = scheduler.add_job(function)
-    return GetJobOut.from_job(job)
+    try:
+        function = callable_from_name(callable_name)
+        job = scheduler.add_job(function)
+        return GetJobOut.from_job(job)
+    except AttributeError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
