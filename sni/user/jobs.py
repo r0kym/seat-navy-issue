@@ -118,7 +118,7 @@ def update_coalition_autogroups():
     Resets the coalition autogroups.
     """
     for coalition in Coalition.objects():
-        scheduler.add_job(update_alliance_autogroup, args=(coalition, ))
+        scheduler.add_job(update_coalition_autogroup, args=(coalition, ))
 
 
 def update_corporation_autogroup(corporation: Corporation):
