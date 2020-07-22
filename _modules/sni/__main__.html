@@ -45,13 +45,12 @@
 <span class="sd">This module contains the entry point to SNI.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
+<span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">callable_from_name</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 
 
@@ -179,11 +178,12 @@
 
     <span class="kn">from</span> <span class="nn">sni.db.mongodb</span> <span class="kn">import</span> <span class="n">init_mongodb</span>
     <span class="n">init_mongodb</span><span class="p">()</span>
-    <span class="n">connect_database_signals</span><span class="p">()</span>
     <span class="n">migrate_database</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">migrate_database</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="n">connect_database_signals</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># Post database migration, pre sheduler start</span>
@@ -200,11 +200,6 @@
 
     <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">start_scheduler</span><span class="p">,</span> <span class="n">stop_scheduler</span>
     <span class="n">start_scheduler</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">:</span>
-        <span class="n">run_job</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">run_job</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-
     <span class="n">schedule_jobs</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -222,8 +217,6 @@
     <span class="kn">import</span> <span class="nn">sni.api.exception_handlers</span>
 
     <span class="n">start_api_server</span><span class="p">()</span>
-
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
     <span class="c1"># API server stopped, cleanup time</span>
@@ -265,25 +258,7 @@
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Reloads the ESI OpenAPI specification to the database and exits&#39;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--run-job&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Runs a job and exists&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="k">return</span> <span class="n">argument_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="run_job"><a class="viewcode-back" href="../../sni.html#sni.__main__.run_job">[docs]</a><span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span><span class="n">job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Runs a job (or indeed, any function that doesn&#39;t take arguments)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">wait_until_job_store_is_empty</span>
-    <span class="n">module_name</span><span class="p">,</span> <span class="n">function_name</span> <span class="o">=</span> <span class="n">job_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
-    <span class="n">function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">function_name</span><span class="p">)</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Manually running job </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
-        <span class="n">wait_until_job_store_is_empty</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="start_discord_bot"><a class="viewcode-back" href="../../sni.html#sni.__main__.start_discord_bot">[docs]</a><span class="k">def</span> <span class="nf">start_discord_bot</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

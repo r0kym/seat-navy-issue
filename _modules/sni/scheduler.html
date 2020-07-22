@@ -47,18 +47,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
+<span class="kn">from</span> <span class="nn">apscheduler.executors.pool</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
 <span class="kn">from</span> <span class="nn">apscheduler.jobstores.redis</span> <span class="kn">import</span> <span class="n">RedisJobStore</span>
-<span class="kn">from</span> <span class="nn">apscheduler.schedulers.asyncio</span> <span class="kn">import</span> <span class="n">AsyncIOScheduler</span>
+<span class="kn">from</span> <span class="nn">apscheduler.schedulers.background</span> <span class="kn">import</span> <span class="n">BackgroundScheduler</span>
 
 <span class="kn">from</span> <span class="nn">sni.db.redis</span> <span class="kn">import</span> <span class="n">new_redis_connection</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-
-<span class="n">ENABLED</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="sd">&quot;&quot;&quot;Wether the scheduler is enabled&quot;&quot;&quot;</span>
 
 <span class="n">JOBS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scheduler.default.jobs&#39;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job list&quot;&quot;&quot;</span>
@@ -66,15 +63,11 @@
 <span class="n">RUN_TIMES_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scheduler.default.run_times&#39;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job run times&quot;&quot;&quot;</span>
 
-<span class="c1"># thread = Thread(</span>
-<span class="c1">#     args=(event_loop, ),</span>
-<span class="c1">#     daemon=True,</span>
-<span class="c1">#     name=&#39;default_scheduler&#39;,</span>
-<span class="c1">#     target=asyncio.BaseEventLoop.run_forever,</span>
-<span class="c1"># )</span>
-
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">AsyncIOScheduler</span><span class="p">(</span>
-    <span class="n">event_loop</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">(),</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">BackgroundScheduler</span><span class="p">(</span>
+    <span class="n">executors</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+        <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">),</span> <span class="p">),</span>
+    <span class="p">},</span>
     <span class="n">job_defaults</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;coalesce&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;executor&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
@@ -136,7 +129,7 @@
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopped scheduler&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="_test_tick"><a class="viewcode-back" href="../../sni.html#sni.scheduler._test_tick">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">_test_tick</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="_test_tick"><a class="viewcode-back" href="../../sni.html#sni.scheduler._test_tick">[docs]</a><span class="k">def</span> <span class="nf">_test_tick</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test function to check that the scheduler is really running.</span>
 
@@ -149,20 +142,11 @@
     <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">_test_tock</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="_test_tock"><a class="viewcode-back" href="../../sni.html#sni.scheduler._test_tock">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">_test_tock</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="_test_tock"><a class="viewcode-back" href="../../sni.html#sni.scheduler._test_tock">[docs]</a><span class="k">def</span> <span class="nf">_test_tock</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test function to check that the scheduler is really running.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Tock!&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="wait_until_job_store_is_empty"><a class="viewcode-back" href="../../sni.html#sni.scheduler.wait_until_job_store_is_empty">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">wait_until_job_store_is_empty</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loops and sleeps until the scheduler&#39;s job store is empty</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">get_jobs</span><span class="p">():</span>
-        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

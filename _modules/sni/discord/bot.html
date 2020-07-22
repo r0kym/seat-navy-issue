@@ -40,17 +40,14 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Discord Bot management. The bot requires the ``bot`` scope, and the following</span>
 <span class="sd">permissions:</span>
-
 <span class="sd">* ``Manage Roles``</span>
 <span class="sd">* ``Change Nickname``</span>
 <span class="sd">* ``Manage Nicknames``</span>
 <span class="sd">* ``Send Messages``</span>
 <span class="sd">* ``Manage Messages``</span>
-
 <span class="sd">which corresponds to the the permission integer ``469772288``. Therefore, the</span>
 <span class="sd">invitation link for the bot should look like this:</span>
 <span class="sd">``https://discord.com/api/oauth2/authorize?client_id=&lt;bot_id&gt;&amp;permissions=469772288&amp;scope=bot``.</span>
-
 <span class="sd">See also: `Discord developer portal</span>
 <span class="sd">    &lt;https://discord.com/developers/applications&gt;`_, `Creating a Bot Account</span>
 <span class="sd">    &lt;https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro&gt;`_</span>
@@ -58,11 +55,16 @@
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
 
+<span class="kn">from</span> <span class="nn">apscheduler.jobstores.redis</span> <span class="kn">import</span> <span class="n">RedisJobStore</span>
+<span class="kn">from</span> <span class="nn">apscheduler.schedulers.asyncio</span> <span class="kn">import</span> <span class="n">AsyncIOScheduler</span>
 <span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">Bot</span>
 <span class="kn">import</span> <span class="nn">discord</span>
 
+<span class="kn">from</span> <span class="nn">sni.db.redis</span> <span class="kn">import</span> <span class="n">new_redis_connection</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="n">JOBS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scheduler.discord.jobs&#39;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job list&quot;&quot;&quot;</span>
@@ -70,10 +72,29 @@
 <span class="n">RUN_TIMES_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scheduler.discord.run_times&#39;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job run times&quot;&quot;&quot;</span>
 
-<span class="n">bot</span> <span class="o">=</span> <span class="n">Bot</span><span class="p">(</span>
-    <span class="n">command_prefix</span><span class="o">=</span><span class="s1">&#39;!&#39;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue Discord Bot&#39;</span><span class="p">,</span>
-    <span class="n">event_loop</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">(),</span>
+<span class="n">bot</span> <span class="o">=</span> <span class="n">Bot</span><span class="p">(</span><span class="n">command_prefix</span><span class="o">=</span><span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue Discord Bot&#39;</span><span class="p">)</span>
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">AsyncIOScheduler</span><span class="p">(</span>
+    <span class="n">event_loop</span><span class="o">=</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span>
+    <span class="n">job_defaults</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;coalesce&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;executor&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;jitter&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+        <span class="s1">&#39;jobstore&#39;</span><span class="p">:</span> <span class="s1">&#39;discord&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;max_instances&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;misfire_grace_time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">jobstores</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;discord&#39;</span><span class="p">:</span>
+        <span class="n">RedisJobStore</span><span class="p">(</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;redis.database&#39;</span><span class="p">),</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;redis.host&#39;</span><span class="p">),</span>
+            <span class="n">jobs_key</span><span class="o">=</span><span class="n">JOBS_KEY</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;redis.port&#39;</span><span class="p">),</span>
+            <span class="n">run_times_key</span><span class="o">=</span><span class="n">RUN_TIMES_KEY</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="n">timezone</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">utc</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -103,12 +124,38 @@
     <span class="k">await</span> <span class="n">log_channel</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="start_bot"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.start_bot">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">start_bot</span><span class="p">():</span>
+<div class="viewcode-block" id="start_bot"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.start_bot">[docs]</a><span class="k">def</span> <span class="nf">start_bot</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs the discord client in a different thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_start</span><span class="p">():</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.token&#39;</span><span class="p">))</span>
+
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting Discord client&#39;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.token&#39;</span><span class="p">))</span></div>
+    <span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">_start</span><span class="p">())</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span> <span class="p">),</span>
+        <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;discord_client&#39;</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">BaseEventLoop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="start_scheduler"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.start_scheduler">[docs]</a><span class="k">def</span> <span class="nf">start_scheduler</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clears the job store and starts the scheduler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">redis</span> <span class="o">=</span> <span class="n">new_redis_connection</span><span class="p">()</span>
+    <span class="n">redis</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">JOBS_KEY</span><span class="p">,</span> <span class="n">RUN_TIMES_KEY</span><span class="p">)</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="stop_scheduler"><a class="viewcode-back" href="../../../discord.html#sni.discord.bot.stop_scheduler">[docs]</a><span class="k">def</span> <span class="nf">stop_scheduler</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stops the scheduler and cleans up things</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
 </pre></div>
 
           </div>

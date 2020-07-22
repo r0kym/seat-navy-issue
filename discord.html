@@ -138,21 +138,19 @@ Discort authentication challenges.</p></li>
 <div class="section" id="module-sni.discord.bot">
 <span id="discord-bot"></span><h2>Discord bot<a class="headerlink" href="#module-sni.discord.bot" title="Permalink to this headline">¶</a></h2>
 <p>Discord Bot management. The bot requires the <code class="docutils literal notranslate"><span class="pre">bot</span></code> scope, and the following
-permissions:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Roles</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Nickname</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Nicknames</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Send</span> <span class="pre">Messages</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Messages</span></code></p></li>
-</ul>
-<p>which corresponds to the the permission integer <code class="docutils literal notranslate"><span class="pre">469772288</span></code>. Therefore, the
+permissions:
+* <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Roles</span></code>
+* <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Nickname</span></code>
+* <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Nicknames</span></code>
+* <code class="docutils literal notranslate"><span class="pre">Send</span> <span class="pre">Messages</span></code>
+* <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Messages</span></code>
+which corresponds to the the permission integer <code class="docutils literal notranslate"><span class="pre">469772288</span></code>. Therefore, the
 invitation link for the bot should look like this:
-<code class="docutils literal notranslate"><span class="pre">https://discord.com/api/oauth2/authorize?client_id=&lt;bot_id&gt;&amp;permissions=469772288&amp;scope=bot</span></code>.</p>
-<dl class="simple">
-<dt>See also: <a href="#id1"><span class="problematic" id="id2">`</span></a>Discord developer portal</dt><dd><p>&lt;<a class="reference external" href="https://discord.com/developers/applications">https://discord.com/developers/applications</a>&gt;`_, <a class="reference external" href="https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro">Creating a Bot Account</a></p>
-</dd>
-</dl>
+<code class="docutils literal notranslate"><span class="pre">https://discord.com/api/oauth2/authorize?client_id=&lt;bot_id&gt;&amp;permissions=469772288&amp;scope=bot</span></code>.
+See also: <a href="#id1"><span class="problematic" id="id2">`</span></a>Discord developer portal</p>
+<blockquote>
+<div><p>&lt;<a class="reference external" href="https://discord.com/developers/applications">https://discord.com/developers/applications</a>&gt;`_, <a class="reference external" href="https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro">Creating a Bot Account</a></p>
+</div></blockquote>
 <dl class="data">
 <dt id="sni.discord.bot.JOBS_KEY">
 <code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">JOBS_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.discord.jobs'</em><a class="headerlink" href="#sni.discord.bot.JOBS_KEY" title="Permalink to this definition">¶</a></dt>
@@ -186,8 +184,20 @@ invitation link for the bot should look like this:
 
 <dl class="function">
 <dt id="sni.discord.bot.start_bot">
-<em class="property">async </em><code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">start_bot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/bot.html#start_bot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.start_bot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">start_bot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/discord/bot.html#start_bot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.start_bot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the discord client in a different thread.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.discord.bot.start_scheduler">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">start_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/discord/bot.html#start_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.start_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the job store and starts the scheduler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.discord.bot.stop_scheduler">
+<code class="sig-prename descclassname">sni.discord.bot.</code><code class="sig-name descname">stop_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/discord/bot.html#stop_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.discord.bot.stop_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the scheduler and cleans up things</p>
 </dd></dl>
 
 </div>

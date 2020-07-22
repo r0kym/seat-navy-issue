@@ -49,13 +49,6 @@
 <span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.api.server" title="Permalink to this headline">¶</a></h2>
 <p>API Server</p>
 <dl class="function">
-<dt id="sni.api.server._start_api_server">
-<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">_start_api_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#_start_api_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server._start_api_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the API server for real. See
-<a class="reference internal" href="#sni.api.server.start_api_server" title="sni.api.server.start_api_server"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.api.server.start_api_server()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="sni.api.server.get_ping">
 <em class="property">async </em><code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">get_ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#get_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.get_ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replies <code class="docutils literal notranslate"><span class="pre">pong</span></code>. That is all.</p>
@@ -70,7 +63,8 @@
 <dl class="function">
 <dt id="sni.api.server.start_api_server">
 <code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">start_api_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#start_api_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.start_api_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs the API server in a dedicated process.</p>
+<dd><p>Starts the API server for real. See
+<a class="reference internal" href="#sni.api.server.start_api_server" title="sni.api.server.start_api_server"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.api.server.start_api_server()</span></code></a>.</p>
 </dd></dl>
 
 </div>
@@ -894,6 +888,81 @@ list (up to repetition of keys).</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-sni.api.routers.system">
+<span id="sni-api-routers-system"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.system</span></code><a class="headerlink" href="#module-sni.api.routers.system" title="Permalink to this headline">¶</a></h3>
+<p>SNI instance administrative paths</p>
+<dl class="class">
+<dt id="sni.api.routers.system.GetJobOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.system.</code><code class="sig-name descname">GetJobOut</code><a class="reference internal" href="_modules/sni/api/routers/system.html#GetJobOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.system.GetJobOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a job</p>
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.coalesce">
+<code class="sig-name descname">coalesce</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.coalesce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.executor">
+<code class="sig-name descname">executor</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.executor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.system.GetJobOut.from_job">
+<em class="property">static </em><code class="sig-name descname">from_job</code><span class="sig-paren">(</span><em class="sig-param">job: apscheduler.job.Job</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.system.GetJobOut<a class="reference internal" href="_modules/sni/api/routers/system.html#GetJobOut.from_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.system.GetJobOut.from_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <code class="xref py py-class docutils literal notranslate"><span class="pre">apscheduler.job.Job</span></code> to a
+<a class="reference internal" href="#sni.api.routers.system.GetJobOut" title="sni.api.routers.system.GetJobOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.system.GetJobOut</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.function">
+<code class="sig-name descname">function</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.job_id">
+<code class="sig-name descname">job_id</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.job_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.max_instances">
+<code class="sig-name descname">max_instances</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.max_instances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.misfire_grace_time">
+<code class="sig-name descname">misfire_grace_time</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.misfire_grace_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.next_run_time">
+<code class="sig-name descname">next_run_time</code><em class="property">: Optional[datetime]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.next_run_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.system.GetJobOut.trigger">
+<code class="sig-name descname">trigger</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.system.GetJobOut.trigger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.system.get_jobs">
+<code class="sig-prename descclassname">sni.api.routers.system.</code><code class="sig-name descname">get_jobs</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/system.html#get_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.system.get_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the currently scheduled job list. Requires a clearance level of 10.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.system.post_job">
+<code class="sig-prename descclassname">sni.api.routers.system.</code><code class="sig-name descname">post_job</code><span class="sig-paren">(</span><em class="sig-param">callable_name: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/system.html#post_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.system.post_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submits a job to the scheduler. Requires a clearance level of 10.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.api.routers.teamspeak">
 <span id="sni-api-routers-teamspeak"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.teamspeak</span></code><a class="headerlink" href="#module-sni.api.routers.teamspeak" title="Permalink to this headline">¶</a></h3>
 <p>Teamspeak related paths</p>
@@ -1305,6 +1374,7 @@ level depends on the modification.</p>
 <li><a class="reference internal" href="#module-sni.api.routers.esi"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.esi</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.group"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.group</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.sde"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.sde</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.routers.system"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.system</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.teamspeak"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.teamspeak</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.token"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.token</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.user"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.user</span></code></a></li>

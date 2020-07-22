@@ -41,9 +41,8 @@
 <span class="sd">API Server</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
+<span class="c1"># from multiprocessing import Process</span>
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
 
@@ -51,66 +50,73 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.coalition</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.crash</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.esi</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.group</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.sde</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.token</span>
-<span class="kn">import</span> <span class="nn">sni.api.routers.user</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.coalition</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_coalition</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.crash</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_crash</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.esi</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_esi</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.group</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_group</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.sde</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_sde</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.system</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_system</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.token</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_token</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.user</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_user</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">coalition</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">router_coalition</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/coalition&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Coalition management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">crash</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">router_crash</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/crash&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Crash reports&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">sni.api.routers.discord</span>
+    <span class="kn">from</span> <span class="nn">sni.api.routers.discord</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_discord</span>
     <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+        <span class="n">router_discord</span><span class="p">,</span>
         <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/discord&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Discord&#39;</span><span class="p">],</span>
     <span class="p">)</span>
 
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">router_esi</span><span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">router_group</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/group&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Group management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">sni.api.routers.teamspeak</span>
+    <span class="kn">from</span> <span class="nn">sni.api.routers.teamspeak</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_teamspeak</span>
     <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+        <span class="n">router_teamspeak</span><span class="p">,</span>
         <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/teamspeak&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Teamspeak&#39;</span><span class="p">],</span>
     <span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">sde</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">router_sde</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/sde&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SDE methods&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">router_system</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/system&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;System administration&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">router_token</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/token&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Authentication &amp; tokens&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">routers</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
+    <span class="n">router_user</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/user&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;User management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
@@ -131,7 +137,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">openapi</span><span class="p">()))</span></div>
 
 
-<div class="viewcode-block" id="_start_api_server"><a class="viewcode-back" href="../../../api.html#sni.api.server._start_api_server">[docs]</a><span class="k">def</span> <span class="nf">_start_api_server</span><span class="p">():</span>
+<div class="viewcode-block" id="start_api_server"><a class="viewcode-back" href="../../../api.html#sni.api.server.start_api_server">[docs]</a><span class="k">def</span> <span class="nf">start_api_server</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Starts the API server for real. See</span>
 <span class="sd">    :meth:`sni.api.server.start_api_server`.</span>
@@ -180,8 +186,6 @@
             <span class="p">},</span>
         <span class="p">},</span>
     <span class="p">}</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;Starting API server on </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
@@ -199,15 +203,15 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API server stopped&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="start_api_server"><a class="viewcode-back" href="../../../api.html#sni.api.server.start_api_server">[docs]</a><span class="k">def</span> <span class="nf">start_api_server</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Runs the API server in a dedicated process.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Process</span><span class="p">(</span>
-        <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;api_server&#39;</span><span class="p">,</span>
-        <span class="n">target</span><span class="o">=</span><span class="n">_start_api_server</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+<span class="c1"># def start_api_server():</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Runs the API server in a dedicated process.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Process(</span>
+<span class="c1">#         daemon=True,</span>
+<span class="c1">#         name=&#39;api_server&#39;,</span>
+<span class="c1">#         target=_start_api_server,</span>
+<span class="c1">#     ).start()</span>
 </pre></div>
 
           </div>
