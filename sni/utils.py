@@ -2,6 +2,7 @@
 Various utilities
 """
 
+from importlib import import_module
 from typing import Callable
 import logging
 import random
@@ -10,6 +11,15 @@ import string
 from datetime import datetime, timedelta
 
 from pytz import utc
+
+
+def callable_from_name(name: str) -> Callable:
+    """
+    Returns a callable from its name, e.g. ``sni.esi.jobs:refresh_tokens``.
+    """
+    module_name, function_name = name.split(':')
+    module = import_module(module_name)
+    return getattr(module, function_name)
 
 
 # pylint: disable=dangerous-default-value

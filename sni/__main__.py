@@ -6,13 +6,13 @@ Main module
 This module contains the entry point to SNI.
 """
 
-from importlib import import_module
 import argparse
 import asyncio
 import logging
 import logging.config
 import sys
 
+from sni.utils import callable_from_name
 import sni.conf as conf
 
 
@@ -140,11 +140,12 @@ def main():
 
     from sni.db.mongodb import init_mongodb
     init_mongodb()
-    connect_database_signals()
     migrate_database()
 
     if arguments.migrate_database:
         sys.exit()
+
+    connect_database_signals()
 
     # --------------------------------------------------------------------------
     # Post database migration, pre sheduler start
@@ -238,11 +239,9 @@ def run_job(job_name: str) -> None:
     Runs a job (or indeed, any function that doesn't take arguments)
     """
     from sni.scheduler import scheduler, wait_until_job_store_is_empty
-    module_name, function_name = job_name.split(':')
-    module = import_module(module_name)
-    function = getattr(module, function_name)
+    function = callable_from_name(job_name)
     scheduler.add_job(function)
-    logging.info('Manually running job %s (%s)', function_name, module_name)
+    logging.info('Manually running job %s', job_name)
     asyncio.get_event_loop().run_until_complete(
         wait_until_job_store_is_empty())
 

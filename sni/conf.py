@@ -5,6 +5,7 @@ Configuration facility
 import collections
 from typing import Any, Dict, List, MutableMapping, Tuple
 import logging
+
 import yaml
 
 CONFIGURATION: Dict[str, Any] = {

@@ -270,6 +270,45 @@ components:
       - group_name
       title: GetGroupShortOut
       type: object
+    GetJobOut:
+      description: Represents a job
+      properties:
+        coalesce:
+          title: Coalesce
+          type: boolean
+        executor:
+          title: Executor
+          type: string
+        function:
+          title: Function
+          type: string
+        job_id:
+          title: Job Id
+          type: string
+        max_instances:
+          title: Max Instances
+          type: integer
+        misfire_grace_time:
+          title: Misfire Grace Time
+          type: integer
+        name:
+          title: Name
+          type: string
+        next_run_time:
+          format: date-time
+          title: Next Run Time
+          type: string
+        trigger:
+          title: Trigger
+          type: string
+      required:
+      - coalesce
+      - executor
+      - function
+      - job_id
+      - name
+      title: GetJobOut
+      type: object
     GetSdeCategoryOut:
       description: Represents an SDE category
       properties:
@@ -733,19 +772,10 @@ openapi: 3.0.2
 paths:
   /callback/esi:
     get:
-      description: 'ESI callback. You should not manually call this.
-
-
-        Upon receiving a notification from EVE SSO, SNI notifies the appropriate
-
-        app by issuing a `POST` request to the predefined app callback, using the
-
-        `PostCallbackEsiOut` model.
-
-
-        Reference: OAuth 2.0 for Web Based Applications
-
-        https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html'
+      description: "ESI callback. You should not manually call this.\n\nUpon receiving\
+        \ a notification from EVE SSO, SNI redirects the client to the\nappropriate\
+        \ frontend callback, with the state code and user token in URL\nparameters.\n\
+        \nReference:\n    `OAuth 2.0 for Web Based Applications <https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html>`_"
       operationId: get_callback_esi_callback_esi_get
       parameters:
       - in: query
@@ -1536,6 +1566,70 @@ paths:
       summary: Get information about a list of SDE types
       tags:
       - SDE methods
+  /system/job:
+    get:
+      description: Gets the currently scheduled job list. Requires a clearance level
+        of 10.
+      operationId: get_jobs_system_job_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetJobOut'
+                title: Response Get Jobs System Job Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Gets the currently scheduled job list
+      tags:
+      - System administration
+  /system/job/{callable_name}:
+    post:
+      description: Submits a job to the scheduler. Requires a clearance level of 10.
+      operationId: post_job_system_job__callable_name__post
+      parameters:
+      - in: path
+        name: callable_name
+        required: true
+        schema:
+          title: Callable Name
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetJobOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Submits a job to the scheduler
+      tags:
+      - System administration
   /teamspeak/auth/complete:
     post:
       description: 'Completes an authentication challenge for the owner of the token.

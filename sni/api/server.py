@@ -12,66 +12,73 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
-import sni.api.routers.coalition
-import sni.api.routers.crash
-import sni.api.routers.esi
-import sni.api.routers.group
-import sni.api.routers.sde
-import sni.api.routers.token
-import sni.api.routers.user
+from sni.api.routers.coalition import router as router_coalition
+from sni.api.routers.crash import router as router_crash
+from sni.api.routers.esi import router as router_esi
+from sni.api.routers.group import router as router_group
+from sni.api.routers.sde import router as router_sde
+from sni.api.routers.system import router as router_system
+from sni.api.routers.token import router as router_token
+from sni.api.routers.user import router as router_user
 
 app = FastAPI()
 
 app.include_router(
-    sni.api.routers.coalition.router,
+    router_coalition,
     prefix='/coalition',
     tags=['Coalition management'],
 )
 
 app.include_router(
-    sni.api.routers.crash.router,
+    router_crash,
     prefix='/crash',
     tags=['Crash reports'],
 )
 
 if conf.get('discord.enabled'):
-    import sni.api.routers.discord
+    from sni.api.routers.discord import router as router_discord
     app.include_router(
-        sni.api.routers.discord.router,
+        router_discord,
         prefix='/discord',
         tags=['Discord'],
     )
 
-app.include_router(sni.api.routers.esi.router)
+app.include_router(router_esi)
 
 app.include_router(
-    sni.api.routers.group.router,
+    router_group,
     prefix='/group',
     tags=['Group management'],
 )
 
 if conf.get('teamspeak.enabled'):
-    import sni.api.routers.teamspeak
+    from sni.api.routers.teamspeak import router as router_teamspeak
     app.include_router(
-        sni.api.routers.teamspeak.router,
+        router_teamspeak,
         prefix='/teamspeak',
         tags=['Teamspeak'],
     )
 
 app.include_router(
-    sni.api.routers.sde.router,
+    router_sde,
     prefix='/sde',
     tags=['SDE methods'],
 )
 
 app.include_router(
-    sni.api.routers.token.router,
+    router_system,
+    prefix='/system',
+    tags=['System administration'],
+)
+
+app.include_router(
+    router_token,
     prefix='/token',
     tags=['Authentication & tokens'],
 )
 
 app.include_router(
-    sni.api.routers.user.router,
+    router_user,
     prefix='/user',
     tags=['User management'],
 )
