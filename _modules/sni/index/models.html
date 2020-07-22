@@ -47,6 +47,55 @@
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 
+<div class="viewcode-block" id="EsiCharacterLocation"><a class="viewcode-back" href="../../../indexation.html#sni.index.models.EsiCharacterLocation">[docs]</a><span class="k">class</span> <span class="nc">EsiCharacterLocation</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a character location, along with the ship it is currently</span>
+<span class="sd">    flying. Thus, it is a combination of the ESI</span>
+<span class="sd">    ``/characters/{character_id}/location``,</span>
+<span class="sd">    ``/characters/{character_id}/online``, and</span>
+<span class="sd">    ``/characters/{character_id}/ship`` paths.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">online</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Wether the character is online&quot;&quot;&quot;</span>
+
+    <span class="n">ship_item_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Ship item ID (this ID persists until repackaged)&quot;&quot;&quot;</span>
+
+    <span class="n">ship_name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Ship name&quot;&quot;&quot;</span>
+
+    <span class="n">ship_type_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Ship type ID&quot;&quot;&quot;</span>
+
+    <span class="n">solar_system_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Solar system ID where the character is&quot;&quot;&quot;</span>
+
+    <span class="n">station_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Station ID, if applicable&quot;&quot;&quot;</span>
+
+    <span class="n">structure_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Structire ID, if applicable&quot;&quot;&quot;</span>
+
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp&quot;&quot;&quot;</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Corresponding user&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;online&#39;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;solar_system_id&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>  <span class="c1"># 90 days</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
+
+
 <div class="viewcode-block" id="EsiMailRecipient"><a class="viewcode-back" href="../../../indexation.html#sni.index.models.EsiMailRecipient">[docs]</a><span class="k">class</span> <span class="nc">EsiMailRecipient</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocument</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An email recipient</span>

@@ -49,6 +49,71 @@
 <span id="database-models"></span><h2>Database models<a class="headerlink" href="#module-sni.index.models" title="Permalink to this headline">¶</a></h2>
 <p>Database models</p>
 <dl class="class">
+<dt id="sni.index.models.EsiCharacterLocation">
+<em class="property">class </em><code class="sig-prename descclassname">sni.index.models.</code><code class="sig-name descname">EsiCharacterLocation</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/models.html#EsiCharacterLocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.models.EsiCharacterLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a character location, along with the ship it is currently
+flying. Thus, it is a combination of the ESI
+<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/location</span></code>,
+<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/online</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/ship</span></code> paths.</p>
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.online">
+<code class="sig-name descname">online</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.online" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wether the character is online</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.ship_item_id">
+<code class="sig-name descname">ship_item_id</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.ship_item_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ship item ID (this ID persists until repackaged)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.ship_name">
+<code class="sig-name descname">ship_name</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.ship_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ship name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.ship_type_id">
+<code class="sig-name descname">ship_type_id</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.ship_type_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ship type ID</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.solar_system_id">
+<code class="sig-name descname">solar_system_id</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.solar_system_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solar system ID where the character is</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.station_id">
+<code class="sig-name descname">station_id</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.station_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Station ID, if applicable</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.structure_id">
+<code class="sig-name descname">structure_id</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.structure_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structire ID, if applicable</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.timestamp">
+<code class="sig-name descname">timestamp</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestamp</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.user">
+<code class="sig-name descname">user</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Corresponding user</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.index.models.EsiMail">
 <em class="property">class </em><code class="sig-prename descclassname">sni.index.models.</code><code class="sig-name descname">EsiMail</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/models.html#EsiMail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.models.EsiMail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
@@ -177,9 +242,21 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.index.jobs.index_user_location">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_user_location</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_user_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_user_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indexes a user’s location, online status, and ship</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.index.jobs.index_user_mails">
 <code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_user_mails</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_user_mails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_user_mails" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pulls a character’s email</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.index.jobs.index_users_location">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_users_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_users_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_users_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indexes all user’s location</p>
 </dd></dl>
 
 <dl class="function">
