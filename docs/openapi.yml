@@ -3,6 +3,14 @@ components:
     EsiRequestIn:
       description: Data to be forwarded to the ESI
       properties:
+        all_pages:
+          default: false
+          title: All Pages
+          type: boolean
+        id_annotations:
+          default: false
+          title: Id Annotations
+          type: boolean
         on_behalf_of:
           title: On Behalf Of
           type: integer
@@ -18,13 +26,17 @@ components:
         data:
           title: Data
         headers:
+          default: {}
           title: Headers
+          type: object
+        id_annotations:
+          default: {}
+          title: Id Annotations
           type: object
         status_code:
           title: Status Code
           type: integer
       required:
-      - headers
       - status_code
       title: EsiResponse
       type: object
@@ -309,81 +321,6 @@ components:
       - name
       title: GetJobOut
       type: object
-    GetSdeCategoryOut:
-      description: Represents an SDE category
-      properties:
-        category_name:
-          title: Category Name
-          type: string
-      title: GetSdeCategoryOut
-      type: object
-    GetSdeConstellationOut:
-      description: Represents an SDE EVE constellation
-      properties:
-        constellation_name:
-          title: Constellation Name
-          type: string
-        region_name:
-          title: Region Name
-          type: string
-      required:
-      - constellation_name
-      - region_name
-      title: GetSdeConstellationOut
-      type: object
-    GetSdeGroupOut:
-      description: Represents an SDE group
-      properties:
-        category_name:
-          title: Category Name
-          type: string
-        group_name:
-          title: Group Name
-          type: string
-      title: GetSdeGroupOut
-      type: object
-    GetSdeRegionOut:
-      description: Represents an SDE EVE region
-      properties:
-        region_name:
-          title: Region Name
-          type: string
-      required:
-      - region_name
-      title: GetSdeRegionOut
-      type: object
-    GetSdeSolarSystemOut:
-      description: Represents an SDE EVE solar system
-      properties:
-        constellation_name:
-          title: Constellation Name
-          type: string
-        region_name:
-          title: Region Name
-          type: string
-        solar_system_name:
-          title: Solar System Name
-          type: string
-      required:
-      - constellation_name
-      - region_name
-      - solar_system_name
-      title: GetSdeSolarSystemOut
-      type: object
-    GetSdeTypeOut:
-      description: Represents an SDE type
-      properties:
-        category_name:
-          title: Category Name
-          type: string
-        group_name:
-          title: Group Name
-          type: string
-        type_name:
-          title: Type Name
-          type: string
-      title: GetSdeTypeOut
-      type: object
     GetTokenOut:
       description: Model for ``GET /token`` responses.
       properties:
@@ -414,12 +351,7 @@ components:
           title: Parent
           type: string
         token_type:
-          enum:
-          - dyn
-          - per
-          - use
-          title: Token Type
-          type: string
+          $ref: '#/components/schemas/TokenType'
         uuid:
           title: Uuid
           type: string
@@ -708,6 +640,14 @@ components:
           type: integer
       title: PutUserIn
       type: object
+    TokenType:
+      description: Enumeration containing the various token types.
+      enum:
+      - dyn
+      - per
+      - use
+      title: TokenType
+      type: string
     ValidationError:
       properties:
         loc:
@@ -805,7 +745,6 @@ paths:
       summary: ESI callback
       tags:
       - Callbacks
-      - ESI
   /coalition:
     get:
       description: Lists all the coalition names. Requires a clearance level of 0
@@ -1135,6 +1074,17 @@ paths:
         schema:
           title: Authorization
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/EsiRequestIn'
+              default:
+                all_pages: false
+                id_annotations: false
+                params: {}
+              title: Data
       responses:
         '200':
           content:
@@ -1150,6 +1100,7 @@ paths:
           description: Validation Error
       summary: Proxy path to the ESI
       tags:
+      - ESI
       - ESI
   /group:
     get:
@@ -1340,232 +1291,6 @@ paths:
       summary: Replies "pong"
       tags:
       - Testing
-  /sde/category:
-    get:
-      description: "Given a list of SDE category ids, returns a dict with informations\
-        \ about\nthese types. The return dict key set is guaranteed to be the same\
-        \ as the\ninput list (up to repetition of keys).\n\nExample: Sending a request\
-        \ with ``[-1, 7, 8, 9]`` returns::\n\n    {\n        \"8\": {\n          \
-        \  \"category_name\": \"Charge\"\n        },\n        \"9\": {\n         \
-        \   \"category_name\": \"Blueprint\"\n        },\n        \"-1\": null,\n\
-        \        \"7\": {\n            \"category_name\": \"Module\"\n        }\n\
-        \    }"
-      operationId: get_sde_category_sde_category_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  $ref: '#/components/schemas/GetSdeCategoryOut'
-                title: Response Get Sde Category Sde Category Get
-                type: object
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get information about a list of SDE categories
-      tags:
-      - SDE methods
-  /sde/constellation:
-    get:
-      description: "Given a list of SDE constellation ids, returns a dict with informations\n\
-        about these types. The return dict key set is guaranteed to be the same as\n\
-        the input list (up to repetition of keys).\n\nExample:\n    Sending a request\
-        \ with ``[1, 20000352, 20000681]`` returns::\n\n        {\n            \"\
-        20000352\": {\n                \"constellation_name\": \"Besateoden\",\n \
-        \               \"region_name\": \"Molden Heath\"\n            },\n      \
-        \      \"1\": null,\n            \"20000681\": {\n                \"constellation_name\"\
-        : \"Basilisk\",\n                \"region_name\": \"Fountain\"\n         \
-        \   }\n        }"
-      operationId: get_sde_constellation_sde_constellation_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  $ref: '#/components/schemas/GetSdeConstellationOut'
-                title: Response Get Sde Constellation Sde Constellation Get
-                type: object
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get information about a list of EVE constellations
-      tags:
-      - SDE methods
-  /sde/group:
-    get:
-      description: "Given a list of SDE group ids, returns a dict with informations\
-        \ about these\ntypes. The return dict key set is guaranteed to be the same\
-        \ as the input\nlist (up to repetition of keys).\n\nExample: Sending a request\
-        \ with ``[-1, 4060, 646]`` returns::\n\n    {\n        \"646\": {\n      \
-        \      \"category_name\": \"Module\",\n            \"group_name\": \"Drone\
-        \ Tracking Modules\"\n        },\n        \"4060\": {\n            \"category_name\"\
-        : \"Module\",\n            \"group_name\": \"Vorton Projector\"\n        },\n\
-        \        \"-1\": null\n    }"
-      operationId: get_sde_group_sde_group_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  $ref: '#/components/schemas/GetSdeGroupOut'
-                title: Response Get Sde Group Sde Group Get
-                type: object
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get information about a list of SDE groups
-      tags:
-      - SDE methods
-  /sde/region:
-    get:
-      description: "Given a list of SDE region ids, returns a dict with informations\
-        \ about\nthese types. The return dict key set is guaranteed to be the same\
-        \ as the\ninput list (up to repetition of keys).\n\nExample:\n    Sending\
-        \ a request with ``[1, 10000060, 10000065]`` returns::\n\n        {\n    \
-        \        \"1\": null,\n            \"10000065\": {\n                \"region_name\"\
-        : \"Kor-Azor\"\n            },\n            \"10000060\": {\n            \
-        \    \"region_name\": \"Delve\"\n            }\n        }"
-      operationId: get_sde_region_sde_region_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  $ref: '#/components/schemas/GetSdeRegionOut'
-                title: Response Get Sde Region Sde Region Get
-                type: object
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get information about a list of EVE regions
-      tags:
-      - SDE methods
-  /sde/solar_system:
-    get:
-      description: "Given a list of SDE solar system ids, returns a dict with informations\n\
-        about these types. The return dict key set is guaranteed to be the same as\n\
-        the input list (up to repetition of keys).\n\nExample:\n    Sending a request\
-        \ with ``[1, 30003878, 31001039]`` returns::\n\n        {\n            \"\
-        1\": null,\n            \"30003878\": {\n                \"constellation_name\"\
-        : \"Amdimmah\",\n                \"region_name\": \"Khanid\",\n          \
-        \      \"solar_system_name\": \"Palas\"\n            },\n            \"31001039\"\
-        : {\n                \"constellation_name\": \"C-C00100\",\n             \
-        \   \"region_name\": \"C-R00011\",\n                \"solar_system_name\"\
-        : \"J171549\"\n            }\n        }"
-      operationId: get_sde_solar_system_sde_solar_system_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  $ref: '#/components/schemas/GetSdeSolarSystemOut'
-                title: Response Get Sde Solar System Sde Solar System Get
-                type: object
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get information about a list of EVE solar systems
-      tags:
-      - SDE methods
-  /sde/type:
-    get:
-      description: "Given a list of SDE type ids, returns a dict with informations\
-        \ about these\ntypes. The return dict key set is guaranteed to be the same\
-        \ as the input\nlist (up to repetition of keys).\n\nExample:\n    Sending\
-        \ a request with ``[21554, 1, 19722]`` returns::\n\n        {\n          \
-        \  \"1\": null,\n            \"21554\": {\n                \"category_name\"\
-        : \"Blueprint\",\n                \"group_name\": \"Projectile Weapon Blueprint\"\
-        ,\n                \"type_name\": \"650mm Medium 'Jolt' Artillery I Blueprint\"\
-        \n            },\n            \"19722\": {\n                \"category_name\"\
-        : \"Ship\",\n                \"group_name\": \"Dreadnought\",\n          \
-        \      \"type_name\": \"Naglfar\"\n            }\n        }"
-      operationId: get_sde_type_sde_type_get
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  $ref: '#/components/schemas/GetSdeTypeOut'
-                title: Response Get Sde Type Sde Type Get
-                type: object
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Get information about a list of SDE types
-      tags:
-      - SDE methods
   /system/job:
     get:
       description: Gets the currently scheduled job list. Requires a clearance level
