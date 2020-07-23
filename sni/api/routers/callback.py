@@ -63,7 +63,16 @@ async def get_callback_esi(code: str, state: str):
                  state_code.app_token.uuid)
 
     if state_code.app_token.callback is None:
-        return PlainTextResponse(content='Authentication successful')
+        return {
+            'created_on': user_token.created_on,
+            'expires_on': user_token.expires_on,
+            'jwt': user_jwt_str,
+            'owner': {
+                'character_id': user_token.owner.character_id,
+                'character_name': user_token.owner.character_name,
+                'clearance_level': user_token.owner.clearance_level,
+            },
+        }
 
     request = requests.Request(
         'GET',
