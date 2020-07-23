@@ -231,6 +231,31 @@ flying. Thus, it is a combination of the ESI
 
 </dd></dl>
 
+<dl class="class">
+<dt id="sni.index.models.EsiWalletBalance">
+<em class="property">class </em><code class="sig-prename descclassname">sni.index.models.</code><code class="sig-name descname">EsiWalletBalance</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/models.html#EsiWalletBalance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.models.EsiWalletBalance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
+<p>Represents a user’s wallet balance at a given point in time</p>
+<dl class="attribute">
+<dt id="sni.index.models.EsiWalletBalance.balance">
+<code class="sig-name descname">balance</code><a class="headerlink" href="#sni.index.models.EsiWalletBalance.balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wallet balance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiWalletBalance.timestamp">
+<code class="sig-name descname">timestamp</code><a class="headerlink" href="#sni.index.models.EsiWalletBalance.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestamp</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiWalletBalance.user">
+<code class="sig-name descname">user</code><a class="headerlink" href="#sni.index.models.EsiWalletBalance.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>User reference</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.index.jobs">
 <span id="jobs"></span><h2>Jobs<a class="headerlink" href="#module-sni.index.jobs" title="Permalink to this headline">¶</a></h2>
@@ -254,6 +279,19 @@ flying. Thus, it is a combination of the ESI
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.index.jobs.index_user_skillpoints">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_user_skillpoints</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_user_skillpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_user_skillpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measures a user’s skillpoints. See
+<a class="reference internal" href="#sni.index.models.EsiSkillPoints" title="sni.index.models.EsiSkillPoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiSkillPoints</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.index.jobs.index_user_wallets">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_user_wallets</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_user_wallets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_user_wallets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indexes user wallet balance</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.index.jobs.index_users_location">
 <code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_users_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_users_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_users_location" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indexes all user’s location</p>
@@ -266,16 +304,15 @@ flying. Thus, it is a combination of the ESI
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.index.jobs.measure_user_skillpoints">
-<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">measure_user_skillpoints</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#measure_user_skillpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.measure_user_skillpoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Measures a user’s skillpoints. See
-<a class="reference internal" href="#sni.index.models.EsiSkillPoints" title="sni.index.models.EsiSkillPoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiSkillPoints</span></code></a>.</p>
+<dt id="sni.index.jobs.index_users_skillpoints">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_users_skillpoints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_users_skillpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_users_skillpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measures all users skillpoints</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.index.jobs.measure_users_skillpoints">
-<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">measure_users_skillpoints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#measure_users_skillpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.measure_users_skillpoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Measures all users skillpoints</p>
+<dt id="sni.index.jobs.index_users_wallets">
+<code class="sig-prename descclassname">sni.index.jobs.</code><code class="sig-name descname">index_users_wallets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/index/jobs.html#index_users_wallets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.jobs.index_users_wallets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indexes user wallet balance</p>
 </dd></dl>
 
 </div>

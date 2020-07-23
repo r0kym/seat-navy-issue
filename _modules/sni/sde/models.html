@@ -41,179 +41,43 @@
 <span class="sd">Teamspeak database models</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
-
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
 
 
-<div class="viewcode-block" id="SdeCategory"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeCategory">[docs]</a><span class="k">class</span> <span class="nc">SdeCategory</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+<div class="viewcode-block" id="EsiObjectName"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.EsiObjectName">[docs]</a><span class="k">class</span> <span class="nc">EsiObjectName</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents an SDE category, i.e. an entry in the ``invCategories`` table.</span>
+<span class="sd">    Represents an ID to object name mapping</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;SDE ``categoryName``&quot;&quot;&quot;</span>
+    <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
-    <span class="n">category_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;SDE ``categoryID``&quot;&quot;&quot;</span>
+    <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
+
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;When this document expires, if applicable&quot;&quot;&quot;</span>
+
+    <span class="n">field_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique_with</span><span class="o">=</span><span class="s1">&#39;field_names&#39;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;ID&quot;&quot;&quot;</span>
+
+    <span class="n">field_names</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">())</span>
+    <span class="sd">&quot;&quot;&quot;ESI field names this type of field can have, e.g. ``solar_system_id``,</span>
+<span class="sd">    ``character_id``&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Name&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;category_id&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;field_id&#39;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;field_names&#39;</span><span class="p">,</span> <span class="s1">&#39;field_id&#39;</span><span class="p">),</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;expires_on&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">0</span>
+            <span class="p">},</span>
         <span class="p">],</span>
     <span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="SdeGroup"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeGroup">[docs]</a><span class="k">class</span> <span class="nc">SdeGroup</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents an SDE category, i.e. an entry in the ``invCategories`` table.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">category</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">SdeCategory</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Reference to the associated category (``categoryID`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;SDE ``groupName``&quot;&quot;&quot;</span>
-
-    <span class="n">group_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;SDE ``groupID``&quot;&quot;&quot;</span>
-
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;group_id&#39;</span><span class="p">,</span>
-        <span class="p">],</span>
-    <span class="p">}</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">category_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the group name of this type, or ``None`` if the group does not</span>
-<span class="sd">        have any category</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="SdeType"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeType">[docs]</a><span class="k">class</span> <span class="nc">SdeType</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents an SDE type, i.e. an entry in the ``invTypes`` table.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;SDE ``typeName``&quot;&quot;&quot;</span>
-
-    <span class="n">group</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">SdeGroup</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Reference to the associated group (``groupID`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">type_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;SDE ``typeID``&quot;&quot;&quot;</span>
-
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;type_id&#39;</span><span class="p">,</span>
-        <span class="p">],</span>
-    <span class="p">}</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">category_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the group name of this type, or ``None`` if the type does not</span>
-<span class="sd">        have any group</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">category_name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">group_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the group name of this type, or ``None`` if the type does not</span>
-<span class="sd">        have any group</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="SdeRegion"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeRegion">[docs]</a><span class="k">class</span> <span class="nc">SdeRegion</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents a region in EVE, i.e. an entry in the ``mapRegions`` table.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot;Region name (``regionName`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">region_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Region ID (``regionID`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;region_id&#39;</span><span class="p">,</span>
-        <span class="p">],</span>
-    <span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="SdeConstellation"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeConstellation">[docs]</a><span class="k">class</span> <span class="nc">SdeConstellation</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents a constellation in EVE, i.e. an entry in the</span>
-<span class="sd">    ``mapConstellations`` table.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">constellation_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Region ID (``constellationID`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot;Region name (``constellationName`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">region</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">SdeRegion</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Region of this constellation&quot;&quot;&quot;</span>
-
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;constellation_id&#39;</span><span class="p">,</span>
-        <span class="p">],</span>
-    <span class="p">}</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">region_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convenience function that returns the name of the region of this</span>
-<span class="sd">        constellation</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">name</span></div>
-
-
-<div class="viewcode-block" id="SdeSolarSystem"><a class="viewcode-back" href="../../../sde.html#sni.sde.models.SdeSolarSystem">[docs]</a><span class="k">class</span> <span class="nc">SdeSolarSystem</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents a constellation in EVE, i.e. an entry in the</span>
-<span class="sd">    ``mapSolarSystems`` table.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">constellation</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">SdeConstellation</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Constellation of this solar system&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot;Solar system name (``solarSystemName`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">solar_system_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Solar system ID (``solarSystemID`` field)&quot;&quot;&quot;</span>
-
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;solar_system_id&#39;</span><span class="p">,</span>
-        <span class="p">],</span>
-    <span class="p">}</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">constellation_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convenience function that returns the name of the constellation of this</span>
-<span class="sd">        solar system</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constellation</span><span class="o">.</span><span class="n">name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">region_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convenience function that returns the name of the region of this solar</span>
-<span class="sd">        system</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constellation</span><span class="o">.</span><span class="n">region_name</span></div>
 </pre></div>
 
           </div>

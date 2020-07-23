@@ -111,188 +111,57 @@
 <dd><p>Imports the <code class="docutils literal notranslate"><span class="pre">mapRegions</span></code> table</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.sde.sde.sde_get_name">
+<code class="sig-prename descclassname">sni.sde.sde.</code><code class="sig-name descname">sde_get_name</code><span class="sig-paren">(</span><em class="sig-param">field_id: int, field_name: Optional[str]</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="_modules/sni/sde/sde.html#sde_get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.sde.sde_get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a document from the <code class="docutils literal notranslate"><span class="pre">esi_object_name</span></code> collection. See
+<a class="reference internal" href="#sni.sde.models.EsiObjectName" title="sni.sde.models.EsiObjectName"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.EsiObjectName</span></code></a>.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.sde.models">
 <span id="database-models"></span><h2>Database models<a class="headerlink" href="#module-sni.sde.models" title="Permalink to this headline">¶</a></h2>
 <p>Teamspeak database models</p>
 <dl class="class">
-<dt id="sni.sde.models.SdeCategory">
-<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeCategory</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeCategory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeCategory" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.sde.models.EsiObjectName">
+<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">EsiObjectName</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#EsiObjectName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.EsiObjectName" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
-<p>Represents an SDE category, i.e. an entry in the <code class="docutils literal notranslate"><span class="pre">invCategories</span></code> table.</p>
+<p>Represents an ID to object name mapping</p>
 <dl class="attribute">
-<dt id="sni.sde.models.SdeCategory.category_id">
-<code class="sig-name descname">category_id</code><a class="headerlink" href="#sni.sde.models.SdeCategory.category_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>SDE <code class="docutils literal notranslate"><span class="pre">categoryID</span></code></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.sde.models.SdeCategory.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeCategory.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>SDE <code class="docutils literal notranslate"><span class="pre">categoryName</span></code></p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.sde.models.SdeConstellation">
-<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeConstellation</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeConstellation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeConstellation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
-<p>Represents a constellation in EVE, i.e. an entry in the
-<code class="docutils literal notranslate"><span class="pre">mapConstellations</span></code> table.</p>
-<dl class="attribute">
-<dt id="sni.sde.models.SdeConstellation.constellation_id">
-<code class="sig-name descname">constellation_id</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.constellation_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Region ID (<code class="docutils literal notranslate"><span class="pre">constellationID</span></code> field)</p>
+<dt id="sni.sde.models.EsiObjectName.SCHEMA_VERSION">
+<code class="sig-name descname">SCHEMA_VERSION</code><em class="property"> = 1</em><a class="headerlink" href="#sni.sde.models.EsiObjectName.SCHEMA_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Latest schema version for this collection</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.sde.models.SdeConstellation.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Region name (<code class="docutils literal notranslate"><span class="pre">constellationName</span></code> field)</p>
+<dt id="sni.sde.models.EsiObjectName._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.sde.models.EsiObjectName._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema version of this document</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.sde.models.SdeConstellation.region">
-<code class="sig-name descname">region</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Region of this constellation</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sni.sde.models.SdeConstellation.region_name">
-<em class="property">property </em><code class="sig-name descname">region_name</code><a class="headerlink" href="#sni.sde.models.SdeConstellation.region_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function that returns the name of the region of this
-constellation</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.sde.models.SdeGroup">
-<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeGroup</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
-<p>Represents an SDE category, i.e. an entry in the <code class="docutils literal notranslate"><span class="pre">invCategories</span></code> table.</p>
-<dl class="attribute">
-<dt id="sni.sde.models.SdeGroup.category">
-<code class="sig-name descname">category</code><a class="headerlink" href="#sni.sde.models.SdeGroup.category" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference to the associated category (<code class="docutils literal notranslate"><span class="pre">categoryID</span></code> field)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sni.sde.models.SdeGroup.category_name">
-<em class="property">property </em><code class="sig-name descname">category_name</code><a class="headerlink" href="#sni.sde.models.SdeGroup.category_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the group name of this type, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the group does not
-have any category</p>
+<dt id="sni.sde.models.EsiObjectName.expires_on">
+<code class="sig-name descname">expires_on</code><a class="headerlink" href="#sni.sde.models.EsiObjectName.expires_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>When this document expires, if applicable</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.sde.models.SdeGroup.group_id">
-<code class="sig-name descname">group_id</code><a class="headerlink" href="#sni.sde.models.SdeGroup.group_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>SDE <code class="docutils literal notranslate"><span class="pre">groupID</span></code></p>
+<dt id="sni.sde.models.EsiObjectName.field_id">
+<code class="sig-name descname">field_id</code><a class="headerlink" href="#sni.sde.models.EsiObjectName.field_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>ID</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.sde.models.SdeGroup.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeGroup.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>SDE <code class="docutils literal notranslate"><span class="pre">groupName</span></code></p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.sde.models.SdeRegion">
-<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeRegion</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeRegion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
-<p>Represents a region in EVE, i.e. an entry in the <code class="docutils literal notranslate"><span class="pre">mapRegions</span></code> table.</p>
-<dl class="attribute">
-<dt id="sni.sde.models.SdeRegion.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeRegion.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Region name (<code class="docutils literal notranslate"><span class="pre">regionName</span></code> field)</p>
+<dt id="sni.sde.models.EsiObjectName.field_names">
+<code class="sig-name descname">field_names</code><a class="headerlink" href="#sni.sde.models.EsiObjectName.field_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>ESI field names this type of field can have, e.g. <code class="docutils literal notranslate"><span class="pre">solar_system_id</span></code>,
+<code class="docutils literal notranslate"><span class="pre">character_id</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.sde.models.SdeRegion.region_id">
-<code class="sig-name descname">region_id</code><a class="headerlink" href="#sni.sde.models.SdeRegion.region_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Region ID (<code class="docutils literal notranslate"><span class="pre">regionID</span></code> field)</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.sde.models.SdeSolarSystem">
-<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeSolarSystem</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeSolarSystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeSolarSystem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
-<p>Represents a constellation in EVE, i.e. an entry in the
-<code class="docutils literal notranslate"><span class="pre">mapSolarSystems</span></code> table.</p>
-<dl class="attribute">
-<dt id="sni.sde.models.SdeSolarSystem.constellation">
-<code class="sig-name descname">constellation</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.constellation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constellation of this solar system</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sni.sde.models.SdeSolarSystem.constellation_name">
-<em class="property">property </em><code class="sig-name descname">constellation_name</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.constellation_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function that returns the name of the constellation of this
-solar system</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.sde.models.SdeSolarSystem.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solar system name (<code class="docutils literal notranslate"><span class="pre">solarSystemName</span></code> field)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sni.sde.models.SdeSolarSystem.region_name">
-<em class="property">property </em><code class="sig-name descname">region_name</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.region_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function that returns the name of the region of this solar
-system</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.sde.models.SdeSolarSystem.solar_system_id">
-<code class="sig-name descname">solar_system_id</code><a class="headerlink" href="#sni.sde.models.SdeSolarSystem.solar_system_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solar system ID (<code class="docutils literal notranslate"><span class="pre">solarSystemID</span></code> field)</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.sde.models.SdeType">
-<em class="property">class </em><code class="sig-prename descclassname">sni.sde.models.</code><code class="sig-name descname">SdeType</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/sde/models.html#SdeType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.sde.models.SdeType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.document.Document</span></code></p>
-<p>Represents an SDE type, i.e. an entry in the <code class="docutils literal notranslate"><span class="pre">invTypes</span></code> table.</p>
-<dl class="method">
-<dt id="sni.sde.models.SdeType.category_name">
-<em class="property">property </em><code class="sig-name descname">category_name</code><a class="headerlink" href="#sni.sde.models.SdeType.category_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the group name of this type, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the type does not
-have any group</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.sde.models.SdeType.group">
-<code class="sig-name descname">group</code><a class="headerlink" href="#sni.sde.models.SdeType.group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference to the associated group (<code class="docutils literal notranslate"><span class="pre">groupID</span></code> field)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sni.sde.models.SdeType.group_name">
-<em class="property">property </em><code class="sig-name descname">group_name</code><a class="headerlink" href="#sni.sde.models.SdeType.group_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the group name of this type, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the type does not
-have any group</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.sde.models.SdeType.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.SdeType.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>SDE <code class="docutils literal notranslate"><span class="pre">typeName</span></code></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.sde.models.SdeType.type_id">
-<code class="sig-name descname">type_id</code><a class="headerlink" href="#sni.sde.models.SdeType.type_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>SDE <code class="docutils literal notranslate"><span class="pre">typeID</span></code></p>
+<dt id="sni.sde.models.EsiObjectName.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#sni.sde.models.EsiObjectName.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name</p>
 </dd></dl>
 
 </dd></dl>

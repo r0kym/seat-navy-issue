@@ -48,6 +48,13 @@
 <div class="section" id="module-sni.esi.esi">
 <span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.esi.esi" title="Permalink to this headline">¶</a></h2>
 <p>EVE ESI (public API) layer</p>
+<dl class="data">
+<dt id="sni.esi.esi.ESI_ANNOTATORS">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">ESI_ANNOTATORS</code><em class="property">: Dict[str, Tuple[str, str]]</em><em class="property"> = {'alliance_id': ('latest/alliances/{}/', 'name'), 'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'), 'character_id': ('latest/characters/{}/', 'name'), 'corporation_id': ('latest/corporations/{}/', 'name'), 'graphic_id': ('latest/universe/graphics/{}/', 'graphic_file'), 'moon_id': ('latest/universe/moons/{}/', 'name'), 'planet_id': ('latest/universe/planets/{}/', 'name'), 'star_id': ('latest/universe/stars/{}/', 'name'), 'stargate_id': ('latest/universe/stargates/{}/', 'name'), 'station_id': ('latest/universe/stations/{}/', 'name')}</em><a class="headerlink" href="#sni.esi.esi.ESI_ANNOTATORS" title="Permalink to this definition">¶</a></dt>
+<dd><p>ESI annotators, see <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.annotate()</span></code>. If the value at a certain key
+is <code class="docutils literal notranslate"><span class="pre">None</span></code>, it means that <a class="reference internal" href="sde.html#sni.sde.sde.sde_get_name" title="sni.sde.sde.sde_get_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.sde.sde.sde_get_name()</span></code></a> should be used</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="sni.esi.esi.EsiResponse">
 <em class="property">class </em><code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">EsiResponse</code><a class="reference internal" href="_modules/sni/esi/esi.html#EsiResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.EsiResponse" title="Permalink to this definition">¶</a></dt>
@@ -61,6 +68,11 @@
 <dl class="attribute">
 <dt id="sni.esi.esi.EsiResponse.headers">
 <code class="sig-name descname">headers</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.esi.EsiResponse.headers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.esi.esi.EsiResponse.id_annotations">
+<code class="sig-name descname">id_annotations</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.esi.esi.EsiResponse.id_annotations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -80,6 +92,12 @@
 <dt id="sni.esi.esi.esi_get">
 <code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_get</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#sni.esi.esi.esi_request" title="sni.esi.esi.esi_request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request()</span></code></a> for GET requests.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.esi.esi_get_all_pages">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_get_all_pages</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">token: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_get_all_pages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_get_all_pages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all pages of an ESI GET path</p>
 </dd></dl>
 
 <dl class="function">
@@ -114,6 +132,15 @@
 <span class="go">None</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.esi.id_annotations">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">id_annotations</code><span class="sig-paren">(</span><em class="sig-param">data: Any</em><span class="sig-paren">)</span> &#x2192; Dict[int, str]<a class="reference internal" href="_modules/sni/esi/esi.html#id_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.id_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotates a JSON document. In documents returned by the ESI, ID fields
+always have the same name (e.g. <cite>solar_system_id</cite>, <cite>character_id</cite>, etc.).
+This method recursively searches for these ID fields and returns a dict
+mapping these IDs to a name.</p>
 </dd></dl>
 
 <dl class="function">
@@ -390,6 +417,13 @@ requests.</p>
 <dd class="field-odd"><p>The new ESI access token.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.token.token_has_enough_scopes">
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">token_has_enough_scopes</code><span class="sig-paren">(</span><em class="sig-param">access_token: sni.esi.sso.DecodedAccessToken</em>, <em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/esi/token.html#token_has_enough_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.token_has_enough_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells wether the access token has all the cropes that are required for a
+given user.</p>
 </dd></dl>
 
 </div>

@@ -92,6 +92,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
+<span class="kn">from</span> <span class="nn">sni.db.cache</span> <span class="kn">import</span> <span class="n">cache_get</span><span class="p">,</span> <span class="n">cache_set</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Coalition</span><span class="p">,</span> <span class="n">User</span>
 
 
@@ -366,7 +367,15 @@
     <span class="k">if</span> <span class="n">scope</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unknown scope &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">scope_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+        <span class="n">scope_name</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">character_id</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">cache_key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">cache_set</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s1">&#39;Access </span><span class="si">%s</span><span class="s1"> --[</span><span class="si">%s</span><span class="s1">]--&gt; </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
         <span class="n">source</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>

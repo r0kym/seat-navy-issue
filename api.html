@@ -225,6 +225,23 @@ sure all users are in the good corp, etc.)</p>
 </div>
 <div class="section" id="routers">
 <h2>Routers<a class="headerlink" href="#routers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sni.api.routers.callback">
+<span id="sni-api-routers-callback"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.callback</span></code><a class="headerlink" href="#module-sni.api.routers.callback" title="Permalink to this headline">¶</a></h3>
+<p>Callback paths</p>
+<dl class="function">
+<dt id="sni.api.routers.callback.get_callback_esi">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">get_callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/callback.html#get_callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.get_callback_esi" title="Permalink to this definition">¶</a></dt>
+<dd><p>ESI callback. You should not manually call this.</p>
+<p>Upon receiving a notification from EVE SSO, SNI redirects the client to the
+appropriate frontend callback, with the state code and user token in URL
+parameters.</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">OAuth 2.0 for Web Based Applications</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.api.routers.coalition">
 <span id="sni-api-routers-coalition"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.coalition</span></code><a class="headerlink" href="#module-sni.api.routers.coalition" title="Permalink to this headline">¶</a></h3>
 <p>Coalition management paths</p>
@@ -400,6 +417,16 @@ more.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Data to be forwarded to the ESI</p>
 <dl class="attribute">
+<dt id="sni.api.routers.esi.EsiRequestIn.all_pages">
+<code class="sig-name descname">all_pages</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.EsiRequestIn.all_pages" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.EsiRequestIn.id_annotations">
+<code class="sig-name descname">id_annotations</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.EsiRequestIn.id_annotations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.api.routers.esi.EsiRequestIn.on_behalf_of">
 <code class="sig-name descname">on_behalf_of</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.EsiRequestIn.on_behalf_of" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -412,21 +439,8 @@ more.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sni.api.routers.esi.get_callback_esi">
-<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_callback_esi</code><span class="sig-paren">(</span><em class="sig-param">code: str</em>, <em class="sig-param">state: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_callback_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_callback_esi" title="Permalink to this definition">¶</a></dt>
-<dd><p>ESI callback. You should not manually call this.</p>
-<p>Upon receiving a notification from EVE SSO, SNI redirects the client to the
-appropriate frontend callback, with the state code and user token in URL
-parameters.</p>
-<dl class="simple">
-<dt>Reference:</dt><dd><p><a class="reference external" href="https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html">OAuth 2.0 for Web Based Applications</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="sni.api.routers.esi.get_esi_latest">
-<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.api.routers.esi.EsiRequestIn = EsiRequestIn(on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.api.routers.esi.EsiRequestIn = EsiRequestIn(all_pages=False</em>, <em class="sig-param">id_annotations=False</em>, <em class="sig-param">on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forwards a <cite>GET</cite> request to the ESI. The required clearance level depends
 on the user making the request and the user specified on the
 <cite>on_behalf_of</cite> field. See also <cite>EsiRequestIn</cite>.</p>
@@ -598,293 +612,6 @@ more.</p>
 <cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
 <cite>remove_members</cite>. Requires a clearance level of 9 or more of for the user
 to be the owner of the group.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-sni.api.routers.sde">
-<span id="sni-api-routers-sde"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.sde</span></code><a class="headerlink" href="#module-sni.api.routers.sde" title="Permalink to this headline">¶</a></h3>
-<p>SDE paths</p>
-<dl class="class">
-<dt id="sni.api.routers.sde.GetSdeCategoryOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeCategoryOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeCategoryOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeCategoryOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Represents an SDE category</p>
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeCategoryOut.category_name">
-<code class="sig-name descname">category_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeCategoryOut.category_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="sni.api.routers.sde.GetSdeCategoryOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeCategory</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeCategoryOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeCategoryOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeCategoryOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeCategory" title="sni.sde.models.SdeCategory"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeCategory</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.sde.GetSdeCategoryOut" title="sni.api.routers.sde.GetSdeCategoryOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeCategoryOut</span></code></a></p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.api.routers.sde.GetSdeConstellationOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeConstellationOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeConstellationOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeConstellationOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Represents an SDE EVE constellation</p>
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeConstellationOut.constellation_name">
-<code class="sig-name descname">constellation_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeConstellationOut.constellation_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="sni.api.routers.sde.GetSdeConstellationOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeConstellation</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeConstellationOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeConstellationOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeConstellationOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeConstellation" title="sni.sde.models.SdeConstellation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeConstellation</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.sde.GetSdeConstellationOut" title="sni.api.routers.sde.GetSdeConstellationOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeConstellationOut</span></code></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeConstellationOut.region_name">
-<code class="sig-name descname">region_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeConstellationOut.region_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.api.routers.sde.GetSdeGroupOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeGroupOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeGroupOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeGroupOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Represents an SDE group</p>
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeGroupOut.category_name">
-<code class="sig-name descname">category_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeGroupOut.category_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="sni.api.routers.sde.GetSdeGroupOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeGroup</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeGroupOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeGroupOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeGroupOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeType" title="sni.sde.models.SdeType"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeType</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.sde.GetSdeTypeOut" title="sni.api.routers.sde.GetSdeTypeOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeTypeOut</span></code></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeGroupOut.group_name">
-<code class="sig-name descname">group_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeGroupOut.group_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.api.routers.sde.GetSdeRegionOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeRegionOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeRegionOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeRegionOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Represents an SDE EVE region</p>
-<dl class="method">
-<dt id="sni.api.routers.sde.GetSdeRegionOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeRegion</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeRegionOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeRegionOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeRegionOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeRegion" title="sni.sde.models.SdeRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeRegion</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.sde.GetSdeRegionOut" title="sni.api.routers.sde.GetSdeRegionOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeRegionOut</span></code></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeRegionOut.region_name">
-<code class="sig-name descname">region_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeRegionOut.region_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.api.routers.sde.GetSdeSolarSystemOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeSolarSystemOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeSolarSystemOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeSolarSystemOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Represents an SDE EVE solar system</p>
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeSolarSystemOut.constellation_name">
-<code class="sig-name descname">constellation_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeSolarSystemOut.constellation_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="sni.api.routers.sde.GetSdeSolarSystemOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeSolarSystem</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeSolarSystemOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeSolarSystemOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeSolarSystemOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeSolarSystem" title="sni.sde.models.SdeSolarSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeSolarSystem</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.sde.GetSdeSolarSystemOut" title="sni.api.routers.sde.GetSdeSolarSystemOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeSolarSystemOut</span></code></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeSolarSystemOut.region_name">
-<code class="sig-name descname">region_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeSolarSystemOut.region_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeSolarSystemOut.solar_system_name">
-<code class="sig-name descname">solar_system_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeSolarSystemOut.solar_system_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.api.routers.sde.GetSdeTypeOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">GetSdeTypeOut</code><a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeTypeOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Represents an SDE type</p>
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeTypeOut.category_name">
-<code class="sig-name descname">category_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.category_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="sni.api.routers.sde.GetSdeTypeOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">record: sni.sde.models.SdeType</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.sde.GetSdeTypeOut<a class="reference internal" href="_modules/sni/api/routers/sde.html#GetSdeTypeOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="sde.html#sni.sde.models.SdeType" title="sni.sde.models.SdeType"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.sde.models.SdeType</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.sde.GetSdeTypeOut" title="sni.api.routers.sde.GetSdeTypeOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.sde.GetSdeTypeOut</span></code></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeTypeOut.group_name">
-<code class="sig-name descname">group_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.group_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.sde.GetSdeTypeOut.type_name">
-<code class="sig-name descname">type_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.sde.GetSdeTypeOut.type_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.api.routers.sde.get_sde_category">
-<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_category</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_category" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of SDE category ids, returns a dict with informations about
-these types. The return dict key set is guaranteed to be the same as the
-input list (up to repetition of keys).</p>
-<p>Example: Sending a request with <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">7,</span> <span class="pre">8,</span> <span class="pre">9]</span></code> returns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;8&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Charge&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;9&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Blueprint&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;-1&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-    <span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Module&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.api.routers.sde.get_sde_constellation">
-<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_constellation</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_constellation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_constellation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of SDE constellation ids, returns a dict with informations
-about these types. The return dict key set is guaranteed to be the same as
-the input list (up to repetition of keys).</p>
-<p class="rubric">Example</p>
-<p>Sending a request with <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">20000352,</span> <span class="pre">20000681]</span></code> returns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;20000352&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;constellation_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Besateoden&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Molden Heath&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-    <span class="s2">&quot;20000681&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;constellation_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Basilisk&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Fountain&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.api.routers.sde.get_sde_group">
-<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_group</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of SDE group ids, returns a dict with informations about these
-types. The return dict key set is guaranteed to be the same as the input
-list (up to repetition of keys).</p>
-<p>Example: Sending a request with <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">4060,</span> <span class="pre">646]</span></code> returns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;646&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Module&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Drone Tracking Modules&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;4060&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Module&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Vorton Projector&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;-1&quot;</span><span class="p">:</span> <span class="n">null</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.api.routers.sde.get_sde_region">
-<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_region</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of SDE region ids, returns a dict with informations about
-these types. The return dict key set is guaranteed to be the same as the
-input list (up to repetition of keys).</p>
-<p class="rubric">Example</p>
-<p>Sending a request with <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">10000060,</span> <span class="pre">10000065]</span></code> returns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-    <span class="s2">&quot;10000065&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kor-Azor&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;10000060&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Delve&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.api.routers.sde.get_sde_solar_system">
-<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_solar_system</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_solar_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_solar_system" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of SDE solar system ids, returns a dict with informations
-about these types. The return dict key set is guaranteed to be the same as
-the input list (up to repetition of keys).</p>
-<p class="rubric">Example</p>
-<p>Sending a request with <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">30003878,</span> <span class="pre">31001039]</span></code> returns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-    <span class="s2">&quot;30003878&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;constellation_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Amdimmah&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Khanid&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;solar_system_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Palas&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;31001039&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;constellation_name&quot;</span><span class="p">:</span> <span class="s2">&quot;C-C00100&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;C-R00011&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;solar_system_name&quot;</span><span class="p">:</span> <span class="s2">&quot;J171549&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="sni.api.routers.sde.get_sde_type">
-<code class="sig-prename descclassname">sni.api.routers.sde.</code><code class="sig-name descname">get_sde_type</code><span class="sig-paren">(</span><em class="sig-param">data: List[int], _tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/sde.html#get_sde_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.sde.get_sde_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of SDE type ids, returns a dict with informations about these
-types. The return dict key set is guaranteed to be the same as the input
-list (up to repetition of keys).</p>
-<p class="rubric">Example</p>
-<p>Sending a request with <code class="docutils literal notranslate"><span class="pre">[21554,</span> <span class="pre">1,</span> <span class="pre">19722]</span></code> returns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-    <span class="s2">&quot;21554&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Blueprint&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Projectile Weapon Blueprint&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;650mm Medium &#39;Jolt&#39; Artillery I Blueprint&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;19722&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;category_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ship&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Dreadnought&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Naglfar&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>
@@ -1370,10 +1097,10 @@ level depends on the modification.</p>
 <li><a class="reference internal" href="#module-sni.api.signals">Database signals</a></li>
 <li><a class="reference internal" href="#module-sni.api.migration">Migration</a></li>
 <li><a class="reference internal" href="#routers">Routers</a><ul>
+<li><a class="reference internal" href="#module-sni.api.routers.callback"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.callback</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.coalition"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.coalition</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.esi"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.esi</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.group"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.group</span></code></a></li>
-<li><a class="reference internal" href="#module-sni.api.routers.sde"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.sde</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.system"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.system</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.teamspeak"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.teamspeak</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.token"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.token</span></code></a></li>

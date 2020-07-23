@@ -179,6 +179,31 @@
             <span class="p">},</span>
         <span class="p">],</span>
     <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="EsiWalletBalance"><a class="viewcode-back" href="../../../indexation.html#sni.index.models.EsiWalletBalance">[docs]</a><span class="k">class</span> <span class="nc">EsiWalletBalance</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a user&#39;s wallet balance at a given point in time</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">balance</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">FloatField</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Wallet balance&quot;&quot;&quot;</span>
+
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp&quot;&quot;&quot;</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;User reference&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>  <span class="c1"># 90 days</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
 </pre></div>
 
           </div>
