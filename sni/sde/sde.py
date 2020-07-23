@@ -14,6 +14,8 @@ import sqlite3
 import mongoengine as me
 import requests
 
+from sni.db.cache import cache_get, cache_set
+
 from .models import EsiObjectName
 
 SDE_ROOT_URL = 'https://www.fuzzwork.co.uk/dump/'
@@ -183,17 +185,24 @@ def import_sde_dump_inv_solar_systems(client: sqlite3.Connection) -> None:
         )
 
 
-def sde_get_name(field_id: int, field_names: Optional[str]) -> Optional[str]:
+def sde_get_name(field_id: int, field_name: Optional[str]) -> Optional[str]:
     """
     Fetches a document from the ``esi_object_name`` collection. See
     :class:`sni.sde.models.EsiObjectName`.
     """
-    try:
-        if field_names is None:
-            return EsiObjectName.objects(field_id=field_id).get().name
-        return EsiObjectName.objects(
-            field_id=field_id,
-            field_names=field_names,
-        ).get().name
-    except me.DoesNotExist:
-        return None
+    cache_key = ['sde', field_id]
+    name = cache_get(cache_key)
+    if name is None:
+        if field_name is None:
+            query_set = EsiObjectName.objects(field_id=field_id)
+        else:
+            query_set = EsiObjectName.objects(
+                field_id=field_id,
+                field_names=field_name,
+            )
+        try:
+            name = query_set.get().name
+            cache_set(cache_key, name, 3600 * 24)
+        except me.DoesNotExist:
+            name = None
+    return name
