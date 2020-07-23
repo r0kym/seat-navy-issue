@@ -11,10 +11,11 @@ from sni.user.models import User
 
 from sni.esi.token import get_access_token
 from sni.esi.esi import (
-    esi_get,
     esi_get_all_pages,
+    esi_get,
     EsiResponse,
     get_esi_path_scope,
+    id_annotations,
 )
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -30,6 +31,7 @@ class EsiRequestIn(pdt.BaseModel):
     Data to be forwarded to the ESI
     """
     all_pages: bool = False
+    id_annotations: bool = False
     on_behalf_of: Optional[int] = None
     params: dict = {}
 
@@ -60,6 +62,9 @@ async def get_esi_latest(
                 data.on_behalf_of,
                 esi_scope,
             ).access_token
-    if data.all_pages:
-        return esi_get_all_pages(esi_path, esi_token, params=data.params)
-    return esi_get(esi_path, esi_token, params=data.params)
+
+    function = esi_get_all_pages if data.all_pages else esi_get
+    result = function(esi_path, esi_token, params=data.params)
+    if data.id_annotations:
+        result.id_annotations = id_annotations(result.data)
+    return result

@@ -2,7 +2,7 @@
 EVE ESI (public API) layer
 """
 
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Tuple
 import logging
 import re
 
@@ -26,8 +26,30 @@ class EsiResponse(pdt.BaseModel):
     A model for ESI responses
     """
     data: Any
-    headers: dict
+    headers: dict = {}
+    id_annotations: dict = {}
     status_code: int
+
+
+ESI_ANNOTATORS: Dict[str, Tuple[str, str]] = {
+    'alliance_id': ('latest/alliances/{}/', 'name'),
+    'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'),
+    'category_id': ('latest/universe/categories/{}/', 'name'),
+    'character_id': ('latest/characters/{}/', 'name'),
+    'constellation_id': ('latest/universe/constellations/{}/', 'name'),
+    'corporation_id': ('latest/corporations/{}/', 'name'),
+    'graphic_id': ('latest/universe/graphics/{}/', 'graphic_file'),
+    'group_id': ('latest/universe/groups/{}/', 'name'),
+    'moon_id': ('latest/universe/moons/{}/', 'name'),
+    'planet_id': ('latest/universe/planets/{}/', 'name'),
+    'region_id': ('latest/universe/regions/{}/', 'name'),
+    'star_id': ('latest/universe/stars/{}/', 'name'),
+    'stargate_id': ('latest/universe/stargates/{}/', 'name'),
+    'station_id': ('latest/universe/stations/{}/', 'name'),
+    'system_id': ('latest/universe/systems/{}/', 'name'),
+    'type_id': ('latest/universe/types/{}/', 'name'),
+}
+"""ESI annotators, see :meth:`sni.esi.esi.annotate`"""
 
 
 def esi_delete(path: str,
@@ -147,6 +169,31 @@ def get_esi_path_scope(path: str) -> Optional[str]:
         if re.search(esi_path.path_re, path):
             return esi_path.scope
     raise me.DoesNotExist
+
+
+def id_annotations(data: Any) -> Dict[int, str]:
+    """
+    Annotates a JSON document. In documents returned by the ESI, ID fields
+    always have the same name (e.g. `solar_system_id`, `character_id`, etc.).
+    This method recursively searches for these ID fields and returns a dict
+    mapping these IDs to a name.
+    """
+    if isinstance(data, dict):
+        annotations = {}
+        for key, val in data.items():
+            annotator = ESI_ANNOTATORS.get(key)
+            if annotator is not None and isinstance(val, int):
+                raw = esi_get(annotator[0].format(val))
+                annotations[val] = raw.data[annotator[1]]
+            else:
+                annotations.update(id_annotations(val))
+        return annotations
+    if isinstance(data, list):
+        annotations = {}
+        for element in data:
+            annotations.update(id_annotations(element))
+        return annotations
+    return {}
 
 
 def load_esi_openapi() -> None:
