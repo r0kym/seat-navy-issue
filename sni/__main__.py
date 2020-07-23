@@ -155,6 +155,11 @@ def main():
     if arguments.reload_esi_openapi_spec:
         sys.exit()
 
+    if arguments.flush_cache:
+        from sni.db.cache import new_redis_connection
+        logging.info('Flushing Redis cache')
+        new_redis_connection().flushdb()
+
     # --------------------------------------------------------------------------
     # Scheduler start
     # --------------------------------------------------------------------------
@@ -200,6 +205,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         action='store',
         default='./sni.yml',
         help='Specify an alternate configuration file (default: ./sni.yml)',
+    )
+    argument_parser.add_argument(
+        '--flush-cache',
+        action='store_true',
+        default=False,
+        help='Flushes the Redis cache',
     )
     argument_parser.add_argument(
         '--migrate-database',
