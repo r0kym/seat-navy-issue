@@ -141,7 +141,7 @@ async def get_token(tkn: Token = Depends(from_authotization_header_nondyn)):
         expires_on=tkn.expires_on,
         owner_character_id=tkn.owner.character_id,
         owner_character_name=tkn.owner.character_name,
-        parent=str(tkn.parent.uuid),
+        parent=str(tkn.parent.uuid) if tkn.parent is not None else None,
         token_type=tkn.token_type,
         uuid=str(tkn.uuid),
     )
