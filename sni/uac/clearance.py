@@ -53,6 +53,7 @@ from dataclasses import dataclass
 import logging
 from typing import Dict, Optional
 
+from sni.db.cache import cache_get, cache_set
 from sni.user.models import Coalition, User
 
 
@@ -327,7 +328,15 @@ def has_clearance(source: User,
     if scope is None:
         logging.warning('Unknown scope "%s"', scope_name)
         return False
-    result = scope.has_clearance(source, target)
+    cache_key = [
+        source.character_id,
+        scope_name,
+        target.character_id if target is not None else None,
+    ]
+    result = cache_get(cache_key)
+    if not isinstance(result, bool):
+        result = scope.has_clearance(source, target)
+        cache_set(cache_key, result)
     logging.debug(
         'Access %s --[%s]--> %s %s',
         source.character_name,
