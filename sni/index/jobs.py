@@ -100,7 +100,7 @@ def index_users_mails():
             scheduler.add_job(index_user_mails, args=(usr, ))
 
 
-def measure_user_skillpoints(usr: User):
+def index_user_skillpoints(usr: User):
     """
     Measures a user's skillpoints. See
     :class:`sni.index.models.EsiSkillPoints`.
@@ -117,10 +117,10 @@ def measure_user_skillpoints(usr: User):
 
 
 @scheduler.scheduled_job('interval', hours=12)
-def measure_users_skillpoints():
+def index_users_skillpoints():
     """
     Measures all users skillpoints
     """
     for usr in User.objects():
         if has_esi_scope(usr, 'esi-skills.read_skills.v1'):
-            scheduler.add_job(measure_user_skillpoints, args=(usr, ))
+            scheduler.add_job(index_user_skillpoints, args=(usr, ))
