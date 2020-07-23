@@ -14,6 +14,7 @@ from .models import (
     EsiMail,
     EsiMailRecipient,
     EsiSkillPoints,
+    EsiWalletBalance,
 )
 
 
@@ -124,3 +125,24 @@ def index_users_skillpoints():
     for usr in User.objects():
         if has_esi_scope(usr, 'esi-skills.read_skills.v1'):
             scheduler.add_job(index_user_skillpoints, args=(usr, ))
+
+
+def index_user_wallets(usr: User):
+    """
+    Indexes user wallet balance
+    """
+    balance = esi_get_on_befalf_of(
+        f'latest/characters/{usr.character_id}/wallet/',
+        usr.character_id,
+    ).data
+    EsiWalletBalance(balance=balance, user=usr).save()
+
+
+@scheduler.scheduled_job('interval', hours=12)
+def index_users_wallets():
+    """
+    Indexes user wallet balance
+    """
+    for usr in User.objects():
+        if has_esi_scope(usr, 'esi-wallet.read_character_wallet.v1'):
+            scheduler.add_job(index_user_wallets, args=(usr, ))

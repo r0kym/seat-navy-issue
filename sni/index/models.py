@@ -140,3 +140,28 @@ class EsiSkillPoints(me.Document):
             },
         ],
     }
+
+
+class EsiWalletBalance(me.Document):
+    """
+    Represents a user's wallet balance at a given point in time
+    """
+
+    balance = me.FloatField()
+    """Wallet balance"""
+
+    timestamp = me.DateTimeField(default=utils.now)
+    """Timestamp"""
+
+    user = me.ReferenceField(User)
+    """User reference"""
+
+    meta = {
+        'index': [
+            ('user', '-timestamp'),
+            {
+                'fields': ['timestamp'],
+                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
+            },
+        ],
+    }
