@@ -11,9 +11,10 @@ import mongoengine as me
 import pydantic as pdt
 from requests import request, Response
 
+from sni.db.cache import cache_get, cache_set
+from sni.sde.sde import sde_get_name
 import sni.conf as conf
 import sni.utils as utils
-from sni.db.cache import cache_get, cache_set
 
 from .models import EsiPath
 
@@ -34,22 +35,19 @@ class EsiResponse(pdt.BaseModel):
 ESI_ANNOTATORS: Dict[str, Tuple[str, str]] = {
     'alliance_id': ('latest/alliances/{}/', 'name'),
     'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'),
-    'category_id': ('latest/universe/categories/{}/', 'name'),
     'character_id': ('latest/characters/{}/', 'name'),
-    'constellation_id': ('latest/universe/constellations/{}/', 'name'),
     'corporation_id': ('latest/corporations/{}/', 'name'),
     'graphic_id': ('latest/universe/graphics/{}/', 'graphic_file'),
-    'group_id': ('latest/universe/groups/{}/', 'name'),
     'moon_id': ('latest/universe/moons/{}/', 'name'),
     'planet_id': ('latest/universe/planets/{}/', 'name'),
-    'region_id': ('latest/universe/regions/{}/', 'name'),
     'star_id': ('latest/universe/stars/{}/', 'name'),
     'stargate_id': ('latest/universe/stargates/{}/', 'name'),
     'station_id': ('latest/universe/stations/{}/', 'name'),
-    'system_id': ('latest/universe/systems/{}/', 'name'),
-    'type_id': ('latest/universe/types/{}/', 'name'),
 }
-"""ESI annotators, see :meth:`sni.esi.esi.annotate`"""
+"""
+ESI annotators, see :meth:`sni.esi.esi.annotate`. If the value at a certain key
+is ``None``, it means that :meth:`sni.sde.sde.sde_get_name` should be used
+"""
 
 
 def esi_delete(path: str,
@@ -178,22 +176,24 @@ def id_annotations(data: Any) -> Dict[int, str]:
     This method recursively searches for these ID fields and returns a dict
     mapping these IDs to a name.
     """
+    annotations: Dict[int, str] = {}
     if isinstance(data, dict):
-        annotations = {}
         for key, val in data.items():
-            annotator = ESI_ANNOTATORS.get(key)
-            if annotator is not None and isinstance(val, int):
-                raw = esi_get(annotator[0].format(val))
-                annotations[val] = raw.data[annotator[1]]
+            if key.endswith('_id') and isinstance(val, int):
+                if key in ESI_ANNOTATORS:
+                    annotator = ESI_ANNOTATORS[key]
+                    raw = esi_get(annotator[0].format(val))
+                    annotations[val] = raw.data[annotator[1]]
+                else:
+                    name = sde_get_name(val, key)
+                    if name is not None:
+                        annotations[val] = name
             else:
                 annotations.update(id_annotations(val))
-        return annotations
-    if isinstance(data, list):
-        annotations = {}
+    elif isinstance(data, list):
         for element in data:
             annotations.update(id_annotations(element))
-        return annotations
-    return {}
+    return annotations
 
 
 def load_esi_openapi() -> None:

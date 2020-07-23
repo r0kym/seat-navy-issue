@@ -16,7 +16,6 @@ from sni.api.routers.coalition import router as router_coalition
 from sni.api.routers.crash import router as router_crash
 from sni.api.routers.esi import router as router_esi
 from sni.api.routers.group import router as router_group
-from sni.api.routers.sde import router as router_sde
 from sni.api.routers.system import router as router_system
 from sni.api.routers.token import router as router_token
 from sni.api.routers.user import router as router_user
@@ -68,12 +67,6 @@ if conf.get('teamspeak.enabled'):
         prefix='/teamspeak',
         tags=['Teamspeak'],
     )
-
-app.include_router(
-    router_sde,
-    prefix='/sde',
-    tags=['SDE methods'],
-)
 
 app.include_router(
     router_system,

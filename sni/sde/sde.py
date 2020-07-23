@@ -5,21 +5,16 @@ See also:
     `EVE Developer Ressources <https://developers.eveonline.com/resource/resources>`_
 """
 
+from typing import Optional
 import bz2
 import hashlib
 import logging
 import sqlite3
 
+import mongoengine as me
 import requests
 
-from .models import (
-    SdeCategory,
-    SdeConstellation,
-    SdeGroup,
-    SdeRegion,
-    SdeSolarSystem,
-    SdeType,
-)
+from .models import EsiObjectName
 
 SDE_ROOT_URL = 'https://www.fuzzwork.co.uk/dump/'
 SDE_SQLITE_MD5_URL = SDE_ROOT_URL + 'sqlite-latest.sqlite.bz2.md5'
@@ -81,8 +76,13 @@ def import_sde_dump_inv_categories(client: sqlite3.Connection) -> None:
     """
     logging.debug('Importing SDE table invCategories')
     for row in client.execute('SELECT * FROM invCategories;'):
-        SdeCategory.objects(category_id=row['categoryID']).update(
-            set__category_id=row['categoryID'],
+        EsiObjectName.objects(
+            field_id=row['categoryID'],
+            field_names='category_id',
+        ).update(
+            set___version=EsiObjectName.SCHEMA_VERSION,
+            set__field_id=row['categoryID'],
+            set__field_names=['category_id'],
             set__name=row['categoryName'],
             upsert=True,
         )
@@ -94,10 +94,13 @@ def import_sde_dump_inv_groups(client: sqlite3.Connection) -> None:
     """
     logging.debug('Importing SDE table invGroups')
     for row in client.execute('SELECT * FROM invGroups;'):
-        category = SdeCategory.objects(category_id=row['categoryID']).first()
-        SdeGroup.objects(group_id=row['groupID']).update(
-            set__category=category,
-            set__group_id=row['groupID'],
+        EsiObjectName.objects(
+            field_id=row['groupID'],
+            field_names='group_id',
+        ).update(
+            set___version=EsiObjectName.SCHEMA_VERSION,
+            set__field_id=row['groupID'],
+            set__field_names=['group_id'],
             set__name=row['groupName'],
             upsert=True,
         )
@@ -109,11 +112,19 @@ def import_sde_dump_inv_types(client: sqlite3.Connection) -> None:
     """
     logging.debug('Importing SDE table invTypes')
     for row in client.execute('SELECT * FROM invTypes;'):
-        group = SdeGroup.objects(group_id=row['groupID']).first()
-        SdeType.objects(type_id=row['typeID']).update(
-            set__group=group,
+        EsiObjectName.objects(
+            field_id=row['typeID'],
+            field_names='type_id',
+        ).update(
+            set___version=EsiObjectName.SCHEMA_VERSION,
+            set__field_id=row['typeID'],
+            set__field_names=[
+                'item_type_id',
+                'ship_type_id',
+                'type_id',
+                'weapon_type_id',
+            ],
             set__name=row['typeName'],
-            set__type_id=row['typeID'],
             upsert=True,
         )
 
@@ -124,8 +135,13 @@ def import_sde_dump_map_regions(client: sqlite3.Connection) -> None:
     """
     logging.debug('Importing SDE table mapRegions')
     for row in client.execute('SELECT * FROM mapRegions;'):
-        SdeRegion.objects(region_id=row['regionID']).update(
-            set__region_id=row['regionID'],
+        EsiObjectName.objects(
+            field_id=row['regionID'],
+            field_names='region_id',
+        ).update(
+            set___version=EsiObjectName.SCHEMA_VERSION,
+            set__field_id=row['regionID'],
+            set__field_names='region_id',
             set__name=row['regionName'],
             upsert=True,
         )
@@ -137,14 +153,16 @@ def import_sde_dump_inv_constellations(client: sqlite3.Connection) -> None:
     """
     logging.debug('Importing SDE table mapConstellations')
     for row in client.execute('SELECT * FROM mapConstellations;'):
-        region = SdeRegion.objects(region_id=row['regionID']).get()
-        SdeConstellation.objects(
-            constellation_id=row['constellationID']).update(
-                set__constellation_id=row['constellationID'],
-                set__name=row['constellationName'],
-                set__region=region,
-                upsert=True,
-            )
+        EsiObjectName.objects(
+            field_id=row['constellationID'],
+            field_names='constellation_id',
+        ).update(
+            set___version=EsiObjectName.SCHEMA_VERSION,
+            set__field_id=row['constellationID'],
+            set__field_names='constellation_id',
+            set__name=row['constellationName'],
+            upsert=True,
+        )
 
 
 def import_sde_dump_inv_solar_systems(client: sqlite3.Connection) -> None:
@@ -153,11 +171,29 @@ def import_sde_dump_inv_solar_systems(client: sqlite3.Connection) -> None:
     """
     logging.debug('Importing SDE table mapSolarSystems')
     for row in client.execute('SELECT * FROM mapSolarSystems;'):
-        constellation = SdeConstellation.objects(
-            constellation_id=row['constellationID']).get()
-        SdeSolarSystem.objects(solar_system_id=row['solarSystemID']).update(
-            set__constellation=constellation,
+        EsiObjectName.objects(
+            field_id=row['solarSystemID'],
+            field_names='solar_system_id',
+        ).update(
+            set___version=EsiObjectName.SCHEMA_VERSION,
+            set__field_id=row['solarSystemID'],
+            set__field_names='solar_system_id',
             set__name=row['solarSystemName'],
-            set__solar_system_id=row['solarSystemID'],
             upsert=True,
         )
+
+
+def sde_get_name(field_id: int, field_names: Optional[str]) -> Optional[str]:
+    """
+    Fetches a document from the ``esi_object_name`` collection. See
+    :class:`sni.sde.models.EsiObjectName`.
+    """
+    try:
+        if field_names is None:
+            return EsiObjectName.objects(field_id=field_id).get().name
+        return EsiObjectName.objects(
+            field_id=field_id,
+            field_names=field_names,
+        ).get().name
+    except me.DoesNotExist:
+        return None

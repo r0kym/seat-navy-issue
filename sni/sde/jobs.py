@@ -8,6 +8,7 @@ from sni.scheduler import scheduler
 from sni.db.redis import new_redis_connection
 import sni.utils as utils
 
+from .models import EsiObjectName
 from .sde import (
     download_latest_sde,
     get_latest_sde_md5,
@@ -23,7 +24,8 @@ def update_sde() -> None:
     Checks the hash of the SDE, and if needed, downloads and imports it.
     """
     redis = new_redis_connection()
-    latest_sde_md5 = get_latest_sde_md5()
+    latest_sde_md5 = get_latest_sde_md5() + '/' + str(
+        EsiObjectName.SCHEMA_VERSION)
     current_sde_md5 = redis.get('sde_md5')
     if current_sde_md5 is not None:
         current_sde_md5 = current_sde_md5.decode()
