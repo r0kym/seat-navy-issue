@@ -18,6 +18,7 @@ from .models import EsiAccessToken, EsiRefreshToken
 from .sso import (
     AuthorizationCodeResponse,
     decode_access_token,
+    DecodedAccessToken,
     refresh_access_token,
 )
 
@@ -142,3 +143,12 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
         owner=owner,
         scopes=decoded_access_token.scp,
     ).save()
+
+
+def token_has_enough_scopes(access_token: DecodedAccessToken,
+                            usr: User) -> bool:
+    """
+    Tells wether the access token has all the cropes that are required for a
+    given user.
+    """
+    return usr.cumulated_mandatory_esi_scopes() <= set(access_token.scp)

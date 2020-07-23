@@ -11,6 +11,7 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
+from sni.api.routers.callback import router as router_callback
 from sni.api.routers.coalition import router as router_coalition
 from sni.api.routers.crash import router as router_crash
 from sni.api.routers.esi import router as router_esi
@@ -21,6 +22,12 @@ from sni.api.routers.token import router as router_token
 from sni.api.routers.user import router as router_user
 
 app = FastAPI()
+
+app.include_router(
+    router_callback,
+    prefix='/callback',
+    tags=['Callbacks'],
+)
 
 app.include_router(
     router_coalition,
@@ -42,7 +49,11 @@ if conf.get('discord.enabled'):
         tags=['Discord'],
     )
 
-app.include_router(router_esi)
+app.include_router(
+    router_esi,
+    prefix='/esi',
+    tags=['ESI'],
+)
 
 app.include_router(
     router_group,
