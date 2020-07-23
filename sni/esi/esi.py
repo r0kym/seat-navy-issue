@@ -46,6 +46,34 @@ def esi_get(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
     return esi_request('get', path, token, **kwargs)
 
 
+def esi_get_all_pages(path: str,
+                      token: Optional[str] = None,
+                      **kwargs) -> EsiResponse:
+    """
+    Returns all pages of an ESI GET path
+    """
+    current_page = 1
+    max_page = 1
+    response_data = []
+    response_headers = {}
+    response_status_code = -1
+    if 'params' not in kwargs:
+        kwargs['params'] = {}
+    while current_page <= max_page:
+        kwargs['params']['page'] = current_page
+        current_response = esi_request('get', path, token, **kwargs)
+        response_data += current_response.data
+        response_headers = current_response.headers
+        response_status_code = current_response.status_code
+        max_page = int(current_response.headers.get('X-Pages', -1))
+        current_page += 1
+    return EsiResponse(
+        data=response_data,
+        headers=response_headers,
+        status_code=response_status_code,
+    )
+
+
 def esi_post(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for POST requests.

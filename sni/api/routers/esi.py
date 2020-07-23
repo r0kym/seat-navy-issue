@@ -12,6 +12,7 @@ from sni.user.models import User
 from sni.esi.token import get_access_token
 from sni.esi.esi import (
     esi_get,
+    esi_get_all_pages,
     EsiResponse,
     get_esi_path_scope,
 )
@@ -28,6 +29,7 @@ class EsiRequestIn(pdt.BaseModel):
     """
     Data to be forwarded to the ESI
     """
+    all_pages: bool = False
     on_behalf_of: Optional[int] = None
     params: dict = {}
 
@@ -58,4 +60,6 @@ async def get_esi_latest(
                 data.on_behalf_of,
                 esi_scope,
             ).access_token
+    if data.all_pages:
+        return esi_get_all_pages(esi_path, esi_token, params=data.params)
     return esi_get(esi_path, esi_token, params=data.params)
