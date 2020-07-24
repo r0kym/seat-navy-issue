@@ -93,7 +93,7 @@ def create_user_token(app_token: Token, owner: User) -> Token:
     be the user given in argument.
     """
     if app_token.token_type == Token.TokenType.dyn:
-        new_token = Token(
+        new_token = Token(  # nosec
             created_on=utils.now(),
             expires_on=utils.now_plus(days=1),
             owner=owner,
@@ -102,7 +102,7 @@ def create_user_token(app_token: Token, owner: User) -> Token:
             uuid=str(uuid4()),
         )
     elif app_token.token_type == Token.TokenType.per:
-        new_token = Token(
+        new_token = Token(  # nosec
             created_on=utils.now(),
             owner=owner,
             parent=app_token,

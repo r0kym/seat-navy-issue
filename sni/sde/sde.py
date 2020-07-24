@@ -35,7 +35,7 @@ def download_latest_sde(dump_path: str) -> str:
     response = requests.get(SDE_SQLITE_DUMP_URL, stream=True)
     response.raise_for_status()
     decompressor = bz2.BZ2Decompressor()
-    hasher = hashlib.md5()
+    hasher = hashlib.md5()  # nosec
     with open(dump_path, 'wb+') as dump:
         for data in response.iter_content(chunk_size=512):
             hasher.update(data)

@@ -6,7 +6,11 @@ SNI				= python3 -m sni -f test/sni.yml
 
 .ONESHELL:
 
-all: format typecheck lint
+all: format typecheck lint bandit
+
+.PHONY: bandit
+bandit:
+	bandit --format custom --quiet --recursive $(SRC_PATH)
 
 .PHONY: command-line-args
 command-line-args:

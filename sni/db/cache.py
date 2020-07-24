@@ -37,8 +37,8 @@ def hash_key(document: Any) -> str:
     """
     Hashes a JSON-dumpable variable
     """
-    return hashlib.md5(json.dumps(document,
-                                  sort_keys=True).encode()).hexdigest()
+    return hashlib.md5(  # nosec
+        json.dumps(document, sort_keys=True).encode(), ).hexdigest()
 
 
 def invalidate_cache(key: Any):

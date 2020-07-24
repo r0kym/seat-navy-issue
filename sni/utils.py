@@ -84,6 +84,6 @@ def random_code(length: int) -> str:
     letters, of a given length.
     """
     return ''.join([
-        random.choice(string.ascii_letters + string.digits)
+        random.choice(string.ascii_letters + string.digits)  # nosec
         for _ in range(length)
     ])

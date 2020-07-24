@@ -2,8 +2,9 @@
 FastAPI exception handlers
 """
 
-import logging
 from traceback import format_exception
+from typing import Optional
+import logging
 
 from fastapi import status
 from fastapi.responses import JSONResponse
@@ -22,10 +23,9 @@ def crash_report(request: Request, error: Exception) -> CrashReport:
     """
     Constructs a crash report
     """
-    crtoken = None
     try:
         token = from_authotization_header(request.headers['authorization'])
-        crtoken = CrashReportToken(
+        crtoken: Optional[CrashReportToken] = CrashReportToken(
             created_on=token.created_on,
             expires_on=token.expires_on,
             owner=token.owner,
@@ -33,7 +33,7 @@ def crash_report(request: Request, error: Exception) -> CrashReport:
             uuid=token.uuid,
         )
     except Exception:
-        pass
+        crtoken = None
     trace = format_exception(
         etype=type(error),
         value=error,
