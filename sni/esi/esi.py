@@ -9,7 +9,7 @@ import re
 from dateutil import parser
 import mongoengine as me
 import pydantic as pdt
-from requests import request, Response
+from requests import HTTPError, request, Response
 
 from sni.db.cache import cache_get, cache_set
 from sni.sde.sde import sde_get_name
@@ -42,6 +42,17 @@ class EsiResponse(pdt.BaseModel):
             headers=response.headers,
             status_code=response.status_code,
         )
+
+    def raise_for_status(self) -> 'EsiResponse':
+        """
+        Analogous to :meth:`requests.Response.raise_for_status`, except it
+        returns self.
+        """
+        if 400 <= self.status_code <= 499:
+            raise HTTPError(f'Client error {self.status_code}')
+        if 500 <= self.status_code <= 599:
+            raise HTTPError(f'Server error {self.status_code}')
+        return self
 
 
 ESI_ANNOTATORS: Dict[str, Tuple[str, str]] = {

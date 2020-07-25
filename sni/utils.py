@@ -3,7 +3,7 @@ Various utilities
 """
 
 from importlib import import_module
-from typing import Callable
+from typing import Any, Callable, Tuple
 import logging
 import random
 import string
@@ -26,7 +26,7 @@ def callable_from_name(name: str) -> Callable:
 def catch_all(function: Callable,
               error_message: str,
               *,
-              args: list = [],
+              args: Tuple[Any, ...] = tuple(),
               kwargs: dict = {}) -> None:
     """
     Calls a function but catches all the exceptions. If any were raised, logs
@@ -38,11 +38,24 @@ def catch_all(function: Callable,
         logging.error('%s: %s', error_message, str(error))
 
 
+def catches_all(error_message: str = 'Error') -> Callable:
+    """
+    Decorator version of :meth:`sni.utils.catch_all`.
+    """
+    def decorator(function: Callable) -> Callable:
+        def wrapper(*args, **kwargs) -> None:
+            catch_all(function, error_message, args=args, kwargs=kwargs)
+
+        return wrapper
+
+    return decorator
+
+
 # pylint: disable=dangerous-default-value
 async def catch_all_async(function: Callable,
                           error_message: str,
                           *,
-                          args: list = [],
+                          args: Tuple[Any, ...] = tuple(),
                           kwargs: dict = {}) -> None:
     """
     Calls a function but catches all the exceptions. If any were raised, logs

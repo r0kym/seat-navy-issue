@@ -8,6 +8,7 @@ import re
 from sni.esi.token import esi_get_on_befalf_of, has_esi_scope
 from sni.scheduler import scheduler
 from sni.user.models import User
+from sni.utils import catches_all
 
 from .models import (
     EsiCharacterLocation,
@@ -28,6 +29,7 @@ def format_mail_body(body: str) -> str:
     return body
 
 
+@catches_all('Failed to index user location')
 def index_user_location(usr: User):
     """
     Indexes a user's location, online status, and ship
@@ -35,15 +37,18 @@ def index_user_location(usr: User):
     location_data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/location/',
         usr.character_id,
-    ).data
+        invalidate_token_on_error=True,
+    ).raise_for_status().data
     online_data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/online/',
         usr.character_id,
-    ).data
+        invalidate_token_on_error=True,
+    ).raise_for_status().data
     ship_data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/ship/',
         usr.character_id,
-    ).data
+        invalidate_token_on_error=True,
+    ).raise_for_status().data
     EsiCharacterLocation(
         online=online_data['online'],
         ship_item_id=ship_data['ship_item_id'],
@@ -68,19 +73,26 @@ def index_users_location():
             scheduler.add_job(index_user_location, args=(usr, ))
 
 
+@catches_all('Failed to index user mail')
 def index_user_mails(usr: User):
     """
     Pulls a character's email
     """
     character_id = usr.character_id
-    for header in esi_get_on_befalf_of(
-            f'latest/characters/{character_id}/mail', character_id).data:
+    headers = esi_get_on_befalf_of(
+        f'latest/characters/{character_id}/mail',
+        character_id,
+        invalidate_token_on_error=True,
+    ).raise_for_status().data
+    for header in headers:
         mail_id = header['mail_id']
         if EsiMail.objects(mail_id=mail_id).first() is not None:
             break
         mail = esi_get_on_befalf_of(
             f'latest/characters/{character_id}/mail/{mail_id}',
-            character_id).data
+            character_id,
+            invalidate_token_on_error=True,
+        ).raise_for_status().data
         EsiMail(
             body=format_mail_body(mail['body']),
             from_id=mail['from'],
@@ -101,6 +113,7 @@ def index_users_mails():
             scheduler.add_job(index_user_mails, args=(usr, ))
 
 
+@catches_all('Failed to index user skillpoints')
 def index_user_skillpoints(usr: User):
     """
     Measures a user's skillpoints. See
@@ -109,7 +122,8 @@ def index_user_skillpoints(usr: User):
     data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/skills/',
         usr.character_id,
-    ).data
+        invalidate_token_on_error=True,
+    ).raise_for_status().data
     EsiSkillPoints(
         total_sp=data['total_sp'],
         unallocated_sp=data.get('unallocated_sp', 0),
@@ -127,6 +141,7 @@ def index_users_skillpoints():
             scheduler.add_job(index_user_skillpoints, args=(usr, ))
 
 
+@catches_all('Failed to index user wallet')
 def index_user_wallets(usr: User):
     """
     Indexes user wallet balance
@@ -134,7 +149,8 @@ def index_user_wallets(usr: User):
     balance = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/wallet/',
         usr.character_id,
-    ).data
+        invalidate_token_on_error=True,
+    ).raise_for_status().data
     EsiWalletBalance(balance=balance, user=usr).save()
 
 
