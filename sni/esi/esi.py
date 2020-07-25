@@ -32,6 +32,19 @@ class EsiResponse(pdt.BaseModel):
     status_code: int
 
 
+    @staticmethod
+    def from_response(response: Response) -> 'EsiResponse':
+        """
+        Converts a :class:`request.Response` object to a
+        :class:`sni.esi.esi.EsiResponse`.
+        """
+        return EsiResponse(
+            data=response.json(),
+            headers=response.headers,
+            status_code=response.status_code,
+        )
+
+
 ESI_ANNOTATORS: Dict[str, Tuple[str, str]] = {
     'alliance_id': ('latest/alliances/{}/', 'name'),
     'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'),
@@ -127,7 +140,7 @@ def esi_request(http_method: str,
     if http_method.upper() != 'GET':
         raw = request(http_method, ESI_BASE + path, **kwargs)
         # raw.raise_for_status()
-        return to_esi_response(raw)
+        return EsiResponse.from_response(raw)
 
     key = [path, token, kwargs.get('params')]
     response = cache_get(key)
@@ -136,7 +149,7 @@ def esi_request(http_method: str,
 
     raw = request(http_method, ESI_BASE + path, **kwargs)
     # raw.raise_for_status()
-    response = to_esi_response(raw)
+    response = EsiResponse.from_response(raw)
 
     if not 400 <= response.status_code <= 599:
         ttl = 60
@@ -233,15 +246,3 @@ def load_esi_openapi() -> None:
                 set__version='latest',
                 upsert=True,
             )
-
-
-def to_esi_response(response: Response) -> EsiResponse:
-    """
-    Converts a :class:`request.Response` object to a
-    :class:`sni.esi.esi.EsiResponse`.
-    """
-    return EsiResponse(
-        data=response.json(),
-        headers=response.headers,
-        status_code=response.status_code,
-    )
