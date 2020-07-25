@@ -209,16 +209,22 @@ corrects the Discord command and event handlers.</p>
 
 <dl class="function">
 <dt id="sni.utils.catch_all">
-<code class="sig-prename descclassname">sni.utils.</code><code class="sig-name descname">catch_all</code><span class="sig-paren">(</span><em class="sig-param">function: Callable</em>, <em class="sig-param">error_message: str</em>, <em class="sig-param">*</em>, <em class="sig-param">args: list = []</em>, <em class="sig-param">kwargs: dict = {}</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/utils.html#catch_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.utils.catch_all" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.utils.</code><code class="sig-name descname">catch_all</code><span class="sig-paren">(</span><em class="sig-param">function: Callable</em>, <em class="sig-param">error_message: str</em>, <em class="sig-param">*</em>, <em class="sig-param">args: Tuple[Any</em>, <em class="sig-param">...] = ()</em>, <em class="sig-param">kwargs: dict = {}</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/utils.html#catch_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.utils.catch_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls a function but catches all the exceptions. If any were raised, logs
 an error message, followed by the string representation of the exception.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.utils.catch_all_async">
-<em class="property">async </em><code class="sig-prename descclassname">sni.utils.</code><code class="sig-name descname">catch_all_async</code><span class="sig-paren">(</span><em class="sig-param">function: Callable</em>, <em class="sig-param">error_message: str</em>, <em class="sig-param">*</em>, <em class="sig-param">args: list = []</em>, <em class="sig-param">kwargs: dict = {}</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/utils.html#catch_all_async"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.utils.catch_all_async" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.utils.</code><code class="sig-name descname">catch_all_async</code><span class="sig-paren">(</span><em class="sig-param">function: Callable</em>, <em class="sig-param">error_message: str</em>, <em class="sig-param">*</em>, <em class="sig-param">args: Tuple[Any</em>, <em class="sig-param">...] = ()</em>, <em class="sig-param">kwargs: dict = {}</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/utils.html#catch_all_async"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.utils.catch_all_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls a function but catches all the exceptions. If any were raised, logs
 an error message, followed by the string representation of the exception.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.utils.catches_all">
+<code class="sig-prename descclassname">sni.utils.</code><code class="sig-name descname">catches_all</code><span class="sig-paren">(</span><em class="sig-param">error_message: str = 'Error'</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/sni/utils.html#catches_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.utils.catches_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator version of <a class="reference internal" href="#sni.utils.catch_all" title="sni.utils.catch_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.utils.catch_all()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="function">
