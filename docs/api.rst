@@ -39,6 +39,11 @@ Routers
 
 .. automodule:: sni.api.routers.coalition
 
+``sni.api.routers.corporation``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: sni.api.routers.corporation
+
 ``sni.api.routers.esi``
 ~~~~~~~~~~~~~~~~~~~~~~~
 

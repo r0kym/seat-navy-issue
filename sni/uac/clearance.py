@@ -251,6 +251,8 @@ SCOPES: Dict[str, AbstractScope] = {
     'sni.update_user': AbsoluteScope(9),
     'sni.system.read_jobs': AbsoluteScope(10),
     'sni.system.submit_job': AbsoluteScope(10),
+    'sni.fetch_corporation': AbsoluteScope(8),
+    'sni.track_corporation': ESIScope(0),
 }
 
 

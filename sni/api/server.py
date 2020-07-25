@@ -13,6 +13,7 @@ import yaml
 import sni.conf as conf
 from sni.api.routers.callback import router as router_callback
 from sni.api.routers.coalition import router as router_coalition
+from sni.api.routers.corporation import router as router_corporation
 from sni.api.routers.crash import router as router_crash
 from sni.api.routers.esi import router as router_esi
 from sni.api.routers.group import router as router_group
@@ -32,6 +33,12 @@ app.include_router(
     router_coalition,
     prefix='/coalition',
     tags=['Coalition management'],
+)
+
+app.include_router(
+    router_corporation,
+    prefix='/corporation',
+    tags=['Corporation management'],
 )
 
 app.include_router(

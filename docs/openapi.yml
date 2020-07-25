@@ -97,6 +97,29 @@ components:
       - coalition_name
       title: GetCoalitionShortOut
       type: object
+    GetCorporationTrackingOut:
+      description: Represents a corporation tracking response.
+      properties:
+        invalid_refresh_token:
+          default: []
+          items:
+            type: integer
+          title: Invalid Refresh Token
+          type: array
+        no_refresh_token:
+          default: []
+          items:
+            type: integer
+          title: No Refresh Token
+          type: array
+        valid_refresh_token:
+          default: []
+          items:
+            type: integer
+          title: Valid Refresh Token
+          type: array
+      title: GetCorporationTrackingOut
+      type: object
     GetCrashReportOut:
       description: Response model for response for ``GET /crash/{crash_report_id}``.
       properties:
@@ -920,6 +943,79 @@ paths:
       summary: Update a coalition
       tags:
       - Coalition management
+  /corporation/{corporation_id}:
+    post:
+      description: 'Manually fetches a coproration from the ESI. Requires a clearance
+        level of
+
+        8 or more.'
+      operationId: post_corporation_corporation__corporation_id__post
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Manually fetch a coproration from the ESI
+      tags:
+      - Corporation management
+  /corporation/{corporation_id}/tracking:
+    get:
+      description: 'Reports which member (of a given corporation) have a valid refresh
+        token
+
+        attacked to them, and which do not. Requires a clearance level of 1 and
+
+        having authority over this corporation.'
+      operationId: get_corporation_tracking_corporation__corporation_id__tracking_get
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCorporationTrackingOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Corporation tracking
+      tags:
+      - Corporation management
   /crash:
     get:
       description: 'Get the list of the 50 most recent crash reports, sorted from
