@@ -16,7 +16,7 @@ def refresh_tokens():
     Iterates through the ESI refresh tokens and refreshes the corresponding ESI
     access tokens.
     """
-    for refresh_token in EsiRefreshToken.objects():
+    for refresh_token in EsiRefreshToken.objects(valid=True):
         usr = refresh_token.owner
         utils.catch_all(
             save_esi_tokens,

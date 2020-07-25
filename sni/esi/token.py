@@ -40,52 +40,103 @@ def available_esi_scopes(usr: User) -> Set[str]:
     token.
     """
     scopes: List[str] = []
-    for refresh_token in EsiRefreshToken.objects(owner=usr):
+    for refresh_token in EsiRefreshToken.objects(owner=usr, valid=True):
         scopes += refresh_token.scopes
     return set(scopes)
 
 
-def esi_delete_on_befalf_of(path: str, character_id: int,
-                            **kwargs) -> EsiResponse:
+def esi_delete_on_befalf_of(
+    path: str,
+    character_id: int,
+    invalidate_token_on_error=False,
+    **kwargs,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE
     requests.
     """
-    return esi_request_on_behalf_of('delete', path, character_id, **kwargs)
+    return esi_request_on_behalf_of(
+        'delete',
+        path,
+        character_id,
+        invalidate_token_on_error,
+        **kwargs,
+    )
 
 
-def esi_get_on_befalf_of(path: str, character_id: int,
-                         **kwargs) -> EsiResponse:
+def esi_get_on_befalf_of(
+    path: str,
+    character_id: int,
+    invalidate_token_on_error=False,
+    **kwargs,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
     """
-    return esi_request_on_behalf_of('get', path, character_id, **kwargs)
+    return esi_request_on_behalf_of(
+        'get',
+        path,
+        character_id,
+        invalidate_token_on_error,
+        **kwargs,
+    )
 
 
-def esi_post_on_befalf_of(path: str, character_id: int,
-                          **kwargs) -> EsiResponse:
+def esi_post_on_befalf_of(
+    path: str,
+    character_id: int,
+    invalidate_token_on_error=False,
+    **kwargs,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.
     """
-    return esi_request_on_behalf_of('post', path, character_id, **kwargs)
+    return esi_request_on_behalf_of(
+        'post',
+        path,
+        character_id,
+        invalidate_token_on_error,
+        **kwargs,
+    )
 
 
-def esi_put_on_befalf_of(path: str, character_id: int,
-                         **kwargs) -> EsiResponse:
+def esi_put_on_befalf_of(
+    path: str,
+    character_id: int,
+    invalidate_token_on_error=False,
+    **kwargs,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.
     """
-    return esi_request_on_behalf_of('put', path, character_id, **kwargs)
+    return esi_request_on_behalf_of(
+        'put',
+        path,
+        character_id,
+        invalidate_token_on_error,
+        **kwargs,
+    )
 
 
-def esi_request_on_behalf_of(http_method: str, path: str, character_id: int,
-                             **kwargs) -> EsiResponse:
+def esi_request_on_behalf_of(
+    http_method: str,
+    path: str,
+    character_id: int,
+    invalidate_token_on_error=False,
+    **kwargs,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
+    If the argument ``invalidate_token_on_error`` is set to ``True``, then the
+    user token is invalidated if the ESI request results in a 403.
     """
     esi_scope = get_esi_path_scope(path)
-    token = get_access_token(character_id, esi_scope).access_token
-    return esi_request(http_method, path, token, **kwargs)
+    token = get_access_token(character_id, esi_scope)
+    response = esi_request(http_method, path, token.access_token, **kwargs)
+    if response.status_code == 403 and invalidate_token_on_error:
+        token.refresh_token.update(set__valid=False)
+        token.delete()
+    return response
 
 
 def get_access_token(character_id: int,
@@ -104,9 +155,7 @@ def get_access_token(character_id: int,
     ).first()
     if not esi_access_token:
         esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
-            owner=owner,
-            scopes=scope,
-        ).first()
+            owner=owner, scopes=scope, valid=True).first()
         if not esi_refresh_token:
             logging.error(
                 'Could not find refresh token for user %s with scope %s',
@@ -121,7 +170,8 @@ def has_esi_scope(usr: User, scope: str) -> bool:
     """
     Tells wether the user has a refresh token with the given scope.
     """
-    return EsiRefreshToken.objects(owner=usr, scopes=scope).first() is not None
+    return EsiRefreshToken.objects(owner=usr, scopes=scope,
+                                   valid=True).first() is not None
 
 
 def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
@@ -140,10 +190,12 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
         scopes__all=decoded_access_token.scp,
     ).first()
     if esi_refresh_token:
-        esi_refresh_token.refresh_token = esi_response.refresh_token
-        esi_refresh_token.save()
+        esi_refresh_token.update(
+            set__refresh_token=esi_response.refresh_token,
+            set__valid=True,
+        )
     else:
-        EsiRefreshToken(
+        esi_refresh_token = EsiRefreshToken(
             owner=owner,
             refresh_token=esi_response.refresh_token,
             scopes=decoded_access_token.scp,
@@ -152,6 +204,7 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
         access_token=esi_response.access_token,
         expires_on=utils.from_timestamp(decoded_access_token.exp),
         owner=owner,
+        refresh_token=esi_refresh_token,
         scopes=decoded_access_token.scp,
     ).save()
 

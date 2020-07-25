@@ -170,6 +170,7 @@ def ensure_corporation_members(corporation: Corporation):
             '$match': {
                 'owner_data.corporation': corporation.pk,
                 'scopes': scope,
+                'valid': True,
             },
         },
         {
