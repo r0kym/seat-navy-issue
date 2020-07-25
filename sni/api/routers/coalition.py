@@ -23,6 +23,7 @@ from sni.uac.token import (
 )
 from sni.user.models import Alliance, Coalition
 
+from .common import BSONObjectId
 from .corporation import GetTrackingOut
 
 router = APIRouter()
@@ -91,7 +92,7 @@ class PutCoalitionIn(pdt.BaseModel):
     summary='Delete a coalition',
 )
 def delete_coalition(
-        coalition_id: str,
+        coalition_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
@@ -127,7 +128,7 @@ def get_coalition(tkn: Token = Depends(from_authotization_header_nondyn)):
     summary='Get basic informations about a coalition',
 )
 def get_coalition_name(
-        coalition_id: str,
+        coalition_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
@@ -168,7 +169,7 @@ def post_coalitions(
     summary='Update a coalition',
 )
 def put_coalition(
-        coalition_id: str,
+        coalition_id: BSONObjectId,
         data: PutCoalitionIn,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
@@ -215,7 +216,7 @@ def put_coalition(
     summary='Coalition tracking',
 )
 def get_coalition_tracking(
-        coalition_id: str,
+        coalition_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """

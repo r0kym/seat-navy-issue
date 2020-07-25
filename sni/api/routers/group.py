@@ -21,6 +21,8 @@ from sni.uac.token import (
     Token,
 )
 
+from .common import BSONObjectId
+
 router = APIRouter()
 
 
@@ -89,7 +91,7 @@ class PutGroupIn(pdt.BaseModel):
     summary='Delete a group',
 )
 def delete_group(
-        group_id: str,
+        group_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
@@ -123,7 +125,7 @@ def get_group(tkn: Token = Depends(from_authotization_header_nondyn), ):
     summary='Get basic informations about a group',
 )
 def get_group_name(
-        group_id: str,
+        group_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
@@ -165,7 +167,7 @@ def post_groups(
     summary='Update a group',
 )
 def put_group(
-        group_id: str,
+        group_id: BSONObjectId,
         data: PutGroupIn,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):

@@ -16,6 +16,8 @@ from sni.uac.token import (
 
 from sni.api.models import CrashReport
 
+from .common import BSONObjectId
+
 router = APIRouter()
 
 
@@ -123,7 +125,7 @@ def crash_report_record_to_short_response(
     summary='Delete a crash report',
 )
 def delete_crash_report(
-        crash_report_id: str,
+        crash_report_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
@@ -156,7 +158,7 @@ def get_crash_reports(tkn: Token = Depends(from_authotization_header_nondyn)):
     summary='Get a crash report',
 )
 def get_crash_report(
-        crash_report_id: str,
+        crash_report_id: BSONObjectId,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """

@@ -103,7 +103,7 @@ class PostTokenPerOut(pdt.BaseModel):
     summary='Manually delete a token',
 )
 async def delete_token(
-        uuid: str,
+        uuid: pdt.UUID4,
         tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
