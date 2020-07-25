@@ -225,6 +225,25 @@ sure all users are in the good corp, etc.)</p>
 </div>
 <div class="section" id="routers">
 <h2>Routers<a class="headerlink" href="#routers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sni.api.routers.alliance">
+<span id="sni-api-routers-alliance"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.alliance</span></code><a class="headerlink" href="#module-sni.api.routers.alliance" title="Permalink to this headline">¶</a></h3>
+<p>Alliance management paths</p>
+<dl class="function">
+<dt id="sni.api.routers.alliance.get_alliance_tracking">
+<code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">get_alliance_tracking</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#get_alliance_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.get_alliance_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reports which member (of a given alliance) have a valid refresh token
+attacked to them, and which do not. Requires a clearance level of 3 and
+having authority over this alliance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.alliance.post_alliance">
+<code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">post_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#post_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.post_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually fetches an alliance from the ESI. Requires a clearance level of
+8 or more.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-sni.api.routers.callback">
 <span id="sni-api-routers-callback"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.callback</span></code><a class="headerlink" href="#module-sni.api.routers.callback" title="Permalink to this headline">¶</a></h3>
 <p>Callback paths</p>
@@ -393,6 +412,14 @@ more.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.api.routers.coalition.get_coalition_tracking">
+<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">get_coalition_tracking</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#get_coalition_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.get_coalition_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reports which member (of a given coalition) have a valid refresh token
+attacked to them, and which do not. Requires a clearance level of 9 or
+more.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.api.routers.coalition.post_coalitions">
 <code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">post_coalitions</code><span class="sig-paren">(</span><em class="sig-param">data: sni.api.routers.coalition.PostCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#post_coalitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.post_coalitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a coalition. Requires a clearance level of 9 or more.</p>
@@ -405,6 +432,54 @@ more.</p>
 <cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
 <cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
 <cite>remove_members</cite>. Requires a clearance level of 9 or more.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sni.api.routers.corporation">
+<span id="sni-api-routers-corporation"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.corporation</span></code><a class="headerlink" href="#module-sni.api.routers.corporation" title="Permalink to this headline">¶</a></h3>
+<p>Corporation management paths</p>
+<dl class="class">
+<dt id="sni.api.routers.corporation.GetTrackingOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetTrackingOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetTrackingOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a corporation tracking response.</p>
+<dl class="method">
+<dt id="sni.api.routers.corporation.GetTrackingOut.from_user_iterator">
+<em class="property">static </em><code class="sig-name descname">from_user_iterator</code><span class="sig-paren">(</span><em class="sig-param">iterator: Iterator[sni.user.models.User]</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.corporation.GetTrackingOut<a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetTrackingOut.from_user_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.from_user_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a tracking response from a user iterator. See
+<a class="reference internal" href="esi.html#sni.esi.token.tracking_status" title="sni.esi.token.tracking_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.token.tracking_status()</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetTrackingOut.invalid_refresh_token">
+<code class="sig-name descname">invalid_refresh_token</code><em class="property">: List[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.invalid_refresh_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetTrackingOut.no_refresh_token">
+<code class="sig-name descname">no_refresh_token</code><em class="property">: List[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.no_refresh_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetTrackingOut.valid_refresh_token">
+<code class="sig-name descname">valid_refresh_token</code><em class="property">: List[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.valid_refresh_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.corporation.get_corporation_tracking">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">get_corporation_tracking</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#get_corporation_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.get_corporation_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reports which member (of a given corporation) have a valid refresh token
+attacked to them, and which do not. Requires a clearance level of 1 and
+having authority over this corporation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.corporation.post_corporation">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">post_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#post_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.post_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually fetches a corporation from the ESI. Requires a clearance level of
+8 or more.</p>
 </dd></dl>
 
 </div>
@@ -1097,8 +1172,10 @@ level depends on the modification.</p>
 <li><a class="reference internal" href="#module-sni.api.signals">Database signals</a></li>
 <li><a class="reference internal" href="#module-sni.api.migration">Migration</a></li>
 <li><a class="reference internal" href="#routers">Routers</a><ul>
+<li><a class="reference internal" href="#module-sni.api.routers.alliance"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.alliance</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.callback"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.callback</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.coalition"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.coalition</span></code></a></li>
+<li><a class="reference internal" href="#module-sni.api.routers.corporation"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.corporation</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.esi"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.esi</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.group"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.group</span></code></a></li>
 <li><a class="reference internal" href="#module-sni.api.routers.system"><code class="docutils literal notranslate"><span class="pre">sni.api.routers.system</span></code></a></li>

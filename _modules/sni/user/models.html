@@ -78,6 +78,13 @@
 
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;User&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the ceo of the executor corporation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">ceo</span>
+
 <div class="viewcode-block" id="Alliance.coalitions"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.coalitions">[docs]</a>    <span class="k">def</span> <span class="nf">coalitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Coalition&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the list of coalition this alliance is part of.</span>

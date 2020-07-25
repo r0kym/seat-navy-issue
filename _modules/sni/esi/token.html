@@ -41,6 +41,7 @@
 <span class="sd">EVE token (access and refresh) management</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
 
@@ -60,6 +61,16 @@
     <span class="n">DecodedAccessToken</span><span class="p">,</span>
     <span class="n">refresh_access_token</span><span class="p">,</span>
 <span class="p">)</span>
+
+
+<div class="viewcode-block" id="TrackingStatus"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.TrackingStatus">[docs]</a><span class="k">class</span> <span class="nc">TrackingStatus</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tracking status of a user, i.e. wether this user has a valid refresh token</span>
+<span class="sd">    attached to it, or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">HAS_NO_REFRESH_TOKEN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ONLY_HAS_INVALID_REFRESH_TOKEN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">HAS_A_VALID_REFRESH_TOKEN</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
 <div class="viewcode-block" id="available_esi_scopes"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.available_esi_scopes">[docs]</a><span class="k">def</span> <span class="nf">available_esi_scopes</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -191,6 +202,21 @@
 <span class="sd">    given user.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tracking_status"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.tracking_status">[docs]</a><span class="k">def</span> <span class="nf">tracking_status</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TrackingStatus</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reports the tracking status of this user, see</span>
+<span class="sd">    :class:`sni.esi.token.TrackingStatus`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">query_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">TrackingStatus</span><span class="o">.</span><span class="n">HAS_NO_REFRESH_TOKEN</span>
+    <span class="n">cumulated_mandatory_esi_scopes</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">refresh_token</span> <span class="ow">in</span> <span class="n">query_set</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cumulated_mandatory_esi_scopes</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">refresh_token</span><span class="o">.</span><span class="n">scopes</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">TrackingStatus</span><span class="o">.</span><span class="n">HAS_A_VALID_REFRESH_TOKEN</span>
+    <span class="k">return</span> <span class="n">TrackingStatus</span><span class="o">.</span><span class="n">ONLY_HAS_INVALID_REFRESH_TOKEN</span></div>
 </pre></div>
 
           </div>

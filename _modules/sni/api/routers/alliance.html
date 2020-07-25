@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>sni.api.routers.alliance &#8212; SeAT Navy Issue alpha documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sni.api.routers.alliance</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Alliance management paths</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span>
+
+<span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
+<span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
+    <span class="n">Token</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Alliance</span>
+<span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_alliance</span>
+
+<span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="n">GetTrackingOut</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="post_alliance"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.post_alliance">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s1">&#39;/</span><span class="si">{alliance_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Manually fetch an alliance from the ESI&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">post_alliance</span><span class="p">(</span>
+        <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manually fetches an alliance from the ESI. Requires a clearance level of</span>
+<span class="sd">    8 or more.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.fetch_alliance&#39;</span><span class="p">)</span>
+    <span class="n">ensure_alliance</span><span class="p">(</span><span class="n">alliance_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_alliance_tracking"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.get_alliance_tracking">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/</span><span class="si">{alliance_id}</span><span class="s1">/tracking&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">GetTrackingOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Alliance tracking&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_alliance_tracking</span><span class="p">(</span>
+        <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reports which member (of a given alliance) have a valid refresh token</span>
+<span class="sd">    attacked to them, and which do not. Requires a clearance level of 3 and</span>
+<span class="sd">    having authority over this alliance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.track_alliance&#39;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">ceo</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">GetTrackingOut</span><span class="o">.</span><span class="n">from_user_iterator</span><span class="p">(</span><span class="n">alliance</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">SeAT Navy Issue alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Cédric HT.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+  </body>
+</html>

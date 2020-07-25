@@ -50,8 +50,10 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.alliance</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_alliance</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.callback</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_callback</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.coalition</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_coalition</span>
+<span class="kn">from</span> <span class="nn">sni.api.routers.corporation</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_corporation</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.crash</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_crash</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.esi</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_esi</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.group</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_group</span>
@@ -60,6 +62,12 @@
 <span class="kn">from</span> <span class="nn">sni.api.routers.user</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_user</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">router_alliance</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/alliance&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Alliance management&#39;</span><span class="p">],</span>
+<span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
     <span class="n">router_callback</span><span class="p">,</span>
@@ -71,6 +79,12 @@
     <span class="n">router_coalition</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/coalition&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Coalition management&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
+    <span class="n">router_corporation</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/corporation&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Corporation management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>

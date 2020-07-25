@@ -62,6 +62,8 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Alliance</span><span class="p">,</span> <span class="n">Coalition</span>
 
+<span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="n">GetTrackingOut</span>
+
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
 
@@ -244,6 +246,25 @@
     <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">members</span><span class="p">))</span>
     <span class="n">coalition</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">GetCoalitionOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_coalition_tracking"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.get_coalition_tracking">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/</span><span class="si">{coalition_id}</span><span class="s1">/tracking&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">GetTrackingOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Coalition tracking&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_coalition_tracking</span><span class="p">(</span>
+        <span class="n">coalition_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reports which member (of a given coalition) have a valid refresh token</span>
+<span class="sd">    attacked to them, and which do not. Requires a clearance level of 9 or</span>
+<span class="sd">    more.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.track_coalition&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">GetTrackingOut</span><span class="o">.</span><span class="n">from_user_iterator</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 </pre></div>
 
           </div>
