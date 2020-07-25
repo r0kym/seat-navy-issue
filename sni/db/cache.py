@@ -2,11 +2,12 @@
 Redis based TTL cache
 """
 
+from typing import Any, Optional
 import hashlib
 import json
 import logging
 
-from typing import Any, Optional
+from redis.exceptions import RedisError
 
 from .redis import new_redis_connection
 
@@ -30,7 +31,10 @@ def cache_set(key: Any, value: Any, ttl: int = 60) -> None:
     """
     Sets a value in the cache. The key and value must be JSON-dumpable.
     """
-    connection.setex(hash_key(key), ttl, json.dumps(value))
+    try:
+        connection.setex(hash_key(key), ttl, json.dumps(value))
+    except RedisError as error:
+        logging.error('Redis error: %s', str(error))
 
 
 def hash_key(document: Any) -> str:

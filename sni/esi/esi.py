@@ -142,7 +142,7 @@ def esi_request(http_method: str,
     if 'Expires' in response.headers:
         try:
             ttl = int((parser.parse(response.headers['Expires']) -
-                    utils.now()).total_seconds())
+                       utils.now()).total_seconds())
         except ValueError as error:
             logging.warning('Could not determine ESI TTL: %s', str(error))
     if ttl > 0:
