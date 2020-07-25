@@ -8,7 +8,7 @@ from uuid import uuid4
 
 import fastapi
 import jwt
-import jwt.exceptions
+import jwt.exceptions as jwt_exceptions
 
 from sni.user.models import User
 import sni.conf as conf
@@ -117,8 +117,9 @@ def create_user_token(app_token: Token, owner: User) -> Token:
     return new_token
 
 
-def from_authotization_header(authorization: str = fastapi.Header(
-    None)) -> Token:
+# pylint: disable=too-many-branches
+def from_authotization_header(
+        authorization: str = fastapi.Header(None), ) -> Token:
     """
     Validates an ``Authorization: Bearer`` header and returns a
     :class:`sni.uac.token.Token`. If the token string is invalid, raises a
@@ -130,19 +131,46 @@ def from_authotization_header(authorization: str = fastapi.Header(
             fastapi.status.HTTP_401_UNAUTHORIZED,
             headers={"WWW-Authenticate": "Bearer"},
         )
-    token_str = authorization[len(bearer):]
-    token = get_token_from_jwt(token_str)
-    if not token:
-        raise fastapi.HTTPException(
-            fastapi.status.HTTP_401_UNAUTHORIZED,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    logging.debug('Successfully validated token %s', token.uuid)
-    return token
+
+    try:
+        token = get_token_from_jwt(authorization[len(bearer):])
+        logging.debug('Successfully validated token %s', token.uuid)
+        return token
+    except jwt_exceptions.InvalidSignatureError:
+        error_msg = 'Failed to validate token: invalid signature'
+    except jwt_exceptions.ExpiredSignatureError:
+        error_msg = 'Failed to validate token: expired signature'
+    except jwt_exceptions.InvalidAudienceError:
+        error_msg = 'Failed to validate token: invalid audience'
+    except jwt_exceptions.InvalidIssuerError:
+        error_msg = 'Failed to validate token: invalid issuer'
+    except jwt_exceptions.InvalidIssuedAtError:
+        error_msg = 'Failed to validate token: invalid issuance date'
+    except jwt_exceptions.ImmatureSignatureError:
+        error_msg = 'Failed to validate token: immature signature'
+    except jwt_exceptions.InvalidKeyError:
+        error_msg = 'Failed to validate token: invalid key'
+    except jwt_exceptions.InvalidAlgorithmError:
+        error_msg = 'Failed to validate token: invalid algorithm'
+    except jwt_exceptions.MissingRequiredClaimError:
+        error_msg = 'Failed to validate token: missing claim'
+    except jwt_exceptions.DecodeError:
+        error_msg = 'Failed to validate token: token could not be decoded'
+    except jwt_exceptions.InvalidTokenError:
+        error_msg = 'Failed to validate token: token is invalid'
+    except KeyError:
+        error_msg = 'Failed to validate token: payload is invalid'
+
+    logging.error(error_msg)
+    raise fastapi.HTTPException(
+        fastapi.status.HTTP_401_UNAUTHORIZED,
+        detail=error_msg,
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
 
-def from_authotization_header_nondyn(tkn: Token = fastapi.Depends(
-    from_authotization_header)) -> Token:
+def from_authotization_header_nondyn(
+        tkn: Token = fastapi.Depends(from_authotization_header), ) -> Token:
     """
     Validates an ``Authorization: Bearer`` header and returns a
     :class:`sni.uac.token.Token`. If the token string is invalid, or if the
@@ -155,38 +183,21 @@ def from_authotization_header_nondyn(tkn: Token = fastapi.Depends(
     return tkn
 
 
-def get_token_from_jwt(token_str: str) -> Optional[Token]:
+def get_token_from_jwt(token_str: str) -> Token:
     """
     Retrieves a token from its JWT string.
     """
-    try:
-        payload = jwt.decode(
-            token_str,
-            conf.get('jwt.secret'),
-            algorithm=conf.get('jwt.algorithm'),
-            issuer=conf.get('general.root_url'),
-            verify_exp=True,
-            verify_iss=True,
-            verify=True,
-        )
-        token_uuid = payload['jti']
-        return Token.objects(uuid=token_uuid).first()
-    except (
-            jwt.exceptions.InvalidTokenError,
-            jwt.exceptions.DecodeError,
-            jwt.exceptions.InvalidSignatureError,
-            jwt.exceptions.ExpiredSignatureError,
-            jwt.exceptions.InvalidAudienceError,
-            jwt.exceptions.InvalidIssuerError,
-            jwt.exceptions.InvalidIssuedAtError,
-            jwt.exceptions.ImmatureSignatureError,
-            jwt.exceptions.InvalidKeyError,
-            jwt.exceptions.InvalidAlgorithmError,
-            jwt.exceptions.MissingRequiredClaimError,
-            KeyError,
-    ) as error:
-        logging.error('Failed validation of JWT token: %s', str(error))
-        return None
+    payload = jwt.decode(
+        token_str,
+        conf.get('jwt.secret'),
+        algorithm=conf.get('jwt.algorithm'),
+        issuer=conf.get('general.root_url'),
+        verify_exp=True,
+        verify_iss=True,
+        verify=True,
+    )
+    token_uuid = payload['jti']
+    return Token.objects(uuid=token_uuid).first()
 
 
 def to_jwt(model: Token) -> str:
