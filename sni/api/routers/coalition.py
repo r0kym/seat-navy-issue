@@ -36,6 +36,16 @@ class GetCoalitionShortOut(pdt.BaseModel):
     coalition_id: str
     coalition_name: str
 
+    @staticmethod
+    def from_record(coalition: Coalition) -> 'GetCoalitionShortOut':
+        """
+        Converts a coalition database record to a short response.
+        """
+        return GetCoalitionShortOut(
+            coalition_id=str(coalition.pk),
+            coalition_name=coalition.coalition_name,
+        )
+
 
 class GetCoalitionOut(pdt.BaseModel):
     """
@@ -116,8 +126,7 @@ def get_coalition(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, 'sni.read_coalition')
     return [
-        GetCoalitionShortOut(coalition_id=str(coalition.pk),
-                             coalition_name=coalition.coalition_name)
+        GetCoalitionShortOut.from_record(coalition)
         for coalition in Coalition.objects()
     ]
 
