@@ -60,6 +60,8 @@
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">BSONObjectId</span>
+
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
 
@@ -128,7 +130,7 @@
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete a group&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">delete_group</span><span class="p">(</span>
-        <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
         <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -162,7 +164,7 @@
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get basic informations about a group&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_group_name</span><span class="p">(</span>
-        <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
         <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -204,7 +206,7 @@
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update a group&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">put_group</span><span class="p">(</span>
-        <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">PutGroupIn</span><span class="p">,</span>
         <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>

@@ -336,6 +336,12 @@ parameters.</p>
 <code class="sig-name descname">coalition_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionShortOut.coalition_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="sni.api.routers.coalition.GetCoalitionShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">coalition: sni.user.models.Coalition</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.coalition.GetCoalitionShortOut<a class="reference internal" href="_modules/sni/api/routers/coalition.html#GetCoalitionShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a coalition database record to a short response.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -394,7 +400,7 @@ parameters.</p>
 
 <dl class="function">
 <dt id="sni.api.routers.coalition.delete_coalition">
-<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">delete_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#delete_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.delete_coalition" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">delete_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#delete_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.delete_coalition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes a coalition. Requires a clearance level of 9 or more.</p>
 </dd></dl>
 
@@ -406,14 +412,14 @@ parameters.</p>
 
 <dl class="function">
 <dt id="sni.api.routers.coalition.get_coalition_name">
-<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">get_coalition_name</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#get_coalition_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.get_coalition_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">get_coalition_name</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#get_coalition_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.get_coalition_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns details about a given coalition. Requires a clearance level of 0 or
 more.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.api.routers.coalition.get_coalition_tracking">
-<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">get_coalition_tracking</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#get_coalition_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.get_coalition_tracking" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">get_coalition_tracking</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#get_coalition_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.get_coalition_tracking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reports which member (of a given coalition) have a valid refresh token
 attacked to them, and which do not. Requires a clearance level of 9 or
 more.</p>
@@ -427,7 +433,7 @@ more.</p>
 
 <dl class="function">
 <dt id="sni.api.routers.coalition.put_coalition">
-<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">put_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: str</em>, <em class="sig-param">data: sni.api.routers.coalition.PutCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#put_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.put_coalition" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">put_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">data: sni.api.routers.coalition.PutCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#put_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.put_coalition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates a coalition. All fields in the request body are optional. The
 <cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
 <cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
@@ -656,7 +662,7 @@ on the user making the request and the user specified on the
 
 <dl class="function">
 <dt id="sni.api.routers.group.delete_group">
-<code class="sig-prename descclassname">sni.api.routers.group.</code><code class="sig-name descname">delete_group</code><span class="sig-paren">(</span><em class="sig-param">group_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/group.html#delete_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.group.delete_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.group.</code><code class="sig-name descname">delete_group</code><span class="sig-paren">(</span><em class="sig-param">group_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/group.html#delete_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.group.delete_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes a group. Requires a clearance level of 9 or more.</p>
 </dd></dl>
 
@@ -668,7 +674,7 @@ on the user making the request and the user specified on the
 
 <dl class="function">
 <dt id="sni.api.routers.group.get_group_name">
-<code class="sig-prename descclassname">sni.api.routers.group.</code><code class="sig-name descname">get_group_name</code><span class="sig-paren">(</span><em class="sig-param">group_id: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/group.html#get_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.group.get_group_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.group.</code><code class="sig-name descname">get_group_name</code><span class="sig-paren">(</span><em class="sig-param">group_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/group.html#get_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.group.get_group_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns details about a given group. Requires a clearance level of 0 or
 more.</p>
 </dd></dl>
@@ -681,7 +687,7 @@ more.</p>
 
 <dl class="function">
 <dt id="sni.api.routers.group.put_group">
-<code class="sig-prename descclassname">sni.api.routers.group.</code><code class="sig-name descname">put_group</code><span class="sig-paren">(</span><em class="sig-param">group_id: str</em>, <em class="sig-param">data: sni.api.routers.group.PutGroupIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/group.html#put_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.group.put_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.group.</code><code class="sig-name descname">put_group</code><span class="sig-paren">(</span><em class="sig-param">group_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">data: sni.api.routers.group.PutGroupIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/group.html#put_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.group.put_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates a group. All fields in the request body are optional. The
 <cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
 <cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
@@ -963,7 +969,7 @@ user has 1 minute to update its teamspeak nickname to it, and then call
 
 <dl class="function">
 <dt id="sni.api.routers.token.delete_token">
-<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.token.</code><code class="sig-name descname">delete_token</code><span class="sig-paren">(</span><em class="sig-param">uuid: str</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/token.html#delete_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.token.delete_token" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.token.</code><code class="sig-name descname">delete_token</code><span class="sig-paren">(</span><em class="sig-param">uuid: pydantic.types.UUID4</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/token.html#delete_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.token.delete_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manually deletes a token (of any type). Requires a clearance level of 10.</p>
 </dd></dl>
 
