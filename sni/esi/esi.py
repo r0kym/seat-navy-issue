@@ -140,10 +140,13 @@ def esi_request(http_method: str,
 
     ttl = 60
     if 'Expires' in response.headers:
-        ttl = int((parser.parse(response.headers['Expires']) -
-                   utils.now()).total_seconds())
-    cache_set(key, response.dict(), ttl)
-
+        try:
+            ttl = int((parser.parse(response.headers['Expires']) -
+                    utils.now()).total_seconds())
+        except ValueError as error:
+            logging.warning('Could not determine ESI TTL: %s', str(error))
+    if ttl > 0:
+        cache_set(key, response.dict(), ttl)
     return response
 
 
