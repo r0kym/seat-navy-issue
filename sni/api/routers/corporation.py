@@ -2,30 +2,49 @@
 Corporation management paths
 """
 
-from typing import List
+from typing import Dict, Iterator, List
 
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
-from sni.esi.token import EsiRefreshToken
+from sni.esi.token import tracking_status, TrackingStatus
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
-from sni.user.models import Corporation
+from sni.user.models import Corporation, User
 from sni.user.user import ensure_corporation
 
 router = APIRouter()
 
 
-class GetCorporationTrackingOut(pdt.BaseModel):
+class GetTrackingOut(pdt.BaseModel):
     """
     Represents a corporation tracking response.
     """
     invalid_refresh_token: List[int] = []
     no_refresh_token: List[int] = []
     valid_refresh_token: List[int] = []
+
+    @staticmethod
+    def from_user_iterator(iterator: Iterator[User]) -> 'GetTrackingOut':
+        """
+        Creates a tracking response from a user iterator. See
+        :meth:`sni.esi.token.tracking_status`
+        """
+        result = GetTrackingOut()
+        ldict: Dict[int, List[int]] = {
+            TrackingStatus.HAS_NO_REFRESH_TOKEN: result.no_refresh_token,
+            TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN:
+            result.invalid_refresh_token,
+            TrackingStatus.HAS_A_VALID_REFRESH_TOKEN:
+            result.valid_refresh_token
+        }
+        for usr in iterator:
+            status = tracking_status(usr)
+            ldict[status].append(usr.character_id)
+        return result
 
 
 @router.post(
@@ -46,7 +65,7 @@ def post_corporation(
 
 @router.get(
     '/{corporation_id}/tracking',
-    response_model=GetCorporationTrackingOut,
+    response_model=GetTrackingOut,
     summary='Corporation tracking',
 )
 def get_corporation_tracking(
@@ -60,27 +79,5 @@ def get_corporation_tracking(
     """
     corporation: Corporation = Corporation.objects(
         corporation_id=corporation_id).get()
-
     assert_has_clearance(tkn.owner, 'sni.track_corporation', corporation.ceo)
-
-    response = GetCorporationTrackingOut()
-    for usr in corporation.user_iterator():
-
-        query_set = EsiRefreshToken.objects(owner=usr)
-        if query_set.count() == 0:
-            response.no_refresh_token.append(usr.character_id)
-            continue
-
-        has_valid_refresh_token = False
-        cumulated_mandatory_esi_scopes = usr.cumulated_mandatory_esi_scopes()
-        for refresh_token in query_set:
-            if cumulated_mandatory_esi_scopes <= set(refresh_token.scopes):
-                has_valid_refresh_token = True
-                break
-
-        if has_valid_refresh_token:
-            response.valid_refresh_token.append(usr.character_id)
-        else:
-            response.invalid_refresh_token.append(usr.character_id)
-
-    return response
+    return GetTrackingOut.from_user_iterator(corporation.user_iterator())

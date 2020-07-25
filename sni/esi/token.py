@@ -2,6 +2,7 @@
 EVE token (access and refresh) management
 """
 
+from enum import Enum
 import logging
 from typing import List, Optional, Set
 
@@ -21,6 +22,16 @@ from .sso import (
     DecodedAccessToken,
     refresh_access_token,
 )
+
+
+class TrackingStatus(int, Enum):
+    """
+    Tracking status of a user, i.e. wether this user has a valid refresh token
+    attached to it, or not.
+    """
+    HAS_NO_REFRESH_TOKEN = 0
+    ONLY_HAS_INVALID_REFRESH_TOKEN = 1
+    HAS_A_VALID_REFRESH_TOKEN = 2
 
 
 def available_esi_scopes(usr: User) -> Set[str]:
@@ -152,3 +163,18 @@ def token_has_enough_scopes(access_token: DecodedAccessToken,
     given user.
     """
     return usr.cumulated_mandatory_esi_scopes() <= set(access_token.scp)
+
+
+def tracking_status(usr: User) -> TrackingStatus:
+    """
+    Reports the tracking status of this user, see
+    :class:`sni.esi.token.TrackingStatus`
+    """
+    query_set = EsiRefreshToken.objects(owner=usr)
+    if query_set.count() == 0:
+        return TrackingStatus.HAS_NO_REFRESH_TOKEN
+    cumulated_mandatory_esi_scopes = usr.cumulated_mandatory_esi_scopes()
+    for refresh_token in query_set:
+        if cumulated_mandatory_esi_scopes <= set(refresh_token.scopes):
+            return TrackingStatus.HAS_A_VALID_REFRESH_TOKEN
+    return TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN
