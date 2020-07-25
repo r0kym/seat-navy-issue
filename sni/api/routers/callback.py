@@ -12,6 +12,7 @@ from sni.user.models import User
 
 from sni.esi.sso import (
     decode_access_token,
+    EsiTokenError,
     get_access_token_from_callback_code,
 )
 from sni.esi.token import save_esi_tokens, token_has_enough_scopes
@@ -40,22 +41,31 @@ async def get_callback_esi(code: str, state: str):
 
     state_code: StateCode = StateCode.objects.get(uuid=state)
     state_code.delete()
-    esi_response = get_access_token_from_callback_code(code)
-    access_token = decode_access_token(esi_response.access_token)
-    save_esi_tokens(esi_response)
+
+    try:
+        esi_response = get_access_token_from_callback_code(code)
+        access_token = decode_access_token(esi_response.access_token)
+        save_esi_tokens(esi_response)
+    except EsiTokenError:
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='ESI token manipulation error',
+        )
 
     usr: User = User.objects.get(character_id=access_token.character_id)
     if not is_authorized_to_login(usr):
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
-            detail=f'Character {usr.character_name} ({usr.character_id}) ' \
-                + 'is not allowed to login.',
+            detail=(f'Character {usr.character_name} ({usr.character_id}) '
+                    'is not allowed to login.'),
         )
     if not token_has_enough_scopes(access_token, usr):
-        detail = f'Insufficient scopes for character {usr.character_name} ' \
-                + f'({usr.character_id}). Require at least: ' \
-                + ', '.join(list(usr.cumulated_mandatory_esi_scopes()))
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=detail)
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            detail=(f'Insufficient scopes for character {usr.character_name} '
+                    f'({usr.character_id}). Require at least: ' +
+                    ', '.join(list(usr.cumulated_mandatory_esi_scopes()))),
+        )
 
     user_token = create_user_token(state_code.app_token, usr)
     user_jwt_str = to_jwt(user_token)

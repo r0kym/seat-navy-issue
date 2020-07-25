@@ -7,6 +7,8 @@ import logging
 from typing import List
 from urllib.parse import urljoin
 
+from pydantic.error_wrappers import ValidationError
+from requests.exceptions import HTTPError
 import jwt
 import pydantic as pdt
 import requests
@@ -71,6 +73,12 @@ class DecodedAccessToken(pdt.BaseModel):
         return int(self.sub[len(prefix):])
 
 
+class EsiTokenError(Exception):
+    """
+    Raised when something goes wrong with tokens.
+    """
+
+
 def decode_access_token(access_token: str) -> DecodedAccessToken:
     """
     Converts an access token in JWT form to a :class:`sni.esi.sso.DecodedAccessToken`
@@ -78,7 +86,11 @@ def decode_access_token(access_token: str) -> DecodedAccessToken:
     document = jwt.decode(access_token, verify=False)
     if isinstance(document['scp'], str):
         document['scp'] = [document['scp']]
-    return DecodedAccessToken(**document)
+    try:
+        return DecodedAccessToken(**document)
+    except ValidationError as error:
+        logging.error('Failed to decode access token: %s', str(error))
+    raise EsiTokenError
 
 
 def get_auth_url(esi_scopes: List[str],
@@ -162,7 +174,15 @@ def get_access_token_from_callback_code(
         headers=headers,
         data=data,
     )
-    return AuthorizationCodeResponse(**response.json())
+    try:
+        response.raise_for_status()
+        return AuthorizationCodeResponse(**response.json())
+    except HTTPError as error:
+        logging.error('Failed to get access token: %s', str(error))
+    except ValidationError as error:
+        logging.error('Failed to parse authorization code response: %s',
+                      str(error))
+    raise EsiTokenError
 
 
 def refresh_access_token(refresh_token: str) -> AuthorizationCodeResponse:
@@ -189,4 +209,12 @@ def refresh_access_token(refresh_token: str) -> AuthorizationCodeResponse:
         headers=headers,
         data=data,
     )
-    return AuthorizationCodeResponse(**response.json())
+    try:
+        response.raise_for_status()
+        return AuthorizationCodeResponse(**response.json())
+    except HTTPError as error:
+        logging.error('Failed to refresh access token: %s', str(error))
+    except ValidationError as error:
+        logging.error('Failed to parse authorization code response: %s',
+                      str(error))
+    raise EsiTokenError
