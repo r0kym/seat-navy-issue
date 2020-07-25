@@ -23,6 +23,8 @@ from sni.uac.token import (
 )
 from sni.user.models import Alliance, Coalition
 
+from .corporation import GetTrackingOut
+
 router = APIRouter()
 
 
@@ -205,3 +207,22 @@ def put_coalition(
     coalition.members = list(set(coalition.members))
     coalition.save()
     return GetCoalitionOut.from_record(coalition)
+
+
+@router.get(
+    '/{coalition_id}/tracking',
+    response_model=GetTrackingOut,
+    summary='Coalition tracking',
+)
+def get_coalition_tracking(
+        coalition_id: str,
+        tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Reports which member (of a given coalition) have a valid refresh token
+    attacked to them, and which do not. Requires a clearance level of 9 or
+    more.
+    """
+    coalition: Coalition = Coalition.objects(pk=coalition_id).get()
+    assert_has_clearance(tkn.owner, 'sni.track_coalition')
+    return GetTrackingOut.from_user_iterator(coalition.user_iterator())

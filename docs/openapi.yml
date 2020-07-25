@@ -1016,6 +1016,44 @@ paths:
       summary: Update a coalition
       tags:
       - Coalition management
+  /coalition/{coalition_id}/tracking:
+    get:
+      description: 'Reports which member (of a given coalition) have a valid refresh
+        token
+
+        attacked to them, and which do not. Requires a clearance level of 9 or
+
+        more.'
+      operationId: get_coalition_tracking_coalition__coalition_id__tracking_get
+      parameters:
+      - in: path
+        name: coalition_id
+        required: true
+        schema:
+          title: Coalition Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTrackingOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Coalition tracking
+      tags:
+      - Coalition management
   /corporation/{corporation_id}:
     post:
       description: 'Manually fetches a corporation from the ESI. Requires a clearance

@@ -206,6 +206,7 @@ SCOPES: Dict[str, AbstractScope] = {
     'esi-wallet.read_corporation_wallets.v1': ESIScope(0),
     'publicData': AbsoluteScope(0),
     'sni.create_coalition': AbsoluteScope(9),
+    'sni.track_coalition': AbsoluteScope(9),
     'sni.create_dyn_token': AbsoluteScope(10),
     'sni.create_group': AbsoluteScope(9),
     'sni.create_per_token': AbsoluteScope(10),
