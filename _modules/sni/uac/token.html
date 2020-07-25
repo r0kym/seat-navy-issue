@@ -47,7 +47,7 @@
 
 <span class="kn">import</span> <span class="nn">fastapi</span>
 <span class="kn">import</span> <span class="nn">jwt</span>
-<span class="kn">import</span> <span class="nn">jwt.exceptions</span>
+<span class="kn">import</span> <span class="nn">jwt.exceptions</span> <span class="k">as</span> <span class="nn">jwt_exceptions</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
@@ -156,8 +156,9 @@
     <span class="k">return</span> <span class="n">new_token</span></div>
 
 
-<div class="viewcode-block" id="from_authotization_header"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.from_authotization_header">[docs]</a><span class="k">def</span> <span class="nf">from_authotization_header</span><span class="p">(</span><span class="n">authorization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">Header</span><span class="p">(</span>
-    <span class="kc">None</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+<span class="c1"># pylint: disable=too-many-branches</span>
+<div class="viewcode-block" id="from_authotization_header"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.from_authotization_header">[docs]</a><span class="k">def</span> <span class="nf">from_authotization_header</span><span class="p">(</span>
+        <span class="n">authorization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">Header</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validates an ``Authorization: Bearer`` header and returns a</span>
 <span class="sd">    :class:`sni.uac.token.Token`. If the token string is invalid, raises a</span>
@@ -169,19 +170,46 @@
             <span class="n">fastapi</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
         <span class="p">)</span>
-    <span class="n">token_str</span> <span class="o">=</span> <span class="n">authorization</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bearer</span><span class="p">):]</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token_from_jwt</span><span class="p">(</span><span class="n">token_str</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">fastapi</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
-            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
-        <span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully validated token </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">token</span></div>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">get_token_from_jwt</span><span class="p">(</span><span class="n">authorization</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bearer</span><span class="p">):])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully validated token </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">token</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: invalid signature&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">ExpiredSignatureError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: expired signature&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidAudienceError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: invalid audience&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidIssuerError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: invalid issuer&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidIssuedAtError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: invalid issuance date&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">ImmatureSignatureError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: immature signature&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidKeyError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: invalid key&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidAlgorithmError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: invalid algorithm&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">MissingRequiredClaimError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: missing claim&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: token could not be decoded&#39;</span>
+    <span class="k">except</span> <span class="n">jwt_exceptions</span><span class="o">.</span><span class="n">InvalidTokenError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: token is invalid&#39;</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to validate token: payload is invalid&#39;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">(</span>
+        <span class="n">fastapi</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+        <span class="n">detail</span><span class="o">=</span><span class="n">error_msg</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="from_authotization_header_nondyn"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.from_authotization_header_nondyn">[docs]</a><span class="k">def</span> <span class="nf">from_authotization_header_nondyn</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">Depends</span><span class="p">(</span>
-    <span class="n">from_authotization_header</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+<div class="viewcode-block" id="from_authotization_header_nondyn"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.from_authotization_header_nondyn">[docs]</a><span class="k">def</span> <span class="nf">from_authotization_header_nondyn</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">fastapi</span><span class="o">.</span><span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header</span><span class="p">),</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validates an ``Authorization: Bearer`` header and returns a</span>
 <span class="sd">    :class:`sni.uac.token.Token`. If the token string is invalid, or if the</span>
@@ -194,38 +222,21 @@
     <span class="k">return</span> <span class="n">tkn</span></div>
 
 
-<div class="viewcode-block" id="get_token_from_jwt"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.get_token_from_jwt">[docs]</a><span class="k">def</span> <span class="nf">get_token_from_jwt</span><span class="p">(</span><span class="n">token_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Token</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_token_from_jwt"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.get_token_from_jwt">[docs]</a><span class="k">def</span> <span class="nf">get_token_from_jwt</span><span class="p">(</span><span class="n">token_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves a token from its JWT string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
-            <span class="n">token_str</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
-            <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
-            <span class="n">issuer</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
-            <span class="n">verify_exp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">verify_iss</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">token_uuid</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;jti&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">token_uuid</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-    <span class="k">except</span> <span class="p">(</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidTokenError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ExpiredSignatureError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidAudienceError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidIssuerError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidIssuedAtError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ImmatureSignatureError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidKeyError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidAlgorithmError</span><span class="p">,</span>
-            <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">MissingRequiredClaimError</span><span class="p">,</span>
-            <span class="ne">KeyError</span><span class="p">,</span>
-    <span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed validation of JWT token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+        <span class="n">token_str</span><span class="p">,</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
+        <span class="n">issuer</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
+        <span class="n">verify_exp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">verify_iss</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">token_uuid</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;jti&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">token_uuid</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="to_jwt"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.to_jwt">[docs]</a><span class="k">def</span> <span class="nf">to_jwt</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Token</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

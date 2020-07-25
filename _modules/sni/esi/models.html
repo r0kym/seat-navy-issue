@@ -47,39 +47,6 @@
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 
 
-<div class="viewcode-block" id="EsiAccessToken"><a class="viewcode-back" href="../../../esi.html#sni.esi.models.EsiAccessToken">[docs]</a><span class="k">class</span> <span class="nc">EsiAccessToken</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
-<span class="sd">    relevant metadatas.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">access_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The ESI access token string&quot;&quot;&quot;</span>
-
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this access token (according to the ESI)&quot;&quot;&quot;</span>
-
-    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Expiration timestamp of this access token (according to the ESI)&quot;&quot;&quot;</span>
-
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span>
-                              <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                              <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Reference to the owner of this token&quot;&quot;&quot;</span>
-
-    <span class="n">scopes</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
-    <span class="sd">&quot;&quot;&quot;ESI scopes of the access token&quot;&quot;&quot;</span>
-
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;expires_on&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">],</span>
-    <span class="p">}</span></div>
-
-
 <div class="viewcode-block" id="EsiPath"><a class="viewcode-back" href="../../../esi.html#sni.esi.models.EsiPath">[docs]</a><span class="k">class</span> <span class="nc">EsiPath</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a path in ESI&#39;s openapi specification.</span>
@@ -110,6 +77,13 @@
 <span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
 <span class="sd">    relevant metadatas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
+
+    <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
+
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this document&quot;&quot;&quot;</span>
 
@@ -125,7 +99,60 @@
     <span class="sd">&quot;&quot;&quot;The ESI refresh token string&quot;&quot;&quot;</span>
 
     <span class="n">scopes</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
-    <span class="sd">&quot;&quot;&quot;ESI scopes of the refresh token&quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot;ESI scopes of the refresh token&quot;&quot;&quot;</span>
+
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Wether this refresh token is valid&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;valid&#39;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="s1">&#39;scopes&#39;</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="EsiAccessToken"><a class="viewcode-back" href="../../../esi.html#sni.esi.models.EsiAccessToken">[docs]</a><span class="k">class</span> <span class="nc">EsiAccessToken</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A model representing an ESI access token, along with its refresh token and</span>
+<span class="sd">    relevant metadatas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
+
+    <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
+
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The ESI access token string&quot;&quot;&quot;</span>
+
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this access token (according to the ESI)&quot;&quot;&quot;</span>
+
+    <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Expiration timestamp of this access token (according to the ESI)&quot;&quot;&quot;</span>
+
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span>
+                              <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Reference to the owner of this token&quot;&quot;&quot;</span>
+
+    <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">EsiRefreshToken</span><span class="p">,</span>
+                                      <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Reference towards the refresh token that issued this access token&quot;&quot;&quot;</span>
+
+    <span class="n">scopes</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+    <span class="sd">&quot;&quot;&quot;ESI scopes of the access token&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;expires_on&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
 </pre></div>
 
           </div>

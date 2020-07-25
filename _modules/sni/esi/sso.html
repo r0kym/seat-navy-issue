@@ -46,6 +46,8 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
 
+<span class="kn">from</span> <span class="nn">pydantic.error_wrappers</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">HTTPError</span>
 <span class="kn">import</span> <span class="nn">jwt</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -110,6 +112,12 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">):])</span></div>
 
 
+<div class="viewcode-block" id="EsiTokenError"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.EsiTokenError">[docs]</a><span class="k">class</span> <span class="nc">EsiTokenError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when something goes wrong with tokens.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
 <div class="viewcode-block" id="decode_access_token"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.decode_access_token">[docs]</a><span class="k">def</span> <span class="nf">decode_access_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DecodedAccessToken</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts an access token in JWT form to a :class:`sni.esi.sso.DecodedAccessToken`</span>
@@ -117,7 +125,11 @@
     <span class="n">document</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">document</span><span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">document</span><span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">]]</span>
-    <span class="k">return</span> <span class="n">DecodedAccessToken</span><span class="p">(</span><span class="o">**</span><span class="n">document</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DecodedAccessToken</span><span class="p">(</span><span class="o">**</span><span class="n">document</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to decode access token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">EsiTokenError</span></div>
 
 
 <div class="viewcode-block" id="get_auth_url"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.get_auth_url">[docs]</a><span class="k">def</span> <span class="nf">get_auth_url</span><span class="p">(</span><span class="n">esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -201,7 +213,15 @@
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to get access token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to parse authorization code response: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                      <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">EsiTokenError</span></div>
 
 
 <div class="viewcode-block" id="refresh_access_token"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.refresh_access_token">[docs]</a><span class="k">def</span> <span class="nf">refresh_access_token</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationCodeResponse</span><span class="p">:</span>
@@ -228,7 +248,15 @@
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to refresh access token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to parse authorization code response: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                      <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">EsiTokenError</span></div>
 </pre></div>
 
           </div>

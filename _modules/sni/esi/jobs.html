@@ -55,7 +55,7 @@
 <span class="sd">    Iterates through the ESI refresh tokens and refreshes the corresponding ESI</span>
 <span class="sd">    access tokens.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">refresh_token</span> <span class="ow">in</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">refresh_token</span> <span class="ow">in</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">valid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">usr</span> <span class="o">=</span> <span class="n">refresh_token</span><span class="o">.</span><span class="n">owner</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">catch_all</span><span class="p">(</span>
             <span class="n">save_esi_tokens</span><span class="p">,</span>

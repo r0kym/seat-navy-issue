@@ -74,6 +74,10 @@
       <li><a href="api.html#sni.api.models.CrashReport._version">_version (sni.api.models.CrashReport attribute)</a>
 
       <ul>
+        <li><a href="esi.html#sni.esi.models.EsiAccessToken._version">(sni.esi.models.EsiAccessToken attribute)</a>
+</li>
+        <li><a href="esi.html#sni.esi.models.EsiRefreshToken._version">(sni.esi.models.EsiRefreshToken attribute)</a>
+</li>
         <li><a href="indexation.html#sni.index.models.EsiMail._version">(sni.index.models.EsiMail attribute)</a>
 </li>
         <li><a href="indexation.html#sni.index.models.EsiSkillPoints._version">(sni.index.models.EsiSkillPoints attribute)</a>
@@ -505,6 +509,8 @@
 </li>
       <li><a href="indexation.html#sni.index.models.EsiSkillPoints">EsiSkillPoints (class in sni.index.models)</a>
 </li>
+      <li><a href="esi.html#sni.esi.sso.EsiTokenError">EsiTokenError</a>
+</li>
       <li><a href="indexation.html#sni.index.models.EsiWalletBalance">EsiWalletBalance (class in sni.index.models)</a>
 </li>
       <li><a href="api.html#sni.api.routers.system.GetJobOut.executor">executor (sni.api.routers.system.GetJobOut attribute)</a>
@@ -567,6 +573,8 @@
         <li><a href="api.html#sni.api.routers.user.GetUserOut.from_record">(sni.api.routers.user.GetUserOut static method)</a>
 </li>
       </ul></li>
+      <li><a href="esi.html#sni.esi.esi.EsiResponse.from_response">from_response() (sni.esi.esi.EsiResponse static method)</a>
+</li>
       <li><a href="sni.html#sni.utils.from_timestamp">from_timestamp() (in module sni.utils)</a>
 </li>
       <li><a href="api.html#sni.api.routers.corporation.GetTrackingOut.from_user_iterator">from_user_iterator() (sni.api.routers.corporation.GetTrackingOut static method)</a>
@@ -869,10 +877,10 @@
         <li><a href="user.html#sni.user.models.Group.members">(sni.user.models.Group attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="teamspeak.html#sni.teamspeak.jobs.message_registered_clients_with_wrong_name">message_registered_clients_with_wrong_name() (in module sni.teamspeak.jobs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.models.CrashReportRequest.method">method (sni.api.models.CrashReportRequest attribute)</a>
 </li>
       <li><a href="api.html#sni.api.migration.migrate">migrate() (in module sni.api.migration)</a>
@@ -900,6 +908,10 @@
       <li><a href="user.html#sni.user.migration.migrate_corporation">migrate_corporation() (in module sni.user.migration)</a>
 </li>
       <li><a href="sni.html#sni.__main__.migrate_database">migrate_database() (in module sni.__main__)</a>
+</li>
+      <li><a href="esi.html#sni.esi.migration.migrate_esi_access_token">migrate_esi_access_token() (in module sni.esi.migration)</a>
+</li>
+      <li><a href="esi.html#sni.esi.migration.migrate_esi_refresh_token">migrate_esi_refresh_token() (in module sni.esi.migration)</a>
 </li>
       <li><a href="user.html#sni.user.migration.migrate_group">migrate_group() (in module sni.user.migration)</a>
 </li>
@@ -1091,9 +1103,11 @@
 </li>
       <li><a href="esi.html#sni.esi.sso.refresh_access_token">refresh_access_token() (in module sni.esi.sso)</a>
 </li>
-      <li><a href="esi.html#sni.esi.models.EsiRefreshToken.refresh_token">refresh_token (sni.esi.models.EsiRefreshToken attribute)</a>
+      <li><a href="esi.html#sni.esi.models.EsiAccessToken.refresh_token">refresh_token (sni.esi.models.EsiAccessToken attribute)</a>
 
       <ul>
+        <li><a href="esi.html#sni.esi.models.EsiRefreshToken.refresh_token">(sni.esi.models.EsiRefreshToken attribute)</a>
+</li>
         <li><a href="esi.html#sni.esi.sso.AuthorizationCodeResponse.refresh_token">(sni.esi.sso.AuthorizationCodeResponse attribute)</a>
 </li>
       </ul></li>
@@ -1134,6 +1148,10 @@
       <li><a href="api.html#sni.api.models.CrashReport.SCHEMA_VERSION">SCHEMA_VERSION (sni.api.models.CrashReport attribute)</a>
 
       <ul>
+        <li><a href="esi.html#sni.esi.models.EsiAccessToken.SCHEMA_VERSION">(sni.esi.models.EsiAccessToken attribute)</a>
+</li>
+        <li><a href="esi.html#sni.esi.models.EsiRefreshToken.SCHEMA_VERSION">(sni.esi.models.EsiRefreshToken attribute)</a>
+</li>
         <li><a href="indexation.html#sni.index.models.EsiMail.SCHEMA_VERSION">(sni.index.models.EsiMail attribute)</a>
 </li>
         <li><a href="indexation.html#sni.index.models.EsiSkillPoints.SCHEMA_VERSION">(sni.index.models.EsiSkillPoints attribute)</a>
@@ -1227,10 +1245,10 @@
 </li>
       <li><a href="discord.html#module-sni.discord.jobs">sni.discord.jobs (module)</a>
 </li>
-      <li><a href="discord.html#module-sni.discord.migration">sni.discord.migration (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="discord.html#module-sni.discord.migration">sni.discord.migration (module)</a>
+</li>
       <li><a href="discord.html#module-sni.discord.signals">sni.discord.signals (module)</a>
 </li>
       <li><a href="esi.html#module-sni.esi.esi">sni.esi.esi (module)</a>
@@ -1397,8 +1415,6 @@
         <li><a href="api.html#sni.api.models.CrashReportToken.to_dict">(sni.api.models.CrashReportToken method)</a>
 </li>
       </ul></li>
-      <li><a href="esi.html#sni.esi.esi.to_esi_response">to_esi_response() (in module sni.esi.esi)</a>
-</li>
       <li><a href="uac.html#sni.uac.token.to_jwt">to_jwt() (in module sni.uac.token)</a>
 </li>
       <li><a href="uac.html#sni.uac.models.Token">Token (class in sni.uac.models)</a>
@@ -1553,10 +1569,12 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#sni.api.routers.corporation.GetTrackingOut.valid_refresh_token">valid_refresh_token (sni.api.routers.corporation.GetTrackingOut attribute)</a>
+      <li><a href="esi.html#sni.esi.models.EsiRefreshToken.valid">valid (sni.esi.models.EsiRefreshToken attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#sni.api.routers.corporation.GetTrackingOut.valid_refresh_token">valid_refresh_token (sni.api.routers.corporation.GetTrackingOut attribute)</a>
+</li>
       <li><a href="esi.html#sni.esi.models.EsiPath.version">version (sni.esi.models.EsiPath attribute)</a>
 </li>
   </ul></td>

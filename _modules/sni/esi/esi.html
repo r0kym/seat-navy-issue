@@ -68,7 +68,19 @@
     <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>
     <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">id_annotations</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span></div>
+    <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="EsiResponse.from_response"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.EsiResponse.from_response">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;EsiResponse&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`request.Response` object to a</span>
+<span class="sd">        :class:`sni.esi.esi.EsiResponse`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">EsiResponse</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 
 
 <span class="n">ESI_ANNOTATORS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
@@ -165,8 +177,8 @@
 
     <span class="k">if</span> <span class="n">http_method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
         <span class="n">raw</span> <span class="o">=</span> <span class="n">request</span><span class="p">(</span><span class="n">http_method</span><span class="p">,</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">to_esi_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="c1"># raw.raise_for_status()</span>
+        <span class="k">return</span> <span class="n">EsiResponse</span><span class="o">.</span><span class="n">from_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
 
     <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">)]</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -174,14 +186,19 @@
         <span class="k">return</span> <span class="n">EsiResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
 
     <span class="n">raw</span> <span class="o">=</span> <span class="n">request</span><span class="p">(</span><span class="n">http_method</span><span class="p">,</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">to_esi_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+    <span class="c1"># raw.raise_for_status()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">EsiResponse</span><span class="o">.</span><span class="n">from_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
 
-    <span class="n">ttl</span> <span class="o">=</span> <span class="mi">60</span>
-    <span class="k">if</span> <span class="s1">&#39;Expires&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
-        <span class="n">ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Expires&#39;</span><span class="p">])</span> <span class="o">-</span>
-                   <span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">())</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
-    <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">ttl</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">400</span> <span class="o">&lt;=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&lt;=</span> <span class="mi">599</span><span class="p">:</span>
+        <span class="n">ttl</span> <span class="o">=</span> <span class="mi">60</span>
+        <span class="k">if</span> <span class="s1">&#39;Expires&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Expires&#39;</span><span class="p">])</span> <span class="o">-</span>
+                           <span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">())</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not determine ESI TTL: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ttl</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">ttl</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">response</span></div>
 
@@ -267,18 +284,6 @@
                 <span class="n">set__version</span><span class="o">=</span><span class="s1">&#39;latest&#39;</span><span class="p">,</span>
                 <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="to_esi_response"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.to_esi_response">[docs]</a><span class="k">def</span> <span class="nf">to_esi_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a :class:`request.Response` object to a</span>
-<span class="sd">    :class:`sni.esi.esi.EsiResponse`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">EsiResponse</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span>
-        <span class="n">headers</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
-        <span class="n">status_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
-    <span class="p">)</span></div>
 </pre></div>
 
           </div>
