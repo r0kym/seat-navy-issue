@@ -4,7 +4,7 @@ ESI related paths
 
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import (APIRouter, Depends, HTTPException, status)
 import pydantic as pdt
 
 from sni.user.models import User
@@ -58,10 +58,17 @@ async def get_esi_latest(
         if esi_scope is not None:
             target = User.objects.get(character_id=data.on_behalf_of)
             assert_has_clearance(tkn.owner, esi_scope, target)
-            esi_token = get_access_token(
-                data.on_behalf_of,
-                esi_scope,
-            ).access_token
+            try:
+                esi_token = get_access_token(
+                    data.on_behalf_of,
+                    esi_scope,
+                ).access_token
+            except LookupError:
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND,
+                    detail='Could not find valid ESI refresh token for ' \
+                        + 'character ' + str(data.on_behalf_of),
+                )
 
     function = esi_get_all_pages if data.all_pages else esi_get
     result = function(esi_path, esi_token, params=data.params)
