@@ -185,7 +185,7 @@ def ensure_corporation_members(corporation: Corporation):
     )
     response = esi_get(
         f'latest/corporations/{corporation.corporation_id}/members/',
-        esi_access_token.access_token,
+        token=esi_access_token.access_token,
     )
     for character_id in response.data:
         scheduler.add_job(ensure_user, args=(character_id, ))

@@ -48,6 +48,7 @@ def available_esi_scopes(usr: User) -> Set[str]:
 def esi_delete_on_befalf_of(
     path: str,
     character_id: int,
+    *,
     invalidate_token_on_error=False,
     **kwargs,
 ) -> EsiResponse:
@@ -59,7 +60,7 @@ def esi_delete_on_befalf_of(
         'delete',
         path,
         character_id,
-        invalidate_token_on_error,
+        invalidate_token_on_error=invalidate_token_on_error,
         **kwargs,
     )
 
@@ -67,6 +68,7 @@ def esi_delete_on_befalf_of(
 def esi_get_on_befalf_of(
     path: str,
     character_id: int,
+    *,
     invalidate_token_on_error=False,
     **kwargs,
 ) -> EsiResponse:
@@ -77,7 +79,7 @@ def esi_get_on_befalf_of(
         'get',
         path,
         character_id,
-        invalidate_token_on_error,
+        invalidate_token_on_error=invalidate_token_on_error,
         **kwargs,
     )
 
@@ -85,6 +87,7 @@ def esi_get_on_befalf_of(
 def esi_post_on_befalf_of(
     path: str,
     character_id: int,
+    *,
     invalidate_token_on_error=False,
     **kwargs,
 ) -> EsiResponse:
@@ -95,7 +98,7 @@ def esi_post_on_befalf_of(
         'post',
         path,
         character_id,
-        invalidate_token_on_error,
+        invalidate_token_on_error=invalidate_token_on_error,
         **kwargs,
     )
 
@@ -103,6 +106,7 @@ def esi_post_on_befalf_of(
 def esi_put_on_befalf_of(
     path: str,
     character_id: int,
+    *,
     invalidate_token_on_error=False,
     **kwargs,
 ) -> EsiResponse:
@@ -113,7 +117,7 @@ def esi_put_on_befalf_of(
         'put',
         path,
         character_id,
-        invalidate_token_on_error,
+        invalidate_token_on_error=invalidate_token_on_error,
         **kwargs,
     )
 
@@ -122,6 +126,7 @@ def esi_request_on_behalf_of(
     http_method: str,
     path: str,
     character_id: int,
+    *,
     invalidate_token_on_error=False,
     **kwargs,
 ) -> EsiResponse:
@@ -132,7 +137,12 @@ def esi_request_on_behalf_of(
     """
     esi_scope = get_esi_path_scope(path)
     token = get_access_token(character_id, esi_scope)
-    response = esi_request(http_method, path, token.access_token, **kwargs)
+    response = esi_request(
+        http_method,
+        path,
+        token=token.access_token,
+        **kwargs,
+    )
     if response.status_code == 403 and invalidate_token_on_error:
         token.refresh_token.update(set__valid=False)
         token.delete()

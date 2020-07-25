@@ -38,17 +38,20 @@ def index_user_location(usr: User):
         f'latest/characters/{usr.character_id}/location/',
         usr.character_id,
         invalidate_token_on_error=True,
-    ).raise_for_status().data
+        raise_for_status=True,
+    ).data
     online_data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/online/',
         usr.character_id,
         invalidate_token_on_error=True,
-    ).raise_for_status().data
+        raise_for_status=True,
+    ).data
     ship_data = esi_get_on_befalf_of(
         f'latest/characters/{usr.character_id}/ship/',
         usr.character_id,
         invalidate_token_on_error=True,
-    ).raise_for_status().data
+        raise_for_status=True,
+    ).data
     EsiCharacterLocation(
         online=online_data['online'],
         ship_item_id=ship_data['ship_item_id'],
@@ -83,7 +86,8 @@ def index_user_mails(usr: User):
         f'latest/characters/{character_id}/mail',
         character_id,
         invalidate_token_on_error=True,
-    ).raise_for_status().data
+        raise_for_status=True,
+    ).data
     for header in headers:
         mail_id = header['mail_id']
         if EsiMail.objects(mail_id=mail_id).first() is not None:
@@ -92,7 +96,8 @@ def index_user_mails(usr: User):
             f'latest/characters/{character_id}/mail/{mail_id}',
             character_id,
             invalidate_token_on_error=True,
-        ).raise_for_status().data
+            raise_for_status=True,
+        ).data
         EsiMail(
             body=format_mail_body(mail['body']),
             from_id=mail['from'],
@@ -123,7 +128,8 @@ def index_user_skillpoints(usr: User):
         f'latest/characters/{usr.character_id}/skills/',
         usr.character_id,
         invalidate_token_on_error=True,
-    ).raise_for_status().data
+        raise_for_status=True,
+    ).data
     EsiSkillPoints(
         total_sp=data['total_sp'],
         unallocated_sp=data.get('unallocated_sp', 0),
@@ -150,7 +156,8 @@ def index_user_wallets(usr: User):
         f'latest/characters/{usr.character_id}/wallet/',
         usr.character_id,
         invalidate_token_on_error=True,
-    ).raise_for_status().data
+        raise_for_status=True,
+    ).data
     EsiWalletBalance(balance=balance, user=usr).save()
 
 

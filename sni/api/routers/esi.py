@@ -2,7 +2,7 @@
 ESI related paths
 """
 
-from typing import Optional
+from typing import Callable, Optional
 
 from fastapi import (APIRouter, Depends, HTTPException, status)
 import pydantic as pdt
@@ -70,8 +70,13 @@ async def get_esi_latest(
                         + 'character ' + str(data.on_behalf_of),
                 )
 
-    function = esi_get_all_pages if data.all_pages else esi_get
-    result = function(esi_path, esi_token, params=data.params)
+    function: Callable[..., EsiResponse] = \
+        esi_get_all_pages if data.all_pages else esi_get
+    result = function(
+        esi_path,
+        token=esi_token,
+        kwargs={'params': data.params},
+    )
     if data.id_annotations:
         result.id_annotations = id_annotations(result.data)
     return result

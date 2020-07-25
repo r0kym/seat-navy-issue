@@ -9,7 +9,7 @@ import re
 from dateutil import parser
 import mongoengine as me
 import pydantic as pdt
-from requests import HTTPError, request, Response
+from requests import request, Response
 
 from sni.db.cache import cache_get, cache_set
 from sni.sde.sde import sde_get_name
@@ -43,17 +43,6 @@ class EsiResponse(pdt.BaseModel):
             status_code=response.status_code,
         )
 
-    def raise_for_status(self) -> 'EsiResponse':
-        """
-        Analogous to :meth:`requests.Response.raise_for_status`, except it
-        returns self.
-        """
-        if 400 <= self.status_code <= 499:
-            raise HTTPError(f'Client error {self.status_code}')
-        if 500 <= self.status_code <= 599:
-            raise HTTPError(f'Server error {self.status_code}')
-        return self
-
 
 ESI_ANNOTATORS: Dict[str, Tuple[str, str]] = {
     'alliance_id': ('latest/alliances/{}/', 'name'),
@@ -73,25 +62,39 @@ is ``None``, it means that :meth:`sni.sde.sde.sde_get_name` should be used
 """
 
 
-def esi_delete(path: str,
-               token: Optional[str] = None,
-               **kwargs) -> EsiResponse:
+# pylint: disable=dangerous-default-value
+def esi_delete(
+    path: str,
+    *,
+    kwargs: dict = {},
+    token: Optional[str] = None,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for DELETE requests.
     """
-    return esi_request('delete', path, token, **kwargs)
+    return esi_request('delete', path, token=token, kwargs=kwargs)
 
 
-def esi_get(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
+# pylint: disable=dangerous-default-value
+def esi_get(
+    path: str,
+    *,
+    kwargs: dict = {},
+    token: Optional[str] = None,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for GET requests.
     """
-    return esi_request('get', path, token, **kwargs)
+    return esi_request('get', path, token=token, kwargs=kwargs)
 
 
-def esi_get_all_pages(path: str,
-                      token: Optional[str] = None,
-                      **kwargs) -> EsiResponse:
+# pylint: disable=dangerous-default-value
+def esi_get_all_pages(
+    path: str,
+    *,
+    token: Optional[str] = None,
+    kwargs: dict = {},
+) -> EsiResponse:
     """
     Returns all pages of an ESI GET path
     """
@@ -104,7 +107,7 @@ def esi_get_all_pages(path: str,
         kwargs['params'] = {}
     while current_page <= max_page:
         kwargs['params']['page'] = current_page
-        current_response = esi_request('get', path, token, **kwargs)
+        current_response = esi_request('get', path, token=token, kwargs=kwargs)
         response_data += current_response.data
         response_headers = current_response.headers
         response_status_code = current_response.status_code
@@ -117,24 +120,41 @@ def esi_get_all_pages(path: str,
     )
 
 
-def esi_post(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
+# pylint: disable=dangerous-default-value
+def esi_post(
+    path: str,
+    *,
+    kwargs: dict = {},
+    token: Optional[str] = None,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for POST requests.
     """
-    return esi_request('post', path, token, **kwargs)
+    return esi_request('post', path, token=token, kwargs=kwargs)
 
 
-def esi_put(path: str, token: Optional[str] = None, **kwargs) -> EsiResponse:
+# pylint: disable=dangerous-default-value
+def esi_put(
+    path: str,
+    *,
+    kwargs: dict = {},
+    token: Optional[str] = None,
+) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request` for PUT requests.
     """
-    return esi_request('put', path, token, **kwargs)
+    return esi_request('put', path, token=token, kwargs=kwargs)
 
 
-def esi_request(http_method: str,
-                path: str,
-                token: Optional[str] = None,
-                **kwargs) -> EsiResponse:
+# pylint: disable=dangerous-default-value
+def esi_request(
+    http_method: str,
+    path: str,
+    *,
+    kwargs: dict = {},
+    raise_for_status: bool = False,
+    token: Optional[str] = None,
+) -> EsiResponse:
     """
     Makes an HTTP request to the ESI, and returns the response object.
     """
@@ -149,7 +169,8 @@ def esi_request(http_method: str,
 
     if http_method.upper() != 'GET':
         raw = request(http_method, ESI_BASE + path, **kwargs)
-        # raw.raise_for_status()
+        if raise_for_status:
+            raw.raise_for_status()
         return EsiResponse.from_response(raw)
 
     key = [path, token, kwargs.get('params')]
@@ -158,7 +179,8 @@ def esi_request(http_method: str,
         return EsiResponse(**response)
 
     raw = request(http_method, ESI_BASE + path, **kwargs)
-    # raw.raise_for_status()
+    if raise_for_status:
+        raw.raise_for_status()
     response = EsiResponse.from_response(raw)
 
     if not 400 <= response.status_code <= 599:
