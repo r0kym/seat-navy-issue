@@ -29,6 +29,11 @@ Migration
 Routers
 -------
 
+``sni.api.routers.alliance``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: sni.api.routers.alliance
+
 ``sni.api.routers.callback``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

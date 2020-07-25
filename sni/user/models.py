@@ -39,6 +39,13 @@ class Alliance(me.Document):
 
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
+    @property
+    def ceo(self) -> 'User':
+        """
+        Returns the ceo of the executor corporation.
+        """
+        return self.executor.ceo
+
     def coalitions(self) -> List['Coalition']:
         """
         Returns the list of coalition this alliance is part of.

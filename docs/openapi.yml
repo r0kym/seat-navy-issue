@@ -97,29 +97,6 @@ components:
       - coalition_name
       title: GetCoalitionShortOut
       type: object
-    GetCorporationTrackingOut:
-      description: Represents a corporation tracking response.
-      properties:
-        invalid_refresh_token:
-          default: []
-          items:
-            type: integer
-          title: Invalid Refresh Token
-          type: array
-        no_refresh_token:
-          default: []
-          items:
-            type: integer
-          title: No Refresh Token
-          type: array
-        valid_refresh_token:
-          default: []
-          items:
-            type: integer
-          title: Valid Refresh Token
-          type: array
-      title: GetCorporationTrackingOut
-      type: object
     GetCrashReportOut:
       description: Response model for response for ``GET /crash/{crash_report_id}``.
       properties:
@@ -385,6 +362,29 @@ components:
       - token_type
       - uuid
       title: GetTokenOut
+      type: object
+    GetTrackingOut:
+      description: Represents a corporation tracking response.
+      properties:
+        invalid_refresh_token:
+          default: []
+          items:
+            type: integer
+          title: Invalid Refresh Token
+          type: array
+        no_refresh_token:
+          default: []
+          items:
+            type: integer
+          title: No Refresh Token
+          type: array
+        valid_refresh_token:
+          default: []
+          items:
+            type: integer
+          title: Valid Refresh Token
+          type: array
+      title: GetTrackingOut
       type: object
     GetUserOut:
       description: Model for ``GET /user/{character_name}`` responses
@@ -733,6 +733,79 @@ info:
   version: 0.1.0
 openapi: 3.0.2
 paths:
+  /alliance/{alliance_id}:
+    post:
+      description: 'Manually fetches an alliance from the ESI. Requires a clearance
+        level of
+
+        8 or more.'
+      operationId: post_alliance_alliance__alliance_id__post
+      parameters:
+      - in: path
+        name: alliance_id
+        required: true
+        schema:
+          title: Alliance Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Manually fetch an alliance from the ESI
+      tags:
+      - Alliance management
+  /alliance/{alliance_id}/tracking:
+    get:
+      description: 'Reports which member (of a given alliance) have a valid refresh
+        token
+
+        attacked to them, and which do not. Requires a clearance level of 3 and
+
+        having authority over this alliance.'
+      operationId: get_alliance_tracking_alliance__alliance_id__tracking_get
+      parameters:
+      - in: path
+        name: alliance_id
+        required: true
+        schema:
+          title: Alliance Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTrackingOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Alliance tracking
+      tags:
+      - Alliance management
   /callback/esi:
     get:
       description: "ESI callback. You should not manually call this.\n\nUpon receiving\
@@ -945,7 +1018,7 @@ paths:
       - Coalition management
   /corporation/{corporation_id}:
     post:
-      description: 'Manually fetches a coproration from the ESI. Requires a clearance
+      description: 'Manually fetches a corporation from the ESI. Requires a clearance
         level of
 
         8 or more.'
@@ -975,7 +1048,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Manually fetch a coproration from the ESI
+      summary: Manually fetch a corporation from the ESI
       tags:
       - Corporation management
   /corporation/{corporation_id}/tracking:
@@ -1005,7 +1078,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetCorporationTrackingOut'
+                $ref: '#/components/schemas/GetTrackingOut'
           description: Successful Response
         '422':
           content:

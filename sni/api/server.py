@@ -11,6 +11,7 @@ import uvicorn
 import yaml
 
 import sni.conf as conf
+from sni.api.routers.alliance import router as router_alliance
 from sni.api.routers.callback import router as router_callback
 from sni.api.routers.coalition import router as router_coalition
 from sni.api.routers.corporation import router as router_corporation
@@ -22,6 +23,12 @@ from sni.api.routers.token import router as router_token
 from sni.api.routers.user import router as router_user
 
 app = FastAPI()
+
+app.include_router(
+    router_alliance,
+    prefix='/alliance',
+    tags=['Alliance management'],
+)
 
 app.include_router(
     router_callback,
