@@ -111,6 +111,20 @@ components:
       - coalition_name
       title: GetCoalitionShortOut
       type: object
+    GetCorporationShortOut:
+      description: Short corporation description
+      properties:
+        corporation_id:
+          title: Corporation Id
+          type: integer
+        corporation_name:
+          title: Corporation Name
+          type: string
+      required:
+      - corporation_id
+      - corporation_name
+      title: GetCorporationShortOut
+      type: object
     GetCrashReportOut:
       description: Response model for response for ``GET /crash/{crash_report_id}``.
       properties:
@@ -747,13 +761,13 @@ info:
   version: 0.1.0
 openapi: 3.0.2
 paths:
-  /alliance:
+  /alliance/:
     get:
       description: 'Gets the list of alliances registered in this instance. Requires
         a
 
         clearance level of 0 or more.'
-      operationId: get_alliances_alliance_get
+      operationId: get_alliances_alliance__get
       parameters:
       - in: header
         name: authorization
@@ -768,7 +782,7 @@ paths:
               schema:
                 items:
                   $ref: '#/components/schemas/GetAllianceShortOut'
-                title: Response Get Alliances Alliance Get
+                title: Response Get Alliances Alliance  Get
                 type: array
           description: Successful Response
         '422':
@@ -1097,6 +1111,39 @@ paths:
       summary: Coalition tracking
       tags:
       - Coalition management
+  /corporation/:
+    get:
+      description: 'Gets the list of corporations registered in this instance. Requires
+        a
+
+        clearance level of 0 or more.'
+      operationId: get_corporations_corporation__get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetCorporationShortOut'
+                title: Response Get Corporations Corporation  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get the list of corporations
+      tags:
+      - Corporation management
   /corporation/{corporation_id}:
     post:
       description: 'Manually fetches a corporation from the ESI. Requires a clearance

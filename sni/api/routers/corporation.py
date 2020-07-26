@@ -19,6 +19,25 @@ from sni.user.user import ensure_corporation
 router = APIRouter()
 
 
+class GetCorporationShortOut(pdt.BaseModel):
+    """
+    Short corporation description
+    """
+    corporation_id: int
+    corporation_name: str
+
+    @staticmethod
+    def from_record(corporation: Corporation) -> 'GetCorporationShortOut':
+        """
+        Converts an instance of :class:`sni.user.models.Corporation` to
+        :class:`sni.api.routers.corporation.GetCorporationShortOut`
+        """
+        return GetCorporationShortOut(
+            corporation_id=corporation.corporation_id,
+            corporation_name=corporation.corporation_name,
+        )
+
+
 class GetTrackingOut(pdt.BaseModel):
     """
     Represents a corporation tracking response.
@@ -45,6 +64,23 @@ class GetTrackingOut(pdt.BaseModel):
             status = tracking_status(usr)
             ldict[status].append(usr.character_id)
         return result
+
+
+@router.get(
+    '/',
+    response_model=List[GetCorporationShortOut],
+    summary='Get the list of corporations',
+)
+def get_corporations(tkn: Token = Depends(from_authotization_header_nondyn), ):
+    """
+    Gets the list of corporations registered in this instance. Requires a
+    clearance level of 0 or more.
+    """
+    assert_has_clearance(tkn.owner, 'sni.read_corporation')
+    return [
+        GetCorporationShortOut.from_record(corporation)
+        for corporation in Corporation.objects()
+    ]
 
 
 @router.post(

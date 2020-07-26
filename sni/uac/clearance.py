@@ -254,6 +254,7 @@ SCOPES: Dict[str, AbstractScope] = {
     'sni.system.submit_job': AbsoluteScope(10),
     'sni.fetch_corporation': AbsoluteScope(8),
     'sni.track_corporation': ESIScope(0),
+    'sni.read_corporation': AbsoluteScope(0),
     'sni.fetch_alliance': AbsoluteScope(8),
     'sni.track_alliance': ESIScope(0),
     'sni.read_alliance': AbsoluteScope(0),
