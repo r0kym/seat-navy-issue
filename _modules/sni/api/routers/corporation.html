@@ -58,6 +58,25 @@
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
 
+<div class="viewcode-block" id="GetCorporationShortOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.GetCorporationShortOut">[docs]</a><span class="k">class</span> <span class="nc">GetCorporationShortOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Short corporation description</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corporation_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">corporation_name</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="GetCorporationShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.GetCorporationShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCorporationShortOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts an instance of :class:`sni.user.models.Corporation` to</span>
+<span class="sd">        :class:`sni.api.routers.corporation.GetCorporationShortOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetCorporationShortOut</span><span class="p">(</span>
+            <span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">,</span>
+            <span class="n">corporation_name</span><span class="o">=</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
 <div class="viewcode-block" id="GetTrackingOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.GetTrackingOut">[docs]</a><span class="k">class</span> <span class="nc">GetTrackingOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a corporation tracking response.</span>
@@ -84,6 +103,23 @@
             <span class="n">status</span> <span class="o">=</span> <span class="n">tracking_status</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span>
             <span class="n">ldict</span><span class="p">[</span><span class="n">status</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="get_corporations"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.get_corporations">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetCorporationShortOut</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the list of corporations&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_corporations</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the list of corporations registered in this instance. Requires a</span>
+<span class="sd">    clearance level of 0 or more.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_corporation&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetCorporationShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">corporation</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span>
+    <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="post_corporation"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.post_corporation">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>

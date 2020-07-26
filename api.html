@@ -228,12 +228,43 @@ sure all users are in the good corp, etc.)</p>
 <div class="section" id="module-sni.api.routers.alliance">
 <span id="sni-api-routers-alliance"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.alliance</span></code><a class="headerlink" href="#module-sni.api.routers.alliance" title="Permalink to this headline">¶</a></h3>
 <p>Alliance management paths</p>
+<dl class="class">
+<dt id="sni.api.routers.alliance.GetAllianceShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">GetAllianceShortOut</code><a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Short alliance description</p>
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceShortOut.alliance_id">
+<code class="sig-name descname">alliance_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceShortOut.alliance_name">
+<code class="sig-name descname">alliance_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.alliance.GetAllianceShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.alliance.GetAllianceShortOut<a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Alliance" title="sni.user.models.Alliance"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Alliance</span></code></a> to
+<a class="reference internal" href="#sni.api.routers.alliance.GetAllianceShortOut" title="sni.api.routers.alliance.GetAllianceShortOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.alliance.GetAllianceShortOut</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.api.routers.alliance.get_alliance_tracking">
 <code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">get_alliance_tracking</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#get_alliance_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.get_alliance_tracking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reports which member (of a given alliance) have a valid refresh token
 attacked to them, and which do not. Requires a clearance level of 3 and
 having authority over this alliance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.alliance.get_alliances">
+<code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">get_alliances</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#get_alliances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.get_alliances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the list of alliances registered in this instance. Requires a
+clearance level of 0 or more.</p>
 </dd></dl>
 
 <dl class="function">
@@ -445,6 +476,30 @@ more.</p>
 <span id="sni-api-routers-corporation"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.corporation</span></code><a class="headerlink" href="#module-sni.api.routers.corporation" title="Permalink to this headline">¶</a></h3>
 <p>Corporation management paths</p>
 <dl class="class">
+<dt id="sni.api.routers.corporation.GetCorporationShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetCorporationShortOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetCorporationShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Short corporation description</p>
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationShortOut.corporation_id">
+<code class="sig-name descname">corporation_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationShortOut.corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationShortOut.corporation_name">
+<code class="sig-name descname">corporation_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationShortOut.corporation_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.corporation.GetCorporationShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.corporation.GetCorporationShortOut<a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetCorporationShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Corporation" title="sni.user.models.Corporation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Corporation</span></code></a> to
+<a class="reference internal" href="#sni.api.routers.corporation.GetCorporationShortOut" title="sni.api.routers.corporation.GetCorporationShortOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.corporation.GetCorporationShortOut</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.api.routers.corporation.GetTrackingOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetTrackingOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetTrackingOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -479,6 +534,13 @@ more.</p>
 <dd><p>Reports which member (of a given corporation) have a valid refresh token
 attacked to them, and which do not. Requires a clearance level of 1 and
 having authority over this corporation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.corporation.get_corporations">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">get_corporations</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#get_corporations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.get_corporations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the list of corporations registered in this instance. Requires a
+clearance level of 0 or more.</p>
 </dd></dl>
 
 <dl class="function">
