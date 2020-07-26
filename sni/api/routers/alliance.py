@@ -2,7 +2,10 @@
 Alliance management paths
 """
 
+from typing import List
+
 from fastapi import APIRouter, Depends
+import pydantic as pdt
 
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -15,6 +18,42 @@ from sni.user.user import ensure_alliance
 from .corporation import GetTrackingOut
 
 router = APIRouter()
+
+
+class GetAllianceShortOut(pdt.BaseModel):
+    """
+    Short alliance description
+    """
+    alliance_id: int
+    alliance_name: str
+
+    @staticmethod
+    def from_record(alliance: Alliance) -> 'GetAllianceShortOut':
+        """
+        Converts an instance of :class:`sni.user.models.Alliance` to
+        :class:`sni.api.routers.alliance.GetAllianceShortOut`
+        """
+        return GetAllianceShortOut(
+            alliance_id=alliance.alliance_id,
+            alliance_name=alliance.alliance_name,
+        )
+
+
+@router.get(
+    '/',
+    response_model=List[GetAllianceShortOut],
+    summary='Get the list of alliances',
+)
+def get_alliances(tkn: Token = Depends(from_authotization_header_nondyn), ):
+    """
+    Gets the list of alliances registered in this instance. Requires a
+    clearance level of 0 or more.
+    """
+    assert_has_clearance(tkn.owner, 'sni.read_alliance')
+    return [
+        GetAllianceShortOut.from_record(alliance)
+        for alliance in Alliance.objects()
+    ]
 
 
 @router.post(
