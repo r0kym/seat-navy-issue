@@ -39,13 +39,6 @@ def configure_logging() -> None:
     """
     Basic configuration of the logging facility
     """
-    logging_level = {
-        conf.GeneralConfig.LoggingLevel.CRITICAL: logging.CRITICAL,
-        conf.GeneralConfig.LoggingLevel.DEBUG: logging.DEBUG,
-        conf.GeneralConfig.LoggingLevel.ERROR: logging.ERROR,
-        conf.GeneralConfig.LoggingLevel.INFO: logging.INFO,
-        conf.GeneralConfig.LoggingLevel.WARNING: logging.WARNING,
-    }[conf.CONFIGURATION.general.logging_level]
     logging.config.dictConfig({
         'version': 1,
         'disable_existing_loggers': True,
@@ -64,7 +57,7 @@ def configure_logging() -> None:
         'loggers': {
             '': {
                 'handlers': ['default'],
-                'level': logging_level,
+                'level': conf.CONFIGURATION.general.logging_level_int,
             },
             # 'discord': {
             #     'handlers': ['default'],

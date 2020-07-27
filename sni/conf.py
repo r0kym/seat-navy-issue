@@ -3,6 +3,7 @@ Configuration facility
 """
 
 from enum import Enum
+import logging
 from pathlib import Path
 from typing import Union
 from ipaddress import IPv4Address, IPv6Address
@@ -98,6 +99,19 @@ class GeneralConfig(pdt.BaseModel):
     port: int = 80
     root_url: pdt.HttpUrl
     scheduler_thread_count: int = 5
+
+    @property
+    def logging_level_int(self) -> int:
+        """
+        Returns the int equivalent of the ``logging_level`` field.
+        """
+        return {
+            GeneralConfig.LoggingLevel.CRITICAL: logging.CRITICAL,
+            GeneralConfig.LoggingLevel.DEBUG: logging.DEBUG,
+            GeneralConfig.LoggingLevel.ERROR: logging.ERROR,
+            GeneralConfig.LoggingLevel.INFO: logging.INFO,
+            GeneralConfig.LoggingLevel.WARNING: logging.WARNING,
+        }[self.logging_level]
 
 
 class JWTConfig(pdt.BaseModel):
