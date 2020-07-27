@@ -821,6 +821,13 @@ to be the owner of the group.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.api.routers.system.get_configuration">
+<code class="sig-prename descclassname">sni.api.routers.system.</code><code class="sig-name descname">get_configuration</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/system.html#get_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.system.get_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the configuration of the SNI instance. Secrets are redacted. Requires
+a clearance of 10.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.api.routers.system.get_jobs">
 <code class="sig-prename descclassname">sni.api.routers.system.</code><code class="sig-name descname">get_jobs</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/system.html#get_jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.system.get_jobs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the currently scheduled job list. Requires a clearance level of 10.</p>
