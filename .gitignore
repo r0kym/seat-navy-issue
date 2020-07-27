@@ -1,6 +1,7 @@
 # Stuff
 docs/*.png
 docs/command-line-args.txt
+docs/configuration.json
 # docs/openapi.yml
 sde.sqlite
 
