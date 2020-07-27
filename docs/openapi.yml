@@ -397,19 +397,19 @@ components:
         invalid_refresh_token:
           default: []
           items:
-            type: integer
+            $ref: '#/components/schemas/GetUserShortOut'
           title: Invalid Refresh Token
           type: array
         no_refresh_token:
           default: []
           items:
-            type: integer
+            $ref: '#/components/schemas/GetUserShortOut'
           title: No Refresh Token
           type: array
         valid_refresh_token:
           default: []
           items:
-            type: integer
+            $ref: '#/components/schemas/GetUserShortOut'
           title: Valid Refresh Token
           type: array
       title: GetTrackingOut

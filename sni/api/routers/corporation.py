@@ -16,6 +16,8 @@ from sni.uac.token import (
 from sni.user.models import Corporation, User
 from sni.user.user import ensure_corporation
 
+from .user import GetUserShortOut
+
 router = APIRouter()
 
 
@@ -42,9 +44,9 @@ class GetTrackingOut(pdt.BaseModel):
     """
     Represents a corporation tracking response.
     """
-    invalid_refresh_token: List[int] = []
-    no_refresh_token: List[int] = []
-    valid_refresh_token: List[int] = []
+    invalid_refresh_token: List[GetUserShortOut] = []
+    no_refresh_token: List[GetUserShortOut] = []
+    valid_refresh_token: List[GetUserShortOut] = []
 
     @staticmethod
     def from_user_iterator(iterator: Iterator[User]) -> 'GetTrackingOut':
@@ -53,7 +55,7 @@ class GetTrackingOut(pdt.BaseModel):
         :meth:`sni.esi.token.tracking_status`
         """
         result = GetTrackingOut()
-        ldict: Dict[int, List[int]] = {
+        ldict: Dict[int, List[GetUserShortOut]] = {
             TrackingStatus.HAS_NO_REFRESH_TOKEN: result.no_refresh_token,
             TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN:
             result.invalid_refresh_token,
@@ -62,7 +64,7 @@ class GetTrackingOut(pdt.BaseModel):
         }
         for usr in iterator:
             status = tracking_status(usr)
-            ldict[status].append(usr.character_id)
+            ldict[status].append(GetUserShortOut.from_record(usr))
         return result
 
 

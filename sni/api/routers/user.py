@@ -31,6 +31,17 @@ class GetUserShortOut(pdt.BaseModel):
     character_id: int
     character_name: str
 
+    @staticmethod
+    def from_record(usr: User) -> 'GetUserShortOut':
+        """
+        Converts a :class:`sni.user.models.User` to a
+        :class:`sni.api.routers.user.GetUserShortOut`
+        """
+        return GetUserShortOut(
+            character_id=usr.character_id,
+            character_name=usr.character_name,
+        )
+
 
 class GetUserOut(pdt.BaseModel):
     """
@@ -97,12 +108,7 @@ def get_user(tkn: Token = Depends(from_authotization_header_nondyn)):
     more.
     """
     assert_has_clearance(tkn.owner, 'sni.read_user')
-    return [
-        GetUserShortOut(
-            character_id=usr.character_id,
-            character_name=usr.character_name,
-        ) for usr in User.objects()
-    ]
+    return [GetUserShortOut.from_record(usr) for usr in User.objects()]
 
 
 @router.delete(
