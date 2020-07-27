@@ -1,0 +1,430 @@
+{
+    "title": "Config",
+    "description": "SNI configuration model",
+    "type": "object",
+    "properties": {
+        "database": {
+            "title": "Database",
+            "description": "Database configuration document.",
+            "default": {
+                "authentication_source": "admin",
+                "database": "sni",
+                "host": "mongo",
+                "password": "",
+                "port": 27017,
+                "username": "sni"
+            },
+            "env_names": [
+                "database"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/DatabaseConfig"
+                }
+            ]
+        },
+        "discord": {
+            "title": "Discord",
+            "description": "Discord configuration document.",
+            "default": {
+                "auth_channel_id": 0,
+                "enabled": false,
+                "log_channel_id": 0,
+                "server_id": 0,
+                "token": ""
+            },
+            "env_names": [
+                "discord"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/DiscordConfig"
+                }
+            ]
+        },
+        "esi": {
+            "title": "Esi",
+            "description": "ESI configuration document.",
+            "default": {
+                "client_id": "",
+                "client_secret": ""
+            },
+            "env_names": [
+                "esi"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ESIConfig"
+                }
+            ]
+        },
+        "general": {
+            "title": "General",
+            "description": "General configuration document.",
+            "default": {
+                "debug": false,
+                "host": "0.0.0.0",
+                "logging_level": "info",
+                "port": 80,
+                "root_url": "https://foo.bar",
+                "scheduler_thread_count": 5
+            },
+            "env_names": [
+                "general"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/GeneralConfig"
+                }
+            ]
+        },
+        "jwt": {
+            "title": "Jwt",
+            "description": "JWT configuration document.",
+            "default": {
+                "algorithm": "HS256",
+                "secret": ""
+            },
+            "env_names": [
+                "jwt"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/JWTConfig"
+                }
+            ]
+        },
+        "redis": {
+            "title": "Redis",
+            "description": "Redis configuration document.",
+            "default": {
+                "database": 0,
+                "host": "redis",
+                "port": 6379
+            },
+            "env_names": [
+                "redis"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/RedisConfig"
+                }
+            ]
+        },
+        "teamspeak": {
+            "title": "Teamspeak",
+            "description": "Teamspeak configuration document.",
+            "default": {
+                "auth_group_name": "SNI TS AUTH",
+                "bot_name": "SeAT Navy Issue",
+                "enabled": false,
+                "host": "",
+                "password": "",
+                "port": 10011,
+                "server_id": 0,
+                "username": "sni"
+            },
+            "env_names": [
+                "teamspeak"
+            ],
+            "allOf": [
+                {
+                    "$ref": "#/definitions/TeamspeakConfig"
+                }
+            ]
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "DatabaseConfig": {
+            "title": "DatabaseConfig",
+            "description": "Database configuration model",
+            "type": "object",
+            "properties": {
+                "authentication_source": {
+                    "title": "Authentication Source",
+                    "description": "The database in which the user belongs.",
+                    "default": "admin",
+                    "type": "string"
+                },
+                "database": {
+                    "title": "Database",
+                    "description": "Database name.",
+                    "default": "sni",
+                    "type": "string"
+                },
+                "host": {
+                    "title": "Host",
+                    "description": "Database hostname.",
+                    "default": "mongo",
+                    "type": "string"
+                },
+                "password": {
+                    "title": "Password",
+                    "description": "Password.",
+                    "default": "",
+                    "type": "string",
+                    "writeOnly": true,
+                    "format": "password"
+                },
+                "port": {
+                    "title": "Port",
+                    "description": "Database port.",
+                    "default": 27017,
+                    "minimum": 0,
+                    "maximum": 65535,
+                    "type": "integer"
+                },
+                "username": {
+                    "title": "Username",
+                    "description": "Username.",
+                    "default": "sni",
+                    "type": "string"
+                }
+            }
+        },
+        "DiscordConfig": {
+            "title": "DiscordConfig",
+            "description": "Discord configuration model",
+            "type": "object",
+            "properties": {
+                "auth_channel_id": {
+                    "title": "Auth Channel Id",
+                    "description": "Authentication channel ID. This is where users will start authentication challenges. Only required if ``discord.enable`` is set to ``True``.",
+                    "default": 0,
+                    "type": "integer"
+                },
+                "enabled": {
+                    "title": "Enabled",
+                    "description": "Wether to activate the Discord connector.",
+                    "default": false,
+                    "type": "boolean"
+                },
+                "log_channel_id": {
+                    "title": "Log Channel Id",
+                    "description": "Logging channel ID. This is where the Discorb bot will log events. Only required if ``discord.enable`` is set to ``True``.",
+                    "default": 0,
+                    "type": "integer"
+                },
+                "server_id": {
+                    "title": "Server Id",
+                    "description": "Discord server (or guild) ID.",
+                    "default": 0,
+                    "type": "integer"
+                },
+                "token": {
+                    "title": "Token",
+                    "description": "Discord bot token. Only required if ``discord.enable`` is set to ``True``.",
+                    "default": "",
+                    "type": "string",
+                    "writeOnly": true,
+                    "format": "password"
+                }
+            }
+        },
+        "ESIConfig": {
+            "title": "ESIConfig",
+            "description": "ESI configuration model",
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "title": "Client Id",
+                    "description": "ESI client ID.",
+                    "default": "",
+                    "type": "string",
+                    "writeOnly": true,
+                    "format": "password"
+                },
+                "client_secret": {
+                    "title": "Client Secret",
+                    "description": "ESI client secret.",
+                    "default": "",
+                    "type": "string",
+                    "writeOnly": true,
+                    "format": "password"
+                }
+            }
+        },
+        "LoggingLevel": {
+            "title": "LoggingLevel",
+            "description": "Acceptable logging levels",
+            "enum": [
+                "critical",
+                "debug",
+                "error",
+                "info",
+                "warning"
+            ],
+            "type": "string"
+        },
+        "GeneralConfig": {
+            "title": "GeneralConfig",
+            "description": "General configuration model",
+            "type": "object",
+            "properties": {
+                "debug": {
+                    "title": "Debug",
+                    "description": "Wether SNI should run in debug mode. In this mode, logging is more verbose, and potentially exposes secrets. Do not use in a production environment.",
+                    "default": false,
+                    "type": "boolean"
+                },
+                "host": {
+                    "title": "Host",
+                    "description": "IP address at which SNI should listen for incoming connections.",
+                    "default": "0.0.0.0",
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "format": "ipv4"
+                        },
+                        {
+                            "type": "string",
+                            "format": "ipv6"
+                        }
+                    ]
+                },
+                "logging_level": {
+                    "$ref": "#/definitions/LoggingLevel"
+                },
+                "port": {
+                    "title": "Port",
+                    "description": "Port at which SNI should listen for incoming connections.",
+                    "default": 80,
+                    "minimum": 0,
+                    "maximum": 65535,
+                    "type": "integer"
+                },
+                "root_url": {
+                    "title": "Root Url",
+                    "description": "URL at which this SNI instance is located. The ESI callback should then be ``<root_url>/callback/esi``.",
+                    "default": "https://foo.bar",
+                    "minLength": 1,
+                    "maxLength": 2083,
+                    "format": "uri",
+                    "type": "string"
+                },
+                "scheduler_thread_count": {
+                    "title": "Scheduler Thread Count",
+                    "description": "Number of threads available to the scheduler.",
+                    "default": 5,
+                    "minimum": 1,
+                    "type": "integer"
+                }
+            }
+        },
+        "JWTAlgorithm": {
+            "title": "JWTAlgorithm",
+            "description": "Acceptable JWT algorithms, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.",
+            "enum": [
+                "HS256",
+                "HS384",
+                "HS512"
+            ],
+            "type": "string"
+        },
+        "JWTConfig": {
+            "title": "JWTConfig",
+            "description": "JWT configuration model",
+            "type": "object",
+            "properties": {
+                "algorithm": {
+                    "$ref": "#/definitions/JWTAlgorithm"
+                },
+                "secret": {
+                    "title": "Secret",
+                    "description": "JWT secret. Generate one with ``openssl rand -hex 32``.",
+                    "default": "",
+                    "type": "string",
+                    "writeOnly": true,
+                    "format": "password"
+                }
+            }
+        },
+        "RedisConfig": {
+            "title": "RedisConfig",
+            "description": "Redis configuration model",
+            "type": "object",
+            "properties": {
+                "database": {
+                    "title": "Database",
+                    "description": "Redis database to use.",
+                    "default": 0,
+                    "type": "integer"
+                },
+                "host": {
+                    "title": "Host",
+                    "description": "Redis hostname.",
+                    "default": "redis",
+                    "type": "string"
+                },
+                "port": {
+                    "title": "Port",
+                    "description": "Redis port.",
+                    "default": 6379,
+                    "minimum": 0,
+                    "maximum": 65535,
+                    "type": "integer"
+                }
+            }
+        },
+        "TeamspeakConfig": {
+            "title": "TeamspeakConfig",
+            "description": "Teamspeak configuration model",
+            "type": "object",
+            "properties": {
+                "auth_group_name": {
+                    "title": "Auth Group Name",
+                    "description": "Name of the auth group. Authenticated Teamspeak users are automatically added to this group. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": "SNI TS AUTH",
+                    "type": "string"
+                },
+                "bot_name": {
+                    "title": "Bot Name",
+                    "description": "Name of the Teamspeak bot. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": "SeAT Navy Issue",
+                    "type": "string"
+                },
+                "enabled": {
+                    "title": "Enabled",
+                    "description": "Wether to activate the Teamspeak connector.",
+                    "default": false,
+                    "type": "boolean"
+                },
+                "host": {
+                    "title": "Host",
+                    "description": "Name, hostname, or IP address of the Teamspeak server. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": "",
+                    "type": "string"
+                },
+                "password": {
+                    "title": "Password",
+                    "description": "Query server password. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": "",
+                    "type": "string",
+                    "writeOnly": true,
+                    "format": "password"
+                },
+                "port": {
+                    "title": "Port",
+                    "description": "Port of the query server associated to the Teamspeak server. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": 10011,
+                    "minimum": 0,
+                    "maximum": 65535,
+                    "type": "integer"
+                },
+                "server_id": {
+                    "title": "Server Id",
+                    "description": "Teamspeak server ID. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": 0,
+                    "type": "integer"
+                },
+                "username": {
+                    "title": "Username",
+                    "description": "Query server username. Only required if ``teamspeak.enable`` is set to ``True``.",
+                    "default": "sni",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -4,6 +4,7 @@ plantuml
 pylint
 pylint-mongoengine
 sphinx
+sphinx-jsonschema
 sphinxcontrib-napoleon
 sphinxcontrib-openapi
 yapf

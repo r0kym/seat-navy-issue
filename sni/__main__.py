@@ -12,7 +12,8 @@ import logging.config
 import sys
 
 from sni.utils import callable_from_name
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
+from sni.conf import load_configuration_file
 
 
 def connect_database_signals() -> None:
@@ -28,10 +29,10 @@ def connect_database_signals() -> None:
     import sni.user.signals
     import sni.api.signals
 
-    if conf.CONFIGURATION.discord.enabled:
+    if conf.discord.enabled:
         import sni.discord.signals
 
-    if conf.CONFIGURATION.teamspeak.enabled:
+    if conf.teamspeak.enabled:
         import sni.teamspeak.signals
 
 
@@ -57,7 +58,7 @@ def configure_logging() -> None:
         'loggers': {
             '': {
                 'handlers': ['default'],
-                'level': conf.CONFIGURATION.general.logging_level_int,
+                'level': conf.general.logging_level_int,
             },
             # 'discord': {
             #     'handlers': ['default'],
@@ -95,11 +96,11 @@ def migrate_database() -> None:
     import sni.api.migration
     sni.api.migration.migrate()
 
-    if conf.CONFIGURATION.discord.enabled:
+    if conf.discord.enabled:
         import sni.discord.migration
         sni.discord.migration.migrate()
 
-    if conf.CONFIGURATION.teamspeak.enabled:
+    if conf.teamspeak.enabled:
         import sni.teamspeak.migration
         sni.teamspeak.migration.migrate()
 
@@ -114,6 +115,12 @@ def main():
     # --------------------------------------------------------------------------
 
     arguments = parse_command_line_arguments()
+
+    if arguments.print_configuration_spec:
+        from sni.conf import print_configuration_schema
+        print_configuration_schema()
+        sys.exit()
+
     conf.load_configuration_file(arguments.file)
     configure_logging()
 
@@ -165,7 +172,7 @@ def main():
     # Pre API server start
     # --------------------------------------------------------------------------
 
-    if conf.CONFIGURATION.discord.enabled:
+    if conf.discord.enabled:
         start_discord_bot()
 
     # --------------------------------------------------------------------------
@@ -212,6 +219,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help='Runs database migration jobs and exits',
     )
     argument_parser.add_argument(
+        '--print-configuration-spec',
+        action='store_true',
+        default=False,
+        help='Prints the configuration file specification in JSON and exits',
+    )
+    argument_parser.add_argument(
         '--print-openapi-spec',
         action='store_true',
         default=False,
@@ -251,10 +264,10 @@ def schedule_jobs() -> None:
     import sni.index.jobs
     import sni.api.jobs
 
-    if conf.CONFIGURATION.teamspeak.enabled:
+    if conf.teamspeak.enabled:
         import sni.teamspeak.jobs
 
-    if conf.CONFIGURATION.discord.enabled:
+    if conf.discord.enabled:
         import sni.discord.jobs
 
 

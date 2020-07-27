@@ -16,6 +16,10 @@ bandit:
 command-line-args:
 	$(SNI) --help > $(SPHINX_PATH)/command-line-args.txt
 
+.PHONY: configuration-spec
+configuration-spec:
+	$(SNI) --print-configuration-spec > $(SPHINX_PATH)/configuration.json
+
 .PHONY: docs
 docs: docs_uml command-line-args  # openapi-spec
 	sphinx-build -b html $(SPHINX_PATH)/ $(SPHINX_PATH)/_build
