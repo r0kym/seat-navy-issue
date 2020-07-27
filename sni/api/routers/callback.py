@@ -3,9 +3,14 @@ Callback paths
 """
 
 import logging
+from typing import List
 
-from fastapi import APIRouter, HTTPException, status
-from fastapi.responses import PlainTextResponse, RedirectResponse
+from fastapi import APIRouter, status
+from fastapi.responses import (
+    HTMLResponse,
+    PlainTextResponse,
+    RedirectResponse,
+)
 import requests
 
 from sni.user.models import User
@@ -20,6 +25,68 @@ from sni.uac.token import create_user_token, StateCode, to_jwt
 from sni.uac.uac import is_authorized_to_login
 
 router = APIRouter()
+
+
+def token_manipulation_error_response() -> HTMLResponse:
+    """
+    Returns an HTML response explaing that the instance ran in an ESI token
+    manipulation error.
+    """
+    return HTMLResponse(
+        content='''<h1>ESI token manipulation error</h1>
+<p>Sorry, something went wrong while manipulating your ESI token. It could be a
+temporary outage of the EVE API, or a bug in SeAT Navy Issue.</p>
+<p>If the problem persists, please contact the instance administrator.</p>''',
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    )
+
+
+def not_authorized_to_login_response(character_name: str,
+                                     character_id: int) -> HTMLResponse:
+    """
+    Returns an HTML response explaing that the user is not allowed to login on
+    this instance.
+    """
+    return HTMLResponse(
+        content=f'''<h1>Not authorized to login</h1>
+<p>Character <strong>{character_name}</strong> ({character_id}) is not allowed
+to login. Please contact the instance administrator.</p>
+''',
+        status_code=status.HTTP_401_UNAUTHORIZED,
+    )
+
+
+def string_list_to_html(string_list: List[str]) -> str:
+    """
+    Converts a string list to an HTML bullet list.
+    """
+    if not string_list:
+        return '<p>None</p>'
+    item_list = [f'<li><code>{item}</code></li>' for item in string_list]
+    return '<ul>' + ''.join(item_list) + '</ul>'
+
+
+def not_enough_scopes_response(
+    character_name: str,
+    character_id: int,
+    required_scopes: List[str],
+    provided_scopes: List[str],
+) -> HTMLResponse:
+    """
+    Returns an HTML response explaing that the user did not provide enough ESI
+    scopes.
+    """
+    return HTMLResponse(
+        content=f'''<h1>Not enough ESI scopes</h1>
+<p>The ESI token does not provide enough scopes for character
+<strong>{character_name}</strong> ({character_id}):</p>
+<h3>Required</h3>
+{string_list_to_html(required_scopes)}
+<h3>Provided</h3>
+{string_list_to_html(provided_scopes)}
+''',
+        status_code=status.HTTP_401_UNAUTHORIZED,
+    )
 
 
 @router.get(
@@ -47,24 +114,18 @@ async def get_callback_esi(code: str, state: str):
         access_token = decode_access_token(esi_response.access_token)
         save_esi_tokens(esi_response)
     except EsiTokenError:
-        raise HTTPException(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail='ESI token manipulation error',
-        )
+        return token_manipulation_error_response()
 
     usr: User = User.objects.get(character_id=access_token.character_id)
     if not is_authorized_to_login(usr):
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
-            detail=(f'Character {usr.character_name} ({usr.character_id}) '
-                    'is not allowed to login.'),
-        )
+        return not_authorized_to_login_response(usr.character_name,
+                                                usr.character_id)
     if not token_has_enough_scopes(access_token, usr):
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
-            detail=(f'Insufficient scopes for character {usr.character_name} '
-                    f'({usr.character_id}). Require at least: ' +
-                    ', '.join(list(usr.cumulated_mandatory_esi_scopes()))),
+        return not_enough_scopes_response(
+            usr.character_name,
+            usr.character_id,
+            list(usr.cumulated_mandatory_esi_scopes()),
+            access_token.scp,
         )
 
     user_token = create_user_token(state_code.app_token, usr)

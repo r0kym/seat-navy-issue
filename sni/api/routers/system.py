@@ -66,8 +66,7 @@ class GetJobOut(pdt.BaseModel):
     summary='Gets active configuration',
 )
 def get_configuration(
-    tkn: Token = Depends(from_authotization_header_nondyn),
-):
+        tkn: Token = Depends(from_authotization_header_nondyn), ):
     """
     Gets the configuration of the SNI instance. Secrets are redacted. Requires
     a clearance of 10.
