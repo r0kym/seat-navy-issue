@@ -121,7 +121,7 @@ def main():
         print_configuration_schema()
         sys.exit()
 
-    conf.load_configuration_file(arguments.file)
+    load_configuration_file(arguments.file)
     configure_logging()
 
     # --------------------------------------------------------------------------

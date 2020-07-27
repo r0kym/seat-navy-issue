@@ -14,6 +14,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.conf import CONFIGURATION, Config
 from sni.scheduler import scheduler
 from sni.uac.token import (
     from_authotization_header_nondyn,
@@ -57,6 +58,22 @@ class GetJobOut(pdt.BaseModel):
             next_run_time=job.next_run_time,
             trigger=str(job.trigger),
         )
+
+
+@router.get(
+    '/configuration',
+    response_model=Config,
+    summary='Gets active configuration',
+)
+def get_configuration(
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Gets the configuration of the SNI instance. Secrets are redacted. Requires
+    a clearance of 10.
+    """
+    assert_has_clearance(tkn.owner, 'sni.system.read_configuration')
+    return CONFIGURATION
 
 
 @router.get(

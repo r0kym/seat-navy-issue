@@ -1,5 +1,178 @@
 components:
   schemas:
+    Config:
+      additionalProperties: false
+      description: SNI configuration model
+      properties:
+        database:
+          allOf:
+          - $ref: '#/components/schemas/DatabaseConfig'
+          default:
+            authentication_source: admin
+            database: sni
+            host: mongo
+            password: ''
+            port: 27017
+            username: sni
+          description: Database configuration document.
+          title: Database
+        discord:
+          allOf:
+          - $ref: '#/components/schemas/DiscordConfig'
+          default:
+            auth_channel_id: 0
+            enabled: false
+            log_channel_id: 0
+            server_id: 0
+            token: ''
+          description: Discord configuration document.
+          title: Discord
+        esi:
+          allOf:
+          - $ref: '#/components/schemas/ESIConfig'
+          default:
+            client_id: ''
+            client_secret: ''
+          description: ESI configuration document.
+          title: Esi
+        general:
+          allOf:
+          - $ref: '#/components/schemas/GeneralConfig'
+          default:
+            debug: false
+            host: 0.0.0.0
+            logging_level: info
+            port: 80
+            root_url: https://foo.bar
+            scheduler_thread_count: 5
+          description: General configuration document.
+          title: General
+        jwt:
+          allOf:
+          - $ref: '#/components/schemas/JWTConfig'
+          default:
+            algorithm: HS256
+            secret: ''
+          description: JWT configuration document.
+          title: Jwt
+        redis:
+          allOf:
+          - $ref: '#/components/schemas/RedisConfig'
+          default:
+            database: 0
+            host: redis
+            port: 6379
+          description: Redis configuration document.
+          title: Redis
+        teamspeak:
+          allOf:
+          - $ref: '#/components/schemas/TeamspeakConfig'
+          default:
+            auth_group_name: SNI TS AUTH
+            bot_name: SeAT Navy Issue
+            enabled: false
+            host: ''
+            password: ''
+            port: 10011
+            server_id: 0
+            username: sni
+          description: Teamspeak configuration document.
+          title: Teamspeak
+      title: Config
+      type: object
+    DatabaseConfig:
+      description: Database configuration model
+      properties:
+        authentication_source:
+          default: admin
+          description: The database in which the user belongs.
+          title: Authentication Source
+          type: string
+        database:
+          default: sni
+          description: Database name.
+          title: Database
+          type: string
+        host:
+          default: mongo
+          description: Database hostname.
+          title: Host
+          type: string
+        password:
+          default: ''
+          description: Password.
+          format: password
+          title: Password
+          type: string
+          writeOnly: true
+        port:
+          default: 27017
+          description: Database port.
+          maximum: 65535.0
+          minimum: 0.0
+          title: Port
+          type: integer
+        username:
+          default: sni
+          description: Username.
+          title: Username
+          type: string
+      title: DatabaseConfig
+      type: object
+    DiscordConfig:
+      description: Discord configuration model
+      properties:
+        auth_channel_id:
+          default: 0
+          description: Authentication channel ID. This is where users will start authentication
+            challenges. Only required if ``discord.enable`` is set to ``True``.
+          title: Auth Channel Id
+          type: integer
+        enabled:
+          default: false
+          description: Wether to activate the Discord connector.
+          title: Enabled
+          type: boolean
+        log_channel_id:
+          default: 0
+          description: Logging channel ID. This is where the Discorb bot will log
+            events. Only required if ``discord.enable`` is set to ``True``.
+          title: Log Channel Id
+          type: integer
+        server_id:
+          default: 0
+          description: Discord server (or guild) ID.
+          title: Server Id
+          type: integer
+        token:
+          default: ''
+          description: Discord bot token. Only required if ``discord.enable`` is set
+            to ``True``.
+          format: password
+          title: Token
+          type: string
+          writeOnly: true
+      title: DiscordConfig
+      type: object
+    ESIConfig:
+      description: ESI configuration model
+      properties:
+        client_id:
+          default: ''
+          description: ESI client ID.
+          format: password
+          title: Client Id
+          type: string
+          writeOnly: true
+        client_secret:
+          default: ''
+          description: ESI client secret.
+          format: password
+          title: Client Secret
+          type: string
+          writeOnly: true
+      title: ESIConfig
+      type: object
     EsiRequestIn:
       description: Data to be forwarded to the ESI
       properties:
@@ -39,6 +212,51 @@ components:
       required:
       - status_code
       title: EsiResponse
+      type: object
+    GeneralConfig:
+      description: General configuration model
+      properties:
+        debug:
+          default: false
+          description: Wether SNI should run in debug mode. In this mode, logging
+            is more verbose, and potentially exposes secrets. Do not use in a production
+            environment.
+          title: Debug
+          type: boolean
+        host:
+          anyOf:
+          - format: ipv4
+            type: string
+          - format: ipv6
+            type: string
+          default: 0.0.0.0
+          description: IP address at which SNI should listen for incoming connections.
+          title: Host
+        logging_level:
+          $ref: '#/components/schemas/LoggingLevel'
+        port:
+          default: 80
+          description: Port at which SNI should listen for incoming connections.
+          maximum: 65535.0
+          minimum: 0.0
+          title: Port
+          type: integer
+        root_url:
+          default: https://foo.bar
+          description: URL at which this SNI instance is located. The ESI callback
+            should then be ``<root_url>/callback/esi``.
+          format: uri
+          maxLength: 2083
+          minLength: 1
+          title: Root Url
+          type: string
+        scheduler_thread_count:
+          default: 5
+          description: Number of threads available to the scheduler.
+          minimum: 1.0
+          title: Scheduler Thread Count
+          type: integer
+      title: GeneralConfig
       type: object
     GetAllianceShortOut:
       description: Short alliance description
@@ -504,6 +722,38 @@ components:
           type: array
       title: HTTPValidationError
       type: object
+    JWTAlgorithm:
+      description: Acceptable JWT algorithms, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
+      enum:
+      - HS256
+      - HS384
+      - HS512
+      title: JWTAlgorithm
+      type: string
+    JWTConfig:
+      description: JWT configuration model
+      properties:
+        algorithm:
+          $ref: '#/components/schemas/JWTAlgorithm'
+        secret:
+          default: ''
+          description: JWT secret. Generate one with ``openssl rand -hex 32``.
+          format: password
+          title: Secret
+          type: string
+          writeOnly: true
+      title: JWTConfig
+      type: object
+    LoggingLevel:
+      description: Acceptable logging levels
+      enum:
+      - critical
+      - debug
+      - error
+      - info
+      - warning
+      title: LoggingLevel
+      type: string
     PostCoalitionIn:
       description: Model for `POST /coalition` responses.
       properties:
@@ -690,6 +940,84 @@ components:
           title: Clearance Level
           type: integer
       title: PutUserIn
+      type: object
+    RedisConfig:
+      description: Redis configuration model
+      properties:
+        database:
+          default: 0
+          description: Redis database to use.
+          title: Database
+          type: integer
+        host:
+          default: redis
+          description: Redis hostname.
+          title: Host
+          type: string
+        port:
+          default: 6379
+          description: Redis port.
+          maximum: 65535.0
+          minimum: 0.0
+          title: Port
+          type: integer
+      title: RedisConfig
+      type: object
+    TeamspeakConfig:
+      description: Teamspeak configuration model
+      properties:
+        auth_group_name:
+          default: SNI TS AUTH
+          description: Name of the auth group. Authenticated Teamspeak users are automatically
+            added to this group. Only required if ``teamspeak.enable`` is set to ``True``.
+          title: Auth Group Name
+          type: string
+        bot_name:
+          default: SeAT Navy Issue
+          description: Name of the Teamspeak bot. Only required if ``teamspeak.enable``
+            is set to ``True``.
+          title: Bot Name
+          type: string
+        enabled:
+          default: false
+          description: Wether to activate the Teamspeak connector.
+          title: Enabled
+          type: boolean
+        host:
+          default: ''
+          description: Name, hostname, or IP address of the Teamspeak server. Only
+            required if ``teamspeak.enable`` is set to ``True``.
+          title: Host
+          type: string
+        password:
+          default: ''
+          description: Query server password. Only required if ``teamspeak.enable``
+            is set to ``True``.
+          format: password
+          title: Password
+          type: string
+          writeOnly: true
+        port:
+          default: 10011
+          description: Port of the query server associated to the Teamspeak server.
+            Only required if ``teamspeak.enable`` is set to ``True``.
+          maximum: 65535.0
+          minimum: 0.0
+          title: Port
+          type: integer
+        server_id:
+          default: 0
+          description: Teamspeak server ID. Only required if ``teamspeak.enable``
+            is set to ``True``.
+          title: Server Id
+          type: integer
+        username:
+          default: sni
+          description: Query server username. Only required if ``teamspeak.enable``
+            is set to ``True``.
+          title: Username
+          type: string
+      title: TeamspeakConfig
       type: object
     TokenType:
       description: Enumeration containing the various token types.
@@ -1583,6 +1911,36 @@ paths:
       summary: Replies "pong"
       tags:
       - Testing
+  /system/configuration:
+    get:
+      description: 'Gets the configuration of the SNI instance. Secrets are redacted.
+        Requires
+
+        a clearance of 10.'
+      operationId: get_configuration_system_configuration_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Gets active configuration
+      tags:
+      - System administration
   /system/job:
     get:
       description: Gets the currently scheduled job list. Requires a clearance level
