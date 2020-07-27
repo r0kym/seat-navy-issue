@@ -52,7 +52,7 @@
 <span class="kn">import</span> <span class="nn">pymongo</span>
 <span class="kn">import</span> <span class="nn">pymongo.collection</span>
 
-<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 
 
 <div class="viewcode-block" id="init_mongodb"><a class="viewcode-back" href="../../../db.html#sni.db.mongodb.init_mongodb">[docs]</a><span class="k">def</span> <span class="nf">init_mongodb</span><span class="p">():</span>
@@ -62,15 +62,15 @@
 <span class="sd">    Does not return anything. Any call to ``mongoengine`` will act on that</span>
 <span class="sd">    connection. It&#39;s magic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting to database </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">),</span>
-                 <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting to database </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                 <span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
     <span class="n">me</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">),</span>
-        <span class="n">authentication_source</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">),</span>
-        <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">),</span>
-        <span class="n">password</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">),</span>
-        <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">),</span>
-        <span class="n">username</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">),</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">database</span><span class="p">,</span>
+        <span class="n">authentication_source</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">authentication_source</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+        <span class="n">password</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
+        <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -83,7 +83,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">new_pymongo_client</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">client</span><span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">)][</span><span class="n">collection_name</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">client</span><span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">database</span><span class="p">][</span><span class="n">collection_name</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="new_pymongo_client"><a class="viewcode-back" href="../../../db.html#sni.db.mongodb.new_pymongo_client">[docs]</a><span class="k">def</span> <span class="nf">new_pymongo_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
@@ -94,11 +94,11 @@
 <span class="sd">        `pymongo.mongo_client.MongoClient documentation</span>
 <span class="sd">        &lt;https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">authentication_database</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">)</span>
-    <span class="n">host</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">)</span>
-    <span class="n">password</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">))</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">)</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">))</span>
+    <span class="n">authentication_database</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">authentication_source</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">host</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">port</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
     <span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mongodb://</span><span class="si">{username}</span><span class="s1">:</span><span class="si">{password}</span><span class="s1">@</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">/&#39;</span> <span class="o">+</span> \
         <span class="sa">f</span><span class="s1">&#39;?authSource=</span><span class="si">{authentication_database}</span><span class="s1">&#39;</span>
     <span class="k">return</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></div>

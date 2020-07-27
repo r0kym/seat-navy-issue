@@ -68,7 +68,18 @@
 <span class="sd">    Model for an element of ``GET /user`` response</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="GetUserShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.GetUserShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetUserShortOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.user.models.User` to a</span>
+<span class="sd">        :class:`sni.api.routers.user.GetUserShortOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetUserShortOut</span><span class="p">(</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="GetUserOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.GetUserOut">[docs]</a><span class="k">class</span> <span class="nc">GetUserOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -100,7 +111,7 @@
             <span class="n">alliance</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span>
                       <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
             <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
-            <span class="n">available_esi_scopes</span><span class="o">=</span><span class="n">available_esi_scopes</span><span class="p">(</span><span class="n">usr</span><span class="p">),</span>
+            <span class="n">available_esi_scopes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">available_esi_scopes</span><span class="p">(</span><span class="n">usr</span><span class="p">)),</span>
             <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
             <span class="n">clearance_level</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
@@ -108,8 +119,8 @@
             <span class="n">corporation</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span>
                          <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
             <span class="n">created_on</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
-            <span class="n">cumulated_mandatory_esi_scopes</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">(</span>
-            <span class="p">),</span>
+            <span class="n">cumulated_mandatory_esi_scopes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span>
+                <span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()),</span>
             <span class="n">is_ceo_of_alliance</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_alliance</span><span class="p">(),</span>
             <span class="n">is_ceo_of_corporation</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">(),</span>
             <span class="n">tickered_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">,</span>
@@ -136,12 +147,7 @@
 <span class="sd">    more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_user&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span>
-        <span class="n">GetUserShortOut</span><span class="p">(</span>
-            <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-        <span class="p">)</span> <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span>
-    <span class="p">]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span> <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">()]</span></div>
 
 
 <div class="viewcode-block" id="delete_user"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.delete_user">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>

@@ -48,96 +48,14 @@
 <div class="section" id="reference">
 <span id="id1"></span><h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
 <p>The configuration file is in <a class="reference external" href="https://yaml.org/">YAML</a> format, and named
-<code class="docutils literal notranslate"><span class="pre">sni.yml</span></code> by default.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">database</span></code></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">authentication_source</span></code> (default: <code class="docutils literal notranslate"><span class="pre">admin</span></code>). If the user is specific
-to the database (e.g. user <code class="docutils literal notranslate"><span class="pre">sni</span></code> belongs to database <code class="docutils literal notranslate"><span class="pre">sni</span></code>), then you
-should change this to the name of the database (in this case, <code class="docutils literal notranslate"><span class="pre">sni</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">27017</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">discord</span></code></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">auth_channel_id</span></code>: Authentication channel id. The bot will listen for
-<code class="docutils literal notranslate"><span class="pre">!auth</span></code> commands from this channel.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">log_channel_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">null</span></code>): Channel id where the Discorb bot
-can send log messages.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">server_id</span></code>: Server on which the bot is operating.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">token</span></code></p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">esi</span></code>: Create an application at the
-<a class="reference external" href="https://developers.eveonline.com/">EVE Developer Portal</a></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">client_id</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">client_secret</span></code></p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">general</span></code></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>): Sets the app in debug mode.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>): API server host.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">logging_level</span></code> (default: <code class="docutils literal notranslate"><span class="pre">info</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">80</span></code>): API server port.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">root_url</span></code>: HTTP URL at which the API root is located (e.g.
-<code class="docutils literal notranslate"><span class="pre">https://example.com/sni</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scheduler_thread_count</span></code> (default: <code class="docutils literal notranslate"><span class="pre">5</span></code>)</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">jwt</span></code></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (default: <code class="docutils literal notranslate"><span class="pre">HS256</span></code>): A <code class="docutils literal notranslate"><span class="pre">pyjwt</span></code> supported algorithm, see
-<a class="reference external" href="https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms">here</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">secret</span></code>: Application secret. Generate with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">rand</span> <span class="pre">-hex</span> <span class="pre">32</span></code>.</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">redis</span></code></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">database</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">6379</span></code>).</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">teamspeak</span></code></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">auth_group_name</span></code> (default: <code class="docutils literal notranslate"><span class="pre">SNI</span> <span class="pre">TS</span> <span class="pre">AUTH</span></code>): Name of the auth
-group; teamspeak users authenticated through SNI are automatically added
-to this group.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bot_name</span></code> (default: <code class="docutils literal notranslate"><span class="pre">SeAT</span> <span class="pre">Navy</span> <span class="pre">Issue</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> (default: <code class="docutils literal notranslate"><span class="pre">10011</span></code>): The query server port! Not the port used
-by clients.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">server_id</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code> (default: <code class="docutils literal notranslate"><span class="pre">sni</span></code>)</p></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
+<code class="docutils literal notranslate"><span class="pre">sni.yml</span></code> by default. It follows the following schema:</p>
+<table class="docutils align-default">
+<tbody>
+</tbody>
+</table>
 </div>
 <div class="section" id="example">
-<span id="configuration-file-reference-example"></span><h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">database</span><span class="p">:</span>
     <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mongodb</span>
     <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">snipassword</span>

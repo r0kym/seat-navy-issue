@@ -50,7 +50,7 @@
 <span class="kn">import</span> <span class="nn">jwt.exceptions</span> <span class="k">as</span> <span class="nn">jwt_exceptions</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
-<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">StateCode</span><span class="p">,</span> <span class="n">Token</span>
@@ -228,9 +228,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
         <span class="n">token_str</span><span class="p">,</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
-        <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
-        <span class="n">issuer</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">jwt</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">jwt</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
+        <span class="n">issuer</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">root_url</span><span class="p">,</span>
         <span class="n">verify_exp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">verify_iss</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -245,7 +245,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;iat&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">created_on</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
-        <span class="s1">&#39;iss&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;iss&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">root_url</span><span class="p">,</span>
         <span class="s1">&#39;jti&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
         <span class="s1">&#39;nbf&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">created_on</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
         <span class="s1">&#39;own&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
@@ -255,8 +255,8 @@
         <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;exp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">expires_on</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
         <span class="n">payload</span><span class="p">,</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">),</span>
-        <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">),</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">jwt</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">jwt</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 </pre></div>
 

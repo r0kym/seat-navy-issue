@@ -51,7 +51,8 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">callable_from_name</span>
-<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">load_configuration_file</span>
 
 
 <div class="viewcode-block" id="connect_database_signals"><a class="viewcode-back" href="../../sni.html#sni.__main__.connect_database_signals">[docs]</a><span class="k">def</span> <span class="nf">connect_database_signals</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -67,10 +68,10 @@
     <span class="kn">import</span> <span class="nn">sni.user.signals</span>
     <span class="kn">import</span> <span class="nn">sni.api.signals</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.discord.signals</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.teamspeak.signals</span></div>
 
 
@@ -78,13 +79,6 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic configuration of the logging facility</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging_level</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;CRITICAL&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
-        <span class="s1">&#39;DEBUG&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-        <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
-        <span class="s1">&#39;INFO&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-        <span class="s1">&#39;WARNING&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
-    <span class="p">}[</span><span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.logging_level&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">({</span>
         <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -103,7 +97,7 @@
         <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">logging_level</span><span class="p">,</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level_int</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="c1"># &#39;discord&#39;: {</span>
             <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
@@ -141,11 +135,11 @@
     <span class="kn">import</span> <span class="nn">sni.api.migration</span>
     <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.discord.migration</span>
         <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.teamspeak.migration</span>
         <span class="n">sni</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span></div>
 
@@ -160,6 +154,12 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="n">arguments</span> <span class="o">=</span> <span class="n">parse_command_line_arguments</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_configuration_spec</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">print_configuration_schema</span>
+        <span class="n">print_configuration_schema</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
     <span class="n">conf</span><span class="o">.</span><span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
     <span class="n">configure_logging</span><span class="p">()</span>
 
@@ -211,7 +211,7 @@
     <span class="c1"># Pre API server start</span>
     <span class="c1"># --------------------------------------------------------------------------</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="n">start_discord_bot</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -258,6 +258,12 @@
         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Runs database migration jobs and exits&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--print-configuration-spec&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Prints the configuration file specification in JSON and exits&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--print-openapi-spec&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -297,10 +303,10 @@
     <span class="kn">import</span> <span class="nn">sni.index.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.api.jobs</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.discord.jobs</span></div>
 
 

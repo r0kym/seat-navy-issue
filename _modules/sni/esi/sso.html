@@ -52,7 +52,7 @@
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 
 
 <div class="viewcode-block" id="AuthorizationCodeResponse"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.AuthorizationCodeResponse">[docs]</a><span class="k">class</span> <span class="nc">AuthorizationCodeResponse</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -149,8 +149,8 @@
             <span class="s1">&#39;Scope list cannot be empty, replaced by [</span><span class="se">\&#39;</span><span class="s1">publicData</span><span class="se">\&#39;</span><span class="s1">]&#39;</span><span class="p">)</span>
         <span class="n">esi_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;publicData&#39;</span><span class="p">]</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;esi.client_id&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;redirect_uri&#39;</span><span class="p">:</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">),</span> <span class="s1">&#39;/callback/esi&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_id</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
+        <span class="s1">&#39;redirect_uri&#39;</span><span class="p">:</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">root_url</span><span class="p">,</span> <span class="s1">&#39;/callback/esi&#39;</span><span class="p">),</span>
         <span class="s1">&#39;response_type&#39;</span><span class="p">:</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span>
         <span class="s1">&#39;scope&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">esi_scopes</span><span class="p">),</span>
         <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
@@ -176,8 +176,8 @@
 <span class="sd">        urlsafe_b64encode(&#39;&lt;client_id&gt;:&lt;client_secret&gt;&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">authorization</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;esi.client_id&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;esi.client_secret&#39;</span><span class="p">))</span>
+    <span class="n">authorization</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_id</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_secret</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="n">authorization</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 
 

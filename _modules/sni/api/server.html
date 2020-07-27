@@ -49,7 +49,7 @@
 <span class="kn">import</span> <span class="nn">uvicorn</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.alliance</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_alliance</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.callback</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_callback</span>
 <span class="kn">from</span> <span class="nn">sni.api.routers.coalition</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_coalition</span>
@@ -93,7 +93,7 @@
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Crash reports&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
-<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">sni.api.routers.discord</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_discord</span>
     <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
         <span class="n">router_discord</span><span class="p">,</span>
@@ -113,7 +113,7 @@
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Group management&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 
-<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">sni.api.routers.teamspeak</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">router_teamspeak</span>
     <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
         <span class="n">router_teamspeak</span><span class="p">,</span>
@@ -160,7 +160,6 @@
 <span class="sd">    Starts the API server for real. See</span>
 <span class="sd">    :meth:`sni.api.server.start_api_server`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">log_level</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.logging_level&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">log_config</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -192,30 +191,30 @@
         <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
             <span class="p">},</span>
             <span class="s1">&#39;uvicorn.error&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
             <span class="p">},</span>
             <span class="s1">&#39;uvicorn.access&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span>
+                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
                 <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">},</span>
     <span class="p">}</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;Starting API server on </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">),</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="s1">&#39;sni.api.server:app&#39;</span><span class="p">,</span>
-            <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">),</span>
+            <span class="n">host</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">),</span>
             <span class="n">log_config</span><span class="o">=</span><span class="n">log_config</span><span class="p">,</span>
-            <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
-            <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">),</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API server stopped&#39;</span><span class="p">)</span></div>

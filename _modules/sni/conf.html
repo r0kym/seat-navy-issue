@@ -41,132 +41,366 @@
 <span class="sd">Configuration facility</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">ipaddress</span> <span class="kn">import</span> <span class="n">IPv4Address</span><span class="p">,</span> <span class="n">IPv6Address</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">yaml</span>
-
-<span class="n">CONFIGURATION</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;database.authentication_source&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;database.database&#39;</span><span class="p">:</span> <span class="s1">&#39;sni&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;database.port&#39;</span><span class="p">:</span> <span class="mi">27017</span><span class="p">,</span>
-    <span class="s1">&#39;database.username&#39;</span><span class="p">:</span> <span class="s1">&#39;sni&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;discord.enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="s1">&#39;discord.log_channel_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="s1">&#39;general.debug&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="s1">&#39;general.host&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;general.logging_level&#39;</span><span class="p">:</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;general.port&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-    <span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">:</span> <span class="s1">&#39;HS256&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;redis.database&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">&#39;redis.port&#39;</span><span class="p">:</span> <span class="mi">6379</span><span class="p">,</span>
-    <span class="s1">&#39;teamspeak.auth_group_name&#39;</span><span class="p">:</span> <span class="s1">&#39;SNI TS AUTH&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">:</span> <span class="s1">&#39;SeAT Navy Issue&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="s1">&#39;teamspeak.port&#39;</span><span class="p">:</span> <span class="mi">10011</span><span class="p">,</span>
-    <span class="s1">&#39;teamspeak.server_id&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">&#39;teamspeak.username&#39;</span><span class="p">:</span> <span class="s1">&#39;sni&#39;</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
+<span class="kn">from</span> <span class="nn">pydantic_loader.yaml_config</span> <span class="kn">import</span> <span class="n">load_yaml</span>
 
 
-<div class="viewcode-block" id="assert_is_set"><a class="viewcode-back" href="../../sni.html#sni.conf.assert_is_set">[docs]</a><span class="k">def</span> <span class="nf">assert_is_set</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="DatabaseConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.DatabaseConfig">[docs]</a><span class="k">class</span> <span class="nc">DatabaseConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raises an exception if the configuration dict does not have that key.</span>
+<span class="sd">    Database configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">CONFIGURATION</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Configuration key </span><span class="si">{key}</span><span class="s1"> not set&#39;</span><span class="p">)</span></div>
+    <span class="n">authentication_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The database in which the user belongs.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">database</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sni&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database name.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;mongo&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database hostname.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">password</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Password.&#39;</span><span class="p">)</span>
+
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database port.&#39;</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sni&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Username.&#39;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DiscordConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.DiscordConfig">[docs]</a><span class="k">class</span> <span class="nc">DiscordConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Discord configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">auth_channel_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Authentication channel ID. This is where users will start &#39;</span>
+            <span class="s1">&#39;authentication challenges. Only required if ``discord.enable`` &#39;</span>
+            <span class="s1">&#39;is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Wether to activate the Discord connector.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">log_channel_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Logging channel ID. This is where the Discorb bot will log &#39;</span>
+            <span class="s1">&#39;events. Only required if ``discord.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">server_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Discord server (or guild) ID.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">token</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Discord bot token. Only required if ``discord.enable`` is set to &#39;</span>
+            <span class="s1">&#39;``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ESIConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.ESIConfig">[docs]</a><span class="k">class</span> <span class="nc">ESIConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ESI configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client_id</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ESI client ID.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">client_secret</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ESI client secret.&#39;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GeneralConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.GeneralConfig">[docs]</a><span class="k">class</span> <span class="nc">GeneralConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    General configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GeneralConfig.LoggingLevel"><a class="viewcode-back" href="../../sni.html#sni.conf.GeneralConfig.LoggingLevel">[docs]</a>    <span class="k">class</span> <span class="nc">LoggingLevel</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Acceptable logging levels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CRITICAL</span> <span class="o">=</span> <span class="s1">&#39;critical&#39;</span>
+        <span class="n">DEBUG</span> <span class="o">=</span> <span class="s1">&#39;debug&#39;</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span>
+        <span class="n">INFO</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
+        <span class="n">WARNING</span> <span class="o">=</span> <span class="s1">&#39;warning&#39;</span></div>
+
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Wether SNI should run in debug mode. In this mode, logging is &#39;</span>
+            <span class="s1">&#39;more verbose, and potentially exposes secrets. Do not use in a &#39;</span>
+            <span class="s1">&#39;production environment.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">host</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IPv4Address</span><span class="p">,</span> <span class="n">IPv6Address</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">IPv4Address</span><span class="p">(</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;IP address at which SNI should listen for incoming connections.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">logging_level</span><span class="p">:</span> <span class="n">LoggingLevel</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Logging level.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Port at which SNI should listen for incoming connections.&#39;</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">root_url</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">HttpUrl</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;https://foo.bar&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;URL at which this SNI instance is located. The ESI callback &#39;</span>
+            <span class="s1">&#39;should then be ``&lt;root_url&gt;/callback/esi``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">scheduler_thread_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Number of threads available to the scheduler.&#39;</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">logging_level_int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the int equivalent of the ``logging_level`` field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">GeneralConfig</span><span class="o">.</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
+            <span class="n">GeneralConfig</span><span class="o">.</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+            <span class="n">GeneralConfig</span><span class="o">.</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+            <span class="n">GeneralConfig</span><span class="o">.</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+            <span class="n">GeneralConfig</span><span class="o">.</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+        <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">logging_level</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="JWTConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.JWTConfig">[docs]</a><span class="k">class</span> <span class="nc">JWTConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    JWT configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="JWTConfig.JWTAlgorithm"><a class="viewcode-back" href="../../sni.html#sni.conf.JWTConfig.JWTAlgorithm">[docs]</a>    <span class="k">class</span> <span class="nc">JWTAlgorithm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Acceptable JWT algorithms, see `here &lt;https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms&gt;`_.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">HS256</span> <span class="o">=</span> <span class="s1">&#39;HS256&#39;</span>
+        <span class="sd">&quot;&quot;&quot;HMAC using SHA-256 hash algorithm (default)&quot;&quot;&quot;</span>
+
+        <span class="n">HS384</span> <span class="o">=</span> <span class="s1">&#39;HS384&#39;</span>
+        <span class="sd">&quot;&quot;&quot;HMAC using SHA-384 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="n">HS512</span> <span class="o">=</span> <span class="s1">&#39;HS512&#39;</span>
+        <span class="sd">&quot;&quot;&quot;HMAC using SHA-512 hash algorithm&quot;&quot;&quot;</span></div>
+
+        <span class="c1"># ES256 = &#39;ES256&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;ECDSA signature algorithm using SHA-256 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="c1"># ES384 = &#39;ES384&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;ECDSA signature algorithm using SHA-384 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="c1"># ES512 = &#39;ES512&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;ECDSA signature algorithm using SHA-512 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="c1"># RS256 = &#39;RS256&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;RSASSA-PKCS1-v1_5 signature algorithm using SHA-256 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="c1"># RS384 = &#39;RS384&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;RSASSA-PKCS1-v1_5 signature algorithm using SHA-384 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="c1"># RS512 = &#39;RS512&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;RSASSA-PKCS1-v1_5 signature algorithm using SHA-512 hash algorithm&quot;&quot;&quot;</span>
+
+        <span class="c1"># PS256 = &#39;PS256&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;RSASSA-PSS signature using SHA-256 and MGF1 padding with SHA-256&quot;&quot;&quot;</span>
+
+        <span class="c1"># PS384 = &#39;PS384&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;RSASSA-PSS signature using SHA-384 and MGF1 padding with SHA-384&quot;&quot;&quot;</span>
+
+        <span class="c1"># PS512 = &#39;PS512&#39;</span>
+        <span class="c1"># &quot;&quot;&quot;RSASSA-PSS signature using SHA-512 and MGF1 padding with SHA-512&quot;&quot;&quot;</span>
+
+    <span class="n">algorithm</span><span class="p">:</span> <span class="n">JWTAlgorithm</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">JWTAlgorithm</span><span class="o">.</span><span class="n">HS256</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;JWT algorithm. For now, only symmetric cryptography algorithms &#39;</span>
+            <span class="s1">&#39;are supported.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">secret</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretBytes</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;JWT secret. Generate one with ``openssl rand -hex 32``.&#39;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RedisConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.RedisConfig">[docs]</a><span class="k">class</span> <span class="nc">RedisConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Redis configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">database</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis database to use.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis hostname.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis port.&#39;</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TeamspeakConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.TeamspeakConfig">[docs]</a><span class="k">class</span> <span class="nc">TeamspeakConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Teamspeak configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">auth_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SNI TS AUTH&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Name of the auth group. Authenticated Teamspeak users are &#39;</span>
+            <span class="s1">&#39;automatically added to this group. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">bot_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Name of the Teamspeak bot. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Wether to activate the Teamspeak connector.&#39;</span><span class="p">)</span>
+
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Name, hostname, or IP address of the Teamspeak server. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">password</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Query server password. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">10011</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Port of the query server associated to the Teamspeak server. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">server_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Teamspeak server ID. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sni&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;Query server username. &#39;</span>
+            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../sni.html#sni.conf.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseSettings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SNI configuration model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">database</span><span class="p">:</span> <span class="n">DatabaseConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">DatabaseConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">discord</span><span class="p">:</span> <span class="n">DiscordConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">DiscordConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Discord configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">esi</span><span class="p">:</span> <span class="n">ESIConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">ESIConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ESI configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">general</span><span class="p">:</span> <span class="n">GeneralConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">GeneralConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;General configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">jwt</span><span class="p">:</span> <span class="n">JWTConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">JWTConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;JWT configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">redis</span><span class="p">:</span> <span class="n">RedisConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">RedisConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">teamspeak</span><span class="p">:</span> <span class="n">TeamspeakConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">TeamspeakConfig</span><span class="p">(),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Teamspeak configuration document.&#39;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<span class="n">CONFIGURATION</span><span class="p">:</span> <span class="n">Config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="load_configuration_file"><a class="viewcode-back" href="../../sni.html#sni.conf.load_configuration_file">[docs]</a><span class="k">def</span> <span class="nf">load_configuration_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads the configuration from a YAML file.</span>
-
-<span class="sd">    Also sets default values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">file_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
     <span class="k">global</span> <span class="n">CONFIGURATION</span>
-    <span class="n">CONFIGURATION</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">file_config</span><span class="p">))</span>
-    <span class="n">CONFIGURATION</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="p">{})</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.authentication_source&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.database&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.host&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.password&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.port&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;database.username&#39;</span><span class="p">)</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">get</span><span class="p">(</span><span class="s1">&#39;discord.enabled&#39;</span><span class="p">):</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.auth_channel_id&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.log_channel_id&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.server_id&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;discord.token&#39;</span><span class="p">)</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;esi.client_id&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;esi.client_secret&#39;</span><span class="p">)</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.debug&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.host&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.logging_level&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.port&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.root_url&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;general.scheduler_thread_count&#39;</span><span class="p">)</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;jwt.algorithm&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;jwt.secret&#39;</span><span class="p">)</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.database&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.host&#39;</span><span class="p">)</span>
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;redis.port&#39;</span><span class="p">)</span>
-
-    <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">):</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.auth_group_name&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.enabled&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.host&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.password&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.port&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.server_id&#39;</span><span class="p">)</span>
-        <span class="n">assert_is_set</span><span class="p">(</span><span class="s1">&#39;teamspeak.username&#39;</span><span class="p">)</span></div>
+    <span class="n">CONFIGURATION</span> <span class="o">=</span> <span class="n">load_yaml</span><span class="p">(</span><span class="n">Config</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../sni.html#sni.conf.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-                 <span class="n">parent_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                 <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="print_configuration_schema"><a class="viewcode-back" href="../../sni.html#sni.conf.print_configuration_schema">[docs]</a><span class="k">def</span> <span class="nf">print_configuration_schema</span><span class="p">(</span><span class="n">indentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Flattens a dictionnary.</span>
-
-<span class="sd">    `Credits to Imran &lt;https://stackoverflow.com/a/6027615&gt;`_.</span>
-
-<span class="sd">    &gt;&gt;&gt; flatten_dict({</span>
-<span class="sd">        &#39;a&#39;: 1, &#39;c&#39;: {&#39;a&#39;: 2, &#39;b&#39;: {&#39;x&#39;: 5, &#39;y&#39; : 10}},</span>
-<span class="sd">        &#39;d&#39;: [1, 2, 3],</span>
-<span class="sd">    })</span>
-<span class="sd">    {&#39;a&#39;: 1, &#39;c_a&#39;: 2, &#39;c_b_x&#39;: 5, &#39;d&#39;: [1, 2, 3], &#39;c_b_y&#39;: 10}</span>
-
+<span class="sd">    Prints the JSON schema of :class:`sni.conf.Config`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">nested_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">new_key</span> <span class="o">=</span> <span class="n">parent_key</span> <span class="o">+</span> <span class="n">separator</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">parent_key</span> <span class="k">else</span> <span class="n">key</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
-            <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">new_key</span><span class="p">,</span> <span class="n">separator</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">new_key</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../sni.html#sni.conf.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Gets a config value from a key.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">CONFIGURATION</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">CONFIGURATION</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unknown configuration key </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">default</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">schema_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="n">indentation</span><span class="p">))</span></div>
 </pre></div>
 
           </div>

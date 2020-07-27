@@ -188,6 +188,28 @@
         <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="update_corporation_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_from_esi">[docs]</a><span class="k">def</span> <span class="nf">update_corporation_from_esi</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates a corporation from the ESI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating properties of corporation </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;alliance_id&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;alliance_id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ceo_id&#39;</span><span class="p">]</span>
+    <span class="n">corporation</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_corporations_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporations_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update_corporations_from_esi</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the corporations properties from the ESI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+
+
 <div class="viewcode-block" id="ensure_corporation_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporation_members">[docs]</a><span class="k">def</span> <span class="nf">ensure_corporation_members</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensure that all members of a corporation exist in the database.</span>

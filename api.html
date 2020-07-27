@@ -513,17 +513,17 @@ more.</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.corporation.GetTrackingOut.invalid_refresh_token">
-<code class="sig-name descname">invalid_refresh_token</code><em class="property">: List[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.invalid_refresh_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">invalid_refresh_token</code><em class="property">: List[GetUserShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.invalid_refresh_token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.api.routers.corporation.GetTrackingOut.no_refresh_token">
-<code class="sig-name descname">no_refresh_token</code><em class="property">: List[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.no_refresh_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">no_refresh_token</code><em class="property">: List[GetUserShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.no_refresh_token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.api.routers.corporation.GetTrackingOut.valid_refresh_token">
-<code class="sig-name descname">valid_refresh_token</code><em class="property">: List[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.valid_refresh_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">valid_refresh_token</code><em class="property">: List[GetUserShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetTrackingOut.valid_refresh_token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1175,6 +1175,13 @@ contained in a user database record.</p>
 <dt id="sni.api.routers.user.GetUserShortOut.character_name">
 <code class="sig-name descname">character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.user.GetUserShortOut.character_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.user.GetUserShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.user.GetUserShortOut<a class="reference internal" href="_modules/sni/api/routers/user.html#GetUserShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.user.GetUserShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="user.html#sni.user.models.User" title="sni.user.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.User</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.user.GetUserShortOut" title="sni.api.routers.user.GetUserShortOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.user.GetUserShortOut</span></code></a></p>
+</dd></dl>
 
 </dd></dl>
 

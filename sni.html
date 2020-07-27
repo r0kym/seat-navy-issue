@@ -100,37 +100,330 @@ corrects the Discord command and event handlers.</p>
 <div class="section" id="module-sni.conf">
 <span id="configuration-module"></span><h2>Configuration module<a class="headerlink" href="#module-sni.conf" title="Permalink to this headline">¶</a></h2>
 <p>Configuration facility</p>
-<dl class="function">
-<dt id="sni.conf.assert_is_set">
-<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">assert_is_set</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#assert_is_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.assert_is_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raises an exception if the configuration dict does not have that key.</p>
+<dl class="class">
+<dt id="sni.conf.Config">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">Config</code><a class="reference internal" href="_modules/sni/conf.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.env_settings.BaseSettings</span></code></p>
+<p>SNI configuration model</p>
+<dl class="attribute">
+<dt id="sni.conf.Config.database">
+<code class="sig-name descname">database</code><em class="property">: DatabaseConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.Config.discord">
+<code class="sig-name descname">discord</code><em class="property">: DiscordConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.discord" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.Config.esi">
+<code class="sig-name descname">esi</code><em class="property">: ESIConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.esi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.Config.general">
+<code class="sig-name descname">general</code><em class="property">: GeneralConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.general" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.Config.jwt">
+<code class="sig-name descname">jwt</code><em class="property">: JWTConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.jwt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.Config.redis">
+<code class="sig-name descname">redis</code><em class="property">: RedisConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.redis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.Config.teamspeak">
+<code class="sig-name descname">teamspeak</code><em class="property">: TeamspeakConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.teamspeak" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-<dl class="function">
-<dt id="sni.conf.flatten_dict">
-<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">flatten_dict</code><span class="sig-paren">(</span><em class="sig-param">nested_dict: MutableMapping[Any, Any], parent_key: str = '', separator: str = '.'</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/sni/conf.html#flatten_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.flatten_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flattens a dictionnary.</p>
-<p><a class="reference external" href="https://stackoverflow.com/a/6027615">Credits to Imran</a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flatten_dict</span><span class="p">({</span>
-<span class="go">    &#39;a&#39;: 1, &#39;c&#39;: {&#39;a&#39;: 2, &#39;b&#39;: {&#39;x&#39;: 5, &#39;y&#39; : 10}},</span>
-<span class="go">    &#39;d&#39;: [1, 2, 3],</span>
-<span class="go">})</span>
-<span class="go">{&#39;a&#39;: 1, &#39;c_a&#39;: 2, &#39;c_b_x&#39;: 5, &#39;d&#39;: [1, 2, 3], &#39;c_b_y&#39;: 10}</span>
-</pre></div>
-</div>
+<dl class="class">
+<dt id="sni.conf.DatabaseConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">DatabaseConfig</code><a class="reference internal" href="_modules/sni/conf.html#DatabaseConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.DatabaseConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Database configuration model</p>
+<dl class="attribute">
+<dt id="sni.conf.DatabaseConfig.authentication_source">
+<code class="sig-name descname">authentication_source</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DatabaseConfig.authentication_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DatabaseConfig.database">
+<code class="sig-name descname">database</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DatabaseConfig.database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DatabaseConfig.host">
+<code class="sig-name descname">host</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DatabaseConfig.host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DatabaseConfig.password">
+<code class="sig-name descname">password</code><em class="property">: pdt.SecretStr</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DatabaseConfig.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DatabaseConfig.port">
+<code class="sig-name descname">port</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DatabaseConfig.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DatabaseConfig.username">
+<code class="sig-name descname">username</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DatabaseConfig.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-<dl class="function">
-<dt id="sni.conf.get">
-<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">default: Any = None</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/sni/conf.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a config value from a key.</p>
+<dl class="class">
+<dt id="sni.conf.DiscordConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">DiscordConfig</code><a class="reference internal" href="_modules/sni/conf.html#DiscordConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.DiscordConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Discord configuration model</p>
+<dl class="attribute">
+<dt id="sni.conf.DiscordConfig.auth_channel_id">
+<code class="sig-name descname">auth_channel_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DiscordConfig.auth_channel_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DiscordConfig.enabled">
+<code class="sig-name descname">enabled</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DiscordConfig.enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DiscordConfig.log_channel_id">
+<code class="sig-name descname">log_channel_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DiscordConfig.log_channel_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DiscordConfig.server_id">
+<code class="sig-name descname">server_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DiscordConfig.server_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.DiscordConfig.token">
+<code class="sig-name descname">token</code><em class="property">: pdt.SecretStr</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.DiscordConfig.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.conf.ESIConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">ESIConfig</code><a class="reference internal" href="_modules/sni/conf.html#ESIConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.ESIConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>ESI configuration model</p>
+<dl class="attribute">
+<dt id="sni.conf.ESIConfig.client_id">
+<code class="sig-name descname">client_id</code><em class="property">: pdt.SecretStr</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.ESIConfig.client_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.ESIConfig.client_secret">
+<code class="sig-name descname">client_secret</code><em class="property">: pdt.SecretStr</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.ESIConfig.client_secret" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.conf.GeneralConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">GeneralConfig</code><a class="reference internal" href="_modules/sni/conf.html#GeneralConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.GeneralConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>General configuration model</p>
+<dl class="class">
+<dt id="sni.conf.GeneralConfig.LoggingLevel">
+<em class="property">class </em><code class="sig-name descname">LoggingLevel</code><a class="reference internal" href="_modules/sni/conf.html#GeneralConfig.LoggingLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.GeneralConfig.LoggingLevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Acceptable logging levels</p>
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.LoggingLevel.CRITICAL">
+<code class="sig-name descname">CRITICAL</code><em class="property"> = 'critical'</em><a class="headerlink" href="#sni.conf.GeneralConfig.LoggingLevel.CRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.LoggingLevel.DEBUG">
+<code class="sig-name descname">DEBUG</code><em class="property"> = 'debug'</em><a class="headerlink" href="#sni.conf.GeneralConfig.LoggingLevel.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.LoggingLevel.ERROR">
+<code class="sig-name descname">ERROR</code><em class="property"> = 'error'</em><a class="headerlink" href="#sni.conf.GeneralConfig.LoggingLevel.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.LoggingLevel.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = 'info'</em><a class="headerlink" href="#sni.conf.GeneralConfig.LoggingLevel.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.LoggingLevel.WARNING">
+<code class="sig-name descname">WARNING</code><em class="property"> = 'warning'</em><a class="headerlink" href="#sni.conf.GeneralConfig.LoggingLevel.WARNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.debug">
+<code class="sig-name descname">debug</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.debug" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.host">
+<code class="sig-name descname">host</code><em class="property">: Union[IPv4Address, IPv6Address]</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.logging_level">
+<code class="sig-name descname">logging_level</code><em class="property">: LoggingLevel</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.logging_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.conf.GeneralConfig.logging_level_int">
+<em class="property">property </em><code class="sig-name descname">logging_level_int</code><a class="headerlink" href="#sni.conf.GeneralConfig.logging_level_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the int equivalent of the <code class="docutils literal notranslate"><span class="pre">logging_level</span></code> field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.port">
+<code class="sig-name descname">port</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.root_url">
+<code class="sig-name descname">root_url</code><em class="property">: pdt.HttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.root_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.GeneralConfig.scheduler_thread_count">
+<code class="sig-name descname">scheduler_thread_count</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.scheduler_thread_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.conf.JWTConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">JWTConfig</code><a class="reference internal" href="_modules/sni/conf.html#JWTConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.JWTConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>JWT configuration model</p>
+<dl class="class">
+<dt id="sni.conf.JWTConfig.JWTAlgorithm">
+<em class="property">class </em><code class="sig-name descname">JWTAlgorithm</code><a class="reference internal" href="_modules/sni/conf.html#JWTConfig.JWTAlgorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.JWTConfig.JWTAlgorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Acceptable JWT algorithms, see <a class="reference external" href="https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms">here</a>.</p>
+<dl class="attribute">
+<dt id="sni.conf.JWTConfig.JWTAlgorithm.HS256">
+<code class="sig-name descname">HS256</code><em class="property"> = 'HS256'</em><a class="headerlink" href="#sni.conf.JWTConfig.JWTAlgorithm.HS256" title="Permalink to this definition">¶</a></dt>
+<dd><p>HMAC using SHA-256 hash algorithm (default)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.JWTConfig.JWTAlgorithm.HS384">
+<code class="sig-name descname">HS384</code><em class="property"> = 'HS384'</em><a class="headerlink" href="#sni.conf.JWTConfig.JWTAlgorithm.HS384" title="Permalink to this definition">¶</a></dt>
+<dd><p>HMAC using SHA-384 hash algorithm</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.JWTConfig.JWTAlgorithm.HS512">
+<code class="sig-name descname">HS512</code><em class="property"> = 'HS512'</em><a class="headerlink" href="#sni.conf.JWTConfig.JWTAlgorithm.HS512" title="Permalink to this definition">¶</a></dt>
+<dd><p>HMAC using SHA-512 hash algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.JWTConfig.algorithm">
+<code class="sig-name descname">algorithm</code><em class="property">: JWTAlgorithm</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.JWTConfig.algorithm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.JWTConfig.secret">
+<code class="sig-name descname">secret</code><em class="property">: pdt.SecretBytes</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.JWTConfig.secret" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.conf.RedisConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">RedisConfig</code><a class="reference internal" href="_modules/sni/conf.html#RedisConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.RedisConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Redis configuration model</p>
+<dl class="attribute">
+<dt id="sni.conf.RedisConfig.database">
+<code class="sig-name descname">database</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.RedisConfig.database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.RedisConfig.host">
+<code class="sig-name descname">host</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.RedisConfig.host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.RedisConfig.port">
+<code class="sig-name descname">port</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.RedisConfig.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.conf.TeamspeakConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">TeamspeakConfig</code><a class="reference internal" href="_modules/sni/conf.html#TeamspeakConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.TeamspeakConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Teamspeak configuration model</p>
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.auth_group_name">
+<code class="sig-name descname">auth_group_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.auth_group_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.bot_name">
+<code class="sig-name descname">bot_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.bot_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.enabled">
+<code class="sig-name descname">enabled</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.host">
+<code class="sig-name descname">host</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.password">
+<code class="sig-name descname">password</code><em class="property">: pdt.SecretStr</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.port">
+<code class="sig-name descname">port</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.server_id">
+<code class="sig-name descname">server_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.server_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.TeamspeakConfig.username">
+<code class="sig-name descname">username</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.TeamspeakConfig.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.conf.load_configuration_file">
 <code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">load_configuration_file</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#load_configuration_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.load_configuration_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the configuration from a YAML file.</p>
-<p>Also sets default values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.conf.print_configuration_schema">
+<code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">print_configuration_schema</code><span class="sig-paren">(</span><em class="sig-param">indentation: Optional[int] = 4</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/conf.html#print_configuration_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.print_configuration_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the JSON schema of <a class="reference internal" href="#sni.conf.Config" title="sni.conf.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.conf.Config</span></code></a></p>
 </dd></dl>
 
 </div>

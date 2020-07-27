@@ -55,6 +55,8 @@
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Corporation</span><span class="p">,</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_corporation</span>
 
+<span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">GetUserShortOut</span>
+
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
 
@@ -81,9 +83,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a corporation tracking response.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">invalid_refresh_token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">no_refresh_token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">valid_refresh_token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">invalid_refresh_token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">no_refresh_token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">valid_refresh_token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="GetTrackingOut.from_user_iterator"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.GetTrackingOut.from_user_iterator">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_user_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetTrackingOut&#39;</span><span class="p">:</span>
@@ -92,7 +94,7 @@
 <span class="sd">        :meth:`sni.esi.token.tracking_status`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">GetTrackingOut</span><span class="p">()</span>
-        <span class="n">ldict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">ldict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">TrackingStatus</span><span class="o">.</span><span class="n">HAS_NO_REFRESH_TOKEN</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">no_refresh_token</span><span class="p">,</span>
             <span class="n">TrackingStatus</span><span class="o">.</span><span class="n">ONLY_HAS_INVALID_REFRESH_TOKEN</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">invalid_refresh_token</span><span class="p">,</span>
@@ -101,7 +103,7 @@
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="n">tracking_status</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span>
-            <span class="n">ldict</span><span class="p">[</span><span class="n">status</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
+            <span class="n">ldict</span><span class="p">[</span><span class="n">status</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span></div></div>
 
 

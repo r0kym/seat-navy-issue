@@ -48,7 +48,7 @@
 
 <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">User</span>
-<span class="kn">import</span> <span class="nn">sni.conf</span> <span class="k">as</span> <span class="nn">conf</span>
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="kn">from</span> <span class="nn">.teamspeak</span> <span class="kn">import</span> <span class="p">(</span>
@@ -67,7 +67,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">new_teamspeak_connection</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">ts_client</span> <span class="ow">in</span> <span class="n">client_list</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span> <span class="o">==</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamspeak.bot_name&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ts_client</span><span class="o">.</span><span class="n">client_nickname</span> <span class="o">==</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">bot_name</span><span class="p">:</span>
             <span class="c1"># TS client is the bot</span>
             <span class="k">continue</span>
         <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
