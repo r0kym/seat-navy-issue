@@ -2,129 +2,171 @@
 Configuration facility
 """
 
-import collections
-from typing import Any, Dict, List, MutableMapping, Tuple
-import logging
+from enum import Enum
+from pathlib import Path
+from typing import Union
+from ipaddress import IPv4Address, IPv6Address
 
-import yaml
+import pydantic as pdt
+from pydantic_loader.yaml_config import load_yaml
 
-CONFIGURATION: Dict[str, Any] = {
-    'database.authentication_source': 'admin',
-    'database.database': 'sni',
-    'database.port': 27017,
-    'database.username': 'sni',
-    'discord.enabled': False,
-    'discord.log_channel_id': None,
-    'general.debug': False,
-    'general.host': '0.0.0.0',
-    'general.logging_level': 'info',
-    'general.port': 80,
-    'general.scheduler_thread_count': 5,
-    'jwt.algorithm': 'HS256',
-    'redis.database': 0,
-    'redis.port': 6379,
-    'teamspeak.auth_group_name': 'SNI TS AUTH',
-    'teamspeak.bot_name': 'SeAT Navy Issue',
-    'teamspeak.enabled': False,
-    'teamspeak.port': 10011,
-    'teamspeak.server_id': 0,
-    'teamspeak.username': 'sni',
-}
+IPAddress = Union[IPv4Address, IPv6Address]
+
+# class PortNumber(int):
+#     """
+#     A pydantic-compatible port number
+#     """
+
+#     @classmethod
+#     def __get_validators__(cls):
+#         """
+#         See `pydantic Custom Data Types <https://pydantic-docs.helpmanual.io/usage/types/#custom-data-types>`_
+#         """
+#         yield cls.validate
+
+#     @classmethod
+#     def __modify_schema__(cls, field_schema: dict) -> None:
+#         """
+#         See `pydantic Custom Data Types <https://pydantic-docs.helpmanual.io/usage/types/#custom-data-types>`_
+#         """
+#         field_schema.update(
+#             title='Port number',
+#             examples=['80', '9000'],
+#         )
+
+#     @classmethod
+#     def validate(cls, value: Any) -> 'PortNumber':
+#         """
+#         Validates the value. yep
+#         """
+#         if not isinstance(value, (int, str)):
+#             raise TypeError('int or str required')
+#         value = int(value)
+#         if not 0 <= value <= 65535:
+#             raise ValueError('Invalid port number (must be between 0 and 65535)')
+#         return PortNumber(value)
 
 
-def assert_is_set(key: str) -> None:
+class DatabaseConfig(pdt.BaseModel):
     """
-    Raises an exception if the configuration dict does not have that key.
+    Database configuration model
     """
-    if key not in CONFIGURATION:
-        raise RuntimeError(f'Configuration key {key} not set')
+    authentication_source: str = 'admin'
+    database: str = 'sni'
+    host: str
+    password: pdt.SecretStr
+    port: int = 27017
+    username: str = 'sni'
+
+
+class DiscordConfig(pdt.BaseModel):
+    """
+    Discord configuration model
+    """
+    auth_channel_id: int = -1
+    enabled: bool = False
+    log_channel_id: int = -1
+    server_id: int = -1
+    token: pdt.SecretStr = pdt.SecretStr('')
+
+
+class ESIConfig(pdt.BaseModel):
+    """
+    ESI configuration model
+    """
+    client_id: pdt.SecretStr
+    client_secret: pdt.SecretStr
+
+
+class GeneralConfig(pdt.BaseModel):
+    """
+    General configuration model
+    """
+    class LoggingLevel(str, Enum):
+        """
+        Acceptable logging levels
+        """
+        CRITICAL = 'critical'
+        DEBUG = 'debug'
+        ERROR = 'error'
+        INFO = 'info'
+        WARNING = 'warning'
+
+    debug: bool = False
+    host: IPAddress = IPv4Address('0.0.0.0')
+    logging_level: LoggingLevel = LoggingLevel.INFO
+    port: int = 80
+    root_url: pdt.HttpUrl
+    scheduler_thread_count: int = 5
+
+
+class JWTConfig(pdt.BaseModel):
+    """
+    JWT configuration model
+    """
+    class JWTAlgorithm(str, Enum):
+        """
+        Acceptable JWT algorithms, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
+        """
+        # ES256 = 'ES256'
+        # ES384 = 'ES384'
+        # ES512 = 'ES512'
+        HS256 = 'HS256'
+        HS384 = 'HS384'
+        HS512 = 'HS512'
+        # PS256 = 'PS256'
+        # PS384 = 'PS384'
+        # PS512 = 'PS512'
+        # RS256 = 'RS256'
+        # RS384 = 'RS384'
+        # RS512 = 'RS512'
+
+    algorithm: JWTAlgorithm = JWTAlgorithm.HS256
+    secret: pdt.SecretBytes
+
+
+class RedisConfig(pdt.BaseModel):
+    """
+    Redis configuration model
+    """
+    database: int = 0
+    host: str
+    port: int = 6379
+
+
+class TeamspeakConfig(pdt.BaseModel):
+    """
+    Teamspeak configuration model
+    """
+    auth_group_name: str = 'SNI TS AUTH'
+    bot_name: str = 'SeAT Navy Issue'
+    enabled: bool = False
+    host: IPAddress = IPv4Address('0.0.0.0')
+    password: pdt.SecretStr = pdt.SecretStr('')
+    port: int = 10011
+    server_id: int = 0
+    username: str = 'sni'
+
+
+class Config(pdt.BaseSettings):
+    """
+    SNI configuration model
+    """
+    database: DatabaseConfig
+    discord: DiscordConfig
+    esi: ESIConfig
+    general: GeneralConfig
+    jwt: JWTConfig
+    redis: RedisConfig
+    teamspeak: TeamspeakConfig
+
+
+CONFIGURATION: Config
 
 
 def load_configuration_file(path: str) -> None:
     """
     Loads the configuration from a YAML file.
-
-    Also sets default values.
     """
-    with open(path, 'r') as file:
-        file_config = yaml.safe_load(file.read())
     global CONFIGURATION
-    CONFIGURATION.update(flatten_dict(file_config))
-    CONFIGURATION['logging'] = file_config.get('logging', {})
-
-    assert_is_set('database.authentication_source')
-    assert_is_set('database.database')
-    assert_is_set('database.host')
-    assert_is_set('database.password')
-    assert_is_set('database.port')
-    assert_is_set('database.username')
-
-    assert_is_set('discord.enabled')
-    if get('discord.enabled'):
-        assert_is_set('discord.auth_channel_id')
-        assert_is_set('discord.log_channel_id')
-        assert_is_set('discord.server_id')
-        assert_is_set('discord.token')
-
-    assert_is_set('esi.client_id')
-    assert_is_set('esi.client_secret')
-
-    assert_is_set('general.debug')
-    assert_is_set('general.host')
-    assert_is_set('general.logging_level')
-    assert_is_set('general.port')
-    assert_is_set('general.root_url')
-    assert_is_set('general.scheduler_thread_count')
-
-    assert_is_set('jwt.algorithm')
-    assert_is_set('jwt.secret')
-
-    assert_is_set('redis.database')
-    assert_is_set('redis.host')
-    assert_is_set('redis.port')
-
-    assert_is_set('teamspeak.enabled')
-    if get('teamspeak.enabled'):
-        assert_is_set('teamspeak.auth_group_name')
-        assert_is_set('teamspeak.bot_name')
-        assert_is_set('teamspeak.enabled')
-        assert_is_set('teamspeak.host')
-        assert_is_set('teamspeak.password')
-        assert_is_set('teamspeak.port')
-        assert_is_set('teamspeak.server_id')
-        assert_is_set('teamspeak.username')
-
-
-def flatten_dict(nested_dict: MutableMapping[Any, Any],
-                 parent_key: str = '',
-                 separator: str = '.') -> dict:
-    """
-    Flattens a dictionnary.
-
-    `Credits to Imran <https://stackoverflow.com/a/6027615>`_.
-
-    >>> flatten_dict({
-        'a': 1, 'c': {'a': 2, 'b': {'x': 5, 'y' : 10}},
-        'd': [1, 2, 3],
-    })
-    {'a': 1, 'c_a': 2, 'c_b_x': 5, 'd': [1, 2, 3], 'c_b_y': 10}
-
-    """
-    items: List[Tuple[Any, Any]] = []
-    for key, val in nested_dict.items():
-        new_key = parent_key + separator + key if parent_key else key
-        if isinstance(val, collections.MutableMapping):
-            items.extend(flatten_dict(val, new_key, separator).items())
-        else:
-            items.append((new_key, val))
-    return dict(items)
-
-
-def get(key: str, default: Any = None) -> Any:
-    """
-    Gets a config value from a key.
-    """
-    if key in CONFIGURATION:
-        return CONFIGURATION[key]
-    logging.warning('Unknown configuration key %s', key)
-    return default
+    CONFIGURATION = load_yaml(Config, Path(path))

@@ -15,7 +15,7 @@ from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from sni.db.redis import new_redis_connection
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
 JOBS_KEY: str = 'scheduler.default.jobs'
@@ -26,8 +26,7 @@ RUN_TIMES_KEY: str = 'scheduler.default.run_times'
 
 scheduler = BackgroundScheduler(
     executors={
-        'default':
-        ThreadPoolExecutor(conf.get('general.scheduler_thread_count'), ),
+        'default': ThreadPoolExecutor(conf.general.scheduler_thread_count, ),
     },
     job_defaults={
         'coalesce': True,
@@ -40,10 +39,10 @@ scheduler = BackgroundScheduler(
     jobstores={
         'default':
         RedisJobStore(
-            db=conf.get('redis.database'),
-            host=conf.get('redis.host'),
+            db=conf.redis.database,
+            host=conf.redis.host,
             jobs_key=JOBS_KEY,
-            port=conf.get('redis.port'),
+            port=conf.redis.port,
             run_times_key=RUN_TIMES_KEY,
         ),
     },

@@ -13,7 +13,7 @@ from requests import Request
 from requests.exceptions import HTTPError
 
 from sni.uac.token import from_authotization_header
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 
 from .models import CrashReport, CrashReportRequest, CrashReportToken
 from .server import app
@@ -58,7 +58,7 @@ def does_not_exist_exception_handler(_request: Request, error: Exception):
     ``404``'s.
     """
     return JSONResponse(
-        content={'details': str(error)} if conf.get('general.debug') else None,
+        content={'details': str(error)} if conf.general.debug else None,
         status_code=status.HTTP_404_NOT_FOUND,
     )
 
@@ -70,7 +70,7 @@ def permission_error_handler(_request: Request, error: PermissionError):
     ``403``'s.
     """
     content = {'details': 'Insufficient clearance level'}
-    if conf.get('general.debug'):
+    if conf.general.debug:
         content['details'] += ': ' + str(error)
     return JSONResponse(
         content=content,
@@ -85,7 +85,7 @@ def requests_httperror_handler(_request: Request, error: HTTPError):
     as ``500``'s.
     """
     content = None
-    if conf.get('general.debug') and error.request is not None:
+    if conf.general.debug and error.request is not None:
         req: Request = error.request
         content = {
             'details': f'Failed to issue {req.method} to "{req.url}"' \
@@ -108,7 +108,7 @@ def exception_handler(request: Request, error: Exception):
     crash.save()
     logging.error('The following crash report has been saved with id %s',
                   str(crash.pk))
-    content = crash.to_dict() if conf.get('general.debug') \
+    content = crash.to_dict() if conf.general.debug \
         else {'crash_report_id': str(crash.pk)}
     return JSONResponse(
         content=content,

@@ -9,7 +9,7 @@ from ts3.query import TS3Connection, TS3QueryError
 
 from sni.scheduler import scheduler
 from sni.user.models import Group, User
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
 from .teamspeak import (
@@ -28,7 +28,7 @@ def message_registered_clients_with_wrong_name():
     """
     connection = new_teamspeak_connection()
     for ts_client in client_list(connection):
-        if ts_client.client_nickname == conf.get('teamspeak.bot_name'):
+        if ts_client.client_nickname == conf.teamspeak.bot_name:
             # TS client is the bot
             continue
         usr: User = User.objects(

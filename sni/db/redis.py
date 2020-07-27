@@ -4,12 +4,12 @@ Redis related module
 
 from redis import ConnectionPool, Redis
 
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 
 connection_pool = ConnectionPool(
-    db=conf.get('redis.database'),
-    host=conf.get('redis.host'),
-    port=conf.get('redis.port'),
+    db=conf.redis.database,
+    host=conf.redis.host,
+    port=conf.redis.port,
 )
 
 

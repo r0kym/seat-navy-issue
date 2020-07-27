@@ -7,7 +7,7 @@ import logging
 from discord import Member
 from discord.ext.commands import Context
 
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 from sni.user.models import User
 
 from .discord import complete_authentication_challenge
@@ -20,7 +20,7 @@ async def auth(ctx: Context, code: str):
     """
     Starts a Discord authentication challenge.
     """
-    if ctx.channel.id != conf.get('discord.auth_channel_id'):
+    if ctx.channel.id != conf.discord.auth_channel_id:
         return
     member: Member = ctx.author
     try:

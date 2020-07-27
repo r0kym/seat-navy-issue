@@ -14,7 +14,7 @@ from ts3.query import TS3Connection, TS3QueryError
 from sni.db.cache import cache_get, cache_set, invalidate_cache
 from sni.user.models import User
 from sni.user.user import ensure_autogroup
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
 from .models import TeamspeakAuthenticationChallenge
@@ -97,7 +97,7 @@ def complete_authentication_challenge(connection: TS3Connection, usr: User):
     client = find_client(connection, nickname=challenge.challenge_nickname)
     usr.teamspeak_cldbid = client.client_database_id
     usr.save()
-    auth_group = ensure_autogroup(conf.get('teamspeak.auth_group_name'))
+    auth_group = ensure_autogroup(conf.teamspeak.auth_group_name)
     auth_group.modify(add_to_set__members=usr)
     challenge.delete()
     logging.info('Completed authentication challenge for %s',
@@ -205,23 +205,25 @@ def new_teamspeak_connection() -> TS3Connection:
     """
     Returns a new connection to the teamspeak server.
     """
+    if conf.teamspeak.password is None:
+        raise RuntimeError('Configuration key conf.teamspeak.password is None')
     connection = TS3Connection(
-        conf.get('teamspeak.host'),
-        conf.get('teamspeak.port'),
+        conf.teamspeak.host,
+        conf.teamspeak.port,
     )
-    connection.use(sid=conf.get('teamspeak.server_id'))
+    connection.use(sid=conf.teamspeak.server_id)
     connection.login(
-        client_login_name=conf.get('teamspeak.username'),
-        client_login_password=conf.get('teamspeak.password'),
+        client_login_name=conf.teamspeak.username,
+        client_login_password=conf.teamspeak.password.get_secret_value(),
     )
     try:
-        connection.clientupdate(client_nickname=conf.get('teamspeak.bot_name'))
+        connection.clientupdate(client_nickname=conf.teamspeak.bot_name)
     except TS3QueryError:
         pass
     logging.info(
         'Connected to teamspeak server %s:%d as %s',
-        conf.get('teamspeak.host'),
-        conf.get('teamspeak.port'),
-        conf.get('teamspeak.username'),
+        conf.teamspeak.host,
+        conf.teamspeak.port,
+        conf.teamspeak.username,
     )
     return connection

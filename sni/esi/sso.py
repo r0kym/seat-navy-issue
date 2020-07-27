@@ -13,7 +13,7 @@ import jwt
 import pydantic as pdt
 import requests
 
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 
 
 class AuthorizationCodeResponse(pdt.BaseModel):
@@ -110,8 +110,8 @@ def get_auth_url(esi_scopes: List[str],
             'Scope list cannot be empty, replaced by [\'publicData\']')
         esi_scopes = ['publicData']
     params = {
-        'client_id': conf.get('esi.client_id'),
-        'redirect_uri': urljoin(conf.get('general.root_url'), '/callback/esi'),
+        'client_id': conf.esi.client_id.get_secret_value(),
+        'redirect_uri': urljoin(conf.general.root_url, '/callback/esi'),
         'response_type': 'code',
         'scope': ' '.join(esi_scopes),
         'state': state,
@@ -137,8 +137,8 @@ def get_basic_authorization_code() -> str:
         urlsafe_b64encode('<client_id>:<client_secret>')
 
     """
-    authorization = str(conf.get('esi.client_id')) + ':' + str(
-        conf.get('esi.client_secret'))
+    authorization = str(conf.esi.client_id.get_secret_value()) + ':' + str(
+        conf.esi.client_secret.get_secret_value())
     return urlsafe_b64encode(authorization.encode()).decode()
 
 

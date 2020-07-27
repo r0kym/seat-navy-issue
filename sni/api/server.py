@@ -10,7 +10,7 @@ from fastapi import FastAPI
 import uvicorn
 import yaml
 
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 from sni.api.routers.alliance import router as router_alliance
 from sni.api.routers.callback import router as router_callback
 from sni.api.routers.coalition import router as router_coalition
@@ -54,7 +54,7 @@ app.include_router(
     tags=['Crash reports'],
 )
 
-if conf.get('discord.enabled'):
+if conf.discord.enabled:
     from sni.api.routers.discord import router as router_discord
     app.include_router(
         router_discord,
@@ -74,7 +74,7 @@ app.include_router(
     tags=['Group management'],
 )
 
-if conf.get('teamspeak.enabled'):
+if conf.teamspeak.enabled:
     from sni.api.routers.teamspeak import router as router_teamspeak
     app.include_router(
         router_teamspeak,
@@ -121,7 +121,6 @@ def start_api_server():
     Starts the API server for real. See
     :meth:`sni.api.server.start_api_server`.
     """
-    log_level = str(conf.get('general.logging_level')).upper()
     log_config = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -153,30 +152,30 @@ def start_api_server():
         'loggers': {
             '': {
                 'handlers': ['default'],
-                'level': log_level,
+                'level': conf.general.logging_level.upper(),
             },
             'uvicorn.error': {
-                'level': log_level,
+                'level': conf.general.logging_level.upper(),
             },
             'uvicorn.access': {
                 'handlers': ['access'],
-                'level': log_level,
+                'level': conf.general.logging_level.upper(),
                 'propagate': False,
             },
         },
     }
     logging.info(
         'Starting API server on %s:%s',
-        conf.get('general.host'),
-        conf.get('general.port'),
+        conf.general.host,
+        conf.general.port,
     )
     try:
         uvicorn.run(
             'sni.api.server:app',
-            host=conf.get('general.host'),
+            host=str(conf.general.host),
             log_config=log_config,
-            log_level=log_level.lower(),
-            port=conf.get('general.port'),
+            log_level=conf.general.logging_level,
+            port=conf.general.port,
         )
     finally:
         logging.info('API server stopped')

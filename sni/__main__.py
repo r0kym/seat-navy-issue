@@ -28,10 +28,10 @@ def connect_database_signals() -> None:
     import sni.user.signals
     import sni.api.signals
 
-    if conf.get('discord.enabled'):
+    if conf.CONFIGURATION.discord.enabled:
         import sni.discord.signals
 
-    if conf.get('teamspeak.enabled'):
+    if conf.CONFIGURATION.teamspeak.enabled:
         import sni.teamspeak.signals
 
 
@@ -40,12 +40,12 @@ def configure_logging() -> None:
     Basic configuration of the logging facility
     """
     logging_level = {
-        'CRITICAL': logging.CRITICAL,
-        'DEBUG': logging.DEBUG,
-        'ERROR': logging.ERROR,
-        'INFO': logging.INFO,
-        'WARNING': logging.WARNING,
-    }[str(conf.get('general.logging_level')).upper()]
+        conf.GeneralConfig.LoggingLevel.CRITICAL: logging.CRITICAL,
+        conf.GeneralConfig.LoggingLevel.DEBUG: logging.DEBUG,
+        conf.GeneralConfig.LoggingLevel.ERROR: logging.ERROR,
+        conf.GeneralConfig.LoggingLevel.INFO: logging.INFO,
+        conf.GeneralConfig.LoggingLevel.WARNING: logging.WARNING,
+    }[conf.CONFIGURATION.general.logging_level]
     logging.config.dictConfig({
         'version': 1,
         'disable_existing_loggers': True,
@@ -102,11 +102,11 @@ def migrate_database() -> None:
     import sni.api.migration
     sni.api.migration.migrate()
 
-    if conf.get('discord.enabled'):
+    if conf.CONFIGURATION.discord.enabled:
         import sni.discord.migration
         sni.discord.migration.migrate()
 
-    if conf.get('teamspeak.enabled'):
+    if conf.CONFIGURATION.teamspeak.enabled:
         import sni.teamspeak.migration
         sni.teamspeak.migration.migrate()
 
@@ -172,7 +172,7 @@ def main():
     # Pre API server start
     # --------------------------------------------------------------------------
 
-    if conf.get('discord.enabled'):
+    if conf.CONFIGURATION.discord.enabled:
         start_discord_bot()
 
     # --------------------------------------------------------------------------
@@ -258,10 +258,10 @@ def schedule_jobs() -> None:
     import sni.index.jobs
     import sni.api.jobs
 
-    if conf.get('teamspeak.enabled'):
+    if conf.CONFIGURATION.teamspeak.enabled:
         import sni.teamspeak.jobs
 
-    if conf.get('discord.enabled'):
+    if conf.CONFIGURATION.discord.enabled:
         import sni.discord.jobs
 
 

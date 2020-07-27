@@ -11,7 +11,7 @@ import jwt
 import jwt.exceptions as jwt_exceptions
 
 from sni.user.models import User
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
 from .models import StateCode, Token
@@ -189,9 +189,9 @@ def get_token_from_jwt(token_str: str) -> Token:
     """
     payload = jwt.decode(
         token_str,
-        conf.get('jwt.secret'),
-        algorithm=conf.get('jwt.algorithm'),
-        issuer=conf.get('general.root_url'),
+        conf.jwt.secret.get_secret_value(),
+        algorithm=conf.jwt.algorithm,
+        issuer=conf.general.root_url,
         verify_exp=True,
         verify_iss=True,
         verify=True,
@@ -206,7 +206,7 @@ def to_jwt(model: Token) -> str:
     """
     payload = {
         'iat': int(model.created_on.timestamp()),
-        'iss': conf.get('general.root_url'),
+        'iss': conf.general.root_url,
         'jti': str(model.uuid),
         'nbf': int(model.created_on.timestamp()),
         'own': model.owner.character_id,
@@ -216,6 +216,6 @@ def to_jwt(model: Token) -> str:
         payload['exp'] = int(model.expires_on.timestamp())
     return jwt.encode(
         payload,
-        conf.get('jwt.secret'),
-        algorithm=conf.get('jwt.algorithm'),
+        conf.jwt.secret.get_secret_value(),
+        algorithm=conf.jwt.algorithm,
     ).decode()

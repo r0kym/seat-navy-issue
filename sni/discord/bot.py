@@ -24,7 +24,7 @@ from discord.ext.commands import Bot
 import discord
 
 from sni.db.redis import new_redis_connection
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
 JOBS_KEY: str = 'scheduler.discord.jobs'
@@ -48,10 +48,10 @@ scheduler = AsyncIOScheduler(
     jobstores={
         'discord':
         RedisJobStore(
-            db=conf.get('redis.database'),
-            host=conf.get('redis.host'),
+            db=conf.redis.database,
+            host=conf.redis.host,
             jobs_key=JOBS_KEY,
-            port=conf.get('redis.port'),
+            port=conf.redis.port,
             run_times_key=RUN_TIMES_KEY,
         ),
     },
@@ -63,7 +63,7 @@ def get_guild() -> discord.Guild:
     """
     Returns a guild handler corresponding to the ``discord.server_id`` setting.
     """
-    return bot.get_guild(conf.get('discord.server_id'))
+    return bot.get_guild(conf.discord.server_id)
 
 
 def get_member(user_id: int) -> discord.Member:
@@ -78,7 +78,7 @@ async def log(message: str):
     Sends a message on the logging channel. If configuration key
     ``discord.log_channel_id`` is ``None``, does't do anything.
     """
-    log_channel_id = conf.get('discord.log_channel_id')
+    log_channel_id = conf.discord.log_channel_id
     if log_channel_id is None:
         return
     log_channel = bot.get_channel(log_channel_id)
@@ -90,7 +90,7 @@ def start_bot():
     Runs the discord client in a different thread.
     """
     async def _start():
-        await bot.start(conf.get('discord.token'))
+        await bot.start(conf.discord.token.get_secret_value())
 
     logging.info('Starting Discord client')
     bot.loop.create_task(_start())

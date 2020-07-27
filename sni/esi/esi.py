@@ -13,7 +13,7 @@ from requests import request, Response
 
 from sni.db.cache import cache_get, cache_set
 from sni.sde.sde import sde_get_name
-import sni.conf as conf
+from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
 from .models import EsiPath
@@ -39,7 +39,7 @@ class EsiResponse(pdt.BaseModel):
         """
         return EsiResponse(
             data=response.json(),
-            headers=response.headers,
+            headers=dict(response.headers),
             status_code=response.status_code,
         )
 
@@ -161,7 +161,7 @@ def esi_request(
     kwargs['headers'] = {
         'Accept-Encoding': 'gzip',
         'accept': 'application/json',
-        'User-Agent': 'SeAT Navy Issue @ ' + conf.get('general.root_url'),
+        'User-Agent': 'SeAT Navy Issue @ ' + conf.general.root_url,
         **kwargs.get('headers', {})
     }
     if token:

@@ -72,7 +72,7 @@ class GetUserOut(pdt.BaseModel):
             alliance=(usr.alliance.alliance_id
                       if usr.alliance is not None else None),
             authorized_to_login=usr.authorized_to_login,
-            available_esi_scopes=available_esi_scopes(usr),
+            available_esi_scopes=list(available_esi_scopes(usr)),
             character_id=usr.character_id,
             character_name=usr.character_name,
             clearance_level=usr.clearance_level,
@@ -80,8 +80,8 @@ class GetUserOut(pdt.BaseModel):
             corporation=(usr.corporation.corporation_id
                          if usr.corporation is not None else None),
             created_on=usr.created_on,
-            cumulated_mandatory_esi_scopes=usr.cumulated_mandatory_esi_scopes(
-            ),
+            cumulated_mandatory_esi_scopes=list(
+                usr.cumulated_mandatory_esi_scopes()),
             is_ceo_of_alliance=usr.is_ceo_of_alliance(),
             is_ceo_of_corporation=usr.is_ceo_of_corporation(),
             tickered_name=usr.tickered_name,

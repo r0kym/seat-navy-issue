@@ -6,6 +6,7 @@ fastapi
 mongoengine
 passlib[bcrypt]
 pydantic
+pydantic_loader[yaml]
 pyjwt
 pyyaml
 redis
