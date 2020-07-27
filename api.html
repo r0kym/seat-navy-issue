@@ -291,6 +291,33 @@ parameters.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.api.routers.callback.not_authorized_to_login_response">
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">not_authorized_to_login_response</code><span class="sig-paren">(</span><em class="sig-param">character_name: str</em>, <em class="sig-param">character_id: int</em><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#not_authorized_to_login_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.not_authorized_to_login_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an HTML response explaing that the user is not allowed to login on
+this instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.callback.not_enough_scopes_response">
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">not_enough_scopes_response</code><span class="sig-paren">(</span><em class="sig-param">character_name: str, character_id: int, required_scopes: List[str], provided_scopes: List[str]</em><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#not_enough_scopes_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.not_enough_scopes_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an HTML response explaing that the user did not provide enough ESI
+scopes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.callback.string_list_to_html">
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">string_list_to_html</code><span class="sig-paren">(</span><em class="sig-param">string_list: List[str]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/api/routers/callback.html#string_list_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.string_list_to_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a string list to an HTML bullet list.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.callback.token_manipulation_error_response">
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">token_manipulation_error_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#token_manipulation_error_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.token_manipulation_error_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an HTML response explaing that the instance ran in an ESI token
+manipulation error.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.api.routers.coalition">
 <span id="sni-api-routers-coalition"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.coalition</span></code><a class="headerlink" href="#module-sni.api.routers.coalition" title="Permalink to this headline">¶</a></h3>

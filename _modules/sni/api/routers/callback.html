@@ -42,9 +42,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span>
-<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">PlainTextResponse</span><span class="p">,</span> <span class="n">RedirectResponse</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HTMLResponse</span><span class="p">,</span>
+    <span class="n">PlainTextResponse</span><span class="p">,</span>
+    <span class="n">RedirectResponse</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
@@ -59,6 +64,68 @@
 <span class="kn">from</span> <span class="nn">sni.uac.uac</span> <span class="kn">import</span> <span class="n">is_authorized_to_login</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="token_manipulation_error_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.token_manipulation_error_response">[docs]</a><span class="k">def</span> <span class="nf">token_manipulation_error_response</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an HTML response explaing that the instance ran in an ESI token</span>
+<span class="sd">    manipulation error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;&lt;h1&gt;ESI token manipulation error&lt;/h1&gt;</span>
+<span class="s1">&lt;p&gt;Sorry, something went wrong while manipulating your ESI token. It could be a</span>
+<span class="s1">temporary outage of the EVE API, or a bug in SeAT Navy Issue.&lt;/p&gt;</span>
+<span class="s1">&lt;p&gt;If the problem persists, please contact the instance administrator.&lt;/p&gt;&#39;&#39;&#39;</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="not_authorized_to_login_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.not_authorized_to_login_response">[docs]</a><span class="k">def</span> <span class="nf">not_authorized_to_login_response</span><span class="p">(</span><span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an HTML response explaing that the user is not allowed to login on</span>
+<span class="sd">    this instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;&lt;h1&gt;Not authorized to login&lt;/h1&gt;</span>
+<span class="s1">&lt;p&gt;Character &lt;strong&gt;</span><span class="si">{character_name}</span><span class="s1">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s1">) is not allowed</span>
+<span class="s1">to login. Please contact the instance administrator.&lt;/p&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="string_list_to_html"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.string_list_to_html">[docs]</a><span class="k">def</span> <span class="nf">string_list_to_html</span><span class="p">(</span><span class="n">string_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string list to an HTML bullet list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">string_list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;p&gt;None&lt;/p&gt;&#39;</span>
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;&lt;li&gt;&lt;code&gt;</span><span class="si">{item}</span><span class="s1">&lt;/code&gt;&lt;/li&gt;&#39;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">string_list</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&lt;ul&gt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">item_list</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/ul&gt;&#39;</span></div>
+
+
+<div class="viewcode-block" id="not_enough_scopes_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.not_enough_scopes_response">[docs]</a><span class="k">def</span> <span class="nf">not_enough_scopes_response</span><span class="p">(</span>
+    <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">required_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">provided_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an HTML response explaing that the user did not provide enough ESI</span>
+<span class="sd">    scopes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;&lt;h1&gt;Not enough ESI scopes&lt;/h1&gt;</span>
+<span class="s1">&lt;p&gt;The ESI token does not provide enough scopes for character</span>
+<span class="s1">&lt;strong&gt;</span><span class="si">{character_name}</span><span class="s1">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s1">):&lt;/p&gt;</span>
+<span class="s1">&lt;h3&gt;Required&lt;/h3&gt;</span>
+<span class="s1">{string_list_to_html(required_scopes)}</span>
+<span class="s1">&lt;h3&gt;Provided&lt;/h3&gt;</span>
+<span class="s1">{string_list_to_html(provided_scopes)}</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_callback_esi"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.get_callback_esi">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -86,24 +153,18 @@
         <span class="n">access_token</span> <span class="o">=</span> <span class="n">decode_access_token</span><span class="p">(</span><span class="n">esi_response</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
         <span class="n">save_esi_tokens</span><span class="p">(</span><span class="n">esi_response</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">EsiTokenError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="s1">&#39;ESI token manipulation error&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">token_manipulation_error_response</span><span class="p">()</span>
 
     <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_authorized_to_login</span><span class="p">(</span><span class="n">usr</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Character </span><span class="si">{usr.character_name}</span><span class="s1"> (</span><span class="si">{usr.character_id}</span><span class="s1">) &#39;</span>
-                    <span class="s1">&#39;is not allowed to login.&#39;</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">not_authorized_to_login_response</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+                                                <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">token_has_enough_scopes</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">usr</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Insufficient scopes for character </span><span class="si">{usr.character_name}</span><span class="s1"> &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{usr.character_id}</span><span class="s1">). Require at least: &#39;</span> <span class="o">+</span>
-                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()))),</span>
+        <span class="k">return</span> <span class="n">not_enough_scopes_response</span><span class="p">(</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()),</span>
+            <span class="n">access_token</span><span class="o">.</span><span class="n">scp</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">user_token</span> <span class="o">=</span> <span class="n">create_user_token</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
