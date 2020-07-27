@@ -9,7 +9,7 @@ Reference
 The configuration file is in `YAML <https://yaml.org/>`_ format, and named
 ``sni.yml`` by default. It follows the following schema:
 
-.. jsonschema:: https://raw.githubusercontent.com/altaris/seat-navy-issue/master/docs/configuration.json
+.. jsonschema:: configuration.json
 
 Example
 -------

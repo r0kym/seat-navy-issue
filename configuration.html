@@ -49,10 +49,782 @@
 <span id="id1"></span><h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
 <p>The configuration file is in <a class="reference external" href="https://yaml.org/">YAML</a> format, and named
 <code class="docutils literal notranslate"><span class="pre">sni.yml</span></code> by default. It follows the following schema:</p>
+<div class="section" id="config">
+<h3>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+</colgroup>
 <tbody>
+<tr class="row-odd"><td colspan="6"><p>SNI configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="5"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="6"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>database</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Database</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Database configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘authentication_source’, ‘admin’), (‘database’, ‘sni’), (‘host’, ‘mongo’), (‘password’, ‘’), (‘port’, 27017), (‘username’, ‘sni’)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/DatabaseConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>discord</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Discord</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Discord configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘auth_channel_id’, 0), (‘enabled’, False), (‘log_channel_id’, 0), (‘server_id’, 0), (‘token’, ‘’)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/DiscordConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>esi</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Esi</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>ESI configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘client_id’, ‘’), (‘client_secret’, ‘’)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/ESIConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>general</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>General</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>General configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘debug’, False), (‘host’, ‘0.0.0.0’), (‘logging_level’, ‘info’), (‘port’, 80), (‘root_url’, ‘<a class="reference external" href="https://foo.bar">https://foo.bar</a>’), (‘scheduler_thread_count’, 5)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/GeneralConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>jwt</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Jwt</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>JWT configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘algorithm’, ‘HS256’), (‘secret’, ‘’)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/JWTConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>redis</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Redis</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Redis configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘database’, 0), (‘host’, ‘redis’), (‘port’, 6379)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/RedisConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>teamspeak</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Teamspeak</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Teamspeak configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘auth_group_name’, ‘SNI TS AUTH’), (‘bot_name’, ‘SeAT Navy Issue’), (‘enabled’, False), (‘host’, ‘’), (‘password’, ‘’), (‘port’, 10011), (‘server_id’, 0), (‘username’, ‘sni’)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/TeamspeakConfig</span></p></td>
+</tr>
+<tr class="row-even"><td><p>additionalProperties</p></td>
+<td colspan="5"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td colspan="6"><p>definitions</p></td>
+</tr>
+<tr class="row-even"><td rowspan="31"><ul class="simple">
+<li><p>DatabaseConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>DatabaseConfig</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Database configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>authentication_source</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Authentication Source</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>The database in which the user belongs.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>admin</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>database</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Database</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Database name.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>sni</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>host</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Host</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Database hostname.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>mongo</p></td>
+</tr>
+<tr class="row-even"><td rowspan="5"><ul class="simple">
+<li><p>password</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Password</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Password.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-even"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><ul class="simple">
+<li><p>port</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Port</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Database port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>maximum</p></td>
+<td colspan="3"><p>65535</p></td>
+</tr>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>27017</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>username</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Username</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Username.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>sni</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="25"><ul class="simple">
+<li><p>DiscordConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>DiscordConfig</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="5"><p>Discord configuration model</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>auth_channel_id</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Auth Channel Id</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Authentication channel ID. This is where users will start authentication challenges. Only required if <code class="docutils literal notranslate"><span class="pre">discord.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>enabled</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Enabled</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Wether to activate the Discord connector.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>log_channel_id</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Log Channel Id</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Logging channel ID. This is where the Discorb bot will log events. Only required if <code class="docutils literal notranslate"><span class="pre">discord.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>server_id</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Server Id</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Discord server (or guild) ID.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>token</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Token</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Discord bot token. Only required if <code class="docutils literal notranslate"><span class="pre">discord.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-odd"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-even"><td rowspan="14"><ul class="simple">
+<li><p>ESIConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>ESIConfig</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>ESI configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="5"><ul class="simple">
+<li><p>client_id</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Client Id</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>ESI client ID.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-even"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>client_secret</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Client Secret</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>ESI client secret.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-odd"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>LoggingLevel</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>LoggingLevel</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Acceptable logging levels</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>enum</p></td>
+<td colspan="4"><p>critical, debug, error, info, warning</p></td>
+</tr>
+<tr class="row-even"><td rowspan="34"><ul class="simple">
+<li><p>GeneralConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>GeneralConfig</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>General configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>debug</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Debug</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Wether SNI should run in debug mode. In this mode, logging is more verbose, and potentially exposes secrets. Do not use in a production environment.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><ul class="simple">
+<li><p>host</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Host</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>IP address at which SNI should listen for incoming connections.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0.0.0.0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p>anyOf</p></td>
+<td rowspan="2"><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>format</p></td>
+<td><p>ipv4</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>format</p></td>
+<td><p>ipv6</p></td>
+</tr>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>logging_level</p></li>
+</ul>
+</td>
+<td colspan="4"><p><span class="xref std std-ref">#/definitions/LoggingLevel</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><ul class="simple">
+<li><p>port</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Port</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Port at which SNI should listen for incoming connections.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>maximum</p></td>
+<td colspan="3"><p>65535</p></td>
+</tr>
+<tr class="row-even"><td><p>minimum</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>80</p></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><ul class="simple">
+<li><p>root_url</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Root Url</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>URL at which this SNI instance is located. The ESI callback should then be <code class="docutils literal notranslate"><span class="pre">&lt;root_url&gt;/callback/esi</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>maxLength</p></td>
+<td colspan="3"><p>2083</p></td>
+</tr>
+<tr class="row-even"><td><p>minLength</p></td>
+<td colspan="3"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p><a class="reference external" href="https://foo.bar">https://foo.bar</a></p></td>
+</tr>
+<tr class="row-even"><td><p>format</p></td>
+<td colspan="3"><p>uri</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>scheduler_thread_count</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Scheduler Thread Count</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Number of threads available to the scheduler.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>minimum</p></td>
+<td colspan="3"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>5</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>JWTAlgorithm</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>JWTAlgorithm</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Acceptable JWT algorithms, see <a class="reference external" href="https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms">here</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>enum</p></td>
+<td colspan="4"><p>HS256, HS384, HS512</p></td>
+</tr>
+<tr class="row-even"><td rowspan="10"><ul class="simple">
+<li><p>JWTConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>JWTConfig</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>JWT configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td><ul class="simple">
+<li><p>algorithm</p></li>
+</ul>
+</td>
+<td colspan="4"><p><span class="xref std std-ref">#/definitions/JWTAlgorithm</span></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>secret</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Secret</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>JWT secret. Generate one with <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">rand</span> <span class="pre">-hex</span> <span class="pre">32</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-odd"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-even"><td rowspan="18"><ul class="simple">
+<li><p>RedisConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>RedisConfig</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Redis configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>database</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Database</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Redis database to use.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>host</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Host</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Redis hostname.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>redis</p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><ul class="simple">
+<li><p>port</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Port</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Redis port.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>maximum</p></td>
+<td colspan="3"><p>65535</p></td>
+</tr>
+<tr class="row-even"><td><p>minimum</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>6379</p></td>
+</tr>
+<tr class="row-even"><td rowspan="39"><ul class="simple">
+<li><p>TeamspeakConfig</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>TeamspeakConfig</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Teamspeak configuration model</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>auth_group_name</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Auth Group Name</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Name of the auth group. Authenticated Teamspeak users are automatically added to this group. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>SNI TS AUTH</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>bot_name</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Bot Name</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Name of the Teamspeak bot. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>SeAT Navy Issue</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>enabled</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Enabled</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Wether to activate the Teamspeak connector.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>host</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Host</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Name, hostname, or IP address of the Teamspeak server. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-even"><td rowspan="5"><ul class="simple">
+<li><p>password</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Password</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Query server password. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-even"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><ul class="simple">
+<li><p>port</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Port</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Port of the query server associated to the Teamspeak server. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>maximum</p></td>
+<td colspan="3"><p>65535</p></td>
+</tr>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>10011</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>server_id</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Server Id</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Teamspeak server ID. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>username</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Username</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Query server username. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>sni</p></td>
+</tr>
 </tbody>
 </table>
+</div>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
@@ -96,7 +868,10 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Configuration file reference</a><ul>
-<li><a class="reference internal" href="#reference">Reference</a></li>
+<li><a class="reference internal" href="#reference">Reference</a><ul>
+<li><a class="reference internal" href="#config">Config</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
