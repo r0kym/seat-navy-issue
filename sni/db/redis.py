@@ -2,17 +2,19 @@
 Redis related module
 """
 
-import redis
+from redis import ConnectionPool, Redis
 
 import sni.conf as conf
 
+connection_pool = ConnectionPool(
+    db=conf.get('redis.database'),
+    host=conf.get('redis.host'),
+    port=conf.get('redis.port'),
+)
 
-def new_redis_connection() -> redis.Redis:
+
+def new_redis_connection() -> Redis:
     """
     Returns a new redis connection handler
     """
-    return redis.Redis(
-        db=conf.get('redis.database'),
-        host=conf.get('redis.host'),
-        port=conf.get('redis.port'),
-    )
+    return Redis(connection_pool=connection_pool)
