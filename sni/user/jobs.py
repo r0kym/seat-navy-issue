@@ -149,6 +149,28 @@ def update_corporation_autogroups():
         scheduler.add_job(update_corporation_autogroup, args=(corporation, ))
 
 
+def update_corporation_from_esi(corporation: Corporation):
+    """
+    Updates a corporation from the ESI.
+    """
+    logging.debug('Updating properties of corporation %s',
+                  corporation.corporation_name)
+    data = esi_get(f'latest/corporations/{corporation.corporation_id}').data
+    corporation.alliance = ensure_alliance(
+        data['alliance_id']) if 'alliance_id' in data else None
+    corporation.ceo_character_id = data['ceo_id']
+    corporation.save()
+
+
+@scheduler.scheduled_job('interval', days=1)
+def update_corporations_from_esi():
+    """
+    Updates the corporations properties from the ESI.
+    """
+    for corporation in Corporation.objects:
+        scheduler.add_job(update_corporation_from_esi, args=(corporation, ))
+
+
 def ensure_corporation_members(corporation: Corporation):
     """
     Ensure that all members of a corporation exist in the database.
