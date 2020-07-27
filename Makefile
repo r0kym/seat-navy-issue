@@ -64,4 +64,4 @@ stack-up:
 
 .PHONY: typecheck
 typecheck:
-	mypy $(SRC_PATH)/*.py
+	mypy -p $(SRC_PATH)
