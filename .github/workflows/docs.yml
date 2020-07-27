@@ -9,15 +9,15 @@ jobs:
     - uses: actions/checkout@v1
     - uses: ammaraskar/sphinx-action@master
       with:
-        docs-folder: "./"
+        docs-folder: "docs/"
         pre-build-command: |
           pip install -r requirements.txt
           pip install -r requirements.dev.txt
-          python sni/sni.py --help > docs/command-line-args.txt
-          python sni/sni.py --print-configuration-spec > docs/configuration.json
-          python sni/sni.py --print-openapi-spec > docs/openapi.yml
+          python sni/sni.py --help > command-line-args.txt
+          python sni/sni.py --print-configuration-spec > configuration.json
+          python sni/sni.py --print-openapi-spec > openapi.yml
           python -m plantuml docs/*.uml
-        build-command: "sphinx-build -b html docs/ docs/_build"
+        build-command: "sphinx-build -b html . _build"
     - name: Commit documentation changes
       run: |
         git clone https://github.com/altaris/seat-navy-issue.git --branch gh-pages --single-branch gh-pages
