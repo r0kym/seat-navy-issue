@@ -30,6 +30,8 @@ from sni.index.models import (
     EsiCharacterLocation,
     EsiMail,
     EsiMailRecipient,
+    EsiSkillPoints,
+    EsiWalletBalance,
 )
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -98,7 +100,7 @@ class GetCharacterLocationOut(pdt.BaseModel):
         )
 
 
-class GetMailOut(pdt.BaseModel):
+class GetCharacterMailOut(pdt.BaseModel):
     """
     Represents a user email.
     """
@@ -111,10 +113,11 @@ class GetMailOut(pdt.BaseModel):
 
         @staticmethod
         def from_record(
-                recipient: EsiMailRecipient) -> 'GetMailOut.MailRecipient':
+            recipient: EsiMailRecipient
+        ) -> 'GetCharacterMailOut.MailRecipient':
             """
             Converts a :class:`sni.index.models.EsiMailRecipient` to a
-            :class:`sni.api.routers.esi.GetMailOut.MailRecipient`
+            :class:`sni.api.routers.esi.GetCharacterMailOut.MailRecipient`
             """
             if recipient.recipient_type == 'mailing_list':
                 recipient_name = 'Mailing list ' + str(recipient.recipient_id)
@@ -123,7 +126,7 @@ class GetMailOut(pdt.BaseModel):
                     recipient.recipient_id,
                     recipient.recipient_type + '_id',
                 )
-            return GetMailOut.MailRecipient(
+            return GetCharacterMailOut.MailRecipient(
                 recipient_id=recipient.recipient_id,
                 recipient_name=recipient_name,
             )
@@ -137,16 +140,16 @@ class GetMailOut(pdt.BaseModel):
     timestamp: datetime
 
     @staticmethod
-    def from_record(mail: EsiMail) -> 'GetMailOut':
+    def from_record(mail: EsiMail) -> 'GetCharacterMailOut':
         """
         Converts a :class:`sni.index.models.EsiMail` to a
-        :class:`sni.api.routers.esi.GetMailOut`
+        :class:`sni.api.routers.esi.GetCharacterMailOut`
         """
         recipients = [
-            GetMailOut.MailRecipient.from_record(recipient)
+            GetCharacterMailOut.MailRecipient.from_record(recipient)
             for recipient in mail.recipients
         ]
-        return GetMailOut(
+        return GetCharacterMailOut(
             body=mail.body,
             from_id=mail.from_id,
             from_name=mail.from_name,
@@ -157,7 +160,7 @@ class GetMailOut(pdt.BaseModel):
         )
 
 
-class GetMailShortOut(pdt.BaseModel):
+class GetCharacterMailShortOut(pdt.BaseModel):
     """
     Represents a short description (header) of an email
     """
@@ -165,27 +168,68 @@ class GetMailShortOut(pdt.BaseModel):
     from_id: int
     from_name: str
     mail_id: int
-    recipients: List[GetMailOut.MailRecipient]
+    recipients: List[GetCharacterMailOut.MailRecipient]
     subject: str
     timestamp: datetime
 
     @staticmethod
-    def from_record(mail: EsiMail) -> 'GetMailShortOut':
+    def from_record(mail: EsiMail) -> 'GetCharacterMailShortOut':
         """
         Converts a :class:`sni.index.models.EsiMail` to a
-        :class:`sni.api.routers.esi.GetMailShortOut`
+        :class:`sni.api.routers.esi.GetCharacterMailShortOut`
         """
         recipients = [
-            GetMailOut.MailRecipient.from_record(recipient)
+            GetCharacterMailOut.MailRecipient.from_record(recipient)
             for recipient in mail.recipients
         ]
-        return GetMailShortOut(
+        return GetCharacterMailShortOut(
             from_id=mail.from_id,
             from_name=id_to_name(mail.from_id, 'character_id'),
             mail_id=mail.mail_id,
             recipients=recipients,
             subject=mail.subject,
             timestamp=mail.timestamp,
+        )
+
+
+class GetCharacterSkillPointsOut(pdt.BaseModel):
+    """
+    Represents a character's skill points
+    """
+    timestamp: datetime
+    total_sp: int
+    unallocated_sp: int
+
+    @staticmethod
+    def from_record(document: EsiSkillPoints) -> 'GetCharacterSkillPointsOut':
+        """
+        Converts a :class:`sni.index.models.EsiSkillPoints` to a
+        :class:`sni.api.routers.esi.GetCharacterSkillPointsOut`
+        """
+        return GetCharacterSkillPointsOut(
+            timestamp=document.timestamp,
+            total_sp=document.total_sp,
+            unallocated_sp=document.unallocated_sp,
+        )
+
+
+class GetCharacterWalletBalanceOut(pdt.BaseModel):
+    """
+    Represents a character's wallet balance
+    """
+    balance: float
+    timestamp: datetime
+
+    @staticmethod
+    def from_record(
+            balance: EsiWalletBalance) -> 'GetCharacterWalletBalanceOut':
+        """
+        Converts a :class:`sni.index.models.EsiWalletBalance` to a
+        :class:`sni.api.routers.esi.GetCharacterWalletBalanceOut`
+        """
+        return GetCharacterWalletBalanceOut(
+            balance=balance.balance,
+            timestamp=balance.timestamp,
         )
 
 
@@ -221,7 +265,7 @@ def get_history_character_location(
 
 @router.get(
     '/history/characters/{character_id}/mail',
-    response_model=List[GetMailShortOut],
+    response_model=List[GetCharacterMailShortOut],
     summary='Get character email history',
 )
 def get_history_character_mails(
@@ -243,8 +287,60 @@ def get_history_character_mails(
     assert_has_clearance(tkn.owner, 'esi-mail.read_mail.v1', usr)
     query_set = EsiMail.objects(from_id=character_id).order_by('-timestamp')
     return [
-        GetMailShortOut.from_record(mail)
+        GetCharacterMailShortOut.from_record(mail)
         for mail in paginate(query_set, 50, page, response)
+    ]
+
+
+@router.get(
+    '/history/characters/{character_id}/skillpoints',
+    response_model=List[GetCharacterSkillPointsOut],
+    summary='Get character skill points history',
+)
+def get_history_character_skillpoints(
+        character_id: int,
+        response: Response,
+        page: pdt.PositiveInt = Header(1),
+        tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Get the skill points history of a character. Requires having clearance to
+    access the ESI scope ``esi-skills.read_skills.v1`` of the character. The
+    results are sorted by most to least recent, and paginated by pages of 50
+    items. The page count in returned in the ``X-Pages`` header.
+    """
+    usr: User = User.objects(character_id=character_id).get()
+    assert_has_clearance(tkn.owner, 'esi-skills.read_skills.v1', usr)
+    query_set = EsiSkillPoints.objects(user=usr).order_by('-timestamp')
+    return [
+        GetCharacterSkillPointsOut.from_record(document)
+        for document in paginate(query_set, 50, page, response)
+    ]
+
+
+@router.get(
+    '/history/characters/{character_id}/wallet',
+    response_model=List[GetCharacterWalletBalanceOut],
+    summary='Get character wallet balance history',
+)
+def get_history_character_wallet(
+        character_id: int,
+        response: Response,
+        page: pdt.PositiveInt = Header(1),
+        tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Get the wallet balance history of a character. Requires having clearance to
+    access the ESI scope ``esi-wallet.read_character_wallet.v1`` of the
+    character. The results are sorted by most to least recent, and paginated by
+    pages of 50 items. The page count in returned in the ``X-Pages`` header.
+    """
+    usr: User = User.objects(character_id=character_id).get()
+    assert_has_clearance(tkn.owner, 'esi-wallet.read_character_wallet.v1', usr)
+    query_set = EsiWalletBalance.objects(user=usr).order_by('-timestamp')
+    return [
+        GetCharacterWalletBalanceOut.from_record(document)
+        for document in paginate(query_set, 50, page, response)
     ]
 
 
