@@ -69,7 +69,7 @@ class GetTrackingOut(pdt.BaseModel):
 
 
 @router.get(
-    '/',
+    '',
     response_model=List[GetCorporationShortOut],
     summary='Get the list of corporations',
 )

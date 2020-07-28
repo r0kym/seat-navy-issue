@@ -40,7 +40,7 @@ class GetAllianceShortOut(pdt.BaseModel):
 
 
 @router.get(
-    '/',
+    '',
     response_model=List[GetAllianceShortOut],
     summary='Get the list of alliances',
 )
