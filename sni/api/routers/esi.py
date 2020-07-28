@@ -3,7 +3,6 @@ ESI related paths
 """
 
 from datetime import datetime
-from math import ceil
 from typing import Callable, List, Optional
 
 from fastapi import (
@@ -37,6 +36,8 @@ from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
+
+from .common import paginate
 
 router = APIRouter()
 
@@ -212,16 +213,9 @@ def get_history_character_location(
     assert_has_clearance(tkn.owner, 'esi-location.read_online.v1', usr)
     assert_has_clearance(tkn.owner, 'esi-location.read_ship_type.v1', usr)
     query_set = EsiCharacterLocation.objects(user=usr).order_by('-timestamp')
-    max_page = ceil(query_set.count() / 50)
-    if page > max_page:
-        raise HTTPException(
-            detail='Page index too big',
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        )
-    response.headers['X-Pages'] = str(max_page)
     return [
         GetCharacterLocationOut.from_record(location)
-        for location in query_set[(page - 1) * 50:page * 50]
+        for location in paginate(query_set, 50, page, response)
     ]
 
 
@@ -241,20 +235,16 @@ def get_history_character_mails(
     the ESI scope ``esi-mail.read_mail.v1`` of the character. The results are
     sorted by most to least recent, and paginated by pages of 50 items. The
     page count in returned in the ``X-Pages`` header.
+
+    Todo:
+        Only show email sent by the specified user...
     """
     usr: User = User.objects(character_id=character_id).get()
     assert_has_clearance(tkn.owner, 'esi-mail.read_mail.v1', usr)
     query_set = EsiMail.objects(from_id=character_id).order_by('-timestamp')
-    max_page = ceil(query_set.count() / 50)
-    if page > max_page:
-        raise HTTPException(
-            detail='Page index too big',
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        )
-    response.headers['X-Pages'] = str(max_page)
     return [
         GetMailShortOut.from_record(mail)
-        for mail in query_set[(page - 1) * 50:page * 50]
+        for mail in paginate(query_set, 50, page, response)
     ]
 
 
