@@ -32,10 +32,10 @@ class EsiCharacterLocation(me.Document):
     solar_system_id = me.IntField()
     """Solar system ID where the character is"""
 
-    station_id = me.IntField(null=True)
+    station_id = me.IntField(default=None, null=True)
     """Station ID, if applicable"""
 
-    structure_id = me.IntField(null=True)
+    structure_id = me.IntField(default=None, null=True)
     """Structire ID, if applicable"""
 
     timestamp = me.DateTimeField(default=utils.now)
@@ -97,6 +97,7 @@ class EsiMail(me.Document):
 
     meta = {
         'indexes': [
+            'from_id',
             {
                 'default_language': 'english',
                 'fields': ['$body', '$subject'],

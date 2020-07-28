@@ -272,6 +272,58 @@ components:
       - alliance_name
       title: GetAllianceShortOut
       type: object
+    GetCharacterLocationOut:
+      description: Describes a character location
+      properties:
+        character_id:
+          title: Character Id
+          type: integer
+        character_name:
+          title: Character Name
+          type: string
+        online:
+          title: Online
+          type: boolean
+        ship_name:
+          title: Ship Name
+          type: string
+        ship_type_id:
+          title: Ship Type Id
+          type: integer
+        ship_type_name:
+          title: Ship Type Name
+          type: string
+        solar_system_id:
+          title: Solar System Id
+          type: integer
+        solar_system_name:
+          title: Solar System Name
+          type: string
+        station_id:
+          title: Station Id
+          type: integer
+        station_name:
+          title: Station Name
+          type: string
+        structure_id:
+          title: Structure Id
+          type: integer
+        timestamp:
+          format: date-time
+          title: Timestamp
+          type: string
+      required:
+      - character_id
+      - character_name
+      - online
+      - ship_name
+      - ship_type_id
+      - ship_type_name
+      - solar_system_id
+      - solar_system_name
+      - timestamp
+      title: GetCharacterLocationOut
+      type: object
     GetCoalitionOut:
       description: Model for `GET /coalition/{coalition_id}` responses.
       properties:
@@ -567,6 +619,39 @@ components:
       - name
       title: GetJobOut
       type: object
+    GetMailShortOut:
+      description: Represents a short description (header) of an email
+      properties:
+        from_id:
+          title: From Id
+          type: integer
+        from_name:
+          title: From Name
+          type: string
+        mail_id:
+          title: Mail Id
+          type: integer
+        recipients:
+          items:
+            $ref: '#/components/schemas/MailRecipient'
+          title: Recipients
+          type: array
+        subject:
+          title: Subject
+          type: string
+        timestamp:
+          format: date-time
+          title: Timestamp
+          type: string
+      required:
+      - from_id
+      - from_name
+      - mail_id
+      - recipients
+      - subject
+      - timestamp
+      title: GetMailShortOut
+      type: object
     GetTokenOut:
       description: Model for ``GET /token`` responses.
       properties:
@@ -754,6 +839,20 @@ components:
       - warning
       title: LoggingLevel
       type: string
+    MailRecipient:
+      description: Represents a recipient of the email
+      properties:
+        recipient_id:
+          title: Recipient Id
+          type: integer
+        recipient_name:
+          title: Recipient Name
+          type: string
+      required:
+      - recipient_id
+      - recipient_name
+      title: MailRecipient
+      type: object
     PostCoalitionIn:
       description: Model for `POST /coalition` responses.
       properties:
@@ -1675,15 +1774,123 @@ paths:
       summary: Starts a Discord authentication challenge
       tags:
       - Discord
+  /esi/history/characters/{character_id}/location:
+    get:
+      description: 'Get the location history of a character. Requires having clearance
+        to
+
+        access the ESI scopes ``esi-location.read_location.v1``,
+
+        ``esi-location.read_online.v1``, and ``esi-location.read_ship_type.v1``, of
+
+        the character. The results are sorted by most to least recent, and
+
+        paginated by pages of 50 items. The page count in returned in the
+
+        ``X-Pages`` header.'
+      operationId: get_history_character_location_esi_history_characters__character_id__location_get
+      parameters:
+      - in: path
+        name: character_id
+        required: true
+        schema:
+          title: Character Id
+          type: integer
+      - in: header
+        name: page
+        required: false
+        schema:
+          default: 1
+          exclusiveMinimum: 0.0
+          title: Page
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetCharacterLocationOut'
+                title: Response Get History Character Location Esi History Characters  Character
+                  Id  Location Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get character location history
+      tags:
+      - ESI
+  /esi/history/characters/{character_id}/mail:
+    get:
+      description: 'Get the email history of a character. Requires having clearance
+        to access
+
+        the ESI scope ``esi-mail.read_mail.v1`` of the character. The results are
+
+        sorted by most to least recent, and paginated by pages of 50 items. The
+
+        page count in returned in the ``X-Pages`` header.'
+      operationId: get_history_character_mails_esi_history_characters__character_id__mail_get
+      parameters:
+      - in: path
+        name: character_id
+        required: true
+        schema:
+          title: Character Id
+          type: integer
+      - in: header
+        name: page
+        required: false
+        schema:
+          default: 1
+          exclusiveMinimum: 0.0
+          title: Page
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetMailShortOut'
+                title: Response Get History Character Mails Esi History Characters  Character
+                  Id  Mail Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get character email history
+      tags:
+      - ESI
   /esi/{esi_path}:
     get:
       description: 'Forwards a `GET` request to the ESI. The required clearance level
         depends
 
-        on the user making the request and the user specified on the
+        on the user making the request and the user specified on the `on_behalf_of`
 
-        `on_behalf_of` field. See also `EsiRequestIn`.'
-      operationId: get_esi_latest_esi__esi_path__get
+        field. See also `EsiRequestIn`.'
+      operationId: get_esi_esi__esi_path__get
       parameters:
       - in: path
         name: esi_path

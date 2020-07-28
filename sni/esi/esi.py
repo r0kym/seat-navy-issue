@@ -2,7 +2,7 @@
 EVE ESI (public API) layer
 """
 
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 import logging
 import re
 
@@ -42,24 +42,6 @@ class EsiResponse(pdt.BaseModel):
             headers=dict(response.headers),
             status_code=response.status_code,
         )
-
-
-ESI_ANNOTATORS: Dict[str, Tuple[str, str]] = {
-    'alliance_id': ('latest/alliances/{}/', 'name'),
-    'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'),
-    'character_id': ('latest/characters/{}/', 'name'),
-    'corporation_id': ('latest/corporations/{}/', 'name'),
-    'graphic_id': ('latest/universe/graphics/{}/', 'graphic_file'),
-    'moon_id': ('latest/universe/moons/{}/', 'name'),
-    'planet_id': ('latest/universe/planets/{}/', 'name'),
-    'star_id': ('latest/universe/stars/{}/', 'name'),
-    'stargate_id': ('latest/universe/stargates/{}/', 'name'),
-    'station_id': ('latest/universe/stations/{}/', 'name'),
-}
-"""
-ESI annotators, see :meth:`sni.esi.esi.annotate`. If the value at a certain key
-is ``None``, it means that :meth:`sni.sde.sde.sde_get_name` should be used
-"""
 
 
 # pylint: disable=dangerous-default-value
@@ -230,20 +212,41 @@ def id_annotations(data: Any) -> Dict[int, str]:
     if isinstance(data, dict):
         for key, val in data.items():
             if key.endswith('_id') and isinstance(val, int):
-                if key in ESI_ANNOTATORS:
-                    annotator = ESI_ANNOTATORS[key]
-                    raw = esi_get(annotator[0].format(val))
-                    annotations[val] = raw.data[annotator[1]]
-                else:
-                    name = sde_get_name(val, key)
-                    if name is not None:
-                        annotations[val] = name
+                name = id_to_name(val, key)
+                if name:
+                    annotations[val] = name
             else:
                 annotations.update(id_annotations(val))
     elif isinstance(data, list):
         for element in data:
             annotations.update(id_annotations(element))
     return annotations
+
+
+def id_to_name(id_field_value: int, id_field_name: str) -> str:
+    """
+    Converts an object ID (e.g. station, solar system, SDE type) to a name.
+    """
+    annotators = {
+        'alliance_id': ('latest/alliances/{}/', 'name'),
+        'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'),
+        'character_id': ('latest/characters/{}/', 'name'),
+        'corporation_id': ('latest/corporations/{}/', 'name'),
+        'graphic_id': ('latest/universe/graphics/{}/', 'graphic_file'),
+        'moon_id': ('latest/universe/moons/{}/', 'name'),
+        'planet_id': ('latest/universe/planets/{}/', 'name'),
+        'star_id': ('latest/universe/stars/{}/', 'name'),
+        'stargate_id': ('latest/universe/stargates/{}/', 'name'),
+        'station_id': ('latest/universe/stations/{}/', 'name'),
+        'structure_id': ('latest/universe/structures/{}/', 'name'),
+    }
+    if id_field_name in annotators:
+        annotator = annotators[id_field_name]
+        raw = esi_get(annotator[0].format(id_field_value))
+        result = raw.data.get(annotator[1])
+    else:
+        result = sde_get_name(id_field_value, id_field_name)
+    return result if result is not None else ''
 
 
 def load_esi_openapi() -> None:
