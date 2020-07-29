@@ -11,6 +11,8 @@ import logging
 import logging.config
 import sys
 
+from pydantic_loader.config import CfgError
+
 from sni.utils import object_from_name
 from sni.conf import load_configuration_file
 
@@ -122,7 +124,11 @@ def main():
         print_configuration_schema()
         sys.exit()
 
-    load_configuration_file(arguments.file)
+    try:
+        load_configuration_file(arguments.file)
+    except CfgError:
+        print('Error loading configuration file ' + arguments.file)
+        sys.exit(-1)
     from sni.conf import CONFIGURATION as conf
 
     configure_logging()
