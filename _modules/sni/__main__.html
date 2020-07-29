@@ -50,8 +50,9 @@
 <span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">callable_from_name</span>
-<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">pydantic_loader.config</span> <span class="kn">import</span> <span class="n">CfgError</span>
+
+<span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">object_from_name</span>
 <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">load_configuration_file</span>
 
 
@@ -59,6 +60,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports all ``signals`` submodules.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting database signals&#39;</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">sni.db.signals</span>
     <span class="kn">import</span> <span class="nn">sni.esi.signals</span>
@@ -67,10 +69,8 @@
     <span class="kn">import</span> <span class="nn">sni.uac.signals</span>
     <span class="kn">import</span> <span class="nn">sni.user.signals</span>
     <span class="kn">import</span> <span class="nn">sni.api.signals</span>
-
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.discord.signals</span>
-
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.teamspeak.signals</span></div>
 
@@ -79,6 +79,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic configuration of the logging facility</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">({</span>
         <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -115,6 +116,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inits and migrate the MongoDB database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
+
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating database&#39;</span><span class="p">)</span>
 
     <span class="kn">import</span> <span class="nn">sni.esi.migration</span>
@@ -160,7 +163,13 @@
         <span class="n">print_configuration_schema</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-    <span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">CfgError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error loading configuration file &#39;</span> <span class="o">+</span> <span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
+
     <span class="n">configure_logging</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -294,7 +303,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Schedules jobs from all subpackages</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
+
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Scheduling jobs&#39;</span><span class="p">)</span>
+
     <span class="kn">import</span> <span class="nn">sni.db.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.sde.jobs</span>
@@ -302,10 +314,8 @@
     <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.index.jobs</span>
     <span class="kn">import</span> <span class="nn">sni.api.jobs</span>
-
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
-
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">sni.discord.jobs</span></div>
 

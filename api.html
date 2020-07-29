@@ -48,10 +48,43 @@
 <div class="section" id="module-sni.api.server">
 <span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.api.server" title="Permalink to this headline">¶</a></h2>
 <p>API Server</p>
+<dl class="class">
+<dt id="sni.api.server.RouterConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">RouterConfig</code><a class="reference internal" href="_modules/sni/api/server.html#RouterConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.RouterConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Basic router configuration</p>
+<dl class="method">
+<dt id="sni.api.server.RouterConfig.add_to_application">
+<code class="sig-name descname">add_to_application</code><span class="sig-paren">(</span><em class="sig-param">application: fastapi.applications.FastAPI</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/api/server.html#RouterConfig.add_to_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.RouterConfig.add_to_application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the current router to the FastAPI application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.server.RouterConfig.include">
+<code class="sig-name descname">include</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.server.RouterConfig.include" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.server.RouterConfig.kwargs">
+<code class="sig-name descname">kwargs</code><em class="property">: dict</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.server.RouterConfig.kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.server.RouterConfig.prefix">
+<code class="sig-name descname">prefix</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.server.RouterConfig.prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.server.RouterConfig.router">
+<code class="sig-name descname">router</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.server.RouterConfig.router" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
-<dt id="sni.api.server.get_ping">
-<em class="property">async </em><code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">get_ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#get_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.get_ping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replies <code class="docutils literal notranslate"><span class="pre">pong</span></code>. That is all.</p>
+<dt id="sni.api.server.add_included_routers">
+<code class="sig-prename descclassname">sni.api.server.</code><code class="sig-name descname">add_included_routers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/server.html#add_included_routers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.server.add_included_routers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds all routers whose <code class="docutils literal notranslate"><span class="pre">include</span></code> field is <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd></dl>
 
 <dl class="function">
