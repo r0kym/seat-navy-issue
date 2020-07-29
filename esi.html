@@ -48,13 +48,6 @@
 <div class="section" id="module-sni.esi.esi">
 <span id="main-module"></span><h2>Main module<a class="headerlink" href="#module-sni.esi.esi" title="Permalink to this headline">¶</a></h2>
 <p>EVE ESI (public API) layer</p>
-<dl class="data">
-<dt id="sni.esi.esi.ESI_ANNOTATORS">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">ESI_ANNOTATORS</code><em class="property">: Dict[str, Tuple[str, str]]</em><em class="property"> = {'alliance_id': ('latest/alliances/{}/', 'name'), 'asteroid_belt_id': ('latest/universe/asteroid_belts/{}/', 'name'), 'character_id': ('latest/characters/{}/', 'name'), 'corporation_id': ('latest/corporations/{}/', 'name'), 'graphic_id': ('latest/universe/graphics/{}/', 'graphic_file'), 'moon_id': ('latest/universe/moons/{}/', 'name'), 'planet_id': ('latest/universe/planets/{}/', 'name'), 'star_id': ('latest/universe/stars/{}/', 'name'), 'stargate_id': ('latest/universe/stargates/{}/', 'name'), 'station_id': ('latest/universe/stations/{}/', 'name')}</em><a class="headerlink" href="#sni.esi.esi.ESI_ANNOTATORS" title="Permalink to this definition">¶</a></dt>
-<dd><p>ESI annotators, see <code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.annotate()</span></code>. If the value at a certain key
-is <code class="docutils literal notranslate"><span class="pre">None</span></code>, it means that <a class="reference internal" href="sde.html#sni.sde.sde.sde_get_name" title="sni.sde.sde.sde_get_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.sde.sde.sde_get_name()</span></code></a> should be used</p>
-</dd></dl>
-
 <dl class="class">
 <dt id="sni.esi.esi.EsiResponse">
 <em class="property">class </em><code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">EsiResponse</code><a class="reference internal" href="_modules/sni/esi/esi.html#EsiResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.EsiResponse" title="Permalink to this definition">¶</a></dt>
@@ -148,6 +141,12 @@ is <code class="docutils literal notranslate"><span class="pre">None</span></cod
 always have the same name (e.g. <cite>solar_system_id</cite>, <cite>character_id</cite>, etc.).
 This method recursively searches for these ID fields and returns a dict
 mapping these IDs to a name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.esi.esi.id_to_name">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">id_to_name</code><span class="sig-paren">(</span><em class="sig-param">id_field_value: int</em>, <em class="sig-param">id_field_name: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/esi/esi.html#id_to_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.id_to_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an object ID (e.g. station, solar system, SDE type) to a name.</p>
 </dd></dl>
 
 <dl class="function">

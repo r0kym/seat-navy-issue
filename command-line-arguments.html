@@ -46,6 +46,27 @@
   <div class="section" id="command-line-arguments">
 <h1>Command line arguments<a class="headerlink" href="#command-line-arguments" title="Permalink to this headline">¶</a></h1>
 <p>Running <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">sni</span> <span class="pre">--help</span></code> outputs the following:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: __main__.py [-h] [-f FILE] [--flush-cache] [--migrate-database]
+                   [--print-configuration-spec] [--print-openapi-spec]
+                   [--reload-esi-openapi-spec]
+
+SeAT Navy Issue
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Specify an alternate configuration file (default:
+                        ./sni.yml)
+  --flush-cache         Flushes the Redis cache
+  --migrate-database    Runs database migration jobs and exits
+  --print-configuration-spec
+                        Prints the configuration file specification in JSON
+                        and exits
+  --print-openapi-spec  Prints the OpenAPI specification in YAML and exits
+  --reload-esi-openapi-spec
+                        Reloads the ESI OpenAPI specification to the database
+                        and exits
+</pre></div>
+</div>
 </div>
 
 

@@ -71,10 +71,10 @@
     <span class="n">solar_system_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
     <span class="sd">&quot;&quot;&quot;Solar system ID where the character is&quot;&quot;&quot;</span>
 
-    <span class="n">station_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">station_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Station ID, if applicable&quot;&quot;&quot;</span>
 
-    <span class="n">structure_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">structure_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Structire ID, if applicable&quot;&quot;&quot;</span>
 
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
@@ -136,6 +136,7 @@
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;from_id&#39;</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s1">&#39;default_language&#39;</span><span class="p">:</span> <span class="s1">&#39;english&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;$body&#39;</span><span class="p">,</span> <span class="s1">&#39;$subject&#39;</span><span class="p">],</span>

@@ -41,7 +41,7 @@
 <span class="sd">EVE ESI (public API) layer</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
@@ -81,24 +81,6 @@
             <span class="n">headers</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
             <span class="n">status_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
         <span class="p">)</span></div></div>
-
-
-<span class="n">ESI_ANNOTATORS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;alliance_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/alliances/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;asteroid_belt_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/asteroid_belts/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;character_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/characters/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;corporation_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/corporations/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;graphic_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/graphics/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;graphic_file&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;moon_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/moons/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;planet_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/planets/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;star_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/stars/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;stargate_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/stargates/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;station_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/stations/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
-<span class="p">}</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">ESI annotators, see :meth:`sni.esi.esi.annotate`. If the value at a certain key</span>
-<span class="sd">is ``None``, it means that :meth:`sni.sde.sde.sde_get_name` should be used</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
 
 <span class="c1"># pylint: disable=dangerous-default-value</span>
@@ -269,20 +251,41 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_id&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ESI_ANNOTATORS</span><span class="p">:</span>
-                    <span class="n">annotator</span> <span class="o">=</span> <span class="n">ESI_ANNOTATORS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                    <span class="n">raw</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="n">annotator</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
-                    <span class="n">annotations</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">annotator</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="n">sde_get_name</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">annotations</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="n">annotations</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">id_annotations</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">id_annotations</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">annotations</span></div>
+
+
+<div class="viewcode-block" id="id_to_name"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.id_to_name">[docs]</a><span class="k">def</span> <span class="nf">id_to_name</span><span class="p">(</span><span class="n">id_field_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">id_field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an object ID (e.g. station, solar system, SDE type) to a name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">annotators</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;alliance_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/alliances/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;asteroid_belt_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/asteroid_belts/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;character_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/characters/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;corporation_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/corporations/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;graphic_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/graphics/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;graphic_file&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;moon_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/moons/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;planet_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/planets/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;star_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/stars/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;stargate_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/stargates/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;station_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/stations/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;structure_id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;latest/universe/structures/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">id_field_name</span> <span class="ow">in</span> <span class="n">annotators</span><span class="p">:</span>
+        <span class="n">annotator</span> <span class="o">=</span> <span class="n">annotators</span><span class="p">[</span><span class="n">id_field_name</span><span class="p">]</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="n">annotator</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_field_value</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">annotator</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">sde_get_name</span><span class="p">(</span><span class="n">id_field_value</span><span class="p">,</span> <span class="n">id_field_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span></div>
 
 
 <div class="viewcode-block" id="load_esi_openapi"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.load_esi_openapi">[docs]</a><span class="k">def</span> <span class="nf">load_esi_openapi</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

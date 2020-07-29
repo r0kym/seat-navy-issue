@@ -41,9 +41,17 @@
 <span class="sd">ESI related paths</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span><span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">APIRouter</span><span class="p">,</span>
+    <span class="n">Depends</span><span class="p">,</span>
+    <span class="n">Header</span><span class="p">,</span>
+    <span class="n">HTTPException</span><span class="p">,</span>
+    <span class="n">Response</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
@@ -55,12 +63,22 @@
     <span class="n">EsiResponse</span><span class="p">,</span>
     <span class="n">get_esi_path_scope</span><span class="p">,</span>
     <span class="n">id_annotations</span><span class="p">,</span>
+    <span class="n">id_to_name</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.index.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EsiCharacterLocation</span><span class="p">,</span>
+    <span class="n">EsiMail</span><span class="p">,</span>
+    <span class="n">EsiMailRecipient</span><span class="p">,</span>
+    <span class="n">EsiSkillPoints</span><span class="p">,</span>
+    <span class="n">EsiWalletBalance</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">paginate</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
@@ -75,21 +93,311 @@
     <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></div>
 
 
-<div class="viewcode-block" id="get_esi_latest"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_esi_latest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<div class="viewcode-block" id="GetCharacterLocationOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterLocationOut">[docs]</a><span class="k">class</span> <span class="nc">GetCharacterLocationOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes a character location</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">online</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">ship_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ship_type_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">ship_type_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">solar_system_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">solar_system_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">station_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">station_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">structure_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+
+<div class="viewcode-block" id="GetCharacterLocationOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterLocationOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span>
+            <span class="n">location</span><span class="p">:</span> <span class="n">EsiCharacterLocation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCharacterLocationOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.index.models.EsiCharacterLocation` to a</span>
+<span class="sd">        :class:`sni.api.routers.esi.GetCharacterLocationOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ship_type_name</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">ship_type_id</span><span class="p">,</span> <span class="s1">&#39;type_id&#39;</span><span class="p">)</span>
+        <span class="n">solar_system_name</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">solar_system_id</span><span class="p">,</span>
+                                       <span class="s1">&#39;solar_system_id&#39;</span><span class="p">)</span>
+        <span class="n">station_name</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span>
+            <span class="n">location</span><span class="o">.</span><span class="n">station_id</span><span class="p">,</span>
+            <span class="s1">&#39;station_id&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">location</span><span class="o">.</span><span class="n">station_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">GetCharacterLocationOut</span><span class="p">(</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+            <span class="n">online</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">online</span><span class="p">,</span>
+            <span class="n">ship_name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">ship_name</span><span class="p">,</span>
+            <span class="n">ship_type_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">ship_type_id</span><span class="p">,</span>
+            <span class="n">ship_type_name</span><span class="o">=</span><span class="n">ship_type_name</span><span class="p">,</span>
+            <span class="n">solar_system_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">solar_system_id</span><span class="p">,</span>
+            <span class="n">solar_system_name</span><span class="o">=</span><span class="n">solar_system_name</span><span class="p">,</span>
+            <span class="n">station_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">station_id</span><span class="p">,</span>
+            <span class="n">station_name</span><span class="o">=</span><span class="n">station_name</span><span class="p">,</span>
+            <span class="n">structure_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">structure_id</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GetCharacterMailOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterMailOut">[docs]</a><span class="k">class</span> <span class="nc">GetCharacterMailOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a user email.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GetCharacterMailOut.MailRecipient"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterMailOut.MailRecipient">[docs]</a>    <span class="k">class</span> <span class="nc">MailRecipient</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Represents a recipient of the email</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recipient_id</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="n">recipient_name</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="GetCharacterMailOut.MailRecipient.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterMailOut.MailRecipient.from_record">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span>
+            <span class="n">recipient</span><span class="p">:</span> <span class="n">EsiMailRecipient</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCharacterMailOut.MailRecipient&#39;</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Converts a :class:`sni.index.models.EsiMailRecipient` to a</span>
+<span class="sd">            :class:`sni.api.routers.esi.GetCharacterMailOut.MailRecipient`</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">recipient</span><span class="o">.</span><span class="n">recipient_type</span> <span class="o">==</span> <span class="s1">&#39;mailing_list&#39;</span><span class="p">:</span>
+                <span class="n">recipient_name</span> <span class="o">=</span> <span class="s1">&#39;Mailing list &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">recipient</span><span class="o">.</span><span class="n">recipient_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">recipient_name</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span>
+                    <span class="n">recipient</span><span class="o">.</span><span class="n">recipient_id</span><span class="p">,</span>
+                    <span class="n">recipient</span><span class="o">.</span><span class="n">recipient_type</span> <span class="o">+</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">GetCharacterMailOut</span><span class="o">.</span><span class="n">MailRecipient</span><span class="p">(</span>
+                <span class="n">recipient_id</span><span class="o">=</span><span class="n">recipient</span><span class="o">.</span><span class="n">recipient_id</span><span class="p">,</span>
+                <span class="n">recipient_name</span><span class="o">=</span><span class="n">recipient_name</span><span class="p">,</span>
+            <span class="p">)</span></div></div>
+
+    <span class="n">body</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">from_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">from_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">mail_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">recipients</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MailRecipient</span><span class="p">]</span>
+    <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+
+<div class="viewcode-block" id="GetCharacterMailOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterMailOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">mail</span><span class="p">:</span> <span class="n">EsiMail</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCharacterMailOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.index.models.EsiMail` to a</span>
+<span class="sd">        :class:`sni.api.routers.esi.GetCharacterMailOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">GetCharacterMailOut</span><span class="o">.</span><span class="n">MailRecipient</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">recipients</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">GetCharacterMailOut</span><span class="p">(</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">from_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span>
+            <span class="n">from_name</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">from_name</span><span class="p">,</span>
+            <span class="n">mail_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">mail_id</span><span class="p">,</span>
+            <span class="n">recipients</span><span class="o">=</span><span class="n">recipients</span><span class="p">,</span>
+            <span class="n">subject</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GetCharacterMailShortOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterMailShortOut">[docs]</a><span class="k">class</span> <span class="nc">GetCharacterMailShortOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a short description (header) of an email</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">from_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">from_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">mail_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">recipients</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetCharacterMailOut</span><span class="o">.</span><span class="n">MailRecipient</span><span class="p">]</span>
+    <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+
+<div class="viewcode-block" id="GetCharacterMailShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterMailShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">mail</span><span class="p">:</span> <span class="n">EsiMail</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCharacterMailShortOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.index.models.EsiMail` to a</span>
+<span class="sd">        :class:`sni.api.routers.esi.GetCharacterMailShortOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">GetCharacterMailOut</span><span class="o">.</span><span class="n">MailRecipient</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">recipients</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">GetCharacterMailShortOut</span><span class="p">(</span>
+            <span class="n">from_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span>
+            <span class="n">from_name</span><span class="o">=</span><span class="n">id_to_name</span><span class="p">(</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span> <span class="s1">&#39;character_id&#39;</span><span class="p">),</span>
+            <span class="n">mail_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">mail_id</span><span class="p">,</span>
+            <span class="n">recipients</span><span class="o">=</span><span class="n">recipients</span><span class="p">,</span>
+            <span class="n">subject</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GetCharacterSkillPointsOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterSkillPointsOut">[docs]</a><span class="k">class</span> <span class="nc">GetCharacterSkillPointsOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a character&#39;s skill points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">total_sp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">unallocated_sp</span><span class="p">:</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="GetCharacterSkillPointsOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterSkillPointsOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">document</span><span class="p">:</span> <span class="n">EsiSkillPoints</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCharacterSkillPointsOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.index.models.EsiSkillPoints` to a</span>
+<span class="sd">        :class:`sni.api.routers.esi.GetCharacterSkillPointsOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetCharacterSkillPointsOut</span><span class="p">(</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">document</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">total_sp</span><span class="o">=</span><span class="n">document</span><span class="o">.</span><span class="n">total_sp</span><span class="p">,</span>
+            <span class="n">unallocated_sp</span><span class="o">=</span><span class="n">document</span><span class="o">.</span><span class="n">unallocated_sp</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GetCharacterWalletBalanceOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterWalletBalanceOut">[docs]</a><span class="k">class</span> <span class="nc">GetCharacterWalletBalanceOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a character&#39;s wallet balance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">balance</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+
+<div class="viewcode-block" id="GetCharacterWalletBalanceOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterWalletBalanceOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span>
+            <span class="n">balance</span><span class="p">:</span> <span class="n">EsiWalletBalance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCharacterWalletBalanceOut&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.index.models.EsiWalletBalance` to a</span>
+<span class="sd">        :class:`sni.api.routers.esi.GetCharacterWalletBalanceOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetCharacterWalletBalanceOut</span><span class="p">(</span>
+            <span class="n">balance</span><span class="o">=</span><span class="n">balance</span><span class="o">.</span><span class="n">balance</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">balance</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_history_character_location"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_history_character_location">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/history/characters/</span><span class="si">{character_id}</span><span class="s1">/location&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetCharacterLocationOut</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get character location history&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_history_character_location</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">PositiveInt</span> <span class="o">=</span> <span class="n">Header</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the location history of a character. Requires having clearance to</span>
+<span class="sd">    access the ESI scopes ``esi-location.read_location.v1``,</span>
+<span class="sd">    ``esi-location.read_online.v1``, and ``esi-location.read_ship_type.v1``, of</span>
+<span class="sd">    the character. The results are sorted by most to least recent, and</span>
+<span class="sd">    paginated by pages of 50 items. The page count in returned in the</span>
+<span class="sd">    ``X-Pages`` header.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;esi-location.read_location.v1&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;esi-location.read_online.v1&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;esi-location.read_ship_type.v1&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiCharacterLocation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-timestamp&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetCharacterLocationOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">paginate</span><span class="p">(</span><span class="n">query_set</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_history_character_mails"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_history_character_mails">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/history/characters/</span><span class="si">{character_id}</span><span class="s1">/mail&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetCharacterMailShortOut</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get character email history&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_history_character_mails</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">PositiveInt</span> <span class="o">=</span> <span class="n">Header</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the email history of a character. Requires having clearance to access</span>
+<span class="sd">    the ESI scope ``esi-mail.read_mail.v1`` of the character. The results are</span>
+<span class="sd">    sorted by most to least recent, and paginated by pages of 50 items. The</span>
+<span class="sd">    page count in returned in the ``X-Pages`` header.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        Only show email sent by the specified user...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;esi-mail.read_mail.v1&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiMail</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">from_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-timestamp&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetCharacterMailShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">mail</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="n">paginate</span><span class="p">(</span><span class="n">query_set</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_history_character_skillpoints"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_history_character_skillpoints">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/history/characters/</span><span class="si">{character_id}</span><span class="s1">/skillpoints&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetCharacterSkillPointsOut</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get character skill points history&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_history_character_skillpoints</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">PositiveInt</span> <span class="o">=</span> <span class="n">Header</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the skill points history of a character. Requires having clearance to</span>
+<span class="sd">    access the ESI scope ``esi-skills.read_skills.v1`` of the character. The</span>
+<span class="sd">    results are sorted by most to least recent, and paginated by pages of 50</span>
+<span class="sd">    items. The page count in returned in the ``X-Pages`` header.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;esi-skills.read_skills.v1&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiSkillPoints</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-timestamp&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetCharacterSkillPointsOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">paginate</span><span class="p">(</span><span class="n">query_set</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_history_character_wallet"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_history_character_wallet">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s1">&#39;/history/characters/</span><span class="si">{character_id}</span><span class="s1">/wallet&#39;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetCharacterWalletBalanceOut</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get character wallet balance history&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_history_character_wallet</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">PositiveInt</span> <span class="o">=</span> <span class="n">Header</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the wallet balance history of a character. Requires having clearance to</span>
+<span class="sd">    access the ESI scope ``esi-wallet.read_character_wallet.v1`` of the</span>
+<span class="sd">    character. The results are sorted by most to least recent, and paginated by</span>
+<span class="sd">    pages of 50 items. The page count in returned in the ``X-Pages`` header.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;esi-wallet.read_character_wallet.v1&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiWalletBalance</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-timestamp&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetCharacterWalletBalanceOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">paginate</span><span class="p">(</span><span class="n">query_set</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_esi"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_esi">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="s1">&#39;/{esi_path:path}&#39;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">EsiResponse</span><span class="p">,</span>
     <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Proxy path to the ESI&#39;</span><span class="p">,</span>
     <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ESI&#39;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">get_esi_latest</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_esi</span><span class="p">(</span>
         <span class="n">esi_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">EsiRequestIn</span> <span class="o">=</span> <span class="n">EsiRequestIn</span><span class="p">(),</span>
         <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Forwards a `GET` request to the ESI. The required clearance level depends</span>
-<span class="sd">    on the user making the request and the user specified on the</span>
-<span class="sd">    `on_behalf_of` field. See also `EsiRequestIn`.</span>
+<span class="sd">    on the user making the request and the user specified on the `on_behalf_of`</span>
+<span class="sd">    field. See also `EsiRequestIn`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">esi_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">on_behalf_of</span><span class="p">:</span>

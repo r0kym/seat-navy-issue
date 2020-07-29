@@ -608,12 +608,298 @@ clearance level of 0 or more.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">GetCharacterLocationOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterLocationOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Describes a character location</p>
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.character_id">
+<code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.character_name">
+<code class="sig-name descname">character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">location: sni.index.models.EsiCharacterLocation</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterLocationOut<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterLocationOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="indexation.html#sni.index.models.EsiCharacterLocation" title="sni.index.models.EsiCharacterLocation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiCharacterLocation</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.esi.GetCharacterLocationOut" title="sni.api.routers.esi.GetCharacterLocationOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.esi.GetCharacterLocationOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.online">
+<code class="sig-name descname">online</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.online" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.ship_name">
+<code class="sig-name descname">ship_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.ship_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.ship_type_id">
+<code class="sig-name descname">ship_type_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.ship_type_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.ship_type_name">
+<code class="sig-name descname">ship_type_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.ship_type_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.solar_system_id">
+<code class="sig-name descname">solar_system_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.solar_system_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.solar_system_name">
+<code class="sig-name descname">solar_system_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.solar_system_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.station_id">
+<code class="sig-name descname">station_id</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.station_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.station_name">
+<code class="sig-name descname">station_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.station_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.structure_id">
+<code class="sig-name descname">structure_id</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.structure_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.timestamp">
+<code class="sig-name descname">timestamp</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.routers.esi.GetCharacterMailOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">GetCharacterMailOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterMailOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a user email.</p>
+<dl class="class">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.MailRecipient">
+<em class="property">class </em><code class="sig-name descname">MailRecipient</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterMailOut.MailRecipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.MailRecipient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a recipient of the email</p>
+<dl class="method">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.MailRecipient.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">recipient: sni.index.models.EsiMailRecipient</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterMailOut.MailRecipient<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterMailOut.MailRecipient.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.MailRecipient.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="indexation.html#sni.index.models.EsiMailRecipient" title="sni.index.models.EsiMailRecipient"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiMailRecipient</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.esi.GetCharacterMailOut.MailRecipient" title="sni.api.routers.esi.GetCharacterMailOut.MailRecipient"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.esi.GetCharacterMailOut.MailRecipient</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.MailRecipient.recipient_id">
+<code class="sig-name descname">recipient_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.MailRecipient.recipient_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.MailRecipient.recipient_name">
+<code class="sig-name descname">recipient_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.MailRecipient.recipient_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.body">
+<code class="sig-name descname">body</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.from_id">
+<code class="sig-name descname">from_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.from_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.from_name">
+<code class="sig-name descname">from_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.from_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">mail: sni.index.models.EsiMail</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterMailOut<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterMailOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="indexation.html#sni.index.models.EsiMail" title="sni.index.models.EsiMail"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiMail</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.esi.GetCharacterMailOut" title="sni.api.routers.esi.GetCharacterMailOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.esi.GetCharacterMailOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.mail_id">
+<code class="sig-name descname">mail_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.mail_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.recipients">
+<code class="sig-name descname">recipients</code><em class="property">: List[MailRecipient]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.recipients" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.subject">
+<code class="sig-name descname">subject</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.subject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailOut.timestamp">
+<code class="sig-name descname">timestamp</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailOut.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">GetCharacterMailShortOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterMailShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a short description (header) of an email</p>
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.from_id">
+<code class="sig-name descname">from_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.from_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.from_name">
+<code class="sig-name descname">from_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.from_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">mail: sni.index.models.EsiMail</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterMailShortOut<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterMailShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="indexation.html#sni.index.models.EsiMail" title="sni.index.models.EsiMail"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiMail</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.esi.GetCharacterMailShortOut" title="sni.api.routers.esi.GetCharacterMailShortOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.esi.GetCharacterMailShortOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.mail_id">
+<code class="sig-name descname">mail_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.mail_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.recipients">
+<code class="sig-name descname">recipients</code><em class="property">: List[GetCharacterMailOut.MailRecipient]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.recipients" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.subject">
+<code class="sig-name descname">subject</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.subject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.timestamp">
+<code class="sig-name descname">timestamp</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.routers.esi.GetCharacterSkillPointsOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">GetCharacterSkillPointsOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterSkillPointsOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterSkillPointsOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a character’s skill points</p>
+<dl class="method">
+<dt id="sni.api.routers.esi.GetCharacterSkillPointsOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">document: sni.index.models.EsiSkillPoints</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterSkillPointsOut<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterSkillPointsOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterSkillPointsOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="indexation.html#sni.index.models.EsiSkillPoints" title="sni.index.models.EsiSkillPoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiSkillPoints</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.esi.GetCharacterSkillPointsOut" title="sni.api.routers.esi.GetCharacterSkillPointsOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.esi.GetCharacterSkillPointsOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterSkillPointsOut.timestamp">
+<code class="sig-name descname">timestamp</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterSkillPointsOut.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterSkillPointsOut.total_sp">
+<code class="sig-name descname">total_sp</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterSkillPointsOut.total_sp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterSkillPointsOut.unallocated_sp">
+<code class="sig-name descname">unallocated_sp</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterSkillPointsOut.unallocated_sp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.api.routers.esi.GetCharacterWalletBalanceOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">GetCharacterWalletBalanceOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterWalletBalanceOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterWalletBalanceOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Represents a character’s wallet balance</p>
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterWalletBalanceOut.balance">
+<code class="sig-name descname">balance</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterWalletBalanceOut.balance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.esi.GetCharacterWalletBalanceOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">balance: sni.index.models.EsiWalletBalance</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterWalletBalanceOut<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterWalletBalanceOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterWalletBalanceOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="indexation.html#sni.index.models.EsiWalletBalance" title="sni.index.models.EsiWalletBalance"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.index.models.EsiWalletBalance</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.esi.GetCharacterWalletBalanceOut" title="sni.api.routers.esi.GetCharacterWalletBalanceOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.esi.GetCharacterWalletBalanceOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterWalletBalanceOut.timestamp">
+<code class="sig-name descname">timestamp</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterWalletBalanceOut.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
-<dt id="sni.api.routers.esi.get_esi_latest">
-<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_esi_latest</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.api.routers.esi.EsiRequestIn = EsiRequestIn(all_pages=False</em>, <em class="sig-param">id_annotations=False</em>, <em class="sig-param">on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_esi_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_esi_latest" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.esi.get_esi">
+<em class="property">async </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_esi</code><span class="sig-paren">(</span><em class="sig-param">esi_path: str</em>, <em class="sig-param">data: sni.api.routers.esi.EsiRequestIn = EsiRequestIn(all_pages=False</em>, <em class="sig-param">id_annotations=False</em>, <em class="sig-param">on_behalf_of=None</em>, <em class="sig-param">params={})</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_esi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_esi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forwards a <cite>GET</cite> request to the ESI. The required clearance level depends
-on the user making the request and the user specified on the
-<cite>on_behalf_of</cite> field. See also <cite>EsiRequestIn</cite>.</p>
+on the user making the request and the user specified on the <cite>on_behalf_of</cite>
+field. See also <cite>EsiRequestIn</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.esi.get_history_character_location">
+<code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_history_character_location</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">response: starlette.responses.Response</em>, <em class="sig-param">page: pydantic.types.PositiveInt = Header(1)</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_history_character_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_history_character_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the location history of a character. Requires having clearance to
+access the ESI scopes <code class="docutils literal notranslate"><span class="pre">esi-location.read_location.v1</span></code>,
+<code class="docutils literal notranslate"><span class="pre">esi-location.read_online.v1</span></code>, and <code class="docutils literal notranslate"><span class="pre">esi-location.read_ship_type.v1</span></code>, of
+the character. The results are sorted by most to least recent, and
+paginated by pages of 50 items. The page count in returned in the
+<code class="docutils literal notranslate"><span class="pre">X-Pages</span></code> header.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.esi.get_history_character_mails">
+<code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_history_character_mails</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">response: starlette.responses.Response</em>, <em class="sig-param">page: pydantic.types.PositiveInt = Header(1)</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_history_character_mails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_history_character_mails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the email history of a character. Requires having clearance to access
+the ESI scope <code class="docutils literal notranslate"><span class="pre">esi-mail.read_mail.v1</span></code> of the character. The results are
+sorted by most to least recent, and paginated by pages of 50 items. The
+page count in returned in the <code class="docutils literal notranslate"><span class="pre">X-Pages</span></code> header.</p>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Only show email sent by the specified user…</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.esi.get_history_character_skillpoints">
+<code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_history_character_skillpoints</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">response: starlette.responses.Response</em>, <em class="sig-param">page: pydantic.types.PositiveInt = Header(1)</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_history_character_skillpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_history_character_skillpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the skill points history of a character. Requires having clearance to
+access the ESI scope <code class="docutils literal notranslate"><span class="pre">esi-skills.read_skills.v1</span></code> of the character. The
+results are sorted by most to least recent, and paginated by pages of 50
+items. The page count in returned in the <code class="docutils literal notranslate"><span class="pre">X-Pages</span></code> header.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.esi.get_history_character_wallet">
+<code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">get_history_character_wallet</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">response: starlette.responses.Response</em>, <em class="sig-param">page: pydantic.types.PositiveInt = Header(1)</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#get_history_character_wallet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.get_history_character_wallet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the wallet balance history of a character. Requires having clearance to
+access the ESI scope <code class="docutils literal notranslate"><span class="pre">esi-wallet.read_character_wallet.v1</span></code> of the
+character. The results are sorted by most to least recent, and paginated by
+pages of 50 items. The page count in returned in the <code class="docutils literal notranslate"><span class="pre">X-Pages</span></code> header.</p>
 </dd></dl>
 
 </div>
