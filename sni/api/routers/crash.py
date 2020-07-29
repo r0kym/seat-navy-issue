@@ -53,6 +53,26 @@ class GetCrashReportTokenOut(pdt.BaseModel):
     token_type: str
     uuid: str
 
+    @staticmethod
+    def from_record(crash: CrashReport) -> 'GetCrashReportTokenOut':
+        """
+        Reports basic informations about a token used at the moment of a crash.
+        """
+        return GetCrashReportTokenOut(
+            created_on=crash.token.created_on,
+            expires_on=crash.token.expires_on,
+            owner=GetCrashReportTokenUserOut(
+                authorized_to_login=crash.token.owner.authorized_to_login,
+                character_id=crash.token.owner.character_id,
+                character_name=crash.token.owner.character_name,
+                clearance_level=crash.token.owner.clearance_level,
+                created_on=crash.token.owner.created_on,
+                updated_on=crash.token.owner.updated_on,
+            ),
+            token_type=crash.token.token_type,
+            uuid=str(crash.token.uuid),
+        )
+
 
 class GetCrashReportOut(pdt.BaseModel):
     """
@@ -61,7 +81,7 @@ class GetCrashReportOut(pdt.BaseModel):
     id: str
     request: GetCrashReportRequestOut
     timestamp: datetime
-    token: GetCrashReportTokenOut
+    token: Optional[GetCrashReportTokenOut]
     trace: List[str]
 
     @staticmethod
@@ -79,20 +99,8 @@ class GetCrashReportOut(pdt.BaseModel):
             ),
             timestamp=crash.timestamp,
             trace=crash.trace,
-            token=GetCrashReportTokenOut(
-                created_on=crash.token.created_on,
-                expires_on=crash.token.expires_on,
-                owner=GetCrashReportTokenUserOut(
-                    authorized_to_login=crash.token.owner.authorized_to_login,
-                    character_id=crash.token.owner.character_id,
-                    character_name=crash.token.owner.character_name,
-                    clearance_level=crash.token.owner.clearance_level,
-                    created_on=crash.token.owner.created_on,
-                    updated_on=crash.token.owner.updated_on,
-                ),
-                token_type=crash.token.token_type,
-                uuid=str(crash.token.uuid),
-            ),
+            token=GetCrashReportTokenOut.from_record(crash.token)
+            if crash.token is not None else None,
         )
 
 
@@ -100,24 +108,24 @@ class GetCrashReportShortOut(pdt.BaseModel):
     """
     Model for an element of a ``GET /crash`` response
     """
-    character_id: int
+    character_id: Optional[int]
     id: str
     timestamp: datetime
     url: str
 
-
-def crash_report_record_to_short_response(
-        crash: CrashReport) -> GetCrashReportShortOut:
-    """
-    Converts a document of the crash report collection to a short response
-    model.
-    """
-    return GetCrashReportShortOut(
-        character_id=crash.token.owner.character_id,
-        id=str(crash.pk),
-        timestamp=crash.timestamp,
-        url=crash.request.url,
-    )
+    @staticmethod
+    def from_record(crash: CrashReport) -> 'GetCrashReportShortOut':
+        """
+        Converts a document of the crash report collection to a short response
+        model.
+        """
+        return GetCrashReportShortOut(
+            character_id=crash.token.owner.character_id
+            if crash.token is not None else None,
+            id=str(crash.pk),
+            timestamp=crash.timestamp,
+            url=crash.request.url,
+        )
 
 
 @router.delete(
@@ -147,7 +155,7 @@ def get_crash_reports(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, 'sni.read_crash_report')
     return [
-        crash_report_record_to_short_response(crash)
+        GetCrashReportShortOut.from_record(crash)
         for crash in CrashReport.objects().order_by('-timestamp')[:50]
     ]
 
