@@ -114,12 +114,12 @@ def add_included_routers():
             router.add_to_application(app)
 
 
-@app.get('/ping', tags=['Testing'], summary='Replies "pong"')
-async def get_ping():
-    """
-    Replies ``pong``. That is all.
-    """
-    return 'pong'
+# @app.get('/ping', tags=['Testing'], summary='Replies "pong"')
+# async def get_ping():
+#     """
+#     Replies ``pong``. That is all.
+#     """
+#     return 'pong'
 
 
 def print_openapi_spec() -> None:
