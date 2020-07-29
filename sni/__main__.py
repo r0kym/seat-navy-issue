@@ -12,7 +12,6 @@ import logging.config
 import sys
 
 from sni.utils import object_from_name
-from sni.conf import CONFIGURATION as conf
 from sni.conf import load_configuration_file
 
 
@@ -20,6 +19,7 @@ def connect_database_signals() -> None:
     """
     Imports all ``signals`` submodules.
     """
+    from sni.conf import CONFIGURATION as conf
     logging.info('Connecting database signals')
     import sni.db.signals
     import sni.esi.signals
@@ -28,10 +28,8 @@ def connect_database_signals() -> None:
     import sni.uac.signals
     import sni.user.signals
     import sni.api.signals
-
     if conf.discord.enabled:
         import sni.discord.signals
-
     if conf.teamspeak.enabled:
         import sni.teamspeak.signals
 
@@ -40,6 +38,7 @@ def configure_logging() -> None:
     """
     Basic configuration of the logging facility
     """
+    from sni.conf import CONFIGURATION as conf
     logging.config.dictConfig({
         'version': 1,
         'disable_existing_loggers': True,
@@ -76,6 +75,8 @@ def migrate_database() -> None:
     """
     Inits and migrate the MongoDB database.
     """
+    from sni.conf import CONFIGURATION as conf
+
     logging.info('Migrating database')
 
     import sni.esi.migration
@@ -122,6 +123,8 @@ def main():
         sys.exit()
 
     load_configuration_file(arguments.file)
+    from sni.conf import CONFIGURATION as conf
+
     configure_logging()
 
     # --------------------------------------------------------------------------
@@ -255,7 +258,10 @@ def schedule_jobs() -> None:
     """
     Schedules jobs from all subpackages
     """
+    from sni.conf import CONFIGURATION as conf
+
     logging.info('Scheduling jobs')
+
     import sni.db.jobs
     import sni.esi.jobs
     import sni.sde.jobs
@@ -263,10 +269,8 @@ def schedule_jobs() -> None:
     import sni.user.jobs
     import sni.index.jobs
     import sni.api.jobs
-
     if conf.teamspeak.enabled:
         import sni.teamspeak.jobs
-
     if conf.discord.enabled:
         import sni.discord.jobs
 

@@ -13,7 +13,6 @@ import yaml
 from sni.conf import CONFIGURATION as conf
 from sni.utils import object_from_name
 
-
 app = FastAPI()
 
 
