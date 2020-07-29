@@ -27,10 +27,5 @@ class TeamspeakAuthenticationChallenge(me.Document):
     """See :meth:`sni.teamspeak.teamspeak.new_authentication_challenge`"""
 
     meta = {
-        'indexes': [
-            {
-                'fields': ['created_on'],
-                'expireAfterSeconds': 60,
-            },
-        ],
+        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 60,},],
     }

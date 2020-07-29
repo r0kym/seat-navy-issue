@@ -28,18 +28,18 @@ class GetUserShortOut(pdt.BaseModel):
     """
     Model for an element of ``GET /user`` response
     """
+
     character_id: int
     character_name: str
 
     @staticmethod
-    def from_record(usr: User) -> 'GetUserShortOut':
+    def from_record(usr: User) -> "GetUserShortOut":
         """
         Converts a :class:`sni.user.models.User` to a
         :class:`sni.api.routers.user.GetUserShortOut`
         """
         return GetUserShortOut(
-            character_id=usr.character_id,
-            character_name=usr.character_name,
+            character_id=usr.character_id, character_name=usr.character_name,
         )
 
 
@@ -47,6 +47,7 @@ class GetUserOut(pdt.BaseModel):
     """
     Model for ``GET /user/{character_name}`` responses
     """
+
     alliance: Optional[int]
     authorized_to_login: Optional[bool]
     available_esi_scopes: List[str]
@@ -63,25 +64,30 @@ class GetUserOut(pdt.BaseModel):
     updated_on: datetime
 
     @staticmethod
-    def from_record(usr: User) -> 'GetUserOut':
+    def from_record(usr: User) -> "GetUserOut":
         """
         Populates a new :class:`sni.routers.user.GetUserOut` with the information
         contained in a user database record.
         """
         return GetUserOut(
-            alliance=(usr.alliance.alliance_id
-                      if usr.alliance is not None else None),
+            alliance=(
+                usr.alliance.alliance_id if usr.alliance is not None else None
+            ),
             authorized_to_login=usr.authorized_to_login,
             available_esi_scopes=list(available_esi_scopes(usr)),
             character_id=usr.character_id,
             character_name=usr.character_name,
             clearance_level=usr.clearance_level,
             coalitions=[str(coalition.pk) for coalition in usr.coalitions()],
-            corporation=(usr.corporation.corporation_id
-                         if usr.corporation is not None else None),
+            corporation=(
+                usr.corporation.corporation_id
+                if usr.corporation is not None
+                else None
+            ),
             created_on=usr.created_on,
             cumulated_mandatory_esi_scopes=list(
-                usr.cumulated_mandatory_esi_scopes()),
+                usr.cumulated_mandatory_esi_scopes()
+            ),
             is_ceo_of_alliance=usr.is_ceo_of_alliance(),
             is_ceo_of_corporation=usr.is_ceo_of_corporation(),
             tickered_name=usr.tickered_name,
@@ -93,61 +99,61 @@ class PutUserIn(pdt.BaseModel):
     """
     Model for ``PUT /user/{character_id}`` requests
     """
+
     authorized_to_login: Optional[bool]
     clearance_level: Optional[int]
 
 
 @router.get(
-    '',
-    response_model=List[GetUserShortOut],
-    summary='Get the user list',
+    "", response_model=List[GetUserShortOut], summary="Get the user list",
 )
 def get_user(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Returns the list of all user names. Requires a clearance level of 0 or
     more.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_user')
+    assert_has_clearance(tkn.owner, "sni.read_user")
     return [GetUserShortOut.from_record(usr) for usr in User.objects()]
 
 
 @router.delete(
-    '/{character_id}',
-    summary='Delete a user',
+    "/{character_id}", summary="Delete a user",
 )
-def delete_user(character_id: int,
-                tkn: Token = Depends(from_authotization_header_nondyn)):
+def delete_user(
+    character_id: int, tkn: Token = Depends(from_authotization_header_nondyn)
+):
     """
     Deletes a user. Requires a clearance level of 9 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.delete_user')
+    assert_has_clearance(tkn.owner, "sni.delete_user")
     usr: User = User.objects.get(character_id=character_id)
     usr.delete()
 
 
 @router.get(
-    '/{character_id}',
+    "/{character_id}",
     response_model=GetUserOut,
-    summary='Get basic informations about a user',
+    summary="Get basic informations about a user",
 )
-def get_user_name(character_id: int,
-                  tkn: Token = Depends(from_authotization_header_nondyn)):
+def get_user_name(
+    character_id: int, tkn: Token = Depends(from_authotization_header_nondyn)
+):
     """
     Returns details about a character. Requires a clearance level of 0 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_user')
+    assert_has_clearance(tkn.owner, "sni.read_user")
     usr = User.objects.get(character_id=character_id)
     return GetUserOut.from_record(usr)
 
 
 @router.put(
-    '/{character_id}',
-    response_model=GetUserOut,
-    summary='Update a user',
+    "/{character_id}", response_model=GetUserOut, summary="Update a user",
 )
-def put_user_name(character_id: int,
-                  data: PutUserIn,
-                  tkn: Token = Depends(from_authotization_header_nondyn)):
+def put_user_name(
+    character_id: int,
+    data: PutUserIn,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
     """
     Manually updates non ESI data about a character. The required clearance
     level depends on the modification.
@@ -157,13 +163,13 @@ def put_user_name(character_id: int,
         if not 0 <= data.clearance_level <= 10:
             raise HTTPException(
                 status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail=
-                'Field clearance_level must be between 0 and 10 (inclusive).')
-        scope_name = f'sni.set_clearance_level_{data.clearance_level}'
+                detail="Field clearance_level must be between 0 and 10 (inclusive).",
+            )
+        scope_name = f"sni.set_clearance_level_{data.clearance_level}"
         assert_has_clearance(tkn.owner, scope_name, usr)
         usr.clearance_level = data.clearance_level
     if data.authorized_to_login is not None:
-        assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
+        assert_has_clearance(tkn.owner, "sni.set_authorized_to_login")
         usr.authorized_to_login = data.authorized_to_login
     usr.save()
     return GetUserOut.from_record(usr)

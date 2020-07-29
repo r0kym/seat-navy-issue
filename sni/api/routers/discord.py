@@ -25,15 +25,16 @@ class PostAuthStartOut(pdt.BaseModel):
     """
     Model for `POST /discord/auth/start` responses.
     """
+
     code: str
     expiration_datetime: datetime
     user: str
 
 
 @router.post(
-    '/auth/start',
+    "/auth/start",
     response_model=PostAuthStartOut,
-    summary='Starts a Discord authentication challenge',
+    summary="Starts a Discord authentication challenge",
 )
 def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
@@ -42,7 +43,7 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     has 1 minute to post it as `!auth <code>` in the dedicated authentication
     chanel.
     """
-    assert_has_clearance(tkn.owner, 'sni.discord.auth')
+    assert_has_clearance(tkn.owner, "sni.discord.auth")
     return PostAuthStartOut(
         expiration_datetime=utils.now_plus(seconds=60),
         code=new_authentication_challenge(tkn.owner),

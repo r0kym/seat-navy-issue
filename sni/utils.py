@@ -14,11 +14,13 @@ from pytz import utc
 
 
 # pylint: disable=dangerous-default-value
-def catch_all(function: Callable,
-              error_message: str,
-              *,
-              args: Tuple[Any, ...] = tuple(),
-              kwargs: dict = {}) -> None:
+def catch_all(
+    function: Callable,
+    error_message: str,
+    *,
+    args: Tuple[Any, ...] = tuple(),
+    kwargs: dict = {},
+) -> None:
     """
     Calls a function but catches all the exceptions. If any were raised, logs
     an error message, followed by the string representation of the exception.
@@ -26,13 +28,14 @@ def catch_all(function: Callable,
     try:
         function(*args, **kwargs)
     except Exception as error:
-        logging.error('%s: %s', error_message, str(error))
+        logging.error("%s: %s", error_message, str(error))
 
 
-def catches_all(error_message: str = 'Error') -> Callable:
+def catches_all(error_message: str = "Error") -> Callable:
     """
     Decorator version of :meth:`sni.utils.catch_all`.
     """
+
     def decorator(function: Callable) -> Callable:
         def wrapper(*args, **kwargs) -> None:
             catch_all(function, error_message, args=args, kwargs=kwargs)
@@ -43,11 +46,13 @@ def catches_all(error_message: str = 'Error') -> Callable:
 
 
 # pylint: disable=dangerous-default-value
-async def catch_all_async(function: Callable,
-                          error_message: str,
-                          *,
-                          args: Tuple[Any, ...] = tuple(),
-                          kwargs: dict = {}) -> None:
+async def catch_all_async(
+    function: Callable,
+    error_message: str,
+    *,
+    args: Tuple[Any, ...] = tuple(),
+    kwargs: dict = {},
+) -> None:
     """
     Calls a function but catches all the exceptions. If any were raised, logs
     an error message, followed by the string representation of the exception.
@@ -55,7 +60,7 @@ async def catch_all_async(function: Callable,
     try:
         await function(*args, **kwargs)
     except Exception as error:
-        logging.error('%s: %s', error_message, str(error))
+        logging.error("%s: %s", error_message, str(error))
 
 
 def from_timestamp(timestamp: int) -> datetime:
@@ -86,7 +91,7 @@ def object_from_name(name: str) -> Any:
     """
     Returns a callable from its name, e.g. ``sni.esi.jobs:refresh_tokens``.
     """
-    module_name, function_name = name.split(':')
+    module_name, function_name = name.split(":")
     module = import_module(module_name)
     return getattr(module, function_name)
 
@@ -96,7 +101,9 @@ def random_code(length: int) -> str:
     Returns a random string made of digits, lowercase letters, and uppercase
     letters, of a given length.
     """
-    return ''.join([
-        random.choice(string.ascii_letters + string.digits)  # nosec
-        for _ in range(length)
-    ])
+    return "".join(
+        [
+            random.choice(string.ascii_letters + string.digits)  # nosec
+            for _ in range(length)
+        ]
+    )

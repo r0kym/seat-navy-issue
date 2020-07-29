@@ -19,7 +19,7 @@ class EsiObjectName(me.Document):
     expires_on = me.DateTimeField(default=None, null=True)
     """When this document expires, if applicable"""
 
-    field_id = me.IntField(unique_with='field_names')
+    field_id = me.IntField(unique_with="field_names")
     """ID"""
 
     field_names = me.ListField(me.StringField())
@@ -30,12 +30,9 @@ class EsiObjectName(me.Document):
     """Name"""
 
     meta = {
-        'index': [
-            'field_id',
-            ('field_names', 'field_id'),
-            {
-                'fields': ['expires_on'],
-                'expireAfterSeconds': 0
-            },
+        "index": [
+            "field_id",
+            ("field_names", "field_id"),
+            {"fields": ["expires_on"], "expireAfterSeconds": 0},
         ],
     }

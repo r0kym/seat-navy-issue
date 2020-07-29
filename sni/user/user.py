@@ -19,12 +19,12 @@ def ensure_alliance(alliance_id: int) -> Alliance:
     """
     alliance = Alliance.objects(alliance_id=alliance_id).first()
     if alliance is None:
-        data = esi_get(f'latest/alliances/{alliance_id}').data
+        data = esi_get(f"latest/alliances/{alliance_id}").data
         alliance = Alliance(
             alliance_id=alliance_id,
-            alliance_name=data['name'],
-            executor_corporation_id=int(data['executor_corporation_id']),
-            ticker=data['ticker'],
+            alliance_name=data["name"],
+            executor_corporation_id=int(data["executor_corporation_id"]),
+            ticker=data["ticker"],
         ).save()
     return alliance
 
@@ -47,15 +47,18 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     """
     corporation = Corporation.objects(corporation_id=corporation_id).first()
     if corporation is None:
-        data = esi_get(f'latest/corporations/{corporation_id}').data
-        alliance = ensure_alliance(
-            data['alliance_id']) if 'alliance_id' in data else None
+        data = esi_get(f"latest/corporations/{corporation_id}").data
+        alliance = (
+            ensure_alliance(data["alliance_id"])
+            if "alliance_id" in data
+            else None
+        )
         corporation = Corporation(
             alliance=alliance,
-            ceo_character_id=int(data['ceo_id']),
+            ceo_character_id=int(data["ceo_id"]),
             corporation_id=corporation_id,
-            corporation_name=data['name'],
-            ticker=data['ticker'],
+            corporation_name=data["name"],
+            ticker=data["ticker"],
         ).save()
     return corporation
 
@@ -68,10 +71,10 @@ def ensure_user(character_id: int) -> User:
     """
     usr = User.objects(character_id=character_id).first()
     if usr is None:
-        data = esi_get(f'latest/characters/{character_id}').data
+        data = esi_get(f"latest/characters/{character_id}").data
         usr = User(
             character_id=character_id,
-            character_name=data['name'],
-            corporation=ensure_corporation(data['corporation_id']),
+            character_name=data["name"],
+            corporation=ensure_corporation(data["corporation_id"]),
         ).save()
     return usr

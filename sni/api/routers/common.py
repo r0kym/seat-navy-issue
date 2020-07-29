@@ -14,6 +14,7 @@ class BSONObjectId(ObjectId):
     """
     A pydantic-compatible BSON ObjectId
     """
+
     @classmethod
     def __get_validators__(cls):
         """
@@ -27,28 +28,25 @@ class BSONObjectId(ObjectId):
         See `pydantic Custom Data Types <https://pydantic-docs.helpmanual.io/usage/types/#custom-data-types>`_
         """
         field_schema.update(
-            title='BSON object id',
-            examples=['ObjectId(\'5f0835370ad0d76f0647713c\')'],
+            title="BSON object id",
+            examples=["ObjectId('5f0835370ad0d76f0647713c')"],
         )
 
     @classmethod
-    def validate(cls, value: Any) -> 'BSONObjectId':
+    def validate(cls, value: Any) -> "BSONObjectId":
         """
         Validates the value. yep
         """
         if not isinstance(value, (ObjectId, str)):
-            raise TypeError('ObjectId or string required')
+            raise TypeError("ObjectId or string required")
         try:
             return ObjectId(value)
         except:
-            raise ValueError('invalid BSON object id')
+            raise ValueError("invalid BSON object id")
 
 
 def paginate(
-    query_set: QuerySet,
-    page_size: int,
-    page_index: int,
-    response: Response,
+    query_set: QuerySet, page_size: int, page_index: int, response: Response,
 ) -> QuerySet:
     """
     Paginates a query set, sets the ``X-Pages`` header in the response. Raises
@@ -57,8 +55,8 @@ def paginate(
     max_page = ceil(query_set.count() / page_size)
     if not 1 <= page_index <= max_page:
         raise HTTPException(
-            detail='Invalid page index',
+            detail="Invalid page index",
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
-    response.headers['X-Pages'] = str(max_page)
-    return query_set[(page_index - 1) * page_size:page_index * page_size]
+    response.headers["X-Pages"] = str(max_page)
+    return query_set[(page_index - 1) * page_size : page_index * page_size]

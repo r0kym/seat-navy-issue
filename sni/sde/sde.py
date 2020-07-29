@@ -18,9 +18,9 @@ from sni.db.cache import cache_get, cache_set
 
 from .models import EsiObjectName
 
-SDE_ROOT_URL = 'https://www.fuzzwork.co.uk/dump/'
-SDE_SQLITE_MD5_URL = SDE_ROOT_URL + 'sqlite-latest.sqlite.bz2.md5'
-SDE_SQLITE_DUMP_URL = SDE_ROOT_URL + 'sqlite-latest.sqlite.bz2'
+SDE_ROOT_URL = "https://www.fuzzwork.co.uk/dump/"
+SDE_SQLITE_MD5_URL = SDE_ROOT_URL + "sqlite-latest.sqlite.bz2.md5"
+SDE_SQLITE_DUMP_URL = SDE_ROOT_URL + "sqlite-latest.sqlite.bz2"
 
 
 def download_latest_sde(dump_path: str) -> str:
@@ -30,20 +30,21 @@ def download_latest_sde(dump_path: str) -> str:
     Returns:
         The MD5 checksum of the dump (before decompression).
     """
-    logging.debug('Downloading and decompressing SDE Sqlite dump to %s',
-                  dump_path)
+    logging.debug(
+        "Downloading and decompressing SDE Sqlite dump to %s", dump_path
+    )
     response = requests.get(SDE_SQLITE_DUMP_URL, stream=True)
     response.raise_for_status()
     decompressor = bz2.BZ2Decompressor()
     hasher = hashlib.md5()  # nosec
-    with open(dump_path, 'wb+') as dump:
+    with open(dump_path, "wb+") as dump:
         for data in response.iter_content(chunk_size=512):
             hasher.update(data)
             decompressed_data = decompressor.decompress(data)
             if decompressed_data:
                 dump.write(decompressed_data)
     md5 = hasher.hexdigest()
-    logging.debug('Downloaded latest SDE with hash %s', md5)
+    logging.debug("Downloaded latest SDE with hash %s", md5)
     return md5
 
 
@@ -53,7 +54,7 @@ def get_latest_sde_md5() -> str:
     """
     response = requests.get(SDE_SQLITE_MD5_URL)
     response.raise_for_status()
-    md5 = str(response.text).split(' ')[0]
+    md5 = str(response.text).split(" ")[0]
     return md5
 
 
@@ -76,16 +77,15 @@ def import_sde_dump_inv_categories(client: sqlite3.Connection) -> None:
     """
     Imports the ``invCategories`` table
     """
-    logging.debug('Importing SDE table invCategories')
-    for row in client.execute('SELECT * FROM invCategories;'):
+    logging.debug("Importing SDE table invCategories")
+    for row in client.execute("SELECT * FROM invCategories;"):
         EsiObjectName.objects(
-            field_id=row['categoryID'],
-            field_names='category_id',
+            field_id=row["categoryID"], field_names="category_id",
         ).update(
             set___version=EsiObjectName.SCHEMA_VERSION,
-            set__field_id=row['categoryID'],
-            set__field_names=['category_id'],
-            set__name=row['categoryName'],
+            set__field_id=row["categoryID"],
+            set__field_names=["category_id"],
+            set__name=row["categoryName"],
             upsert=True,
         )
 
@@ -94,16 +94,15 @@ def import_sde_dump_inv_groups(client: sqlite3.Connection) -> None:
     """
     Imports the ``invGroups`` table
     """
-    logging.debug('Importing SDE table invGroups')
-    for row in client.execute('SELECT * FROM invGroups;'):
+    logging.debug("Importing SDE table invGroups")
+    for row in client.execute("SELECT * FROM invGroups;"):
         EsiObjectName.objects(
-            field_id=row['groupID'],
-            field_names='group_id',
+            field_id=row["groupID"], field_names="group_id",
         ).update(
             set___version=EsiObjectName.SCHEMA_VERSION,
-            set__field_id=row['groupID'],
-            set__field_names=['group_id'],
-            set__name=row['groupName'],
+            set__field_id=row["groupID"],
+            set__field_names=["group_id"],
+            set__name=row["groupName"],
             upsert=True,
         )
 
@@ -112,21 +111,20 @@ def import_sde_dump_inv_types(client: sqlite3.Connection) -> None:
     """
     Imports the ``invTypes`` table
     """
-    logging.debug('Importing SDE table invTypes')
-    for row in client.execute('SELECT * FROM invTypes;'):
+    logging.debug("Importing SDE table invTypes")
+    for row in client.execute("SELECT * FROM invTypes;"):
         EsiObjectName.objects(
-            field_id=row['typeID'],
-            field_names='type_id',
+            field_id=row["typeID"], field_names="type_id",
         ).update(
             set___version=EsiObjectName.SCHEMA_VERSION,
-            set__field_id=row['typeID'],
+            set__field_id=row["typeID"],
             set__field_names=[
-                'item_type_id',
-                'ship_type_id',
-                'type_id',
-                'weapon_type_id',
+                "item_type_id",
+                "ship_type_id",
+                "type_id",
+                "weapon_type_id",
             ],
-            set__name=row['typeName'],
+            set__name=row["typeName"],
             upsert=True,
         )
 
@@ -135,16 +133,15 @@ def import_sde_dump_map_regions(client: sqlite3.Connection) -> None:
     """
     Imports the ``mapRegions`` table
     """
-    logging.debug('Importing SDE table mapRegions')
-    for row in client.execute('SELECT * FROM mapRegions;'):
+    logging.debug("Importing SDE table mapRegions")
+    for row in client.execute("SELECT * FROM mapRegions;"):
         EsiObjectName.objects(
-            field_id=row['regionID'],
-            field_names='region_id',
+            field_id=row["regionID"], field_names="region_id",
         ).update(
             set___version=EsiObjectName.SCHEMA_VERSION,
-            set__field_id=row['regionID'],
-            set__field_names='region_id',
-            set__name=row['regionName'],
+            set__field_id=row["regionID"],
+            set__field_names="region_id",
+            set__name=row["regionName"],
             upsert=True,
         )
 
@@ -153,16 +150,15 @@ def import_sde_dump_inv_constellations(client: sqlite3.Connection) -> None:
     """
     Imports the ``mapConstellations`` table
     """
-    logging.debug('Importing SDE table mapConstellations')
-    for row in client.execute('SELECT * FROM mapConstellations;'):
+    logging.debug("Importing SDE table mapConstellations")
+    for row in client.execute("SELECT * FROM mapConstellations;"):
         EsiObjectName.objects(
-            field_id=row['constellationID'],
-            field_names='constellation_id',
+            field_id=row["constellationID"], field_names="constellation_id",
         ).update(
             set___version=EsiObjectName.SCHEMA_VERSION,
-            set__field_id=row['constellationID'],
-            set__field_names='constellation_id',
-            set__name=row['constellationName'],
+            set__field_id=row["constellationID"],
+            set__field_names="constellation_id",
+            set__name=row["constellationName"],
             upsert=True,
         )
 
@@ -171,16 +167,15 @@ def import_sde_dump_inv_solar_systems(client: sqlite3.Connection) -> None:
     """
     Imports the ``mapSolarSystems`` table
     """
-    logging.debug('Importing SDE table mapSolarSystems')
-    for row in client.execute('SELECT * FROM mapSolarSystems;'):
+    logging.debug("Importing SDE table mapSolarSystems")
+    for row in client.execute("SELECT * FROM mapSolarSystems;"):
         EsiObjectName.objects(
-            field_id=row['solarSystemID'],
-            field_names='solar_system_id',
+            field_id=row["solarSystemID"], field_names="solar_system_id",
         ).update(
             set___version=EsiObjectName.SCHEMA_VERSION,
-            set__field_id=row['solarSystemID'],
-            set__field_names='solar_system_id',
-            set__name=row['solarSystemName'],
+            set__field_id=row["solarSystemID"],
+            set__field_names="solar_system_id",
+            set__name=row["solarSystemName"],
             upsert=True,
         )
 
@@ -190,15 +185,14 @@ def sde_get_name(field_id: int, field_name: Optional[str]) -> Optional[str]:
     Fetches a document from the ``esi_object_name`` collection. See
     :class:`sni.sde.models.EsiObjectName`.
     """
-    cache_key = ['sde', field_id]
+    cache_key = ["sde", field_id]
     name = cache_get(cache_key)
     if name is None:
         if field_name is None:
             query_set = EsiObjectName.objects(field_id=field_id)
         else:
             query_set = EsiObjectName.objects(
-                field_id=field_id,
-                field_names=field_name,
+                field_id=field_id, field_names=field_name,
             )
         try:
             name = query_set.get().name

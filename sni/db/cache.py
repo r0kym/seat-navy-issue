@@ -22,7 +22,7 @@ def cache_get(key: Any) -> Optional[Any]:
     hashed_key = hash_key(key)
     result = connection.get(hashed_key)
     if result is not None:
-        logging.debug('Cache hit %s %s', hashed_key, str(key)[:20])
+        logging.debug("Cache hit %s %s", hashed_key, str(key)[:20])
         return json.loads(result)
     return None
 
@@ -34,7 +34,7 @@ def cache_set(key: Any, value: Any, ttl: int = 60) -> None:
     try:
         connection.setex(hash_key(key), ttl, json.dumps(value))
     except RedisError as error:
-        logging.error('Redis error: %s', str(error))
+        logging.error("Redis error: %s", str(error))
 
 
 def hash_key(document: Any) -> str:
@@ -42,7 +42,8 @@ def hash_key(document: Any) -> str:
     Hashes a JSON-dumpable variable
     """
     return hashlib.md5(  # nosec
-        json.dumps(document, sort_keys=True).encode(), ).hexdigest()
+        json.dumps(document, sort_keys=True).encode(),
+    ).hexdigest()
 
 
 def invalidate_cache(key: Any):

@@ -29,6 +29,7 @@ class TrackingStatus(int, Enum):
     Tracking status of a user, i.e. wether this user has a valid refresh token
     attached to it, or not.
     """
+
     HAS_NO_REFRESH_TOKEN = 0
     ONLY_HAS_INVALID_REFRESH_TOKEN = 1
     HAS_A_VALID_REFRESH_TOKEN = 2
@@ -46,18 +47,14 @@ def available_esi_scopes(usr: User) -> Set[str]:
 
 
 def esi_delete_on_befalf_of(
-    path: str,
-    character_id: int,
-    *,
-    invalidate_token_on_error=False,
-    **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE
     requests.
     """
     return esi_request_on_behalf_of(
-        'delete',
+        "delete",
         path,
         character_id,
         invalidate_token_on_error=invalidate_token_on_error,
@@ -66,17 +63,13 @@ def esi_delete_on_befalf_of(
 
 
 def esi_get_on_befalf_of(
-    path: str,
-    character_id: int,
-    *,
-    invalidate_token_on_error=False,
-    **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
     """
     return esi_request_on_behalf_of(
-        'get',
+        "get",
         path,
         character_id,
         invalidate_token_on_error=invalidate_token_on_error,
@@ -85,17 +78,13 @@ def esi_get_on_befalf_of(
 
 
 def esi_post_on_befalf_of(
-    path: str,
-    character_id: int,
-    *,
-    invalidate_token_on_error=False,
-    **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.
     """
     return esi_request_on_behalf_of(
-        'post',
+        "post",
         path,
         character_id,
         invalidate_token_on_error=invalidate_token_on_error,
@@ -104,17 +93,13 @@ def esi_post_on_befalf_of(
 
 
 def esi_put_on_befalf_of(
-    path: str,
-    character_id: int,
-    *,
-    invalidate_token_on_error=False,
-    **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.
     """
     return esi_request_on_behalf_of(
-        'put',
+        "put",
         path,
         character_id,
         invalidate_token_on_error=invalidate_token_on_error,
@@ -138,10 +123,7 @@ def esi_request_on_behalf_of(
     esi_scope = get_esi_path_scope(path)
     token = get_access_token(character_id, esi_scope)
     response = esi_request(
-        http_method,
-        path,
-        token=token.access_token,
-        **kwargs,
+        http_method, path, token=token.access_token, **kwargs,
     )
     if response.status_code == 403 and invalidate_token_on_error:
         token.refresh_token.update(set__valid=False)
@@ -149,8 +131,9 @@ def esi_request_on_behalf_of(
     return response
 
 
-def get_access_token(character_id: int,
-                     scope: Optional[str] = None) -> EsiAccessToken:
+def get_access_token(
+    character_id: int, scope: Optional[str] = None
+) -> EsiAccessToken:
     """
     Returns an access token, refreshes if needed
 
@@ -159,20 +142,22 @@ def get_access_token(character_id: int,
     """
     owner: User = User.objects.get(character_id=character_id)
     esi_access_token: EsiAccessToken = EsiAccessToken.objects(
-        owner=owner,
-        scopes=scope,
-        expires_on__gt=utils.now(),
+        owner=owner, scopes=scope, expires_on__gt=utils.now(),
     ).first()
     if not esi_access_token:
         esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
-            owner=owner, scopes=scope, valid=True).first()
+            owner=owner, scopes=scope, valid=True
+        ).first()
         if not esi_refresh_token:
             logging.error(
-                'Could not find refresh token for user %s with scope %s',
-                owner.character_name, scope)
+                "Could not find refresh token for user %s with scope %s",
+                owner.character_name,
+                scope,
+            )
             raise LookupError
         esi_access_token = save_esi_tokens(
-            refresh_access_token(esi_refresh_token.refresh_token))
+            refresh_access_token(esi_refresh_token.refresh_token)
+        )
     return esi_access_token
 
 
@@ -180,8 +165,10 @@ def has_esi_scope(usr: User, scope: str) -> bool:
     """
     Tells wether the user has a refresh token with the given scope.
     """
-    return EsiRefreshToken.objects(owner=usr, scopes=scope,
-                                   valid=True).first() is not None
+    return (
+        EsiRefreshToken.objects(owner=usr, scopes=scope, valid=True).first()
+        is not None
+    )
 
 
 def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
@@ -196,13 +183,11 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
     decoded_access_token = decode_access_token(esi_response.access_token)
     owner = ensure_user(decoded_access_token.character_id)
     esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
-        owner=owner,
-        scopes__all=decoded_access_token.scp,
+        owner=owner, scopes__all=decoded_access_token.scp,
     ).first()
     if esi_refresh_token:
         esi_refresh_token.update(
-            set__refresh_token=esi_response.refresh_token,
-            set__valid=True,
+            set__refresh_token=esi_response.refresh_token, set__valid=True,
         )
     else:
         esi_refresh_token = EsiRefreshToken(
@@ -219,8 +204,9 @@ def save_esi_tokens(esi_response: AuthorizationCodeResponse) -> EsiAccessToken:
     ).save()
 
 
-def token_has_enough_scopes(access_token: DecodedAccessToken,
-                            usr: User) -> bool:
+def token_has_enough_scopes(
+    access_token: DecodedAccessToken, usr: User
+) -> bool:
     """
     Tells wether the access token has all the cropes that are required for a
     given user.

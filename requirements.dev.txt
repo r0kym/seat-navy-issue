@@ -1,4 +1,5 @@
 bandit
+black
 mypy
 plantuml
 pylint
@@ -7,4 +8,3 @@ sphinx
 sphinx-jsonschema
 sphinxcontrib-napoleon
 sphinxcontrib-openapi
-yapf

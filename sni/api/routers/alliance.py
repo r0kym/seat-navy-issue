@@ -24,11 +24,12 @@ class GetAllianceShortOut(pdt.BaseModel):
     """
     Short alliance description
     """
+
     alliance_id: int
     alliance_name: str
 
     @staticmethod
-    def from_record(alliance: Alliance) -> 'GetAllianceShortOut':
+    def from_record(alliance: Alliance) -> "GetAllianceShortOut":
         """
         Converts an instance of :class:`sni.user.models.Alliance` to
         :class:`sni.api.routers.alliance.GetAllianceShortOut`
@@ -40,16 +41,16 @@ class GetAllianceShortOut(pdt.BaseModel):
 
 
 @router.get(
-    '',
+    "",
     response_model=List[GetAllianceShortOut],
-    summary='Get the list of alliances',
+    summary="Get the list of alliances",
 )
-def get_alliances(tkn: Token = Depends(from_authotization_header_nondyn), ):
+def get_alliances(tkn: Token = Depends(from_authotization_header_nondyn),):
     """
     Gets the list of alliances registered in this instance. Requires a
     clearance level of 0 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_alliance')
+    assert_has_clearance(tkn.owner, "sni.read_alliance")
     return [
         GetAllianceShortOut.from_record(alliance)
         for alliance in Alliance.objects()
@@ -57,29 +58,26 @@ def get_alliances(tkn: Token = Depends(from_authotization_header_nondyn), ):
 
 
 @router.post(
-    '/{alliance_id}',
-    summary='Manually fetch an alliance from the ESI',
+    "/{alliance_id}", summary="Manually fetch an alliance from the ESI",
 )
 def post_alliance(
-        alliance_id: int,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    alliance_id: int, tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Manually fetches an alliance from the ESI. Requires a clearance level of
     8 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.fetch_alliance')
+    assert_has_clearance(tkn.owner, "sni.fetch_alliance")
     ensure_alliance(alliance_id)
 
 
 @router.get(
-    '/{alliance_id}/tracking',
+    "/{alliance_id}/tracking",
     response_model=GetTrackingOut,
-    summary='Alliance tracking',
+    summary="Alliance tracking",
 )
 def get_alliance_tracking(
-        alliance_id: int,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    alliance_id: int, tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Reports which member (of a given alliance) have a valid refresh token
@@ -87,5 +85,5 @@ def get_alliance_tracking(
     having authority over this alliance.
     """
     alliance: Alliance = Alliance.objects(alliance_id=alliance_id).get()
-    assert_has_clearance(tkn.owner, 'sni.track_alliance', alliance.ceo)
+    assert_has_clearance(tkn.owner, "sni.track_alliance", alliance.ceo)
     return GetTrackingOut.from_user_iterator(alliance.user_iterator())

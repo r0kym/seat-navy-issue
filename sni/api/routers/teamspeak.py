@@ -32,15 +32,16 @@ class PostAuthStartOut(pdt.BaseModel):
     """
     Model for `POST /teamspeak/auth/start` responses.
     """
+
     expiration_datetime: datetime
     challenge_nickname: str
     user: str
 
 
 @router.post(
-    '/auth/start',
+    "/auth/start",
     response_model=PostAuthStartOut,
-    summary='Starts a teamspeak authentication challenge',
+    summary="Starts a teamspeak authentication challenge",
 )
 def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
@@ -49,7 +50,7 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     user has 1 minute to update its teamspeak nickname to it, and then call
     `POST /teamspeak/auth/complete`.
     """
-    assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
+    assert_has_clearance(tkn.owner, "sni.teamspeak.auth")
     return PostAuthStartOut(
         expiration_datetime=utils.now_plus(seconds=60),
         challenge_nickname=new_authentication_challenge(tkn.owner),
@@ -58,16 +59,16 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
 
 
 @router.post(
-    '/auth/complete',
+    "/auth/complete",
     status_code=status.HTTP_201_CREATED,
-    summary='Completes a teamspeak authentication challenge',
+    summary="Completes a teamspeak authentication challenge",
 )
 def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Completes an authentication challenge for the owner of the token. See the
     `POST /teamspeak/auth/start` documentation.
     """
-    assert_has_clearance(tkn.owner, 'sni.teamspeak.auth')
+    assert_has_clearance(tkn.owner, "sni.teamspeak.auth")
     try:
         connection = new_teamspeak_connection()
         complete_authentication_challenge(connection, tkn.owner)
@@ -75,7 +76,10 @@ def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
     except LookupError:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND,
-            detail='Could not find corresponding teamspeak client')
+            detail="Could not find corresponding teamspeak client",
+        )
     except me.DoesNotExist:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,
-                            detail='Could not find challenge for user')
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            detail="Could not find challenge for user",
+        )

@@ -25,11 +25,12 @@ class GetCorporationShortOut(pdt.BaseModel):
     """
     Short corporation description
     """
+
     corporation_id: int
     corporation_name: str
 
     @staticmethod
-    def from_record(corporation: Corporation) -> 'GetCorporationShortOut':
+    def from_record(corporation: Corporation) -> "GetCorporationShortOut":
         """
         Converts an instance of :class:`sni.user.models.Corporation` to
         :class:`sni.api.routers.corporation.GetCorporationShortOut`
@@ -44,12 +45,13 @@ class GetTrackingOut(pdt.BaseModel):
     """
     Represents a corporation tracking response.
     """
+
     invalid_refresh_token: List[GetUserShortOut] = []
     no_refresh_token: List[GetUserShortOut] = []
     valid_refresh_token: List[GetUserShortOut] = []
 
     @staticmethod
-    def from_user_iterator(iterator: Iterator[User]) -> 'GetTrackingOut':
+    def from_user_iterator(iterator: Iterator[User]) -> "GetTrackingOut":
         """
         Creates a tracking response from a user iterator. See
         :meth:`sni.esi.token.tracking_status`
@@ -57,10 +59,8 @@ class GetTrackingOut(pdt.BaseModel):
         result = GetTrackingOut()
         ldict: Dict[int, List[GetUserShortOut]] = {
             TrackingStatus.HAS_NO_REFRESH_TOKEN: result.no_refresh_token,
-            TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN:
-            result.invalid_refresh_token,
-            TrackingStatus.HAS_A_VALID_REFRESH_TOKEN:
-            result.valid_refresh_token
+            TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN: result.invalid_refresh_token,
+            TrackingStatus.HAS_A_VALID_REFRESH_TOKEN: result.valid_refresh_token,
         }
         for usr in iterator:
             status = tracking_status(usr)
@@ -69,16 +69,16 @@ class GetTrackingOut(pdt.BaseModel):
 
 
 @router.get(
-    '',
+    "",
     response_model=List[GetCorporationShortOut],
-    summary='Get the list of corporations',
+    summary="Get the list of corporations",
 )
-def get_corporations(tkn: Token = Depends(from_authotization_header_nondyn), ):
+def get_corporations(tkn: Token = Depends(from_authotization_header_nondyn),):
     """
     Gets the list of corporations registered in this instance. Requires a
     clearance level of 0 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_corporation')
+    assert_has_clearance(tkn.owner, "sni.read_corporation")
     return [
         GetCorporationShortOut.from_record(corporation)
         for corporation in Corporation.objects()
@@ -86,29 +86,28 @@ def get_corporations(tkn: Token = Depends(from_authotization_header_nondyn), ):
 
 
 @router.post(
-    '/{corporation_id}',
-    summary='Manually fetch a corporation from the ESI',
+    "/{corporation_id}", summary="Manually fetch a corporation from the ESI",
 )
 def post_corporation(
-        corporation_id: int,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    corporation_id: int,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Manually fetches a corporation from the ESI. Requires a clearance level of
     8 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.fetch_corporation')
+    assert_has_clearance(tkn.owner, "sni.fetch_corporation")
     ensure_corporation(corporation_id)
 
 
 @router.get(
-    '/{corporation_id}/tracking',
+    "/{corporation_id}/tracking",
     response_model=GetTrackingOut,
-    summary='Corporation tracking',
+    summary="Corporation tracking",
 )
 def get_corporation_tracking(
-        corporation_id: int,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    corporation_id: int,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Reports which member (of a given corporation) have a valid refresh token
@@ -116,6 +115,7 @@ def get_corporation_tracking(
     having authority over this corporation.
     """
     corporation: Corporation = Corporation.objects(
-        corporation_id=corporation_id).get()
-    assert_has_clearance(tkn.owner, 'sni.track_corporation', corporation.ceo)
+        corporation_id=corporation_id
+    ).get()
+    assert_has_clearance(tkn.owner, "sni.track_corporation", corporation.ceo)
     return GetTrackingOut.from_user_iterator(corporation.user_iterator())

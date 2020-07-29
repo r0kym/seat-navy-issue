@@ -30,6 +30,7 @@ class GetJobOut(pdt.BaseModel):
     """
     Represents a job
     """
+
     coalesce: bool
     executor: str
     function: str
@@ -41,7 +42,7 @@ class GetJobOut(pdt.BaseModel):
     trigger: Optional[str]
 
     @staticmethod
-    def from_job(job: Job) -> 'GetJobOut':
+    def from_job(job: Job) -> "GetJobOut":
         """
         Converts a :class:`apscheduler.job.Job` to a
         :class:`sni.api.routers.system.GetJobOut`.
@@ -61,46 +62,44 @@ class GetJobOut(pdt.BaseModel):
 
 
 @router.get(
-    '/configuration',
+    "/configuration",
     response_model=Config,
-    summary='Gets active configuration',
+    summary="Gets active configuration",
 )
-def get_configuration(
-        tkn: Token = Depends(from_authotization_header_nondyn), ):
+def get_configuration(tkn: Token = Depends(from_authotization_header_nondyn),):
     """
     Gets the configuration of the SNI instance. Secrets are redacted. Requires
     a clearance of 10.
     """
-    assert_has_clearance(tkn.owner, 'sni.system.read_configuration')
+    assert_has_clearance(tkn.owner, "sni.system.read_configuration")
     return CONFIGURATION
 
 
 @router.get(
-    '/job',
+    "/job",
     response_model=List[GetJobOut],
-    summary='Gets the currently scheduled job list',
+    summary="Gets the currently scheduled job list",
 )
 def get_jobs(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Gets the currently scheduled job list. Requires a clearance level of 10.
     """
-    assert_has_clearance(tkn.owner, 'sni.system.read_jobs')
+    assert_has_clearance(tkn.owner, "sni.system.read_jobs")
     return [GetJobOut.from_job(job) for job in scheduler.get_jobs()]
 
 
 @router.post(
-    '/job/{callable_name}',
+    "/job/{callable_name}",
     response_model=GetJobOut,
-    summary='Submits a job to the scheduler',
+    summary="Submits a job to the scheduler",
 )
 def post_job(
-        callable_name: str,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    callable_name: str, tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Submits a job to the scheduler. Requires a clearance level of 10.
     """
-    assert_has_clearance(tkn.owner, 'sni.system.submit_job')
+    assert_has_clearance(tkn.owner, "sni.system.submit_job")
     try:
         function = object_from_name(callable_name)
         job = scheduler.add_job(function)

@@ -20,6 +20,7 @@ class RouterConfig(pdt.BaseModel):
     """
     Basic router configuration
     """
+
     include: bool = True
     kwargs: dict
     prefix: str
@@ -29,77 +30,76 @@ class RouterConfig(pdt.BaseModel):
         """
         Adds the current router to the FastAPI application.
         """
-        logging.debug('Adding router %s at prefix %s', self.router,
-                      self.prefix)
+        logging.debug(
+            "Adding router %s at prefix %s", self.router, self.prefix
+        )
         application.include_router(
-            object_from_name(self.router),
-            prefix=self.prefix,
-            **self.kwargs,
+            object_from_name(self.router), prefix=self.prefix, **self.kwargs,
         )
 
 
 ROUTERS: List[RouterConfig] = [
     RouterConfig(
-        router='sni.api.routers.alliance:router',
-        prefix='/alliance',
-        kwargs={'tags': ['Alliance management']},
+        router="sni.api.routers.alliance:router",
+        prefix="/alliance",
+        kwargs={"tags": ["Alliance management"]},
     ),
     RouterConfig(
-        router='sni.api.routers.callback:router',
-        prefix='/callback',
-        kwargs={'tags': ['Callbacks']},
+        router="sni.api.routers.callback:router",
+        prefix="/callback",
+        kwargs={"tags": ["Callbacks"]},
     ),
     RouterConfig(
-        router='sni.api.routers.coalition:router',
-        prefix='/coalition',
-        kwargs={'tags': ['Coalition management']},
+        router="sni.api.routers.coalition:router",
+        prefix="/coalition",
+        kwargs={"tags": ["Coalition management"]},
     ),
     RouterConfig(
-        router='sni.api.routers.corporation:router',
-        prefix='/corporation',
-        kwargs={'tags': ['Corporation management']},
+        router="sni.api.routers.corporation:router",
+        prefix="/corporation",
+        kwargs={"tags": ["Corporation management"]},
     ),
     RouterConfig(
-        router='sni.api.routers.crash:router',
-        prefix='/crash',
-        kwargs={'tags': ['Crash reports']},
+        router="sni.api.routers.crash:router",
+        prefix="/crash",
+        kwargs={"tags": ["Crash reports"]},
     ),
     RouterConfig(
-        router='sni.api.routers.discord:router',
-        prefix='/discord',
-        kwargs={'tags': ['Discord']},
+        router="sni.api.routers.discord:router",
+        prefix="/discord",
+        kwargs={"tags": ["Discord"]},
         include=conf.discord.enabled,
     ),
     RouterConfig(
-        router='sni.api.routers.esi:router',
-        prefix='/esi',
-        kwargs={'tags': ['ESI']},
+        router="sni.api.routers.esi:router",
+        prefix="/esi",
+        kwargs={"tags": ["ESI"]},
     ),
     RouterConfig(
-        router='sni.api.routers.group:router',
-        prefix='/group',
-        kwargs={'tags': ['Group management']},
+        router="sni.api.routers.group:router",
+        prefix="/group",
+        kwargs={"tags": ["Group management"]},
     ),
     RouterConfig(
-        router='sni.api.routers.teamspeak:router',
-        prefix='/teamspeak',
-        kwargs={'tags': ['Teamspeak']},
+        router="sni.api.routers.teamspeak:router",
+        prefix="/teamspeak",
+        kwargs={"tags": ["Teamspeak"]},
         include=conf.teamspeak.enabled,
     ),
     RouterConfig(
-        router='sni.api.routers.system:router',
-        prefix='/system',
-        kwargs={'tags': ['System administration']},
+        router="sni.api.routers.system:router",
+        prefix="/system",
+        kwargs={"tags": ["System administration"]},
     ),
     RouterConfig(
-        router='sni.api.routers.token:router',
-        prefix='/token',
-        kwargs={'tags': ['Authentication & tokens']},
+        router="sni.api.routers.token:router",
+        prefix="/token",
+        kwargs={"tags": ["Authentication & tokens"]},
     ),
     RouterConfig(
-        router='sni.api.routers.user:router',
-        prefix='/user',
-        kwargs={'tags': ['User management']},
+        router="sni.api.routers.user:router",
+        prefix="/user",
+        kwargs={"tags": ["User management"]},
     ),
 ]
 
@@ -137,63 +137,60 @@ def start_api_server():
     :meth:`sni.api.server.start_api_server`.
     """
     log_config = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'default': {
-                '()': 'uvicorn.logging.DefaultFormatter',
-                'fmt': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-                'use_colors': None,
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "default": {
+                "()": "uvicorn.logging.DefaultFormatter",
+                "fmt": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+                "use_colors": None,
             },
-            'access': {
-                '()':
-                'uvicorn.logging.AccessFormatter',
-                'fmt': ('%(levelprefix)s %(client_addr)s - "%(request_line)s" '
-                        '%(status_code)s'),
-            },
-        },
-        'handlers': {
-            'default': {
-                'formatter': 'default',
-                'class': 'logging.StreamHandler',
-                'stream': 'ext://sys.stderr',
-            },
-            'access': {
-                'formatter': 'access',
-                'class': 'logging.StreamHandler',
-                'stream': 'ext://sys.stdout',
+            "access": {
+                "()": "uvicorn.logging.AccessFormatter",
+                "fmt": (
+                    '%(levelprefix)s %(client_addr)s - "%(request_line)s" '
+                    "%(status_code)s"
+                ),
             },
         },
-        'loggers': {
-            '': {
-                'handlers': ['default'],
-                'level': conf.general.logging_level.upper(),
+        "handlers": {
+            "default": {
+                "formatter": "default",
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stderr",
             },
-            'uvicorn.error': {
-                'level': conf.general.logging_level.upper(),
+            "access": {
+                "formatter": "access",
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
             },
-            'uvicorn.access': {
-                'handlers': ['access'],
-                'level': conf.general.logging_level.upper(),
-                'propagate': False,
+        },
+        "loggers": {
+            "": {
+                "handlers": ["default"],
+                "level": conf.general.logging_level.upper(),
+            },
+            "uvicorn.error": {"level": conf.general.logging_level.upper(),},
+            "uvicorn.access": {
+                "handlers": ["access"],
+                "level": conf.general.logging_level.upper(),
+                "propagate": False,
             },
         },
     }
     logging.info(
-        'Starting API server on %s:%s',
-        conf.general.host,
-        conf.general.port,
+        "Starting API server on %s:%s", conf.general.host, conf.general.port,
     )
     try:
         uvicorn.run(
-            'sni.api.server:app',
+            "sni.api.server:app",
             host=str(conf.general.host),
             log_config=log_config,
             log_level=conf.general.logging_level,
             port=conf.general.port,
         )
     finally:
-        logging.info('API server stopped')
+        logging.info("API server stopped")
 
 
 add_included_routers()

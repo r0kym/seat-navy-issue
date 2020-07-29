@@ -27,21 +27,31 @@ async def auth(ctx: Context, code: str):
         complete_authentication_challenge(member, code)
         usr: User = User.objects(discord_user_id=member.id).get()
         await update_discord_user(usr)
-        logging.info('Successfully authenticated user %s (%d)',
-                     ctx.author.name, ctx.author.id)
+        logging.info(
+            "Successfully authenticated user %s (%d)",
+            ctx.author.name,
+            ctx.author.id,
+        )
         await ctx.channel.send(
-            f'Hi <@{ctx.author.id}> :wave:, you are now authenticated. '
-            'Welcome aboard!')
+            f"Hi <@{ctx.author.id}> :wave:, you are now authenticated. "
+            "Welcome aboard!"
+        )
         await log(
-            f':white_check_mark: Successfully authenticated <@{ctx.author.id}>'
+            f":white_check_mark: Successfully authenticated <@{ctx.author.id}>"
         )
     except Exception as error:
-        logging.error('Could not authenticate Discord user %s (%d): %s',
-                      ctx.author.name, ctx.author.id, str(error))
+        logging.error(
+            "Could not authenticate Discord user %s (%d): %s",
+            ctx.author.name,
+            ctx.author.id,
+            str(error),
+        )
         await ctx.channel.send(
-            f':x: Sorry <@{ctx.author.id}>, I could not authenticate you. '
-            'Please try again with a different code. If the problem persists, '
-            'contact your Discord administrator.')
+            f":x: Sorry <@{ctx.author.id}>, I could not authenticate you. "
+            "Please try again with a different code. If the problem persists, "
+            "contact your Discord administrator."
+        )
         await log(
-            f':x: Failed to authenticate <@{ctx.author.id}>: {str(error)}')
+            f":x: Failed to authenticate <@{ctx.author.id}>: {str(error)}"
+        )
     await ctx.message.delete()

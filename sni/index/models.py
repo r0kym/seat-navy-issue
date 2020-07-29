@@ -45,14 +45,14 @@ class EsiCharacterLocation(me.Document):
     """Corresponding user"""
 
     meta = {
-        'index': [
-            'online',
-            ('user', '-timestamp'),
-            ('solar_system_id', '-timestamp'),
+        "index": [
+            "online",
+            ("user", "-timestamp"),
+            ("solar_system_id", "-timestamp"),
             {
-                'fields': ['timestamp'],
-                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
-            },
+                "fields": ["timestamp"],
+                "expireAfterSeconds": 3600 * 24 * 90,
+            },  # 90 days
         ],
     }
 
@@ -61,6 +61,7 @@ class EsiMailRecipient(me.EmbeddedDocument):
     """
     An email recipient
     """
+
     recipient_id = me.IntField()
     recipient_type = me.StringField()
 
@@ -71,6 +72,7 @@ class EsiMail(me.Document):
     ``body`` and ``subject`` fields (see `here
     <http://docs.mongoengine.org/guide/text-indexes.html>`_)
     """
+
     SCHEMA_VERSION = 1
     """Latest schema version for this collection"""
 
@@ -96,15 +98,12 @@ class EsiMail(me.Document):
     """ESI timestamp of the email"""
 
     meta = {
-        'indexes': [
-            'from_id',
+        "indexes": [
+            "from_id",
             {
-                'default_language': 'english',
-                'fields': ['$body', '$subject'],
-                'weights': {
-                    'body': 10,
-                    'subject': 2
-                },
+                "default_language": "english",
+                "fields": ["$body", "$subject"],
+                "weights": {"body": 10, "subject": 2},
             },
         ]
     }
@@ -114,6 +113,7 @@ class EsiSkillPoints(me.Document):
     """
     Represents a measurment of a character's skill points
     """
+
     SCHEMA_VERSION = 1
     """Latest schema version for this collection"""
 
@@ -133,12 +133,12 @@ class EsiSkillPoints(me.Document):
     """Corresponding user"""
 
     meta = {
-        'index': [
-            ('user', '-timestamp'),
+        "index": [
+            ("user", "-timestamp"),
             {
-                'fields': ['timestamp'],
-                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
-            },
+                "fields": ["timestamp"],
+                "expireAfterSeconds": 3600 * 24 * 90,
+            },  # 90 days
         ],
     }
 
@@ -158,11 +158,11 @@ class EsiWalletBalance(me.Document):
     """User reference"""
 
     meta = {
-        'index': [
-            ('user', '-timestamp'),
+        "index": [
+            ("user", "-timestamp"),
             {
-                'fields': ['timestamp'],
-                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
-            },
+                "fields": ["timestamp"],
+                "expireAfterSeconds": 3600 * 24 * 90,
+            },  # 90 days
         ],
     }

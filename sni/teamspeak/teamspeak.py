@@ -36,6 +36,7 @@ class TeamspeakClient(pdt.BaseModel):
     """
     Represents a teamspeak client as reported by the teamspeak query server.
     """
+
     cid: int
     clid: int
     client_database_id: int
@@ -47,6 +48,7 @@ class TeamspeakGroup(pdt.BaseModel):
     """
     Represents a teamspeak group as reported by the teamspeak query server.
     """
+
     iconid: int
     name: str
     savedb: int
@@ -54,12 +56,14 @@ class TeamspeakGroup(pdt.BaseModel):
     type: int
 
 
-def cached_teamspeak_query(connection: TS3Connection,
-                           query: Callable,
-                           ttl: int = 60,
-                           *,
-                           args=list(),
-                           kwargs=dict()) -> Any:
+def cached_teamspeak_query(
+    connection: TS3Connection,
+    query: Callable,
+    ttl: int = 60,
+    *,
+    args=list(),
+    kwargs=dict(),
+) -> Any:
     """
     Returns a parsed query result, and caches the result.
     """
@@ -79,10 +83,9 @@ def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
         :class:`sni.teamspeak.TeamspeakClient`
     """
     return [
-        TeamspeakClient(**raw) for raw in cached_teamspeak_query(
-            connection,
-            TS3Connection.clientlist,
-            300,
+        TeamspeakClient(**raw)
+        for raw in cached_teamspeak_query(
+            connection, TS3Connection.clientlist, 300,
         )
     ]
 
@@ -93,15 +96,17 @@ def complete_authentication_challenge(connection: TS3Connection, usr: User):
     :meth:`sni.teamspeak.new_authentication_challenge`.
     """
     challenge: TeamspeakAuthenticationChallenge = TeamspeakAuthenticationChallenge.objects.get(
-        user=usr)
+        user=usr
+    )
     client = find_client(connection, nickname=challenge.challenge_nickname)
     usr.teamspeak_cldbid = client.client_database_id
     usr.save()
     auth_group = ensure_autogroup(conf.teamspeak.auth_group_name)
     auth_group.modify(add_to_set__members=usr)
     challenge.delete()
-    logging.info('Completed authentication challenge for %s',
-                 usr.character_name)
+    logging.info(
+        "Completed authentication challenge for %s", usr.character_name
+    )
 
 
 def ensure_group(connection: TS3Connection, name: str) -> TeamspeakGroup:
@@ -115,21 +120,24 @@ def ensure_group(connection: TS3Connection, name: str) -> TeamspeakGroup:
     except LookupError:
         invalidate_cache([TS3Connection.servergrouplist.__name__, [], {}])
         connection.servergroupadd(name=name)
-        logging.debug('Created Teamspeak group %s', name)
+        logging.debug("Created Teamspeak group %s", name)
         return find_group(connection, name=name)
 
 
-def find_client(connection: TS3Connection,
-                *,
-                nickname: Optional[str] = None,
-                client_database_id: Optional[int] = None) -> TeamspeakClient:
+def find_client(
+    connection: TS3Connection,
+    *,
+    nickname: Optional[str] = None,
+    client_database_id: Optional[int] = None,
+) -> TeamspeakClient:
     """
     Returns the :class:`sni.teamspeak.TeamspeakClient` representation of a
     client. Raises a :class:`LookupError` if the client is not found, or if
     multiple client with the same nickname are found.
     """
     clients = [
-        client for client in client_list(connection)
+        client
+        for client in client_list(connection)
         if client.client_nickname == nickname
         or client.client_database_id == client_database_id
     ]
@@ -138,16 +146,19 @@ def find_client(connection: TS3Connection,
     return clients[0]
 
 
-def find_group(connection: TS3Connection,
-               *,
-               name: Optional[str] = None,
-               group_id: Optional[int] = None) -> TeamspeakGroup:
+def find_group(
+    connection: TS3Connection,
+    *,
+    name: Optional[str] = None,
+    group_id: Optional[int] = None,
+) -> TeamspeakGroup:
     """
     Returns the :class:`sni.teamspeak.TeamspeakGroup` representation of a
     teamspeak group. Raises a :class:`LookupError` if the group is not found.
     """
     groups = [
-        grp for grp in group_list(connection)
+        grp
+        for grp in group_list(connection)
         if grp.sgid == group_id or grp.name == name
     ]
     if len(groups) != 1:
@@ -163,10 +174,9 @@ def group_list(connection: TS3Connection) -> List[TeamspeakGroup]:
         :class:`sni.teamspeak.TeamspeakGroup`
     """
     return [
-        TeamspeakGroup(**raw) for raw in cached_teamspeak_query(
-            connection,
-            TS3Connection.servergrouplist,
-            3600,
+        TeamspeakGroup(**raw)
+        for raw in cached_teamspeak_query(
+            connection, TS3Connection.servergrouplist, 3600,
         )
     ]
 
@@ -189,8 +199,9 @@ def new_authentication_challenge(usr: User) -> str:
        database and bound to that user. The nickname is also automatically
        assigned.
     """
-    logging.info('Starting authentication challenge for %s',
-                 usr.character_name)
+    logging.info(
+        "Starting authentication challenge for %s", usr.character_name
+    )
     challenge_nickname = utils.random_code(20)
     TeamspeakAuthenticationChallenge.objects(user=usr).update(
         set__challenge_nickname=challenge_nickname,
@@ -206,11 +217,8 @@ def new_teamspeak_connection() -> TS3Connection:
     Returns a new connection to the teamspeak server.
     """
     if conf.teamspeak.password is None:
-        raise RuntimeError('Configuration key conf.teamspeak.password is None')
-    connection = TS3Connection(
-        conf.teamspeak.host,
-        conf.teamspeak.port,
-    )
+        raise RuntimeError("Configuration key conf.teamspeak.password is None")
+    connection = TS3Connection(conf.teamspeak.host, conf.teamspeak.port,)
     connection.use(sid=conf.teamspeak.server_id)
     connection.login(
         client_login_name=conf.teamspeak.username,
@@ -221,7 +229,7 @@ def new_teamspeak_connection() -> TS3Connection:
     except TS3QueryError:
         pass
     logging.info(
-        'Connected to teamspeak server %s:%d as %s',
+        "Connected to teamspeak server %s:%d as %s",
         conf.teamspeak.host,
         conf.teamspeak.port,
         conf.teamspeak.username,

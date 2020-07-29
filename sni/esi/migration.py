@@ -31,17 +31,18 @@ def migrate_esi_access_token() -> None:
     schema_version = EsiAccessToken.SCHEMA_VERSION
     if not has_outdated_documents(collection, schema_version):
         return
-    logging.info('Migrating collection "esi_refresh_token" to v%d',
-                 schema_version)
+    logging.info(
+        'Migrating collection "esi_refresh_token" to v%d', schema_version
+    )
     collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
-    set_if_not_exist(collection, '_version', 1)
+    set_if_not_exist(collection, "_version", 1)
 
     # v1 to v2
     # Sets the valid field to True
-    collection.delete_many({'refresh_token': {'$exists': False}})
+    collection.delete_many({"refresh_token": {"$exists": False}})
     ensure_minimum_version(collection, 2)
 
     # Finally
@@ -57,17 +58,18 @@ def migrate_esi_refresh_token() -> None:
     schema_version = EsiRefreshToken.SCHEMA_VERSION
     if not has_outdated_documents(collection, schema_version):
         return
-    logging.info('Migrating collection "esi_refresh_token" to v%d',
-                 schema_version)
+    logging.info(
+        'Migrating collection "esi_refresh_token" to v%d', schema_version
+    )
     collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
-    set_if_not_exist(collection, '_version', 1)
+    set_if_not_exist(collection, "_version", 1)
 
     # v1 to v2
     # Sets the valid field to True
-    set_if_not_exist(collection, 'valid', True, version=1)
+    set_if_not_exist(collection, "valid", True, version=1)
     ensure_minimum_version(collection, 2)
 
     # Finally

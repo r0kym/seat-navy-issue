@@ -23,8 +23,9 @@ def init_mongodb():
     Does not return anything. Any call to ``mongoengine`` will act on that
     connection. It's magic.
     """
-    logging.info('Connecting to database %s:%s', conf.database.host,
-                 conf.database.port)
+    logging.info(
+        "Connecting to database %s:%s", conf.database.host, conf.database.port
+    )
     me.connect(
         conf.database.database,
         authentication_source=conf.database.authentication_source,
@@ -36,8 +37,7 @@ def init_mongodb():
 
 
 def get_pymongo_collection(
-    collection_name: str,
-    client: Optional[pymongo.MongoClient] = None
+    collection_name: str, client: Optional[pymongo.MongoClient] = None
 ) -> pymongo.collection.Collection:
     """
     Returns a pymongo collection handler.
@@ -60,6 +60,8 @@ def new_pymongo_client() -> pymongo.MongoClient:
     password = quote_plus(conf.database.password.get_secret_value())
     port = conf.database.port
     username = quote_plus(conf.database.username)
-    uri = f'mongodb://{username}:{password}@{host}:{port}/' + \
-        f'?authSource={authentication_database}'
+    uri = (
+        f"mongodb://{username}:{password}@{host}:{port}/"
+        + f"?authSource={authentication_database}"
+    )
     return pymongo.MongoClient(uri)

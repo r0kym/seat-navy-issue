@@ -27,6 +27,7 @@ class AuthorizationCodeResponse(pdt.BaseModel):
             "refresh_token": "RGuc...w1"
         }
     """
+
     access_token: str
     token_type: str
     expires_in: int
@@ -52,6 +53,7 @@ class DecodedAccessToken(pdt.BaseModel):
             "iss": "login.eveonline.com"
         }
     """
+
     azp: str
     exp: int
     iss: str
@@ -67,10 +69,10 @@ class DecodedAccessToken(pdt.BaseModel):
         """
         Extracts the character ID from the ``sub`` field.
         """
-        prefix = 'CHARACTER:EVE:'
+        prefix = "CHARACTER:EVE:"
         if not self.sub.startswith(prefix):
             raise ValueError('Unexpected "sub" field format: ' + self.sub)
-        return int(self.sub[len(prefix):])
+        return int(self.sub[len(prefix) :])
 
 
 class EsiTokenError(Exception):
@@ -84,17 +86,18 @@ def decode_access_token(access_token: str) -> DecodedAccessToken:
     Converts an access token in JWT form to a :class:`sni.esi.sso.DecodedAccessToken`
     """
     document = jwt.decode(access_token, verify=False)
-    if isinstance(document['scp'], str):
-        document['scp'] = [document['scp']]
+    if isinstance(document["scp"], str):
+        document["scp"] = [document["scp"]]
     try:
         return DecodedAccessToken(**document)
     except ValidationError as error:
-        logging.error('Failed to decode access token: %s', str(error))
+        logging.error("Failed to decode access token: %s", str(error))
     raise EsiTokenError
 
 
-def get_auth_url(esi_scopes: List[str],
-                 state: str = '00000000-0000-0000-0000-000000000000') -> str:
+def get_auth_url(
+    esi_scopes: List[str], state: str = "00000000-0000-0000-0000-000000000000"
+) -> str:
     """
     Returns an EVE SSO login url based on the scopes passed in argument.
 
@@ -107,23 +110,24 @@ def get_auth_url(esi_scopes: List[str],
     """
     if not esi_scopes:
         logging.warning(
-            'Scope list cannot be empty, replaced by [\'publicData\']')
-        esi_scopes = ['publicData']
+            "Scope list cannot be empty, replaced by ['publicData']"
+        )
+        esi_scopes = ["publicData"]
     params = {
-        'client_id': conf.esi.client_id.get_secret_value(),
-        'redirect_uri': urljoin(conf.general.root_url, '/callback/esi'),
-        'response_type': 'code',
-        'scope': ' '.join(esi_scopes),
-        'state': state,
+        "client_id": conf.esi.client_id.get_secret_value(),
+        "redirect_uri": urljoin(conf.general.root_url, "/callback/esi"),
+        "response_type": "code",
+        "scope": " ".join(esi_scopes),
+        "state": state,
     }
     request = requests.Request(
-        'GET',
-        'https://login.eveonline.com/v2/oauth/authorize/',
+        "GET",
+        "https://login.eveonline.com/v2/oauth/authorize/",
         params=params,
     )
     url = request.prepare().url
     if not url:
-        raise RuntimeError('Could not construct a valid auth URL')
+        raise RuntimeError("Could not construct a valid auth URL")
     return url
 
 
@@ -137,13 +141,17 @@ def get_basic_authorization_code() -> str:
         urlsafe_b64encode('<client_id>:<client_secret>')
 
     """
-    authorization = str(conf.esi.client_id.get_secret_value()) + ':' + str(
-        conf.esi.client_secret.get_secret_value())
+    authorization = (
+        str(conf.esi.client_id.get_secret_value())
+        + ":"
+        + str(conf.esi.client_secret.get_secret_value())
+    )
     return urlsafe_b64encode(authorization.encode()).decode()
 
 
 def get_access_token_from_callback_code(
-        code: str) -> AuthorizationCodeResponse:
+    code: str,
+) -> AuthorizationCodeResponse:
     """
     Gets an access token (along with its refresh token) from an EVE SSO
     authorization code.
@@ -161,16 +169,16 @@ def get_access_token_from_callback_code(
         Validate the ESI JWT token
     """
     data = {
-        'code': code,
-        'grant_type': 'authorization_code',
+        "code": code,
+        "grant_type": "authorization_code",
     }
     headers = {
-        'Authorization': 'Basic ' + get_basic_authorization_code(),
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Host': 'login.eveonline.com',
+        "Authorization": "Basic " + get_basic_authorization_code(),
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Host": "login.eveonline.com",
     }
     response = requests.post(
-        'https://login.eveonline.com/v2/oauth/token',
+        "https://login.eveonline.com/v2/oauth/token",
         headers=headers,
         data=data,
     )
@@ -178,10 +186,11 @@ def get_access_token_from_callback_code(
         response.raise_for_status()
         return AuthorizationCodeResponse(**response.json())
     except HTTPError as error:
-        logging.error('Failed to get access token: %s', str(error))
+        logging.error("Failed to get access token: %s", str(error))
     except ValidationError as error:
-        logging.error('Failed to parse authorization code response: %s',
-                      str(error))
+        logging.error(
+            "Failed to parse authorization code response: %s", str(error)
+        )
     raise EsiTokenError
 
 
@@ -196,16 +205,16 @@ def refresh_access_token(refresh_token: str) -> AuthorizationCodeResponse:
         `esi-docs <https://docs.esi.evetech.net/docs/sso/refreshing_access_tokens.html>`_
     """
     data = {
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token,
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
     }
     headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Host': 'login.eveonline.com',
-        'Authorization': 'Basic ' + get_basic_authorization_code()
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Host": "login.eveonline.com",
+        "Authorization": "Basic " + get_basic_authorization_code(),
     }
     response = requests.post(
-        'https://login.eveonline.com/v2/oauth/token',
+        "https://login.eveonline.com/v2/oauth/token",
         headers=headers,
         data=data,
     )
@@ -213,8 +222,9 @@ def refresh_access_token(refresh_token: str) -> AuthorizationCodeResponse:
         response.raise_for_status()
         return AuthorizationCodeResponse(**response.json())
     except HTTPError as error:
-        logging.error('Failed to refresh access token: %s', str(error))
+        logging.error("Failed to refresh access token: %s", str(error))
     except ValidationError as error:
-        logging.error('Failed to parse authorization code response: %s',
-                      str(error))
+        logging.error(
+            "Failed to parse authorization code response: %s", str(error)
+        )
     raise EsiTokenError

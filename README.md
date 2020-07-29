@@ -7,6 +7,7 @@ SeAT Navy Issue
 [![Documentation](https://badgen.net/badge/documentation/here/green)](https://altaris.github.io/seat-navy-issue/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c96b3a343687b9a4a3fa/maintainability)](https://codeclimate.com/github/altaris/seat-navy-issue/maintainability)
 ![Python 3](https://badgen.net/badge/Python/3/blue)
+[![Code style](https://badgen.net/badge/style/black/black)](https://pypi.org/project/black/)
 [![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
 ![Logo 256x256](res/logo.256.png)
@@ -45,7 +46,7 @@ pip install -r requirements.dev.txt
 ## Running
 
 ```sh
-make run  # Default command line arguments are '--clear-jobs'
+make run
 RUN_ARGS='--help' make run  # Custom command line arguments
 ```
 
@@ -56,7 +57,7 @@ Simply run
 make docs
 ```
 This will generate the HTML doc of the project, and the index file should be at
-`out/docs/html/index.html`.
+`docs/_build/index.html`.
 
 
 ## Code quality
@@ -65,8 +66,6 @@ Don't forget to run
 ```sh
 make
 ```
-to format the code following [pep8](https://www.python.org/dev/peps/pep-0008/),
-typecheck it using [mypy](http://mypy-lang.org/), and lint check it. Note that
-the formatter [yapf](https://github.com/google/yapf) does not yet support
-Python 3.8 (see [issue #772](https://github.com/google/yapf/issues/772)), so
-please refrain from using the walrus operator.
+to format the code following [black](https://pypi.org/project/black/),
+typecheck it using [mypy](http://mypy-lang.org/), and check it using
+[pylint](https://pylint.org/), and check for common vulnerabilities using [bandit](https://pypi.org/project/bandit/).

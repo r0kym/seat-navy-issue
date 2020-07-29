@@ -16,33 +16,27 @@ class DatabaseConfig(pdt.BaseModel):
     """
     Database configuration model
     """
+
     authentication_source: str = pdt.Field(
-        default='admin',
-        description='The database in which the user belongs.',
+        default="admin", description="The database in which the user belongs.",
     )
 
     database: str = pdt.Field(
-        default='sni',
-        description='Database name.',
+        default="sni", description="Database name.",
     )
 
     host: str = pdt.Field(
-        default='mongo',
-        description='Database hostname.',
+        default="mongo", description="Database hostname.",
     )
 
-    password: pdt.SecretStr = pdt.Field(default='', description='Password.')
+    password: pdt.SecretStr = pdt.Field(default="", description="Password.")
 
     port: int = pdt.Field(
-        default=27017,
-        description='Database port.',
-        ge=0,
-        le=65535,
+        default=27017, description="Database port.", ge=0, le=65535,
     )
 
     username: str = pdt.Field(
-        default='sni',
-        description='Username.',
+        default="sni", description="Username.",
     )
 
 
@@ -50,36 +44,38 @@ class DiscordConfig(pdt.BaseModel):
     """
     Discord configuration model
     """
+
     auth_channel_id: int = pdt.Field(
         default=0,
         description=(
-            'Authentication channel ID. This is where users will start '
-            'authentication challenges. Only required if ``discord.enable`` '
-            'is set to ``True``.'),
+            "Authentication channel ID. This is where users will start "
+            "authentication challenges. Only required if ``discord.enable`` "
+            "is set to ``True``."
+        ),
     )
 
     enabled: bool = pdt.Field(
-        default=False,
-        description='Wether to activate the Discord connector.',
+        default=False, description="Wether to activate the Discord connector.",
     )
 
     log_channel_id: int = pdt.Field(
         default=0,
         description=(
-            'Logging channel ID. This is where the Discorb bot will log '
-            'events. Only required if ``discord.enable`` is set to ``True``.'),
+            "Logging channel ID. This is where the Discorb bot will log "
+            "events. Only required if ``discord.enable`` is set to ``True``."
+        ),
     )
 
     server_id: int = pdt.Field(
-        default=0,
-        description='Discord server (or guild) ID.',
+        default=0, description="Discord server (or guild) ID.",
     )
 
     token: pdt.SecretStr = pdt.Field(
-        default=pdt.SecretStr(''),
+        default=pdt.SecretStr(""),
         description=(
-            'Discord bot token. Only required if ``discord.enable`` is set to '
-            '``True``.'),
+            "Discord bot token. Only required if ``discord.enable`` is set to "
+            "``True``."
+        ),
     )
 
 
@@ -87,14 +83,13 @@ class ESIConfig(pdt.BaseModel):
     """
     ESI configuration model
     """
+
     client_id: pdt.SecretStr = pdt.Field(
-        default='',
-        description='ESI client ID.',
+        default="", description="ESI client ID.",
     )
 
     client_secret: pdt.SecretStr = pdt.Field(
-        default='',
-        description='ESI client secret.',
+        default="", description="ESI client secret.",
     )
 
 
@@ -102,52 +97,54 @@ class GeneralConfig(pdt.BaseModel):
     """
     General configuration model
     """
+
     class LoggingLevel(str, Enum):
         """
         Acceptable logging levels
         """
-        CRITICAL = 'critical'
-        DEBUG = 'debug'
-        ERROR = 'error'
-        INFO = 'info'
-        WARNING = 'warning'
+
+        CRITICAL = "critical"
+        DEBUG = "debug"
+        ERROR = "error"
+        INFO = "info"
+        WARNING = "warning"
 
     debug: bool = pdt.Field(
         default=False,
         description=(
-            'Wether SNI should run in debug mode. In this mode, logging is '
-            'more verbose, and potentially exposes secrets. Do not use in a '
-            'production environment.'),
+            "Wether SNI should run in debug mode. In this mode, logging is "
+            "more verbose, and potentially exposes secrets. Do not use in a "
+            "production environment."
+        ),
     )
 
     host: Union[IPv4Address, IPv6Address] = pdt.Field(
-        default=IPv4Address('0.0.0.0'),
-        description=
-        'IP address at which SNI should listen for incoming connections.',
+        default=IPv4Address("0.0.0.0"),
+        description="IP address at which SNI should listen for incoming connections.",
     )
 
     logging_level: LoggingLevel = pdt.Field(
-        default=LoggingLevel.INFO,
-        description='Logging level.',
+        default=LoggingLevel.INFO, description="Logging level.",
     )
 
     port: int = pdt.Field(
         default=80,
-        description='Port at which SNI should listen for incoming connections.',
+        description="Port at which SNI should listen for incoming connections.",
         ge=0,
         le=65535,
     )
 
     root_url: pdt.HttpUrl = pdt.Field(
-        default='https://foo.bar',
+        default="https://foo.bar",
         description=(
-            'URL at which this SNI instance is located. The ESI callback '
-            'should then be ``<root_url>/callback/esi``.'),
+            "URL at which this SNI instance is located. The ESI callback "
+            "should then be ``<root_url>/callback/esi``."
+        ),
     )
 
     scheduler_thread_count: int = pdt.Field(
         default=5,
-        description='Number of threads available to the scheduler.',
+        description="Number of threads available to the scheduler.",
         ge=1,
     )
 
@@ -169,18 +166,19 @@ class JWTConfig(pdt.BaseModel):
     """
     JWT configuration model
     """
+
     class JWTAlgorithm(str, Enum):
         """
         Acceptable JWT algorithms, see `here <https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms>`_.
         """
 
-        HS256 = 'HS256'
+        HS256 = "HS256"
         """HMAC using SHA-256 hash algorithm (default)"""
 
-        HS384 = 'HS384'
+        HS384 = "HS384"
         """HMAC using SHA-384 hash algorithm"""
 
-        HS512 = 'HS512'
+        HS512 = "HS512"
         """HMAC using SHA-512 hash algorithm"""
 
         # ES256 = 'ES256'
@@ -213,13 +211,14 @@ class JWTConfig(pdt.BaseModel):
     algorithm: JWTAlgorithm = pdt.Field(
         default=JWTAlgorithm.HS256,
         description=(
-            'JWT algorithm. For now, only symmetric cryptography algorithms '
-            'are supported.'),
+            "JWT algorithm. For now, only symmetric cryptography algorithms "
+            "are supported."
+        ),
     )
 
     secret: pdt.SecretBytes = pdt.Field(
-        default=b'',
-        description='JWT secret. Generate one with ``openssl rand -hex 32``.',
+        default=b"",
+        description="JWT secret. Generate one with ``openssl rand -hex 32``.",
     )
 
 
@@ -227,21 +226,17 @@ class RedisConfig(pdt.BaseModel):
     """
     Redis configuration model
     """
+
     database: int = pdt.Field(
-        default=0,
-        description='Redis database to use.',
+        default=0, description="Redis database to use.",
     )
 
     host: str = pdt.Field(
-        default='redis',
-        description='Redis hostname.',
+        default="redis", description="Redis hostname.",
     )
 
     port: int = pdt.Field(
-        default=6379,
-        description='Redis port.',
-        ge=0,
-        le=65535,
+        default=6379, description="Redis port.", ge=0, le=65535,
     )
 
 
@@ -249,44 +244,51 @@ class TeamspeakConfig(pdt.BaseModel):
     """
     Teamspeak configuration model
     """
+
     auth_group_name: str = pdt.Field(
-        default='SNI TS AUTH',
+        default="SNI TS AUTH",
         description=(
-            'Name of the auth group. Authenticated Teamspeak users are '
-            'automatically added to this group. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Name of the auth group. Authenticated Teamspeak users are "
+            "automatically added to this group. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
     )
 
     bot_name: str = pdt.Field(
-        default='SeAT Navy Issue',
+        default="SeAT Navy Issue",
         description=(
-            'Name of the Teamspeak bot. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Name of the Teamspeak bot. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
     )
 
     enabled: bool = pdt.Field(
         default=False,
-        description='Wether to activate the Teamspeak connector.')
+        description="Wether to activate the Teamspeak connector.",
+    )
 
     host: str = pdt.Field(
-        default='',
+        default="",
         description=(
-            'Name, hostname, or IP address of the Teamspeak server. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Name, hostname, or IP address of the Teamspeak server. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
     )
 
     password: pdt.SecretStr = pdt.Field(
-        default=pdt.SecretStr(''),
+        default=pdt.SecretStr(""),
         description=(
-            'Query server password. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Query server password. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
     )
 
     port: int = pdt.Field(
         default=10011,
         description=(
-            'Port of the query server associated to the Teamspeak server. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Port of the query server associated to the Teamspeak server. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
         ge=0,
         le=65535,
     )
@@ -294,15 +296,17 @@ class TeamspeakConfig(pdt.BaseModel):
     server_id: int = pdt.Field(
         default=0,
         description=(
-            'Teamspeak server ID. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Teamspeak server ID. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
     )
 
     username: str = pdt.Field(
-        default='sni',
+        default="sni",
         description=(
-            'Query server username. '
-            'Only required if ``teamspeak.enable`` is set to ``True``.'),
+            "Query server username. "
+            "Only required if ``teamspeak.enable`` is set to ``True``."
+        ),
     )
 
 
@@ -310,39 +314,35 @@ class Config(pdt.BaseSettings):
     """
     SNI configuration model
     """
+
     database: DatabaseConfig = pdt.Field(
         default=DatabaseConfig(),
-        description='Database configuration document.',
+        description="Database configuration document.",
     )
 
     discord: DiscordConfig = pdt.Field(
-        default=DiscordConfig(),
-        description='Discord configuration document.',
+        default=DiscordConfig(), description="Discord configuration document.",
     )
 
     esi: ESIConfig = pdt.Field(
-        default=ESIConfig(),
-        description='ESI configuration document.',
+        default=ESIConfig(), description="ESI configuration document.",
     )
 
     general: GeneralConfig = pdt.Field(
-        default=GeneralConfig(),
-        description='General configuration document.',
+        default=GeneralConfig(), description="General configuration document.",
     )
 
     jwt: JWTConfig = pdt.Field(
-        default=JWTConfig(),
-        description='JWT configuration document.',
+        default=JWTConfig(), description="JWT configuration document.",
     )
 
     redis: RedisConfig = pdt.Field(
-        default=RedisConfig(),
-        description='Redis configuration document.',
+        default=RedisConfig(), description="Redis configuration document.",
     )
 
     teamspeak: TeamspeakConfig = pdt.Field(
         default=TeamspeakConfig(),
-        description='Teamspeak configuration document.',
+        description="Teamspeak configuration document.",
     )
 
 

@@ -12,6 +12,7 @@ class CrashReportRequest(me.EmbeddedDocument):
     """
     Represents a request made to the API.
     """
+
     # cookies = me.DictField(default=None)
     # hooks = me.DictField(default=None)
     # auth = me.DynamicField(default=None)
@@ -30,15 +31,16 @@ class CrashReportRequest(me.EmbeddedDocument):
 
     url = me.StringField(default=None)
     """URL of the request"""
+
     def to_dict(self) -> dict:
         """
         Returns a dict representation
         """
         return {
-            'headers': self.headers,
-            'method': self.method,
-            'params': self.params,
-            'url': self.url,
+            "headers": self.headers,
+            "method": self.method,
+            "params": self.params,
+            "url": self.url,
         }
 
 
@@ -46,6 +48,7 @@ class CrashReportToken(me.EmbeddedDocument):
     """
     Represents a token in a crash report. See :class:`sni.uac.models.Token`
     """
+
     created_on = me.DateTimeField()
     """See :class:`sni.uac.models.Token`"""
 
@@ -60,23 +63,24 @@ class CrashReportToken(me.EmbeddedDocument):
 
     uuid = me.UUIDField()
     """See :class:`sni.uac.models.Token`"""
+
     def to_dict(self) -> dict:
         """
         Returns a dict representation
         """
         return {
-            'created_on': str(self.created_on),
-            'expires_on': str(self.expires_on),
-            'owner': {
-                'authorized_to_login': self.owner.authorized_to_login,
-                'character_id': self.owner.character_id,
-                'character_name': self.owner.character_name,
-                'clearance_level': self.owner.clearance_level,
-                'created_on': str(self.owner.created_on),
-                'updated_on': str(self.owner.updated_on),
+            "created_on": str(self.created_on),
+            "expires_on": str(self.expires_on),
+            "owner": {
+                "authorized_to_login": self.owner.authorized_to_login,
+                "character_id": self.owner.character_id,
+                "character_name": self.owner.character_name,
+                "clearance_level": self.owner.clearance_level,
+                "created_on": str(self.owner.created_on),
+                "updated_on": str(self.owner.updated_on),
             },
-            'token_type': self.token_type,
-            'uuid': str(self.uuid),
+            "token_type": self.token_type,
+            "uuid": str(self.uuid),
         }
 
 
@@ -107,12 +111,12 @@ class CrashReport(me.Document):
     """See :class:`sni.api.models.CrashReportToken`"""
 
     meta = {
-        'indexes': [
-            '-timestamp',
+        "indexes": [
+            "-timestamp",
             {
-                'fields': ['timestamp'],
-                'expireAfterSeconds': 3600 * 24 * 90,  # 90 days
-            }
+                "fields": ["timestamp"],
+                "expireAfterSeconds": 3600 * 24 * 90,
+            },  # 90 days
         ]
     }
 
@@ -121,9 +125,9 @@ class CrashReport(me.Document):
         Returns a dict representation
         """
         return {
-            'id': str(self.pk),
-            'request': self.request.to_dict(),
-            'timestamp': str(self.timestamp),
-            'token': self.token.to_dict() if self.token else None,
-            'trace': self.trace,
+            "id": str(self.pk),
+            "request": self.request.to_dict(),
+            "timestamp": str(self.timestamp),
+            "token": self.token.to_dict() if self.token else None,
+            "trace": self.trace,
         }

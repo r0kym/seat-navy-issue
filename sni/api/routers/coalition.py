@@ -33,11 +33,12 @@ class GetCoalitionShortOut(pdt.BaseModel):
     """
     Model for an element of a `GET /coalition` response.
     """
+
     coalition_id: str
     coalition_name: str
 
     @staticmethod
-    def from_record(coalition: Coalition) -> 'GetCoalitionShortOut':
+    def from_record(coalition: Coalition) -> "GetCoalitionShortOut":
         """
         Converts a coalition database record to a short response.
         """
@@ -51,6 +52,7 @@ class GetCoalitionOut(pdt.BaseModel):
     """
     Model for `GET /coalition/{coalition_id}` responses.
     """
+
     authorized_to_login: Optional[bool]
     coalition_id: str
     created_on: datetime
@@ -61,7 +63,7 @@ class GetCoalitionOut(pdt.BaseModel):
     updated_on: datetime
 
     @staticmethod
-    def from_record(coalition: Coalition) -> 'GetCoalitionOut':
+    def from_record(coalition: Coalition) -> "GetCoalitionOut":
         """
         Converts a coalition database record to a response.
         """
@@ -81,6 +83,7 @@ class PostCoalitionIn(pdt.BaseModel):
     """
     Model for `POST /coalition` responses.
     """
+
     coalition_name: str
     ticker: str
 
@@ -89,6 +92,7 @@ class PutCoalitionIn(pdt.BaseModel):
     """
     Model for `PUT /coalition/{coalition_id}` responses.
     """
+
     add_members: Optional[List[int]] = None
     authorized_to_login: Optional[bool] = None
     mandatory_esi_scopes: Optional[List[str]] = None
@@ -98,33 +102,33 @@ class PutCoalitionIn(pdt.BaseModel):
 
 
 @router.delete(
-    '/{coalition_id}',
-    summary='Delete a coalition',
+    "/{coalition_id}", summary="Delete a coalition",
 )
 def delete_coalition(
-        coalition_id: BSONObjectId,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    coalition_id: BSONObjectId,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Deletes a coalition. Requires a clearance level of 9 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.delete_coalition')
+    assert_has_clearance(tkn.owner, "sni.delete_coalition")
     coalition: Coalition = Coalition.objects.get(pk=coalition_id)
-    logging.debug('Deleting coalition %s (%s)', coalition.coalition_name,
-                  coalition_id)
+    logging.debug(
+        "Deleting coalition %s (%s)", coalition.coalition_name, coalition_id
+    )
     coalition.delete()
 
 
 @router.get(
-    '',
+    "",
     response_model=List[GetCoalitionShortOut],
-    summary='List all coalition names',
+    summary="List all coalition names",
 )
 def get_coalition(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Lists all the coalition names. Requires a clearance level of 0 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_coalition')
+    assert_has_clearance(tkn.owner, "sni.read_coalition")
     return [
         GetCoalitionShortOut.from_record(coalition)
         for coalition in Coalition.objects()
@@ -132,55 +136,56 @@ def get_coalition(tkn: Token = Depends(from_authotization_header_nondyn)):
 
 
 @router.get(
-    '/{coalition_id}',
+    "/{coalition_id}",
     response_model=GetCoalitionOut,
-    summary='Get basic informations about a coalition',
+    summary="Get basic informations about a coalition",
 )
 def get_coalition_name(
-        coalition_id: BSONObjectId,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    coalition_id: BSONObjectId,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Returns details about a given coalition. Requires a clearance level of 0 or
     more.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_coalition')
+    assert_has_clearance(tkn.owner, "sni.read_coalition")
     return GetCoalitionOut.from_record(
-        Coalition.objects(pk=coalition_id).get())
+        Coalition.objects(pk=coalition_id).get()
+    )
 
 
 @router.post(
-    '',
+    "",
     response_model=GetCoalitionOut,
     status_code=status.HTTP_201_CREATED,
-    summary='Create a coalition',
+    summary="Create a coalition",
 )
 def post_coalitions(
-        data: PostCoalitionIn,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    data: PostCoalitionIn,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Creates a coalition. Requires a clearance level of 9 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.create_coalition')
+    assert_has_clearance(tkn.owner, "sni.create_coalition")
     coa = Coalition(
-        coalition_name=data.coalition_name,
-        ticker=data.ticker,
+        coalition_name=data.coalition_name, ticker=data.ticker,
     ).save()
-    logging.debug('Created coalition %s (%s)', data.coalition_name,
-                  str(coa.pk))
+    logging.debug(
+        "Created coalition %s (%s)", data.coalition_name, str(coa.pk)
+    )
     return GetCoalitionOut.from_record(coa)
 
 
 @router.put(
-    '/{coalition_id}',
+    "/{coalition_id}",
     response_model=GetCoalitionOut,
-    summary='Update a coalition',
+    summary="Update a coalition",
 )
 def put_coalition(
-        coalition_id: BSONObjectId,
-        data: PutCoalitionIn,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    coalition_id: BSONObjectId,
+    data: PutCoalitionIn,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Updates a coalition. All fields in the request body are optional. The
@@ -188,17 +193,18 @@ def put_coalition(
     `members` cannot be used in conjunction with `add_members` and
     `remove_members`. Requires a clearance level of 9 or more.
     """
-    assert_has_clearance(tkn.owner, 'sni.update_coalition')
+    assert_has_clearance(tkn.owner, "sni.update_coalition")
     coalition: Coalition = Coalition.objects.get(pk=coalition_id)
-    logging.debug('Updating coalition %s (%s)', coalition.coalition_name,
-                  coalition_id)
+    logging.debug(
+        "Updating coalition %s (%s)", coalition.coalition_name, coalition_id
+    )
     if data.add_members is not None:
         coalition.members += [
             Alliance.objects.get(alliance_id=member_id)
             for member_id in set(data.add_members)
         ]
     if data.authorized_to_login is not None:
-        assert_has_clearance(tkn.owner, 'sni.set_authorized_to_login')
+        assert_has_clearance(tkn.owner, "sni.set_authorized_to_login")
         coalition.authorized_to_login = data.authorized_to_login
     if data.mandatory_esi_scopes is not None:
         coalition.mandatory_esi_scopes = data.mandatory_esi_scopes
@@ -209,7 +215,8 @@ def put_coalition(
         ]
     if data.remove_members is not None:
         coalition.members = [
-            member for member in coalition.members
+            member
+            for member in coalition.members
             if member.alliance_id not in data.remove_members
         ]
     if data.ticker is not None:
@@ -220,13 +227,13 @@ def put_coalition(
 
 
 @router.get(
-    '/{coalition_id}/tracking',
+    "/{coalition_id}/tracking",
     response_model=GetTrackingOut,
-    summary='Coalition tracking',
+    summary="Coalition tracking",
 )
 def get_coalition_tracking(
-        coalition_id: BSONObjectId,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    coalition_id: BSONObjectId,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Reports which member (of a given coalition) have a valid refresh token
@@ -234,5 +241,5 @@ def get_coalition_tracking(
     more.
     """
     coalition: Coalition = Coalition.objects(pk=coalition_id).get()
-    assert_has_clearance(tkn.owner, 'sni.track_coalition')
+    assert_has_clearance(tkn.owner, "sni.track_coalition")
     return GetTrackingOut.from_user_iterator(coalition.user_iterator())

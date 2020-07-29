@@ -27,27 +27,26 @@ from sni.db.redis import new_redis_connection
 from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
-JOBS_KEY: str = 'scheduler.discord.jobs'
+JOBS_KEY: str = "scheduler.discord.jobs"
 """The redis key for the job list"""
 
-RUN_TIMES_KEY: str = 'scheduler.discord.run_times'
+RUN_TIMES_KEY: str = "scheduler.discord.run_times"
 """The redis key for the job run times"""
 
-bot = Bot(command_prefix='!', description='SeAT Navy Issue Discord Bot')
+bot = Bot(command_prefix="!", description="SeAT Navy Issue Discord Bot")
 
 scheduler = AsyncIOScheduler(
     event_loop=bot.loop,
     job_defaults={
-        'coalesce': True,
-        'executor': 'default',
-        'jitter': 60,
-        'jobstore': 'discord',
-        'max_instances': 3,
-        'misfire_grace_time': None,
+        "coalesce": True,
+        "executor": "default",
+        "jitter": 60,
+        "jobstore": "discord",
+        "max_instances": 3,
+        "misfire_grace_time": None,
     },
     jobstores={
-        'discord':
-        RedisJobStore(
+        "discord": RedisJobStore(
             db=conf.redis.database,
             host=conf.redis.host,
             jobs_key=JOBS_KEY,
@@ -89,15 +88,16 @@ def start_bot():
     """
     Runs the discord client in a different thread.
     """
+
     async def _start():
         await bot.start(conf.discord.token.get_secret_value())
 
-    logging.info('Starting Discord client')
+    logging.info("Starting Discord client")
     bot.loop.create_task(_start())
     thread = Thread(
-        args=(bot.loop, ),
+        args=(bot.loop,),
         daemon=True,
-        name='discord_client',
+        name="discord_client",
         target=asyncio.BaseEventLoop.run_forever,
     )
     thread.start()

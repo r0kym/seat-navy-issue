@@ -17,17 +17,13 @@ class DiscordAuthenticationChallenge(me.Document):
     """
     Represents a pending authentication challenge.
     """
+
     code = me.StringField(required=True, unique=True)
     created_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the creation of this document"""
     user = me.ReferenceField(User, required=True, unique=True)
     meta = {
-        'indexes': [
-            {
-                'fields': ['created_on'],
-                'expireAfterSeconds': 60,
-            },
-        ],
+        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 60,},],
     }
 
 
@@ -40,8 +36,11 @@ def complete_authentication_challenge(discord_user: discord.User, code: str):
     usr = challenge.user
     usr.discord_user_id = discord_user.id
     usr.save()
-    logging.info('Authenticated Discord user %d to user %s', discord_user.id,
-                 usr.tickered_name)
+    logging.info(
+        "Authenticated Discord user %d to user %s",
+        discord_user.id,
+        usr.tickered_name,
+    )
     challenge.delete()
 
 
@@ -77,10 +76,10 @@ def new_authentication_challenge(usr: User) -> str:
     3. The Discord client is notified, and check this code against the pending
        Discort authentication challenges.
     """
-    logging.info('Starting Discord authentication challenge for %s',
-                 usr.character_name)
+    logging.info(
+        "Starting Discord authentication challenge for %s", usr.character_name
+    )
     challenge = DiscordAuthenticationChallenge(
-        user=usr,
-        code=utils.random_code(50),
+        user=usr, code=utils.random_code(50),
     ).save()
     return challenge.code

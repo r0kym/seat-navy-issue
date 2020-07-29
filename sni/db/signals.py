@@ -16,5 +16,5 @@ def on_pre_save(_sender: Any, document: me.Document):
     """
     If the document has a `updated_on`, sets it to the current datetime.
     """
-    if 'updated_on' in document:
+    if "updated_on" in document:
         document.updated_on = utils.now()

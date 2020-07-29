@@ -23,7 +23,7 @@ class EsiPath(me.Document):
     path_re = me.StringField(required=True)
     """Regular expression for this path, in string form"""
 
-    path = me.StringField(required=True, unique_with='http_method')
+    path = me.StringField(required=True, unique_with="http_method")
     """String form of the path, e.g. ``/characters/{character_id}/``"""
 
     scope = me.StringField(required=False)
@@ -51,9 +51,9 @@ class EsiRefreshToken(me.Document):
     updated_on = me.DateTimeField(required=True, default=utils.now)
     """Timestamp of the last update of this document"""
 
-    owner = me.ReferenceField(User,
-                              required=True,
-                              reverse_delete_rule=me.DO_NOTHING)
+    owner = me.ReferenceField(
+        User, required=True, reverse_delete_rule=me.DO_NOTHING
+    )
     """Reference to the owner of this token"""
 
     refresh_token = me.StringField(required=True)
@@ -66,10 +66,7 @@ class EsiRefreshToken(me.Document):
     """Wether this refresh token is valid"""
 
     meta = {
-        'indexes': [
-            'valid',
-            ('owner', 'scopes', 'valid'),
-        ],
+        "indexes": ["valid", ("owner", "scopes", "valid"),],
     }
 
 
@@ -94,23 +91,19 @@ class EsiAccessToken(me.Document):
     expires_on = me.DateTimeField(required=True)
     """Expiration timestamp of this access token (according to the ESI)"""
 
-    owner = me.ReferenceField(User,
-                              required=True,
-                              reverse_delete_rule=me.DO_NOTHING)
+    owner = me.ReferenceField(
+        User, required=True, reverse_delete_rule=me.DO_NOTHING
+    )
     """Reference to the owner of this token"""
 
-    refresh_token = me.ReferenceField(EsiRefreshToken,
-                                      reverse_delete_rule=me.CASCADE)
+    refresh_token = me.ReferenceField(
+        EsiRefreshToken, reverse_delete_rule=me.CASCADE
+    )
     """Reference towards the refresh token that issued this access token"""
 
     scopes = me.ListField(me.StringField(), required=True, default=[])
     """ESI scopes of the access token"""
 
     meta = {
-        'indexes': [
-            {
-                'fields': ['expires_on'],
-                'expireAfterSeconds': 0,
-            },
-        ],
+        "indexes": [{"fields": ["expires_on"], "expireAfterSeconds": 0,},],
     }

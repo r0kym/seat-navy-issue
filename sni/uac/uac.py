@@ -36,12 +36,16 @@ def is_authorized_to_login(usr: User) -> bool:
         if usr.corporation.authorized_to_login is False:
             return False
         # Note that in Python, (None or True) == True
-        authorized_to_login = authorized_to_login or usr.corporation.authorized_to_login
+        authorized_to_login = (
+            authorized_to_login or usr.corporation.authorized_to_login
+        )
 
     if usr.alliance is not None:
         if usr.alliance.authorized_to_login is False:
             return False
-        authorized_to_login = authorized_to_login or usr.alliance.authorized_to_login
+        authorized_to_login = (
+            authorized_to_login or usr.alliance.authorized_to_login
+        )
 
     for coa in usr.coalitions():
         if coa.authorized_to_login is False:

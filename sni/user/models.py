@@ -13,6 +13,7 @@ class Alliance(me.Document):
     """
     EVE alliance database model.
     """
+
     SCHEMA_VERSION = 3
     """Latest schema version for this collection"""
 
@@ -39,14 +40,15 @@ class Alliance(me.Document):
 
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
+
     @property
-    def ceo(self) -> 'User':
+    def ceo(self) -> "User":
         """
         Returns the ceo of the executor corporation.
         """
         return self.executor.ceo
 
-    def coalitions(self) -> List['Coalition']:
+    def coalitions(self) -> List["Coalition"]:
         """
         Returns the list of coalition this alliance is part of.
 
@@ -56,22 +58,23 @@ class Alliance(me.Document):
         return list(Coalition.objects(members=self))
 
     @property
-    def executor(self) -> 'Corporation':
+    def executor(self) -> "Corporation":
         """
         Returns the alliance's executor corporation as a
         :class:`sni.user.Corporation` object.
         """
         return Corporation.objects.get(
-            corporation_id=self.executor_corporation_id)
+            corporation_id=self.executor_corporation_id
+        )
 
-    def users(self) -> List['User']:
+    def users(self) -> List["User"]:
         """
         Return the member list of this alliance, according to the database.
         This may not be up to date with the ESI.
         """
         return list(self.user_iterator())
 
-    def user_iterator(self) -> Iterator['User']:
+    def user_iterator(self) -> Iterator["User"]:
         """
         Returns an iterator over all the members of this alliance, according to
         the database. This may not be up to date with the ESI.
@@ -86,6 +89,7 @@ class Coalition(me.Document):
     EVE coalition. Coalitions are not formally represented in EVE, so they have
     to be created manually. An alliance can be part of multiple coalitions.
     """
+
     SCHEMA_VERSION = 4
     """Latest schema version for this collection"""
 
@@ -112,13 +116,14 @@ class Coalition(me.Document):
 
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
-    def users(self) -> List['User']:
+
+    def users(self) -> List["User"]:
         """
         Return the member list of this coalition.
         """
         return list(self.user_iterator())
 
-    def user_iterator(self) -> Iterator['User']:
+    def user_iterator(self) -> Iterator["User"]:
         """
         Returns an iterator over all the members of this coalition.
         """
@@ -131,6 +136,7 @@ class Corporation(me.Document):
     """
     EVE corporation database model.
     """
+
     SCHEMA_VERSION = 3
     """Latest schema version for this collection"""
 
@@ -140,10 +146,9 @@ class Corporation(me.Document):
     authorized_to_login = me.BooleanField(default=None, null=True)
     """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
 
-    alliance = me.ReferenceField(Alliance,
-                                 default=None,
-                                 null=True,
-                                 required=False)
+    alliance = me.ReferenceField(
+        Alliance, default=None, null=True, required=False
+    )
     """Optional reference to the alliance this corporation belongs to"""
 
     ceo_character_id = me.IntField(required=True)
@@ -163,21 +168,22 @@ class Corporation(me.Document):
 
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
+
     @property
-    def ceo(self) -> 'User':
+    def ceo(self) -> "User":
         """
         Returns the corporation's ceo as a :class:`sni.user` object.
         """
         return User.objects.get(character_id=self.ceo_character_id)
 
-    def users(self) -> List['User']:
+    def users(self) -> List["User"]:
         """
         Return the member list of this corporation, according to the database.
         This may not be up to date with the ESI.
         """
         return list(self.user_iterator())
 
-    def user_iterator(self) -> Iterator['User']:
+    def user_iterator(self) -> Iterator["User"]:
         """
         Returns an iterator over all the members of this corporation, according
         to the database. This may not be up to date with the ESI.
@@ -190,6 +196,7 @@ class Group(me.Document):
     """
     Group model. A group is simply a collection of users.
     """
+
     SCHEMA_VERSION = 4
     """Latest schema version for this collection"""
 
@@ -217,13 +224,13 @@ class Group(me.Document):
     map_to_teamspeak = me.BooleanField(default=True, required=True)
     """Wether this group should be mapped as a Teamspeak group"""
 
-    members = me.ListField(me.ReferenceField('User'), default=list)
+    members = me.ListField(me.ReferenceField("User"), default=list)
     """Member list"""
 
     group_name = me.StringField(required=True, unique=True)
     """Name of the group"""
 
-    owner = me.ReferenceField('User', null=True)
+    owner = me.ReferenceField("User", null=True)
     """Owner of the group. Can be ``None``."""
 
     teamspeak_sgid = me.IntField(null=True)
@@ -239,6 +246,7 @@ class User(me.Document):
 
     A user corresponds to a single EVE character.
     """
+
     SCHEMA_VERSION = 3
     """Latest schema version for this collection"""
 
@@ -271,6 +279,7 @@ class User(me.Document):
 
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
+
     @property
     def alliance(self) -> Optional[Alliance]:
         """
@@ -286,10 +295,16 @@ class User(me.Document):
         required by the corporation, alliance, and all the coalitions the user
         is part of.
         """
-        corporation_scopes = (self.corporation.mandatory_esi_scopes
-                              if self.corporation is not None else [])
-        alliance_scopes = (self.alliance.mandatory_esi_scopes
-                           if self.alliance is not None else [])
+        corporation_scopes = (
+            self.corporation.mandatory_esi_scopes
+            if self.corporation is not None
+            else []
+        )
+        alliance_scopes = (
+            self.alliance.mandatory_esi_scopes
+            if self.alliance is not None
+            else []
+        )
         coalition_scopes = []
         for coalition in self.coalitions():
             coalition_scopes += coalition.mandatory_esi_scopes
@@ -307,17 +322,21 @@ class User(me.Document):
         """
         Tells wether the user is the ceo of its corporation.
         """
-        return (self.is_ceo_of_corporation()
-                and self.corporation.alliance is not None
-                and self.corporation.alliance.executor_corporation_id
-                == self.corporation.corporation_id)
+        return (
+            self.is_ceo_of_corporation()
+            and self.corporation.alliance is not None
+            and self.corporation.alliance.executor_corporation_id
+            == self.corporation.corporation_id
+        )
 
     def is_ceo_of_corporation(self) -> bool:
         """
         Tells wether the user is the ceo of its corporation.
         """
-        return (self.corporation is not None
-                and self.corporation.ceo_character_id == self.character_id)
+        return (
+            self.corporation is not None
+            and self.corporation.ceo_character_id == self.character_id
+        )
 
     @property
     def tickered_name(self) -> str:
@@ -334,5 +353,5 @@ class User(me.Document):
             else:
                 ticker = self.corporation.ticker
         if ticker is not None:
-            return f'[{ticker}] {self.character_name}'
+            return f"[{ticker}] {self.character_name}"
         return self.character_name

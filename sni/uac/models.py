@@ -14,13 +14,15 @@ class Token(me.Document):
     """
     Represents a token issued by SNI.
     """
+
     class TokenType(str, Enum):
         """
         Enumeration containing the various token types.
         """
-        dyn = 'dyn'  # Dynamic app token
-        per = 'per'  # Permanent app token
-        use = 'use'  # User token
+
+        dyn = "dyn"  # Dynamic app token
+        per = "per"  # Permanent app token
+        use = "use"  # User token
 
     callback = me.URLField(default=None, null=True)
     """Callback URL of the application. When a new user token is issued, the
@@ -35,15 +37,14 @@ class Token(me.Document):
     expires_on = me.DateTimeField(default=None, null=True)
     """Self explanatory"""
 
-    owner = me.ReferenceField(User,
-                              required=True,
-                              reverse_delete_rule=me.CASCADE)
+    owner = me.ReferenceField(
+        User, required=True, reverse_delete_rule=me.CASCADE
+    )
     """Reference to the owner of this token"""
 
-    parent = me.ReferenceField('self',
-                               default=None,
-                               null=True,
-                               reverse_delete_rule=me.CASCADE)
+    parent = me.ReferenceField(
+        "self", default=None, null=True, reverse_delete_rule=me.CASCADE
+    )
     """Optional reference to the token that has been used to create this one"""
 
     token_type = me.StringField(choices=TokenType, required=True)
@@ -58,12 +59,7 @@ class Token(me.Document):
     """
 
     meta = {
-        'indexes': [
-            {
-                'fields': ['expires_on'],
-                'expireAfterSeconds': 0,
-            },
-        ],
+        "indexes": [{"fields": ["expires_on"], "expireAfterSeconds": 0,},],
     }
 
 
@@ -91,10 +87,5 @@ class StateCode(me.Document):
     """
 
     meta = {
-        'indexes': [
-            {
-                'fields': ['created_on'],
-                'expireAfterSeconds': 600,
-            },
-        ],
+        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 600,},],
     }

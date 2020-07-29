@@ -24,7 +24,7 @@ def crash_report(request: Request, error: Exception) -> CrashReport:
     Constructs a crash report
     """
     try:
-        token = from_authotization_header(request.headers['authorization'])
+        token = from_authotization_header(request.headers["authorization"])
         crtoken: Optional[CrashReportToken] = CrashReportToken(
             created_on=token.created_on,
             expires_on=token.expires_on,
@@ -35,16 +35,14 @@ def crash_report(request: Request, error: Exception) -> CrashReport:
     except Exception:
         crtoken = None
     trace = format_exception(
-        etype=type(error),
-        value=error,
-        tb=error.__traceback__,
+        etype=type(error), value=error, tb=error.__traceback__,
     )
     return CrashReport(
         request=CrashReportRequest(
-            headers=request.headers if hasattr(request, 'headers') else None,
-            method=str(request.method) if hasattr(request, 'method') else '?',
-            params=request.params if hasattr(request, 'params') else None,
-            url=str(request.url) if hasattr(request, 'url') else '?',
+            headers=request.headers if hasattr(request, "headers") else None,
+            method=str(request.method) if hasattr(request, "method") else "?",
+            params=request.params if hasattr(request, "params") else None,
+            url=str(request.url) if hasattr(request, "url") else "?",
         ),
         token=crtoken,
         trace=trace,
@@ -58,7 +56,7 @@ def does_not_exist_exception_handler(_request: Request, error: Exception):
     ``404``'s.
     """
     return JSONResponse(
-        content={'details': str(error)} if conf.general.debug else None,
+        content={"details": str(error)} if conf.general.debug else None,
         status_code=status.HTTP_404_NOT_FOUND,
     )
 
@@ -69,12 +67,11 @@ def permission_error_handler(_request: Request, error: PermissionError):
     Catches :class:`PermissionError` exceptions and forwards them as
     ``403``'s.
     """
-    content = {'details': 'Insufficient clearance level'}
+    content = {"details": "Insufficient clearance level"}
     if conf.general.debug:
-        content['details'] += ': ' + str(error)
+        content["details"] += ": " + str(error)
     return JSONResponse(
-        content=content,
-        status_code=status.HTTP_403_FORBIDDEN,
+        content=content, status_code=status.HTTP_403_FORBIDDEN,
     )
 
 
@@ -88,12 +85,11 @@ def requests_httperror_handler(_request: Request, error: HTTPError):
     if conf.general.debug and error.request is not None:
         req: Request = error.request
         content = {
-            'details': f'Failed to issue {req.method} to "{req.url}"' \
-                + f': {str(error)}'
+            "details": f'Failed to issue {req.method} to "{req.url}"'
+            + f": {str(error)}"
         }
     return JSONResponse(
-        content=content,
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )
 
 
@@ -106,11 +102,14 @@ def exception_handler(request: Request, error: Exception):
     """
     crash = crash_report(request, error)
     crash.save()
-    logging.error('The following crash report has been saved with id %s',
-                  str(crash.pk))
-    content = crash.to_dict() if conf.general.debug \
-        else {'crash_report_id': str(crash.pk)}
+    logging.error(
+        "The following crash report has been saved with id %s", str(crash.pk)
+    )
+    content = (
+        crash.to_dict()
+        if conf.general.debug
+        else {"crash_report_id": str(crash.pk)}
+    )
     return JSONResponse(
-        content=content,
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )

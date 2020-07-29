@@ -25,6 +25,7 @@ class GetCrashReportRequestOut(pdt.BaseModel):
     """
     Embedded model for reponses for ``GET /crash/{crash_report_id}``.
     """
+
     headers: Optional[dict]
     method: str
     params: Optional[Any]
@@ -35,6 +36,7 @@ class GetCrashReportTokenUserOut(pdt.BaseModel):
     """
     Embedded model for reponses for ``GET /crash/{crash_report_id}``.
     """
+
     authorized_to_login: bool
     character_id: int
     character_name: str
@@ -47,6 +49,7 @@ class GetCrashReportTokenOut(pdt.BaseModel):
     """
     Embedded model for reponses for ``GET /crash/{crash_report_id}``.
     """
+
     created_on: datetime
     expires_on: Optional[datetime]
     owner: GetCrashReportTokenUserOut
@@ -54,7 +57,7 @@ class GetCrashReportTokenOut(pdt.BaseModel):
     uuid: str
 
     @staticmethod
-    def from_record(crash: CrashReport) -> 'GetCrashReportTokenOut':
+    def from_record(crash: CrashReport) -> "GetCrashReportTokenOut":
         """
         Reports basic informations about a token used at the moment of a crash.
         """
@@ -78,6 +81,7 @@ class GetCrashReportOut(pdt.BaseModel):
     """
     Response model for response for ``GET /crash/{crash_report_id}``.
     """
+
     id: str
     request: GetCrashReportRequestOut
     timestamp: datetime
@@ -85,7 +89,7 @@ class GetCrashReportOut(pdt.BaseModel):
     trace: List[str]
 
     @staticmethod
-    def from_record(crash: CrashReport) -> 'GetCrashReportOut':
+    def from_record(crash: CrashReport) -> "GetCrashReportOut":
         """
         Converts a document of the crash report collection to a response model.
         """
@@ -100,7 +104,8 @@ class GetCrashReportOut(pdt.BaseModel):
             timestamp=crash.timestamp,
             trace=crash.trace,
             token=GetCrashReportTokenOut.from_record(crash.token)
-            if crash.token is not None else None,
+            if crash.token is not None
+            else None,
         )
 
 
@@ -108,20 +113,22 @@ class GetCrashReportShortOut(pdt.BaseModel):
     """
     Model for an element of a ``GET /crash`` response
     """
+
     character_id: Optional[int]
     id: str
     timestamp: datetime
     url: str
 
     @staticmethod
-    def from_record(crash: CrashReport) -> 'GetCrashReportShortOut':
+    def from_record(crash: CrashReport) -> "GetCrashReportShortOut":
         """
         Converts a document of the crash report collection to a short response
         model.
         """
         return GetCrashReportShortOut(
             character_id=crash.token.owner.character_id
-            if crash.token is not None else None,
+            if crash.token is not None
+            else None,
             id=str(crash.pk),
             timestamp=crash.timestamp,
             url=crash.request.url,
@@ -129,49 +136,49 @@ class GetCrashReportShortOut(pdt.BaseModel):
 
 
 @router.delete(
-    '/{crash_report_id}',
-    summary='Delete a crash report',
+    "/{crash_report_id}", summary="Delete a crash report",
 )
 def delete_crash_report(
-        crash_report_id: BSONObjectId,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    crash_report_id: BSONObjectId,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Deletes a crash report. Requires a clearance level of 10.
     """
-    assert_has_clearance(tkn.owner, 'sni.delete_crash_report')
+    assert_has_clearance(tkn.owner, "sni.delete_crash_report")
     CrashReport.objects.get(pk=crash_report_id).delete()
 
 
 @router.get(
-    '',
+    "",
     response_model=List[GetCrashReportShortOut],
-    summary='Get the list of the 50 most recent crash reports',
+    summary="Get the list of the 50 most recent crash reports",
 )
 def get_crash_reports(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     Get the list of the 50 most recent crash reports, sorted from most to least
     recent. Requires a clearance level of 10.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_crash_report')
+    assert_has_clearance(tkn.owner, "sni.read_crash_report")
     return [
         GetCrashReportShortOut.from_record(crash)
-        for crash in CrashReport.objects().order_by('-timestamp')[:50]
+        for crash in CrashReport.objects().order_by("-timestamp")[:50]
     ]
 
 
 @router.get(
-    '/{crash_report_id}',
+    "/{crash_report_id}",
     response_model=GetCrashReportOut,
-    summary='Get a crash report',
+    summary="Get a crash report",
 )
 def get_crash_report(
-        crash_report_id: BSONObjectId,
-        tkn: Token = Depends(from_authotization_header_nondyn),
+    crash_report_id: BSONObjectId,
+    tkn: Token = Depends(from_authotization_header_nondyn),
 ):
     """
     Gets a crash report from its id. Requires a clearance level of 10.
     """
-    assert_has_clearance(tkn.owner, 'sni.read_crash_report')
+    assert_has_clearance(tkn.owner, "sni.read_crash_report")
     return GetCrashReportOut.from_record(
-        CrashReport.objects.get(pk=crash_report_id))
+        CrashReport.objects.get(pk=crash_report_id)
+    )

@@ -35,7 +35,7 @@ openapi-spec:
 
 .PHONY: format
 format:
-	yapf --in-place --recursive --style pep8 --verbose $(SRC_PATH)
+	black --line-length 79 --target-version py38 $(SRC_PATH)
 
 .PHONY: lint
 lint:
