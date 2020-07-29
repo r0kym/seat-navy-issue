@@ -6,6 +6,7 @@ Main module
 This module contains the entry point to SNI.
 """
 
+from importlib import import_module
 import argparse
 import logging
 import logging.config
@@ -22,18 +23,21 @@ def connect_database_signals() -> None:
     Imports all ``signals`` submodules.
     """
     from sni.conf import CONFIGURATION as conf
-    logging.info('Connecting database signals')
-    import sni.db.signals
-    import sni.esi.signals
-    import sni.sde.signals
-    import sni.index.signals
-    import sni.uac.signals
-    import sni.user.signals
-    import sni.api.signals
-    if conf.discord.enabled:
-        import sni.discord.signals
-    if conf.teamspeak.enabled:
-        import sni.teamspeak.signals
+    modules = {
+        'sni.db.signals': True,
+        'sni.esi.signals': True,
+        'sni.sde.signals': True,
+        'sni.index.signals': True,
+        'sni.uac.signals': True,
+        'sni.user.signals': True,
+        'sni.api.signals': True,
+        'sni.discord.signals': conf.discord.enabled,
+        'sni.teamspeak.signals': conf.teamspeak.enabled,
+    }
+    logging.debug('Connecting database signals')
+    for module, include in modules.items():
+        if include:
+            import_module(module)
 
 
 def configure_logging() -> None:
@@ -78,34 +82,20 @@ def migrate_database() -> None:
     Inits and migrate the MongoDB database.
     """
     from sni.conf import CONFIGURATION as conf
-
-    logging.info('Migrating database')
-
-    import sni.esi.migration
-    sni.esi.migration.migrate()
-
-    import sni.sde.migration
-    sni.sde.migration.migrate()
-
-    import sni.index.migration
-    sni.index.migration.migrate()
-
-    import sni.uac.migration
-    sni.uac.migration.migrate()
-
-    import sni.user.migration
-    sni.user.migration.migrate()
-
-    import sni.api.migration
-    sni.api.migration.migrate()
-
-    if conf.discord.enabled:
-        import sni.discord.migration
-        sni.discord.migration.migrate()
-
-    if conf.teamspeak.enabled:
-        import sni.teamspeak.migration
-        sni.teamspeak.migration.migrate()
+    migrations = {
+        'sni.esi.migration:migrate': True,
+        'sni.sde.migration:migrate': True,
+        'sni.index.migration:migrate': True,
+        'sni.uac.migration:migrate': True,
+        'sni.user.migration:migrate': True,
+        'sni.api.migration:migrate': True,
+        'sni.discord.migration:migrate': conf.discord.enabled,
+        'sni.teamspeak.migration:migrate': conf.teamspeak.enabled,
+    }
+    logging.debug('Running migration jobs')
+    for function, include in migrations.items():
+        if include:
+            object_from_name(function)()
 
 
 def main():
@@ -265,21 +255,21 @@ def schedule_jobs() -> None:
     Schedules jobs from all subpackages
     """
     from sni.conf import CONFIGURATION as conf
-
-    logging.info('Scheduling jobs')
-
-    import sni.db.jobs
-    import sni.esi.jobs
-    import sni.sde.jobs
-    import sni.uac.jobs
-    import sni.user.jobs
-    import sni.index.jobs
-    import sni.api.jobs
-    if conf.teamspeak.enabled:
-        import sni.teamspeak.jobs
-    if conf.discord.enabled:
-        import sni.discord.jobs
-
+    modules = {
+        'sni.db.jobs': True,
+        'sni.esi.jobs': True,
+        'sni.sde.jobs': True,
+        'sni.uac.jobs': True,
+        'sni.user.jobs': True,
+        'sni.index.jobs': True,
+        'sni.api.jobs': True,
+        'sni.discord.jobs': conf.discord.enabled,
+        'sni.teamspeak.jobs': conf.teamspeak.enabled,
+    }
+    logging.debug('Scheduling jobs')
+    for module, include in modules.items():
+        if include:
+            import_module(module)
 
 if __name__ == '__main__':
     main()
