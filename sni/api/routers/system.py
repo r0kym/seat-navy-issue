@@ -21,7 +21,7 @@ from sni.uac.token import (
     Token,
 )
 from sni.uac.clearance import assert_has_clearance
-from sni.utils import callable_from_name
+from sni.utils import object_from_name
 
 router = APIRouter()
 
@@ -102,7 +102,7 @@ def post_job(
     """
     assert_has_clearance(tkn.owner, 'sni.system.submit_job')
     try:
-        function = callable_from_name(callable_name)
+        function = object_from_name(callable_name)
         job = scheduler.add_job(function)
         return GetJobOut.from_job(job)
     except AttributeError:

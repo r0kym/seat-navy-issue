@@ -3,102 +3,115 @@ API Server
 """
 
 import logging
-# from multiprocessing import Process
+from typing import List
 
 from fastapi import FastAPI
-
+import pydantic as pdt
 import uvicorn
 import yaml
 
 from sni.conf import CONFIGURATION as conf
-from sni.api.routers.alliance import router as router_alliance
-from sni.api.routers.callback import router as router_callback
-from sni.api.routers.coalition import router as router_coalition
-from sni.api.routers.corporation import router as router_corporation
-from sni.api.routers.crash import router as router_crash
-from sni.api.routers.esi import router as router_esi
-from sni.api.routers.group import router as router_group
-from sni.api.routers.system import router as router_system
-from sni.api.routers.token import router as router_token
-from sni.api.routers.user import router as router_user
+from sni.utils import object_from_name
+
 
 app = FastAPI()
 
-app.include_router(
-    router_alliance,
-    prefix='/alliance',
-    tags=['Alliance management'],
-)
 
-app.include_router(
-    router_callback,
-    prefix='/callback',
-    tags=['Callbacks'],
-)
+class RouterConfig(pdt.BaseModel):
+    """
+    Basic router configuration
+    """
+    include: bool = True
+    kwargs: dict
+    prefix: str
+    router: str
 
-app.include_router(
-    router_coalition,
-    prefix='/coalition',
-    tags=['Coalition management'],
-)
+    def add_to_application(self, application: FastAPI) -> None:
+        """
+        Adds the current router to the FastAPI application.
+        """
+        logging.debug('Adding router %s at prefix %s', self.router,
+                      self.prefix)
+        application.include_router(
+            object_from_name(self.router),
+            prefix=self.prefix,
+            **self.kwargs,
+        )
 
-app.include_router(
-    router_corporation,
-    prefix='/corporation',
-    tags=['Corporation management'],
-)
 
-app.include_router(
-    router_crash,
-    prefix='/crash',
-    tags=['Crash reports'],
-)
-
-if conf.discord.enabled:
-    from sni.api.routers.discord import router as router_discord
-    app.include_router(
-        router_discord,
+ROUTERS: List[RouterConfig] = [
+    RouterConfig(
+        router='sni.api.routers.alliance:router',
+        prefix='/alliance',
+        kwargs={'tags': ['Alliance management']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.callback:router',
+        prefix='/callback',
+        kwargs={'tags': ['Callbacks']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.coalition:router',
+        prefix='/coalition',
+        kwargs={'tags': ['Coalition management']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.corporation:router',
+        prefix='/corporation',
+        kwargs={'tags': ['Corporation management']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.crash:router',
+        prefix='/crash',
+        kwargs={'tags': ['Crash reports']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.discord:router',
         prefix='/discord',
-        tags=['Discord'],
-    )
-
-app.include_router(
-    router_esi,
-    prefix='/esi',
-    tags=['ESI'],
-)
-
-app.include_router(
-    router_group,
-    prefix='/group',
-    tags=['Group management'],
-)
-
-if conf.teamspeak.enabled:
-    from sni.api.routers.teamspeak import router as router_teamspeak
-    app.include_router(
-        router_teamspeak,
+        kwargs={'tags': ['Discord']},
+        include=conf.discord.enabled,
+    ),
+    RouterConfig(
+        router='sni.api.routers.esi:router',
+        prefix='/esi',
+        kwargs={'tags': ['ESI']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.group:router',
+        prefix='/group',
+        kwargs={'tags': ['Group management']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.teamspeak:router',
         prefix='/teamspeak',
-        tags=['Teamspeak'],
-    )
+        kwargs={'tags': ['Teamspeak']},
+        include=conf.teamspeak.enabled,
+    ),
+    RouterConfig(
+        router='sni.api.routers.system:router',
+        prefix='/system',
+        kwargs={'tags': ['System administration']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.token:router',
+        prefix='/token',
+        kwargs={'tags': ['Authentication & tokens']},
+    ),
+    RouterConfig(
+        router='sni.api.routers.user:router',
+        prefix='/user',
+        kwargs={'tags': ['User management']},
+    ),
+]
 
-app.include_router(
-    router_system,
-    prefix='/system',
-    tags=['System administration'],
-)
 
-app.include_router(
-    router_token,
-    prefix='/token',
-    tags=['Authentication & tokens'],
-)
-
-app.include_router(
-    router_user,
-    prefix='/user',
-    tags=['User management'],
-)
+def add_included_routers():
+    """
+    Adds all routers whose ``include`` field is ``True``
+    """
+    for router in ROUTERS:
+        if router.include:
+            router.add_to_application(app)
 
 
 @app.get('/ping', tags=['Testing'], summary='Replies "pong"')
@@ -113,6 +126,9 @@ def print_openapi_spec() -> None:
     """
     Print the OpenAPI specification of the server in YAML.
     """
+    for router in ROUTERS:
+        if not router.include:
+            router.add_to_application(app)
     print(yaml.dump(app.openapi()))
 
 
@@ -181,12 +197,4 @@ def start_api_server():
         logging.info('API server stopped')
 
 
-# def start_api_server():
-#     """
-#     Runs the API server in a dedicated process.
-#     """
-#     Process(
-#         daemon=True,
-#         name='api_server',
-#         target=_start_api_server,
-#     ).start()
+add_included_routers()

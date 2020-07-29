@@ -11,7 +11,7 @@ import logging
 import logging.config
 import sys
 
-from sni.utils import callable_from_name
+from sni.utils import object_from_name
 from sni.conf import CONFIGURATION as conf
 from sni.conf import load_configuration_file
 

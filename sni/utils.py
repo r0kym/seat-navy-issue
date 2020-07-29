@@ -13,15 +13,6 @@ from datetime import datetime, timedelta
 from pytz import utc
 
 
-def callable_from_name(name: str) -> Callable:
-    """
-    Returns a callable from its name, e.g. ``sni.esi.jobs:refresh_tokens``.
-    """
-    module_name, function_name = name.split(':')
-    module = import_module(module_name)
-    return getattr(module, function_name)
-
-
 # pylint: disable=dangerous-default-value
 def catch_all(function: Callable,
               error_message: str,
@@ -89,6 +80,15 @@ def now_plus(**kwargs) -> datetime:
         `datetime.timedelta <https://docs.python.org/3/library/datetime.html?highlight=timedelta#datetime.timedelta>`_
     """
     return now() + timedelta(**kwargs)
+
+
+def object_from_name(name: str) -> Any:
+    """
+    Returns a callable from its name, e.g. ``sni.esi.jobs:refresh_tokens``.
+    """
+    module_name, function_name = name.split(':')
+    module = import_module(module_name)
+    return getattr(module, function_name)
 
 
 def random_code(length: int) -> str:
