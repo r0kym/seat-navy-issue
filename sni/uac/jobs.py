@@ -6,7 +6,7 @@ import logging
 
 from sni.scheduler import scheduler
 from sni.user.models import Alliance, Corporation, User
-from sni.user.user import ensure_user
+from sni.user.user import ensure_corporation, ensure_user
 
 
 @scheduler.scheduled_job("interval", hours=1)
@@ -27,7 +27,8 @@ def fix_ceo_clearance():
             )
             ceo.update(set__clearance_level=2)
     for alliance in Alliance.objects():
-        ceo: User = alliance.ceo
+        executor: Corporation = ensure_corporation(alliance.executor_corporation_id)
+        ceo: User = ensure_user(executor.ceo_character_id)
         if ceo.clearance_level < 4:
             logging.info(
                 "Raising %s (%d), ceo of alliance %s (%d), to level 4",
