@@ -131,7 +131,7 @@ def get_coalition(tkn: Token = Depends(from_authotization_header_nondyn)):
     assert_has_clearance(tkn.owner, "sni.read_coalition")
     return [
         GetCoalitionShortOut.from_record(coalition)
-        for coalition in Coalition.objects()
+        for coalition in Coalition.objects().order_by("coalition_name")
     ]
 
 

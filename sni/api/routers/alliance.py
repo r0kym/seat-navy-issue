@@ -55,7 +55,7 @@ def get_alliances(tkn: Token = Depends(from_authotization_header_nondyn),):
     assert_has_clearance(tkn.owner, "sni.read_alliance")
     return [
         GetAllianceShortOut.from_record(alliance)
-        for alliance in Alliance.objects()
+        for alliance in Alliance.objects().order_by("alliance_name")
     ]
 
 

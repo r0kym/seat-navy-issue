@@ -81,7 +81,7 @@ def get_corporations(tkn: Token = Depends(from_authotization_header_nondyn),):
     assert_has_clearance(tkn.owner, "sni.read_corporation")
     return [
         GetCorporationShortOut.from_record(corporation)
-        for corporation in Corporation.objects()
+        for corporation in Corporation.objects().order_by("corporation_name")
     ]
 
 

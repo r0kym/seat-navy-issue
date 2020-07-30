@@ -41,6 +41,8 @@ class Alliance(me.Document):
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
 
+    meta = {"indexes": ["alliance_id", "alliance_name",]}
+
     @property
     def ceo(self) -> "User":
         """
@@ -79,9 +81,38 @@ class Alliance(me.Document):
         Returns an iterator over all the members of this alliance, according to
         the database. This may not be up to date with the ESI.
         """
-        for corporation in Corporation.objects(alliance=self):
-            for usr in corporation.user_iterator():
-                yield usr
+        result = User.objects.aggregate(
+            [
+                {
+                    "$lookup": {
+                        "as": "corporation_data",
+                        "foreignField": "_id",
+                        "from": "corporation",
+                        "localField": "corporation",
+                    },
+                },
+                {"$unwind": "$corporation_data"},
+                {
+                    "$lookup": {
+                        "as": "alliance_data",
+                        "foreignField": "_id",
+                        "from": "alliance",
+                        "localField": "corporation_data.alliance",
+                    },
+                },
+                {"$unwind": "$alliance_data"},
+                {"$match": {"alliance_data.alliance_id": self.alliance_id}},
+                {
+                    "$set": {
+                        "character_name_lower": {"$toLower": "$character_name"}
+                    }
+                },
+                {"$sort": {"character_name_lower": 1}},
+                {"$project": {"_id": True}},
+            ]
+        )
+        for item in result:
+            yield User.objects(pk=item["_id"]).get()
 
 
 class Coalition(me.Document):
@@ -117,6 +148,8 @@ class Coalition(me.Document):
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
 
+    meta = {"indexes": ["coalition_name",]}
+
     def users(self) -> List["User"]:
         """
         Return the member list of this coalition.
@@ -127,9 +160,39 @@ class Coalition(me.Document):
         """
         Returns an iterator over all the members of this coalition.
         """
-        for alliance in self.members:
-            for usr in alliance.user_iterator():
-                yield usr
+        members_ids = [alliance.pk for alliance in self.members]
+        result = User.objects.aggregate(
+            [
+                {
+                    "$lookup": {
+                        "as": "corporation_data",
+                        "foreignField": "_id",
+                        "from": "corporation",
+                        "localField": "corporation",
+                    },
+                },
+                {"$unwind": "$corporation_data"},
+                {
+                    "$lookup": {
+                        "as": "alliance_data",
+                        "foreignField": "_id",
+                        "from": "alliance",
+                        "localField": "corporation_data.alliance",
+                    },
+                },
+                {"$unwind": "$alliance_data"},
+                {"$match": {"alliance_data._id": {"$in": members_ids}}},
+                {
+                    "$set": {
+                        "character_name_lower": {"$toLower": "$character_name"}
+                    }
+                },
+                {"$sort": {"character_name_lower": 1}},
+                {"$project": {"_id": True}},
+            ]
+        )
+        for item in result:
+            yield User.objects(pk=item["_id"]).get()
 
 
 class Corporation(me.Document):
@@ -169,6 +232,8 @@ class Corporation(me.Document):
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
 
+    meta = {"indexes": ["corporation_id", "corporation_name",]}
+
     @property
     def ceo(self) -> "User":
         """
@@ -188,8 +253,33 @@ class Corporation(me.Document):
         Returns an iterator over all the members of this corporation, according
         to the database. This may not be up to date with the ESI.
         """
-        for usr in User.objects(corporation=self):
-            yield usr
+        result = User.objects.aggregate(
+            [
+                {
+                    "$lookup": {
+                        "as": "corporation_data",
+                        "foreignField": "_id",
+                        "from": "corporation",
+                        "localField": "corporation",
+                    },
+                },
+                {"$unwind": "$corporation_data"},
+                {
+                    "$match": {
+                        "corporation_data.corporation_id": self.corporation_id
+                    }
+                },
+                {
+                    "$set": {
+                        "character_name_lower": {"$toLower": "$character_name"}
+                    }
+                },
+                {"$sort": {"character_name_lower": 1}},
+                {"$project": {"_id": True}},
+            ]
+        )
+        for item in result:
+            yield User.objects(pk=item["_id"]).get()
 
 
 class Group(me.Document):
@@ -239,6 +329,8 @@ class Group(me.Document):
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
 
+    meta = {"indexes": ["group_name",]}
+
 
 class User(me.Document):
     """
@@ -279,6 +371,8 @@ class User(me.Document):
 
     updated_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the last update of this document"""
+
+    meta = {"indexes": ["character_id", "character_name",]}
 
     @property
     def alliance(self) -> Optional[Alliance]:

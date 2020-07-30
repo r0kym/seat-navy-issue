@@ -113,7 +113,10 @@ def get_user(tkn: Token = Depends(from_authotization_header_nondyn)):
     more.
     """
     assert_has_clearance(tkn.owner, "sni.read_user")
-    return [GetUserShortOut.from_record(usr) for usr in User.objects()]
+    return [
+        GetUserShortOut.from_record(usr)
+        for usr in User.objects().order_by("character_name")
+    ]
 
 
 @router.delete(

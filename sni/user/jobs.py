@@ -170,7 +170,7 @@ def ensure_corporation_members(corporation: Corporation):
                 "$lookup": {
                     "as": "owner_data",
                     "foreignField": "_id",
-                    "from": User._get_collection_name(),
+                    "from": "user",
                     "localField": "owner",
                 },
             },

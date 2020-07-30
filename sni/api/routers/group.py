@@ -116,7 +116,7 @@ def get_group(tkn: Token = Depends(from_authotization_header_nondyn),):
     assert_has_clearance(tkn.owner, "sni.read_group")
     return [
         GetGroupShortOut(group_id=str(grp.pk), group_name=grp.group_name)
-        for grp in Group.objects()
+        for grp in Group.objects().order_by("group_name")
     ]
 
 
