@@ -62,8 +62,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Formats a mail body by removing most of the HTML tags.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;br&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;.*?&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;br&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;.*?&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
     <span class="n">body</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">body</span></div>
 
@@ -74,52 +74,54 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">location_data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">/location/&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/location/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">online_data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">/online/&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/online/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">ship_data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">/ship/&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/ship/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiCharacterLocation</span><span class="p">(</span>
-            <span class="n">online</span><span class="o">=</span><span class="n">online_data</span><span class="p">[</span><span class="s1">&#39;online&#39;</span><span class="p">],</span>
-            <span class="n">ship_item_id</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s1">&#39;ship_item_id&#39;</span><span class="p">],</span>
-            <span class="n">ship_name</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s1">&#39;ship_name&#39;</span><span class="p">],</span>
-            <span class="n">ship_type_id</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s1">&#39;ship_type_id&#39;</span><span class="p">],</span>
-            <span class="n">solar_system_id</span><span class="o">=</span><span class="n">location_data</span><span class="p">[</span><span class="s1">&#39;solar_system_id&#39;</span><span class="p">],</span>
-            <span class="n">station_id</span><span class="o">=</span><span class="n">location_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;station_id&#39;</span><span class="p">),</span>
-            <span class="n">structure_id</span><span class="o">=</span><span class="n">location_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;structure_id&#39;</span><span class="p">),</span>
+            <span class="n">online</span><span class="o">=</span><span class="n">online_data</span><span class="p">[</span><span class="s2">&quot;online&quot;</span><span class="p">],</span>
+            <span class="n">ship_item_id</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s2">&quot;ship_item_id&quot;</span><span class="p">],</span>
+            <span class="n">ship_name</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s2">&quot;ship_name&quot;</span><span class="p">],</span>
+            <span class="n">ship_type_id</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s2">&quot;ship_type_id&quot;</span><span class="p">],</span>
+            <span class="n">solar_system_id</span><span class="o">=</span><span class="n">location_data</span><span class="p">[</span><span class="s2">&quot;solar_system_id&quot;</span><span class="p">],</span>
+            <span class="n">station_id</span><span class="o">=</span><span class="n">location_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;station_id&quot;</span><span class="p">),</span>
+            <span class="n">structure_id</span><span class="o">=</span><span class="n">location_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure_id&quot;</span><span class="p">),</span>
             <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s1">&#39;Could not index location of character </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Could not index location of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
             <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="index_users_location"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_location">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="index_users_location"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_location">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index_users_location</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Indexes all user&#39;s location</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-location.read_location.v1&#39;</span><span class="p">)</span> <span class="ow">and</span> \
-            <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-location.read_online.v1&#39;</span><span class="p">)</span> <span class="ow">and</span> \
-            <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-location.read_ship_type.v1&#39;</span><span class="p">):</span>
-            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_location</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_location.v1&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_online.v1&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_ship_type.v1&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_location</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="index_user_mails"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_user_mails">[docs]</a><span class="k">def</span> <span class="nf">index_user_mails</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -129,48 +131,48 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">character_id</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">/mail&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail&quot;</span><span class="p">,</span>
             <span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
-            <span class="n">mail_id</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;mail_id&#39;</span><span class="p">]</span>
+            <span class="n">mail_id</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;mail_id&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">EsiMail</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mail_id</span><span class="o">=</span><span class="n">mail_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">break</span>
             <span class="n">mail</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{character_id}</span><span class="s1">/mail/</span><span class="si">{mail_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail/</span><span class="si">{mail_id}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">character_id</span><span class="p">,</span>
                 <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="n">EsiMail</span><span class="p">(</span>
-                <span class="n">body</span><span class="o">=</span><span class="n">format_mail_body</span><span class="p">(</span><span class="n">mail</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]),</span>
-                <span class="n">from_id</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s1">&#39;from&#39;</span><span class="p">],</span>
+                <span class="n">body</span><span class="o">=</span><span class="n">format_mail_body</span><span class="p">(</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;body&quot;</span><span class="p">]),</span>
+                <span class="n">from_id</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;from&quot;</span><span class="p">],</span>
                 <span class="n">mail_id</span><span class="o">=</span><span class="n">mail_id</span><span class="p">,</span>
                 <span class="n">recipients</span><span class="o">=</span><span class="p">[</span>
-                    <span class="n">EsiMailRecipient</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">mail</span><span class="p">[</span><span class="s1">&#39;recipients&#39;</span><span class="p">]</span>
+                    <span class="n">EsiMailRecipient</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">mail</span><span class="p">[</span><span class="s2">&quot;recipients&quot;</span><span class="p">]</span>
                 <span class="p">],</span>
-                <span class="n">subject</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">],</span>
-                <span class="n">timestamp</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
+                <span class="n">subject</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">],</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
             <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s1">&#39;Could not index mail of character </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Could not index mail of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
             <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="index_users_mails"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_mails">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="index_users_mails"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_mails">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index_users_mails</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Index all user emails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-mail.read_mail.v1&#39;</span><span class="p">):</span>
-            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_mails</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-mail.read_mail.v1&quot;</span><span class="p">):</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_mails</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="index_user_skillpoints"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_user_skillpoints">[docs]</a><span class="k">def</span> <span class="nf">index_user_skillpoints</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -180,33 +182,33 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">/skills/&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/skills/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiSkillPoints</span><span class="p">(</span>
-            <span class="n">total_sp</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;total_sp&#39;</span><span class="p">],</span>
-            <span class="n">unallocated_sp</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unallocated_sp&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">total_sp</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;total_sp&quot;</span><span class="p">],</span>
+            <span class="n">unallocated_sp</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;unallocated_sp&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s1">&#39;Could not index skillpoints of character </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Could not index skillpoints of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
             <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="index_users_skillpoints"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_skillpoints">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<div class="viewcode-block" id="index_users_skillpoints"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_skillpoints">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index_users_skillpoints</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measures all users skillpoints</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-skills.read_skills.v1&#39;</span><span class="p">):</span>
-            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_skillpoints</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-skills.read_skills.v1&quot;</span><span class="p">):</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_skillpoints</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="index_user_wallets"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_user_wallets">[docs]</a><span class="k">def</span> <span class="nf">index_user_wallets</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -215,7 +217,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">balance</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">/wallet/&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/wallet/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -223,21 +225,21 @@
         <span class="n">EsiWalletBalance</span><span class="p">(</span><span class="n">balance</span><span class="o">=</span><span class="n">balance</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s1">&#39;Could not index wallet of character </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Could not index wallet of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
             <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="index_users_wallets"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_wallets">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<div class="viewcode-block" id="index_users_wallets"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_wallets">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index_users_wallets</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Indexes user wallet balance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s1">&#39;esi-wallet.read_character_wallet.v1&#39;</span><span class="p">):</span>
-            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_wallets</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-wallet.read_character_wallet.v1&quot;</span><span class="p">):</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_wallets</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 </pre></div>
 
           </div>

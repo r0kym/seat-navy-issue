@@ -70,17 +70,18 @@
     <span class="n">schema_version</span> <span class="o">=</span> <span class="n">EsiAccessToken</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">schema_version</span><span class="p">):</span>
         <span class="k">return</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;esi_refresh_token&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">schema_version</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Migrating collection &quot;esi_refresh_token&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">schema_version</span>
+    <span class="p">)</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Sets the valid field to True</span>
-    <span class="n">collection</span><span class="o">.</span><span class="n">delete_many</span><span class="p">({</span><span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$exists&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">delete_many</span><span class="p">({</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$exists&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
@@ -96,17 +97,18 @@
     <span class="n">schema_version</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">schema_version</span><span class="p">):</span>
         <span class="k">return</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;esi_refresh_token&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">schema_version</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Migrating collection &quot;esi_refresh_token&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">schema_version</span>
+    <span class="p">)</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Sets the valid field to True</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>

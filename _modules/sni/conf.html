@@ -55,33 +55,27 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Database configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">authentication_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The database in which the user belongs.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The database in which the user belongs.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">database</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sni&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database name.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;sni&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Database name.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;mongo&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database hostname.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mongo&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Database hostname.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">password</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Password.&#39;</span><span class="p">)</span>
+    <span class="n">password</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Password.&quot;</span><span class="p">)</span>
 
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database port.&#39;</span><span class="p">,</span>
-        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Database port.&quot;</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sni&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Username.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;sni&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username.&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -89,36 +83,38 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Discord configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">auth_channel_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Authentication channel ID. This is where users will start &#39;</span>
-            <span class="s1">&#39;authentication challenges. Only required if ``discord.enable`` &#39;</span>
-            <span class="s1">&#39;is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Authentication channel ID. This is where users will start &quot;</span>
+            <span class="s2">&quot;authentication challenges. Only required if ``discord.enable`` &quot;</span>
+            <span class="s2">&quot;is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Wether to activate the Discord connector.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Wether to activate the Discord connector.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">log_channel_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Logging channel ID. This is where the Discorb bot will log &#39;</span>
-            <span class="s1">&#39;events. Only required if ``discord.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Logging channel ID. This is where the Discorb bot will log &quot;</span>
+            <span class="s2">&quot;events. Only required if ``discord.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">server_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Discord server (or guild) ID.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discord server (or guild) ID.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">token</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Discord bot token. Only required if ``discord.enable`` is set to &#39;</span>
-            <span class="s1">&#39;``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Discord bot token. Only required if ``discord.enable`` is set to &quot;</span>
+            <span class="s2">&quot;``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -126,14 +122,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ESI configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">client_id</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ESI client ID.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ESI client ID.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">client_secret</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ESI client secret.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ESI client secret.&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -141,52 +136,54 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    General configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="GeneralConfig.LoggingLevel"><a class="viewcode-back" href="../../sni.html#sni.conf.GeneralConfig.LoggingLevel">[docs]</a>    <span class="k">class</span> <span class="nc">LoggingLevel</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Acceptable logging levels</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">CRITICAL</span> <span class="o">=</span> <span class="s1">&#39;critical&#39;</span>
-        <span class="n">DEBUG</span> <span class="o">=</span> <span class="s1">&#39;debug&#39;</span>
-        <span class="n">ERROR</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span>
-        <span class="n">INFO</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
-        <span class="n">WARNING</span> <span class="o">=</span> <span class="s1">&#39;warning&#39;</span></div>
+
+        <span class="n">CRITICAL</span> <span class="o">=</span> <span class="s2">&quot;critical&quot;</span>
+        <span class="n">DEBUG</span> <span class="o">=</span> <span class="s2">&quot;debug&quot;</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span>
+        <span class="n">INFO</span> <span class="o">=</span> <span class="s2">&quot;info&quot;</span>
+        <span class="n">WARNING</span> <span class="o">=</span> <span class="s2">&quot;warning&quot;</span></div>
 
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Wether SNI should run in debug mode. In this mode, logging is &#39;</span>
-            <span class="s1">&#39;more verbose, and potentially exposes secrets. Do not use in a &#39;</span>
-            <span class="s1">&#39;production environment.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Wether SNI should run in debug mode. In this mode, logging is &quot;</span>
+            <span class="s2">&quot;more verbose, and potentially exposes secrets. Do not use in a &quot;</span>
+            <span class="s2">&quot;production environment.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IPv4Address</span><span class="p">,</span> <span class="n">IPv6Address</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">IPv4Address</span><span class="p">(</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;IP address at which SNI should listen for incoming connections.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">IPv4Address</span><span class="p">(</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;IP address at which SNI should listen for incoming connections.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">logging_level</span><span class="p">:</span> <span class="n">LoggingLevel</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Logging level.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">LoggingLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Logging level.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Port at which SNI should listen for incoming connections.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Port at which SNI should listen for incoming connections.&quot;</span><span class="p">,</span>
         <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">root_url</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">HttpUrl</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;https://foo.bar&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;https://foo.bar&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;URL at which this SNI instance is located. The ESI callback &#39;</span>
-            <span class="s1">&#39;should then be ``&lt;root_url&gt;/callback/esi``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;URL at which this SNI instance is located. The ESI callback &quot;</span>
+            <span class="s2">&quot;should then be ``&lt;root_url&gt;/callback/esi``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">scheduler_thread_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Number of threads available to the scheduler.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of threads available to the scheduler.&quot;</span><span class="p">,</span>
         <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -208,18 +205,19 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    JWT configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="JWTConfig.JWTAlgorithm"><a class="viewcode-back" href="../../sni.html#sni.conf.JWTConfig.JWTAlgorithm">[docs]</a>    <span class="k">class</span> <span class="nc">JWTAlgorithm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Acceptable JWT algorithms, see `here &lt;https://pyjwt.readthedocs.io/en/latest/algorithms.html?highlight=algorithm#digital-signature-algorithms&gt;`_.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">HS256</span> <span class="o">=</span> <span class="s1">&#39;HS256&#39;</span>
+        <span class="n">HS256</span> <span class="o">=</span> <span class="s2">&quot;HS256&quot;</span>
         <span class="sd">&quot;&quot;&quot;HMAC using SHA-256 hash algorithm (default)&quot;&quot;&quot;</span>
 
-        <span class="n">HS384</span> <span class="o">=</span> <span class="s1">&#39;HS384&#39;</span>
+        <span class="n">HS384</span> <span class="o">=</span> <span class="s2">&quot;HS384&quot;</span>
         <span class="sd">&quot;&quot;&quot;HMAC using SHA-384 hash algorithm&quot;&quot;&quot;</span>
 
-        <span class="n">HS512</span> <span class="o">=</span> <span class="s1">&#39;HS512&#39;</span>
+        <span class="n">HS512</span> <span class="o">=</span> <span class="s2">&quot;HS512&quot;</span>
         <span class="sd">&quot;&quot;&quot;HMAC using SHA-512 hash algorithm&quot;&quot;&quot;</span></div>
 
         <span class="c1"># ES256 = &#39;ES256&#39;</span>
@@ -252,13 +250,14 @@
     <span class="n">algorithm</span><span class="p">:</span> <span class="n">JWTAlgorithm</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">JWTAlgorithm</span><span class="o">.</span><span class="n">HS256</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;JWT algorithm. For now, only symmetric cryptography algorithms &#39;</span>
-            <span class="s1">&#39;are supported.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;JWT algorithm. For now, only symmetric cryptography algorithms &quot;</span>
+            <span class="s2">&quot;are supported.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">secret</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretBytes</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;JWT secret. Generate one with ``openssl rand -hex 32``.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;JWT secret. Generate one with ``openssl rand -hex 32``.&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -266,21 +265,17 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Redis configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">database</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis database to use.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Redis database to use.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis hostname.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;redis&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Redis hostname.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis port.&#39;</span><span class="p">,</span>
-        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Redis port.&quot;</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -288,44 +283,51 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Teamspeak configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">auth_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SNI TS AUTH&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;SNI TS AUTH&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Name of the auth group. Authenticated Teamspeak users are &#39;</span>
-            <span class="s1">&#39;automatically added to this group. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Name of the auth group. Authenticated Teamspeak users are &quot;</span>
+            <span class="s2">&quot;automatically added to this group. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">bot_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;SeAT Navy Issue&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Name of the Teamspeak bot. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Name of the Teamspeak bot. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Wether to activate the Teamspeak connector.&#39;</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Wether to activate the Teamspeak connector.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Name, hostname, or IP address of the Teamspeak server. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Name, hostname, or IP address of the Teamspeak server. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">password</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">pdt</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Query server password. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Query server password. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">10011</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Port of the query server associated to the Teamspeak server. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Port of the query server associated to the Teamspeak server. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
         <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
     <span class="p">)</span>
@@ -333,15 +335,17 @@
     <span class="n">server_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Teamspeak server ID. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Teamspeak server ID. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sni&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;sni&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s1">&#39;Query server username. &#39;</span>
-            <span class="s1">&#39;Only required if ``teamspeak.enable`` is set to ``True``.&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Query server username. &quot;</span>
+            <span class="s2">&quot;Only required if ``teamspeak.enable`` is set to ``True``.&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -349,39 +353,35 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SNI configuration model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">database</span><span class="p">:</span> <span class="n">DatabaseConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">DatabaseConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Database configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Database configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">discord</span><span class="p">:</span> <span class="n">DiscordConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">DiscordConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Discord configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">DiscordConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discord configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">esi</span><span class="p">:</span> <span class="n">ESIConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">ESIConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ESI configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">ESIConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ESI configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">general</span><span class="p">:</span> <span class="n">GeneralConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">GeneralConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;General configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">GeneralConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;General configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">jwt</span><span class="p">:</span> <span class="n">JWTConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">JWTConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;JWT configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">JWTConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;JWT configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">redis</span><span class="p">:</span> <span class="n">RedisConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">RedisConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Redis configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">RedisConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Redis configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">teamspeak</span><span class="p">:</span> <span class="n">TeamspeakConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">TeamspeakConfig</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Teamspeak configuration document.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Teamspeak configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 

@@ -52,13 +52,20 @@
 <span class="sd">    Create a permanent app token owned by root, if none exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-                           <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">per</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="p">):</span>
         <span class="k">return</span>
-    <span class="n">root_per_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_permanent_app_token</span><span class="p">(</span><span class="n">root</span><span class="p">,</span>
-                                                      <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;Primary token&#39;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No permanent app token owned by root, created one: </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">root_per_token</span><span class="p">))</span></div>
+    <span class="n">root_per_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_permanent_app_token</span><span class="p">(</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s2">&quot;Primary token&quot;</span>
+    <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;No permanent app token owned by root, created one: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">root_per_token</span><span class="p">),</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ensure_root_dyn_token"><a class="viewcode-back" href="../../../uac.html#sni.uac.migration.ensure_root_dyn_token">[docs]</a><span class="k">def</span> <span class="nf">ensure_root_dyn_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -66,13 +73,20 @@
 <span class="sd">    Create a dynamic app token owned by root, if none exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-                           <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span><span class="o">.</span><span class="n">dyn</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="p">):</span>
         <span class="k">return</span>
-    <span class="n">root_dyn_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_dynamic_app_token</span><span class="p">(</span><span class="n">root</span><span class="p">,</span>
-                                                    <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;Primary token&#39;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No dynamic app token owned by root, created one: </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">root_dyn_token</span><span class="p">))</span></div>
+    <span class="n">root_dyn_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">create_dynamic_app_token</span><span class="p">(</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s2">&quot;Primary token&quot;</span>
+    <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;No dynamic app token owned by root, created one: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">to_jwt</span><span class="p">(</span><span class="n">root_dyn_token</span><span class="p">),</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate"><a class="viewcode-back" href="../../../uac.html#sni.uac.migration.migrate">[docs]</a><span class="k">def</span> <span class="nf">migrate</span><span class="p">():</span>

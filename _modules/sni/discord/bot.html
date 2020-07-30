@@ -66,27 +66,26 @@
 <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
-<span class="n">JOBS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scheduler.discord.jobs&#39;</span>
+<span class="n">JOBS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scheduler.discord.jobs&quot;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job list&quot;&quot;&quot;</span>
 
-<span class="n">RUN_TIMES_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scheduler.discord.run_times&#39;</span>
+<span class="n">RUN_TIMES_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scheduler.discord.run_times&quot;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job run times&quot;&quot;&quot;</span>
 
-<span class="n">bot</span> <span class="o">=</span> <span class="n">Bot</span><span class="p">(</span><span class="n">command_prefix</span><span class="o">=</span><span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue Discord Bot&#39;</span><span class="p">)</span>
+<span class="n">bot</span> <span class="o">=</span> <span class="n">Bot</span><span class="p">(</span><span class="n">command_prefix</span><span class="o">=</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SeAT Navy Issue Discord Bot&quot;</span><span class="p">)</span>
 
 <span class="n">scheduler</span> <span class="o">=</span> <span class="n">AsyncIOScheduler</span><span class="p">(</span>
     <span class="n">event_loop</span><span class="o">=</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span>
     <span class="n">job_defaults</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;coalesce&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s1">&#39;executor&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;jitter&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-        <span class="s1">&#39;jobstore&#39;</span><span class="p">:</span> <span class="s1">&#39;discord&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;max_instances&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s1">&#39;misfire_grace_time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;coalesce&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;executor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jitter&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+        <span class="s2">&quot;jobstore&quot;</span><span class="p">:</span> <span class="s2">&quot;discord&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;max_instances&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;misfire_grace_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="n">jobstores</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;discord&#39;</span><span class="p">:</span>
-        <span class="n">RedisJobStore</span><span class="p">(</span>
+        <span class="s2">&quot;discord&quot;</span><span class="p">:</span> <span class="n">RedisJobStore</span><span class="p">(</span>
             <span class="n">db</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">redis</span><span class="o">.</span><span class="n">database</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">redis</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
             <span class="n">jobs_key</span><span class="o">=</span><span class="n">JOBS_KEY</span><span class="p">,</span>
@@ -128,15 +127,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs the discord client in a different thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_start</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting Discord client&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Discord client&quot;</span><span class="p">)</span>
     <span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">_start</span><span class="p">())</span>
     <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span>
-        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span> <span class="p">),</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">loop</span><span class="p">,),</span>
         <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;discord_client&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;discord_client&quot;</span><span class="p">,</span>
         <span class="n">target</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">BaseEventLoop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>

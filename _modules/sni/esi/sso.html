@@ -66,6 +66,7 @@
 <span class="sd">            &quot;refresh_token&quot;: &quot;RGuc...w1&quot;</span>
 <span class="sd">        }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">token_type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">expires_in</span><span class="p">:</span> <span class="nb">int</span>
@@ -91,6 +92,7 @@
 <span class="sd">            &quot;iss&quot;: &quot;login.eveonline.com&quot;</span>
 <span class="sd">        }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">azp</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">exp</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">iss</span><span class="p">:</span> <span class="nb">str</span>
@@ -106,10 +108,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts the character ID from the ``sub`` field.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;CHARACTER:EVE:&#39;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;CHARACTER:EVE:&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unexpected &quot;sub&quot; field format: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">):])</span></div>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="p">:])</span></div>
 
 
 <div class="viewcode-block" id="EsiTokenError"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.EsiTokenError">[docs]</a><span class="k">class</span> <span class="nc">EsiTokenError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -123,17 +125,18 @@
 <span class="sd">    Converts an access token in JWT form to a :class:`sni.esi.sso.DecodedAccessToken`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">document</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">document</span><span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">document</span><span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;scp&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">&quot;scp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;scp&quot;</span><span class="p">]]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">DecodedAccessToken</span><span class="p">(</span><span class="o">**</span><span class="n">document</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to decode access token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to decode access token: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">raise</span> <span class="n">EsiTokenError</span></div>
 
 
-<div class="viewcode-block" id="get_auth_url"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.get_auth_url">[docs]</a><span class="k">def</span> <span class="nf">get_auth_url</span><span class="p">(</span><span class="n">esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                 <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;00000000-0000-0000-0000-000000000000&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="get_auth_url"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.get_auth_url">[docs]</a><span class="k">def</span> <span class="nf">get_auth_url</span><span class="p">(</span>
+    <span class="n">esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;00000000-0000-0000-0000-000000000000&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an EVE SSO login url based on the scopes passed in argument.</span>
 
@@ -146,23 +149,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_scopes</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s1">&#39;Scope list cannot be empty, replaced by [</span><span class="se">\&#39;</span><span class="s1">publicData</span><span class="se">\&#39;</span><span class="s1">]&#39;</span><span class="p">)</span>
-        <span class="n">esi_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;publicData&#39;</span><span class="p">]</span>
+            <span class="s2">&quot;Scope list cannot be empty, replaced by [&#39;publicData&#39;]&quot;</span>
+        <span class="p">)</span>
+        <span class="n">esi_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;publicData&quot;</span><span class="p">]</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_id</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
-        <span class="s1">&#39;redirect_uri&#39;</span><span class="p">:</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">root_url</span><span class="p">,</span> <span class="s1">&#39;/callback/esi&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;response_type&#39;</span><span class="p">:</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;scope&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">esi_scopes</span><span class="p">),</span>
-        <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
+        <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_id</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
+        <span class="s2">&quot;redirect_uri&quot;</span><span class="p">:</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">root_url</span><span class="p">,</span> <span class="s2">&quot;/callback/esi&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;response_type&quot;</span><span class="p">:</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">esi_scopes</span><span class="p">),</span>
+        <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span>
-        <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;https://login.eveonline.com/v2/oauth/authorize/&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;https://login.eveonline.com/v2/oauth/authorize/&quot;</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span><span class="o">.</span><span class="n">url</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not construct a valid auth URL&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Could not construct a valid auth URL&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">url</span></div>
 
 
@@ -176,13 +180,17 @@
 <span class="sd">        urlsafe_b64encode(&#39;&lt;client_id&gt;:&lt;client_secret&gt;&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">authorization</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_id</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_secret</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
+    <span class="n">authorization</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_id</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
+        <span class="o">+</span> <span class="s2">&quot;:&quot;</span>
+        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">client_secret</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="n">authorization</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_access_token_from_callback_code"><a class="viewcode-back" href="../../../esi.html#sni.esi.sso.get_access_token_from_callback_code">[docs]</a><span class="k">def</span> <span class="nf">get_access_token_from_callback_code</span><span class="p">(</span>
-        <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationCodeResponse</span><span class="p">:</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationCodeResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets an access token (along with its refresh token) from an EVE SSO</span>
 <span class="sd">    authorization code.</span>
@@ -200,16 +208,16 @@
 <span class="sd">        Validate the ESI JWT token</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
-        <span class="s1">&#39;grant_type&#39;</span><span class="p">:</span> <span class="s1">&#39;authorization_code&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+        <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;authorization_code&quot;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Basic &#39;</span> <span class="o">+</span> <span class="n">get_basic_authorization_code</span><span class="p">(),</span>
-        <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Host&#39;</span><span class="p">:</span> <span class="s1">&#39;login.eveonline.com&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Basic &quot;</span> <span class="o">+</span> <span class="n">get_basic_authorization_code</span><span class="p">(),</span>
+        <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Host&quot;</span><span class="p">:</span> <span class="s2">&quot;login.eveonline.com&quot;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="s1">&#39;https://login.eveonline.com/v2/oauth/token&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;https://login.eveonline.com/v2/oauth/token&quot;</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
@@ -217,10 +225,11 @@
         <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
     <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to get access token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to get access token: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to parse authorization code response: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                      <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s2">&quot;Failed to parse authorization code response: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">raise</span> <span class="n">EsiTokenError</span></div>
 
 
@@ -235,16 +244,16 @@
 <span class="sd">        `esi-docs &lt;https://docs.esi.evetech.net/docs/sso/refreshing_access_tokens.html&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;grant_type&#39;</span><span class="p">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="n">refresh_token</span><span class="p">,</span>
+        <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;refresh_token&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="n">refresh_token</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Host&#39;</span><span class="p">:</span> <span class="s1">&#39;login.eveonline.com&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Basic &#39;</span> <span class="o">+</span> <span class="n">get_basic_authorization_code</span><span class="p">()</span>
+        <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Host&quot;</span><span class="p">:</span> <span class="s2">&quot;login.eveonline.com&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Basic &quot;</span> <span class="o">+</span> <span class="n">get_basic_authorization_code</span><span class="p">(),</span>
     <span class="p">}</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="s1">&#39;https://login.eveonline.com/v2/oauth/token&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;https://login.eveonline.com/v2/oauth/token&quot;</span><span class="p">,</span>
         <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="p">)</span>
@@ -252,10 +261,11 @@
         <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">AuthorizationCodeResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
     <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to refresh access token: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to refresh access token: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to parse authorization code response: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                      <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s2">&quot;Failed to parse authorization code response: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">raise</span> <span class="n">EsiTokenError</span></div>
 </pre></div>
 

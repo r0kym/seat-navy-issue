@@ -69,6 +69,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a job</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">coalesce</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">function</span><span class="p">:</span> <span class="nb">str</span>
@@ -80,7 +81,7 @@
     <span class="n">trigger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 
 <div class="viewcode-block" id="GetJobOut.from_job"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.system.GetJobOut.from_job">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_job</span><span class="p">(</span><span class="n">job</span><span class="p">:</span> <span class="n">Job</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetJobOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_job</span><span class="p">(</span><span class="n">job</span><span class="p">:</span> <span class="n">Job</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetJobOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts a :class:`apscheduler.job.Job` to a</span>
 <span class="sd">        :class:`sni.api.routers.system.GetJobOut`.</span>
@@ -100,46 +101,44 @@
 
 
 <div class="viewcode-block" id="get_configuration"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.system.get_configuration">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/configuration&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/configuration&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">Config</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Gets active configuration&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Gets active configuration&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_configuration</span><span class="p">(</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span> <span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_configuration</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the configuration of the SNI instance. Secrets are redacted. Requires</span>
 <span class="sd">    a clearance of 10.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.system.read_configuration&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.system.read_configuration&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">CONFIGURATION</span></div>
 
 
 <div class="viewcode-block" id="get_jobs"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.system.get_jobs">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/job&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/job&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetJobOut</span><span class="p">],</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Gets the currently scheduled job list&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Gets the currently scheduled job list&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_jobs</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the currently scheduled job list. Requires a clearance level of 10.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.system.read_jobs&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.system.read_jobs&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">GetJobOut</span><span class="o">.</span><span class="n">from_job</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">get_jobs</span><span class="p">()]</span></div>
 
 
 <div class="viewcode-block" id="post_job"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.system.post_job">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s1">&#39;/job/</span><span class="si">{callable_name}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/job/</span><span class="si">{callable_name}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetJobOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Submits a job to the scheduler&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Submits a job to the scheduler&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">post_job</span><span class="p">(</span>
-        <span class="n">callable_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">callable_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Submits a job to the scheduler. Requires a clearance level of 10.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.system.submit_job&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.system.submit_job&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">function</span> <span class="o">=</span> <span class="n">object_from_name</span><span class="p">(</span><span class="n">callable_name</span><span class="p">)</span>
         <span class="n">job</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>

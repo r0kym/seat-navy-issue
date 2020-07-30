@@ -59,9 +59,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Whenever a coalition is saved in the database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;created&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_coalition_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coalition</span><span class="p">,</span> <span class="p">))</span></div>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;created&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;document&quot;</span><span class="p">]</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_coalition_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coalition</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="on_user_post_save"><a class="viewcode-back" href="../../../user.html#sni.user.signals.on_user_post_save">[docs]</a><span class="nd">@signals</span><span class="o">.</span><span class="n">post_save</span><span class="o">.</span><span class="n">connect_via</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
@@ -69,12 +69,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Whenever a user is saved in the database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;created&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;created&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;document&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="c1"># scheduler.add_job(update_user_from_esi, args=(usr, ))</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 </pre></div>
 
           </div>

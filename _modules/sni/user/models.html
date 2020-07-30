@@ -52,6 +52,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    EVE alliance database model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -78,14 +79,17 @@
 
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alliance_id&quot;</span><span class="p">,</span> <span class="s2">&quot;alliance_name&quot;</span><span class="p">,]}</span>
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;User&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the ceo of the executor corporation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">ceo</span>
 
-<div class="viewcode-block" id="Alliance.coalitions"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.coalitions">[docs]</a>    <span class="k">def</span> <span class="nf">coalitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Coalition&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="Alliance.coalitions"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.coalitions">[docs]</a>    <span class="k">def</span> <span class="nf">coalitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Coalition&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the list of coalition this alliance is part of.</span>
 
@@ -95,29 +99,59 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">executor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Corporation&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">executor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Corporation&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the alliance&#39;s executor corporation as a</span>
 <span class="sd">        :class:`sni.user.Corporation` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">corporation_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executor_corporation_id</span><span class="p">)</span>
+            <span class="n">corporation_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executor_corporation_id</span>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="Alliance.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="Alliance.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the member list of this alliance, according to the database.</span>
 <span class="sd">        This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Alliance.user_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="Alliance.user_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an iterator over all the members of this alliance, according to</span>
 <span class="sd">        the database. This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">corporation</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">():</span>
-                <span class="k">yield</span> <span class="n">usr</span></div></div>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation_data&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$corporation_data&quot;</span><span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;alliance_data&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;alliance&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation_data.alliance&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$alliance_data&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;alliance_data.alliance_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance_id</span><span class="p">}},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$toLower&quot;</span><span class="p">:</span> <span class="s2">&quot;$character_name&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$sort&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
+                <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Coalition"><a class="viewcode-back" href="../../../user.html#sni.user.models.Coalition">[docs]</a><span class="k">class</span> <span class="nc">Coalition</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -125,6 +159,7 @@
 <span class="sd">    EVE coalition. Coalitions are not formally represented in EVE, so they have</span>
 <span class="sd">    to be created manually. An alliance can be part of multiple coalitions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -151,25 +186,59 @@
 
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Coalition.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Coalition.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;coalition_name&quot;</span><span class="p">,]}</span>
+
+<div class="viewcode-block" id="Coalition.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Coalition.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the member list of this coalition.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Coalition.user_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Coalition.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="Coalition.user_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Coalition.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an iterator over all the members of this coalition.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">alliance</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">():</span>
-                <span class="k">yield</span> <span class="n">usr</span></div></div>
+        <span class="n">members_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">alliance</span><span class="o">.</span><span class="n">pk</span> <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation_data&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$corporation_data&quot;</span><span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;alliance_data&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;alliance&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation_data.alliance&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$alliance_data&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;alliance_data._id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">members_ids</span><span class="p">}}},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$toLower&quot;</span><span class="p">:</span> <span class="s2">&quot;$character_name&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$sort&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
+                <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Corporation"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation">[docs]</a><span class="k">class</span> <span class="nc">Corporation</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    EVE corporation database model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -179,10 +248,9 @@
     <span class="n">authorized_to_login</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`.&quot;&quot;&quot;</span>
 
-    <span class="n">alliance</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Alliance</span><span class="p">,</span>
-                                 <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                 <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                 <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">alliance</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
+        <span class="n">Alliance</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Optional reference to the alliance this corporation belongs to&quot;&quot;&quot;</span>
 
     <span class="n">ceo_character_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -202,33 +270,62 @@
 
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;corporation_id&quot;</span><span class="p">,</span> <span class="s2">&quot;corporation_name&quot;</span><span class="p">,]}</span>
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;User&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the corporation&#39;s ceo as a :class:`sni.user` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ceo_character_id</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Corporation.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="Corporation.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the member list of this corporation, according to the database.</span>
 <span class="sd">        This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Corporation.user_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="Corporation.user_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.user_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">user_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an iterator over all the members of this corporation, according</span>
 <span class="sd">        to the database. This may not be up to date with the ESI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">usr</span></div></div>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation_data&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$corporation_data&quot;</span><span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;corporation_data.corporation_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation_id</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$toLower&quot;</span><span class="p">:</span> <span class="s2">&quot;$character_name&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$sort&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
+                <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../../user.html#sni.user.models.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Group model. A group is simply a collection of users.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -256,20 +353,22 @@
     <span class="n">map_to_teamspeak</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Wether this group should be mapped as a Teamspeak group&quot;&quot;&quot;</span>
 
-    <span class="n">members</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Member list&quot;&quot;&quot;</span>
 
     <span class="n">group_name</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Name of the group&quot;&quot;&quot;</span>
 
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Owner of the group. Can be ``None``.&quot;&quot;&quot;</span>
 
     <span class="n">teamspeak_sgid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Teamspeak group id, if applicable&quot;&quot;&quot;</span>
 
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;group_name&quot;</span><span class="p">,]}</span></div>
 
 
 <div class="viewcode-block" id="User"><a class="viewcode-back" href="../../../user.html#sni.user.models.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -278,6 +377,7 @@
 
 <span class="sd">    A user corresponds to a single EVE character.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -310,6 +410,9 @@
 
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;character_id&quot;</span><span class="p">,</span> <span class="s2">&quot;character_name&quot;</span><span class="p">,]}</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">alliance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Alliance</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -325,10 +428,16 @@
 <span class="sd">        required by the corporation, alliance, and all the coalitions the user</span>
 <span class="sd">        is part of.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">corporation_scopes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
-                              <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[])</span>
-        <span class="n">alliance_scopes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
-                           <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[])</span>
+        <span class="n">corporation_scopes</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="n">alliance_scopes</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
         <span class="n">coalition_scopes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coalitions</span><span class="p">():</span>
             <span class="n">coalition_scopes</span> <span class="o">+=</span> <span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
@@ -346,17 +455,21 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tells wether the user is the ceo of its corporation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">()</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">executor_corporation_id</span>
-                <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">executor_corporation_id</span>
+            <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="User.is_ceo_of_corporation"><a class="viewcode-back" href="../../../user.html#sni.user.models.User.is_ceo_of_corporation">[docs]</a>    <span class="k">def</span> <span class="nf">is_ceo_of_corporation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tells wether the user is the ceo of its corporation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_id</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tickered_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -373,7 +486,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">ticker</span>
         <span class="k">if</span> <span class="n">ticker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{ticker}</span><span class="s1">] </span><span class="si">{self.character_name}</span><span class="s1">&#39;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{ticker}</span><span class="s2">] </span><span class="si">{self.character_name}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_name</span></div>
 </pre></div>
 

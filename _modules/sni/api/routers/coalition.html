@@ -72,11 +72,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for an element of a `GET /coalition` response.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">coalition_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">coalition_name</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="GetCoalitionShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.GetCoalitionShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCoalitionShortOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetCoalitionShortOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts a coalition database record to a short response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -90,6 +91,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for `GET /coalition/{coalition_id}` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">coalition_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
@@ -100,7 +102,7 @@
     <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span>
 
 <div class="viewcode-block" id="GetCoalitionOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.GetCoalitionOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetCoalitionOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetCoalitionOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts a coalition database record to a response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -120,6 +122,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for `POST /coalition` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">coalition_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ticker</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -128,6 +131,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for `PUT /coalition/{coalition_id}` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">add_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -137,89 +141,90 @@
 
 
 <div class="viewcode-block" id="delete_coalition"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.delete_coalition">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{coalition_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete a coalition&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{coalition_id}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Delete a coalition&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">delete_coalition</span><span class="p">(</span>
-        <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes a coalition. Requires a clearance level of 9 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.delete_coalition&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.delete_coalition&quot;</span><span class="p">)</span>
     <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deleting coalition </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span>
-                  <span class="n">coalition_id</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Deleting coalition </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span> <span class="n">coalition_id</span>
+    <span class="p">)</span>
     <span class="n">coalition</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_coalition"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.get_coalition">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetCoalitionShortOut</span><span class="p">],</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;List all coalition names&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;List all coalition names&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_coalition</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Lists all the coalition names. Requires a clearance level of 0 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_coalition&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_coalition&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">GetCoalitionShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;coalition_name&quot;</span><span class="p">)</span>
     <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="get_coalition_name"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.get_coalition_name">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{coalition_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{coalition_id}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetCoalitionOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get basic informations about a coalition&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get basic informations about a coalition&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_coalition_name</span><span class="p">(</span>
-        <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns details about a given coalition. Requires a clearance level of 0 or</span>
 <span class="sd">    more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_coalition&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_coalition&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">GetCoalitionOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span>
-        <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+        <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="post_coalitions"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.post_coalitions">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetCoalitionOut</span><span class="p">,</span>
     <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Create a coalition&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Create a coalition&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">post_coalitions</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">PostCoalitionIn</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">PostCoalitionIn</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a coalition. Requires a clearance level of 9 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.create_coalition&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.create_coalition&quot;</span><span class="p">)</span>
     <span class="n">coa</span> <span class="o">=</span> <span class="n">Coalition</span><span class="p">(</span>
-        <span class="n">coalition_name</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span>
-        <span class="n">ticker</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">ticker</span><span class="p">,</span>
+        <span class="n">coalition_name</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span> <span class="n">ticker</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">ticker</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Created coalition </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span>
-                  <span class="nb">str</span><span class="p">(</span><span class="n">coa</span><span class="o">.</span><span class="n">pk</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Created coalition </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">coa</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">GetCoalitionOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">coa</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="put_coalition"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.put_coalition">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{coalition_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{coalition_id}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetCoalitionOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update a coalition&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Update a coalition&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">put_coalition</span><span class="p">(</span>
-        <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">PutCoalitionIn</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">PutCoalitionIn</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates a coalition. All fields in the request body are optional. The</span>
@@ -227,17 +232,18 @@
 <span class="sd">    `members` cannot be used in conjunction with `add_members` and</span>
 <span class="sd">    `remove_members`. Requires a clearance level of 9 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.update_coalition&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.update_coalition&quot;</span><span class="p">)</span>
     <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating coalition </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span>
-                  <span class="n">coalition_id</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Updating coalition </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span> <span class="n">coalition_id</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">add_members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">+=</span> <span class="p">[</span>
             <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">member_id</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">add_members</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.set_authorized_to_login&#39;</span><span class="p">)</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.set_authorized_to_login&quot;</span><span class="p">)</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
@@ -248,7 +254,8 @@
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">member</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">members</span>
+            <span class="n">member</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">members</span>
             <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">alliance_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_members</span>
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ticker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -259,13 +266,13 @@
 
 
 <div class="viewcode-block" id="get_coalition_tracking"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.get_coalition_tracking">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{coalition_id}</span><span class="s1">/tracking&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{coalition_id}</span><span class="s2">/tracking&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetTrackingOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Coalition tracking&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Coalition tracking&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_coalition_tracking</span><span class="p">(</span>
-        <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">coalition_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reports which member (of a given coalition) have a valid refresh token</span>
@@ -273,7 +280,7 @@
 <span class="sd">    more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.track_coalition&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.track_coalition&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">GetTrackingOut</span><span class="o">.</span><span class="n">from_user_iterator</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 </pre></div>
 

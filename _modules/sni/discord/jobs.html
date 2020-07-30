@@ -58,12 +58,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">member</span><span class="p">:</span> <span class="n">Member</span> <span class="o">=</span> <span class="n">get_member</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">discord_user_id</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">member</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span>
-        <span class="n">nick</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">,</span>
-        <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue&#39;</span><span class="p">,</span>
+        <span class="n">nick</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;SeAT Navy Issue&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="update_discord_users"><a class="viewcode-back" href="../../../discord.html#sni.discord.jobs.update_discord_users">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="update_discord_users"><a class="viewcode-back" href="../../../discord.html#sni.discord.jobs.update_discord_users">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update_discord_users</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates all discord users.</span>
@@ -71,7 +70,7 @@
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">discord_user_id__ne</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">utils</span><span class="o">.</span><span class="n">catch_all_async</span><span class="p">(</span>
             <span class="n">update_discord_user</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s1">&#39;Could not update Discord properties of user </span><span class="si">{usr.character_name}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Could not update Discord properties of user </span><span class="si">{usr.character_name}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">usr</span><span class="p">],</span>
         <span class="p">)</span></div>
 
@@ -85,7 +84,8 @@
         <span class="k">return</span>
     <span class="n">role</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ensure_role_for_group</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span>
     <span class="n">authorized_members</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">get_member</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">discord_user_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span>
+        <span class="n">get_member</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">discord_user_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span>
         <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">discord_user_id</span>
     <span class="p">]</span>
     <span class="n">current_members</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">members</span>
@@ -99,7 +99,7 @@
         <span class="k">await</span> <span class="n">member</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span><span class="n">roles</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">roles</span> <span class="o">+</span> <span class="p">[</span><span class="n">role</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="update_discord_roles"><a class="viewcode-back" href="../../../discord.html#sni.discord.jobs.update_discord_roles">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="viewcode-block" id="update_discord_roles"><a class="viewcode-back" href="../../../discord.html#sni.discord.jobs.update_discord_roles">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update_discord_roles</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates discord role. A SNI group is mapped to a discord role unless that</span>
@@ -108,7 +108,7 @@
     <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">map_to_discord</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">utils</span><span class="o">.</span><span class="n">catch_all_async</span><span class="p">(</span>
             <span class="n">update_discord_role</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s1">&#39;Could not update Discord role </span><span class="si">{grp.group_name}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Could not update Discord role </span><span class="si">{grp.group_name}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">grp</span><span class="p">],</span>
         <span class="p">)</span></div>
 </pre></div>

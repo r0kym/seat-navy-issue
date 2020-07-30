@@ -45,6 +45,7 @@
 <span class="sd">This module contains the entry point to SNI.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
@@ -61,18 +62,22 @@
 <span class="sd">    Imports all ``signals`` submodules.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting database signals&#39;</span><span class="p">)</span>
-    <span class="kn">import</span> <span class="nn">sni.db.signals</span>
-    <span class="kn">import</span> <span class="nn">sni.esi.signals</span>
-    <span class="kn">import</span> <span class="nn">sni.sde.signals</span>
-    <span class="kn">import</span> <span class="nn">sni.index.signals</span>
-    <span class="kn">import</span> <span class="nn">sni.uac.signals</span>
-    <span class="kn">import</span> <span class="nn">sni.user.signals</span>
-    <span class="kn">import</span> <span class="nn">sni.api.signals</span>
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.signals</span>
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.teamspeak.signals</span></div>
+
+    <span class="n">modules</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;sni.db.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.esi.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.sde.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.index.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.uac.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.user.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.api.signals&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.discord.signals&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
+        <span class="s2">&quot;sni.teamspeak.signals&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Connecting database signals&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">module</span><span class="p">,</span> <span class="n">include</span> <span class="ow">in</span> <span class="n">modules</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">include</span><span class="p">:</span>
+            <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="configure_logging"><a class="viewcode-back" href="../../sni.html#sni.__main__.configure_logging">[docs]</a><span class="k">def</span> <span class="nf">configure_logging</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -80,36 +85,39 @@
 <span class="sd">    Basic configuration of the logging facility</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">({</span>
-        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> [</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;disable_existing_loggers&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;formatters&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
             <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stderr&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;ext://sys.stderr&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
             <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level_int</span><span class="p">,</span>
+            <span class="s2">&quot;loggers&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level_int</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="c1"># &#39;discord&#39;: {</span>
+                <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
+                <span class="c1">#     &#39;level&#39;: logging.WARNING,</span>
+                <span class="c1"># },</span>
+                <span class="c1"># &#39;websockets&#39;: {</span>
+                <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
+                <span class="c1">#     &#39;level&#39;: logging.WARNING,</span>
+                <span class="c1"># },</span>
             <span class="p">},</span>
-            <span class="c1"># &#39;discord&#39;: {</span>
-            <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
-            <span class="c1">#     &#39;level&#39;: logging.WARNING,</span>
-            <span class="c1"># },</span>
-            <span class="c1"># &#39;websockets&#39;: {</span>
-            <span class="c1">#     &#39;handlers&#39;: [&#39;default&#39;],</span>
-            <span class="c1">#     &#39;level&#39;: logging.WARNING,</span>
-            <span class="c1"># },</span>
-        <span class="p">},</span>
-    <span class="p">})</span></div>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate_database"><a class="viewcode-back" href="../../sni.html#sni.__main__.migrate_database">[docs]</a><span class="k">def</span> <span class="nf">migrate_database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -118,33 +126,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating database&#39;</span><span class="p">)</span>
-
-    <span class="kn">import</span> <span class="nn">sni.esi.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">esi</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="kn">import</span> <span class="nn">sni.sde.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">sde</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="kn">import</span> <span class="nn">sni.index.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="kn">import</span> <span class="nn">sni.uac.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">uac</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="kn">import</span> <span class="nn">sni.user.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="kn">import</span> <span class="nn">sni.api.migration</span>
-    <span class="n">sni</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.migration</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.teamspeak.migration</span>
-        <span class="n">sni</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">migration</span><span class="o">.</span><span class="n">migrate</span><span class="p">()</span></div>
+    <span class="n">migrations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;sni.esi.migration:migrate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.sde.migration:migrate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.index.migration:migrate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.uac.migration:migrate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.user.migration:migrate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.api.migration:migrate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.discord.migration:migrate&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
+        <span class="s2">&quot;sni.teamspeak.migration:migrate&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running migration jobs&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">function</span><span class="p">,</span> <span class="n">include</span> <span class="ow">in</span> <span class="n">migrations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">include</span><span class="p">:</span>
+            <span class="n">object_from_name</span><span class="p">(</span><span class="n">function</span><span class="p">)()</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../sni.html#sni.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -160,13 +155,14 @@
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_configuration_spec</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">print_configuration_schema</span>
+
         <span class="n">print_configuration_schema</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">load_configuration_file</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">CfgError</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error loading configuration file &#39;</span> <span class="o">+</span> <span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error loading configuration file &quot;</span> <span class="o">+</span> <span class="n">arguments</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 
@@ -178,6 +174,7 @@
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">print_openapi_spec</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">sni.api.server</span> <span class="kn">import</span> <span class="n">print_openapi_spec</span>
+
         <span class="n">print_openapi_spec</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
@@ -186,6 +183,7 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">from</span> <span class="nn">sni.db.mongodb</span> <span class="kn">import</span> <span class="n">init_mongodb</span>
+
     <span class="n">init_mongodb</span><span class="p">()</span>
     <span class="n">migrate_database</span><span class="p">()</span>
 
@@ -199,13 +197,15 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">from</span> <span class="nn">sni.esi.esi</span> <span class="kn">import</span> <span class="n">load_esi_openapi</span>
+
     <span class="n">load_esi_openapi</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reload_esi_openapi_spec</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">flush_cache</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">sni.db.cache</span> <span class="kn">import</span> <span class="n">new_redis_connection</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Flushing Redis cache&#39;</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Flushing Redis cache&quot;</span><span class="p">)</span>
         <span class="n">new_redis_connection</span><span class="p">()</span><span class="o">.</span><span class="n">flushdb</span><span class="p">()</span>
 
     <span class="c1"># --------------------------------------------------------------------------</span>
@@ -213,6 +213,7 @@
     <span class="c1"># --------------------------------------------------------------------------</span>
 
     <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">start_scheduler</span><span class="p">,</span> <span class="n">stop_scheduler</span>
+
     <span class="n">start_scheduler</span><span class="p">()</span>
     <span class="n">schedule_jobs</span><span class="p">()</span>
 
@@ -246,43 +247,43 @@
 <span class="sd">        `argparse documentation</span>
 <span class="sd">        &lt;https://docs.python.org/3/library/argparse.html&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">argument_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;SeAT Navy Issue&#39;</span><span class="p">)</span>
+    <span class="n">argument_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;SeAT Navy Issue&quot;</span><span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-f&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--file&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./sni.yml&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Specify an alternate configuration file (default: ./sni.yml)&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--file&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;./sni.yml&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specify an alternate configuration file (default: ./sni.yml)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--flush-cache&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;--flush-cache&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Flushes the Redis cache&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Flushes the Redis cache&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--migrate-database&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;--migrate-database&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Runs database migration jobs and exits&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Runs database migration jobs and exits&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--print-configuration-spec&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;--print-configuration-spec&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Prints the configuration file specification in JSON and exits&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Prints the configuration file specification in JSON and exits&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--print-openapi-spec&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;--print-openapi-spec&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Prints the OpenAPI specification in YAML and exits&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Prints the OpenAPI specification in YAML and exits&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--reload-esi-openapi-spec&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;--reload-esi-openapi-spec&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Reloads the ESI OpenAPI specification to the database and exits&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Reloads the ESI OpenAPI specification to the database and exits&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">argument_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
 
@@ -296,6 +297,7 @@
     <span class="kn">from</span> <span class="nn">sni.discord.bot</span> <span class="kn">import</span> <span class="n">start_bot</span>
     <span class="kn">import</span> <span class="nn">sni.discord.commands</span>
     <span class="kn">import</span> <span class="nn">sni.discord.events</span>
+
     <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">start_bot</span><span class="p">)</span></div>
 
 
@@ -305,22 +307,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Scheduling jobs&#39;</span><span class="p">)</span>
+    <span class="n">modules</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;sni.db.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.esi.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.sde.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.uac.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.user.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.index.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.api.jobs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;sni.discord.jobs&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
+        <span class="s2">&quot;sni.teamspeak.jobs&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Scheduling jobs&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">module</span><span class="p">,</span> <span class="n">include</span> <span class="ow">in</span> <span class="n">modules</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">include</span><span class="p">:</span>
+            <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span></div>
 
-    <span class="kn">import</span> <span class="nn">sni.db.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.esi.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.sde.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.uac.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.user.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.index.jobs</span>
-    <span class="kn">import</span> <span class="nn">sni.api.jobs</span>
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.teamspeak.jobs</span>
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">sni.discord.jobs</span></div>
 
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

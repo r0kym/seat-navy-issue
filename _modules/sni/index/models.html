@@ -84,14 +84,14 @@
     <span class="sd">&quot;&quot;&quot;Corresponding user&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;online&#39;</span><span class="p">,</span>
-            <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;solar_system_id&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
+        <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;online&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;solar_system_id&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
             <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>  <span class="c1"># 90 days</span>
-            <span class="p">},</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="p">},</span>  <span class="c1"># 90 days</span>
         <span class="p">],</span>
     <span class="p">}</span></div>
 
@@ -100,6 +100,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An email recipient</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">recipient_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span>
     <span class="n">recipient_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span></div>
 
@@ -110,6 +111,7 @@
 <span class="sd">    ``body`` and ``subject`` fields (see `here</span>
 <span class="sd">    &lt;http://docs.mongoengine.org/guide/text-indexes.html&gt;`_)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -135,15 +137,12 @@
     <span class="sd">&quot;&quot;&quot;ESI timestamp of the email&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;from_id&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;from_id&quot;</span><span class="p">,</span>
             <span class="p">{</span>
-                <span class="s1">&#39;default_language&#39;</span><span class="p">:</span> <span class="s1">&#39;english&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;$body&#39;</span><span class="p">,</span> <span class="s1">&#39;$subject&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;weights&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s1">&#39;subject&#39;</span><span class="p">:</span> <span class="mi">2</span>
-                <span class="p">},</span>
+                <span class="s2">&quot;default_language&quot;</span><span class="p">:</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$body&quot;</span><span class="p">,</span> <span class="s2">&quot;$subject&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
             <span class="p">},</span>
         <span class="p">]</span>
     <span class="p">}</span></div>
@@ -153,6 +152,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a measurment of a character&#39;s skill points</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
@@ -172,12 +172,12 @@
     <span class="sd">&quot;&quot;&quot;Corresponding user&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
+        <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
             <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>  <span class="c1"># 90 days</span>
-            <span class="p">},</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="p">},</span>  <span class="c1"># 90 days</span>
         <span class="p">],</span>
     <span class="p">}</span></div>
 
@@ -197,12 +197,12 @@
     <span class="sd">&quot;&quot;&quot;User reference&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;-timestamp&#39;</span><span class="p">),</span>
+        <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
             <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>  <span class="c1"># 90 days</span>
-            <span class="p">},</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="p">},</span>  <span class="c1"># 90 days</span>
         <span class="p">],</span>
     <span class="p">}</span></div>
 </pre></div>

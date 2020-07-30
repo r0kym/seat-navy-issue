@@ -69,6 +69,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for an element of `GET /group` responses</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -77,6 +78,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for `GET /group/{group_id}` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
@@ -88,7 +90,7 @@
     <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span>
 
 <div class="viewcode-block" id="GetGroupOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.GetGroupOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">grp</span><span class="p">:</span> <span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetGroupOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">grp</span><span class="p">:</span> <span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetGroupOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts a group database record to a response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -109,7 +111,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for `POST /group` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
@@ -117,6 +120,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for `POST /group` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">add_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -126,89 +130,87 @@
 
 
 <div class="viewcode-block" id="delete_group"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.delete_group">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{group_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete a group&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{group_id}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Delete a group&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">delete_group</span><span class="p">(</span>
-        <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes a group. Requires a clearance level of 9 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.delete_group&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.delete_group&quot;</span><span class="p">)</span>
     <span class="n">grp</span><span class="p">:</span> <span class="n">Group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deleting group </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Deleting group </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
     <span class="n">grp</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_group"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.get_group">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetGroupShortOut</span><span class="p">],</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;List all group names&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetGroupShortOut</span><span class="p">],</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;List all group names&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_group</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span> <span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_group</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Lists all the group names. Requires a clearance level of 0 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_group&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_group&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">GetGroupShortOut</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span> <span class="n">group_name</span><span class="o">=</span><span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;group_name&quot;</span><span class="p">)</span>
     <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="get_group_name"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.get_group_name">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{group_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{group_id}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetGroupOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get basic informations about a group&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get basic informations about a group&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_group_name</span><span class="p">(</span>
-        <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns details about a given group. Requires a clearance level of 0 or</span>
 <span class="sd">    more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_group&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_group&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">GetGroupOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="post_groups"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.post_groups">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetGroupOut</span><span class="p">,</span>
     <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Create a group&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Create a group&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">post_groups</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">PostGroupIn</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">PostGroupIn</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a group. Requires a clearance level of 9 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.create_group&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.create_group&quot;</span><span class="p">)</span>
     <span class="n">grp</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
         <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">],</span>
         <span class="n">group_name</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span>
         <span class="n">owner</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Created group </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) owned by </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span>
-                  <span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span> <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Created group </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">) owned by </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">GetGroupOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="put_group"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.group.put_group">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{group_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="n">response_model</span><span class="o">=</span><span class="n">GetGroupOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update a group&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{group_id}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">GetGroupOut</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Update a group&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">put_group</span><span class="p">(</span>
-        <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">PutGroupIn</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">group_id</span><span class="p">:</span> <span class="n">BSONObjectId</span><span class="p">,</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">PutGroupIn</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates a group. All fields in the request body are optional. The</span>
@@ -218,17 +220,18 @@
 <span class="sd">    to be the owner of the group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">grp</span><span class="p">:</span> <span class="n">Group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span> <span class="o">==</span> <span class="n">grp</span><span class="o">.</span><span class="n">owner</span>
-            <span class="ow">or</span> <span class="n">has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.update_group&#39;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span> <span class="o">==</span> <span class="n">grp</span><span class="o">.</span><span class="n">owner</span> <span class="ow">or</span> <span class="n">has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.update_group&quot;</span><span class="p">)</span>
+    <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">PermissionError</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating group </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating group </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">grp</span><span class="o">.</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">add_members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">+=</span> <span class="p">[</span>
             <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_name</span><span class="o">=</span><span class="n">member_name</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">member_name</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">add_members</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.set_authorized_to_login&#39;</span><span class="p">)</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.set_authorized_to_login&quot;</span><span class="p">)</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span>
@@ -241,7 +244,8 @@
         <span class="n">grp</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_name</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">owner</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">member</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span>
+            <span class="n">member</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">grp</span><span class="o">.</span><span class="n">members</span>
             <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">character_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_members</span>
         <span class="p">]</span>
     <span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">+</span> <span class="p">[</span><span class="n">grp</span><span class="o">.</span><span class="n">owner</span><span class="p">]))</span>

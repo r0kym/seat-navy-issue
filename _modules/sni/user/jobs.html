@@ -72,7 +72,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates an alliance autogroup.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating autogroup of alliance </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating autogroup of alliance </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
     <span class="n">grp</span> <span class="o">=</span> <span class="n">ensure_autogroup</span><span class="p">(</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">alliance</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">ceo</span>
@@ -82,9 +82,9 @@
     <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="update_alliance_autogroups"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_alliance_autogroups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span>
-                         <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                         <span class="n">start_date</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+<div class="viewcode-block" id="update_alliance_autogroups"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_alliance_autogroups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span>
+    <span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
 <span class="k">def</span> <span class="nf">update_alliance_autogroups</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resets all the alliance autogroup. Instead of querying the ESI, it queries</span>
@@ -92,21 +92,22 @@
 <span class="sd">    the user and corporation records are up-to-date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="ensure_alliance_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_alliance_members">[docs]</a><span class="k">def</span> <span class="nf">ensure_alliance_members</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes sure all members of a given alliance exist in the database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating members of alliance </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating members of alliance </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39;latest/alliances/</span><span class="si">{alliance.alliance_id}</span><span class="s1">/corporations/&#39;</span><span class="p">)</span>
+        <span class="sa">f</span><span class="s2">&quot;latest/alliances/</span><span class="si">{alliance.alliance_id}</span><span class="s2">/corporations/&quot;</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">corporation_id</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
         <span class="n">ensure_corporation</span><span class="p">(</span><span class="n">corporation_id</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ensure_alliances_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_alliances_members">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="ensure_alliances_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_alliances_members">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ensure_alliances_members</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterates through all alliances (in the database) and makes sure their</span>
@@ -114,26 +115,29 @@
 <span class="sd">    :meth:`sni.user.jobs.ensure_alliance_members`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_alliance_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_alliance_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="update_alliance_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_alliance_from_esi">[docs]</a><span class="k">def</span> <span class="nf">update_alliance_from_esi</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates an alliance&#39;s properties from the ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating properties of alliance </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/alliances/</span><span class="si">{alliance.alliance_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">alliance</span><span class="o">.</span><span class="n">executor_corporation_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;executor_corporation_id&#39;</span><span class="p">]</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating properties of alliance </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;latest/alliances/</span><span class="si">{alliance.alliance_id}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">old_executor</span> <span class="o">=</span> <span class="n">alliance</span><span class="o">.</span><span class="n">executor</span>
+    <span class="n">alliance</span><span class="o">.</span><span class="n">executor_corporation_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;executor_corporation_id&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">old_executor</span><span class="o">.</span><span class="n">corporation_id</span> <span class="o">!=</span> <span class="n">alliance</span><span class="o">.</span><span class="n">executor_corporation_id</span><span class="p">:</span>
+        <span class="n">reset_clearance</span><span class="p">(</span><span class="n">old_executor</span><span class="o">.</span><span class="n">ceo</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">alliance</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="update_alliances_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_alliances_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="update_alliances_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_alliances_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">update_alliances_from_esi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the alliances properties from the ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_alliance_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="update_coalition_autogroup"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_coalition_autogroup">[docs]</a><span class="k">def</span> <span class="nf">update_coalition_autogroup</span><span class="p">(</span><span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span><span class="p">):</span>
@@ -142,22 +146,23 @@
 <span class="sd">    the database for all user in that coalition, assuming the user, coalition,</span>
 <span class="sd">    and alliance records are up-to-date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating autogroup of coalition </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Updating autogroup of coalition </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span>
+    <span class="p">)</span>
     <span class="n">grp</span> <span class="o">=</span> <span class="n">ensure_autogroup</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">)</span>
     <span class="n">grp</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span>
     <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="update_coalition_autogroups"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_coalition_autogroups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span>
-                         <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                         <span class="n">start_date</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+<div class="viewcode-block" id="update_coalition_autogroups"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_coalition_autogroups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span>
+    <span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
 <span class="k">def</span> <span class="nf">update_coalition_autogroups</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resets the coalition autogroups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_coalition_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coalition</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_coalition_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coalition</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="update_corporation_autogroup"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_autogroup">[docs]</a><span class="k">def</span> <span class="nf">update_corporation_autogroup</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
@@ -166,8 +171,9 @@
 <span class="sd">    the database for all user in that corporation, assuming the user records</span>
 <span class="sd">    are up-to-date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating autogroup of corporation </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Updating autogroup of corporation </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span>
+    <span class="p">)</span>
     <span class="n">grp</span> <span class="o">=</span> <span class="n">ensure_autogroup</span><span class="p">(</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">grp</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">corporation</span><span class="o">.</span><span class="n">ceo</span>
@@ -177,82 +183,58 @@
     <span class="n">grp</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="update_corporation_autogroups"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_autogroups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span>
-                         <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                         <span class="n">start_date</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+<div class="viewcode-block" id="update_corporation_autogroups"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_autogroups">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span>
+    <span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
 <span class="k">def</span> <span class="nf">update_corporation_autogroups</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resets the corporations autogroups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="update_corporation_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_from_esi">[docs]</a><span class="k">def</span> <span class="nf">update_corporation_from_esi</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Updates a corporation from the ESI.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating properties of corporation </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;alliance_id&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;alliance_id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ceo_id&#39;</span><span class="p">]</span>
-    <span class="n">corporation</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="update_corporations_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporations_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_corporations_from_esi</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Updates the corporations properties from the ESI.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="ensure_corporation_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporation_members">[docs]</a><span class="k">def</span> <span class="nf">ensure_corporation_members</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensure that all members of a corporation exist in the database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ensuring members of corporation </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
-    <span class="n">scope</span> <span class="o">=</span> <span class="s1">&#39;esi-corporations.read_corporation_membership.v1&#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Ensuring members of corporation </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span>
+    <span class="p">)</span>
+    <span class="n">scope</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_corporation_membership.v1&quot;</span>
     <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">query</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;$lookup&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;as&#39;</span><span class="p">:</span> <span class="s1">&#39;owner_data&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;foreignField&#39;</span><span class="p">:</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;from&#39;</span><span class="p">:</span> <span class="n">User</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">(),</span>
-                <span class="s1">&#39;localField&#39;</span><span class="p">:</span> <span class="s1">&#39;owner&#39;</span><span class="p">,</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;owner_data&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
             <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;$match&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;owner_data.corporation&#39;</span><span class="p">:</span> <span class="n">corporation</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
-                <span class="s1">&#39;scopes&#39;</span><span class="p">:</span> <span class="n">scope</span><span class="p">,</span>
-                <span class="s1">&#39;valid&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;owner_data.corporation&quot;</span><span class="p">:</span> <span class="n">corporation</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
+                    <span class="s2">&quot;scopes&quot;</span><span class="p">:</span> <span class="n">scope</span><span class="p">,</span>
+                    <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="p">},</span>
             <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;$project&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;owner_data.character_id&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
-    <span class="p">])</span>
+            <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;owner_data.character_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,},},</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
     <span class="n">esi_access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
-        <span class="n">query</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="s1">&#39;owner_data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;character_id&#39;</span><span class="p">],</span>
-        <span class="n">scope</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="s2">&quot;owner_data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;character_id&quot;</span><span class="p">],</span> <span class="n">scope</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s1">/members/&#39;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s2">/members/&quot;</span><span class="p">,</span>
         <span class="n">token</span><span class="o">=</span><span class="n">esi_access_token</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">character_id</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_user</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">character_id</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_user</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">character_id</span><span class="p">,))</span></div>
 
 
-<div class="viewcode-block" id="ensure_corporations_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporations_members">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="ensure_corporations_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporations_members">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ensure_corporations_members</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterates through all corporations (in the database) and makes sure their</span>
@@ -260,29 +242,34 @@
 <span class="sd">    :meth:`sni.user.jobs.ensure_corporation_members`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_corporation_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_corporation_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,))</span></div>
 
 
-<div class="viewcode-block" id="update_corporation"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation">[docs]</a><span class="k">def</span> <span class="nf">update_corporation</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
+<div class="viewcode-block" id="update_corporation_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporation_from_esi">[docs]</a><span class="k">def</span> <span class="nf">update_corporation_from_esi</span><span class="p">(</span><span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates a corporation properties from the ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating properties of corproation </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;alliance_id&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;alliance_id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ceo_id&#39;</span><span class="p">])</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Updating properties of corproation </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span>
+    <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ensure_alliance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;alliance_id&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;alliance_id&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="n">old_ceo</span> <span class="o">=</span> <span class="n">corporation</span><span class="o">.</span><span class="n">ceo</span>
+    <span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ceo_id&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">old_ceo</span><span class="o">.</span><span class="n">character_id</span> <span class="o">!=</span> <span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span><span class="p">:</span>
+        <span class="n">reset_clearance</span><span class="p">(</span><span class="n">old_ceo</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">corporation</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="update_corporations"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporations">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_corporations</span><span class="p">():</span>
+<div class="viewcode-block" id="update_corporations_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_corporations_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update_corporations_from_esi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates corporations properties. (yes)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="update_user_autogroup"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_user_autogroup">[docs]</a><span class="k">def</span> <span class="nf">update_user_autogroup</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
@@ -291,37 +278,40 @@
 <span class="sd">    autogroups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ensure_autogroup</span><span class="p">(</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+        <span class="n">ensure_autogroup</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
+            <span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ensure_autogroup</span><span class="p">(</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+        <span class="n">ensure_autogroup</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
+            <span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span>
+        <span class="p">)</span>
     <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">coalitions</span><span class="p">():</span>
-        <span class="n">ensure_autogroup</span><span class="p">(</span>
-            <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span></div>
+        <span class="n">ensure_autogroup</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
+            <span class="n">add_to_set__members</span><span class="o">=</span><span class="n">usr</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="update_user_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_user_from_esi">[docs]</a><span class="k">def</span> <span class="nf">update_user_from_esi</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates a user&#39;s information from the ESI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
     <span class="n">old_corporation</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span>
-    <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="o">=</span> <span class="n">ensure_corporation</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;corporation_id&#39;</span><span class="p">])</span>
+    <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="o">=</span> <span class="n">ensure_corporation</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;corporation_id&quot;</span><span class="p">])</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">updated_on</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="o">!=</span> <span class="n">old_corporation</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Corporation of user </span><span class="si">%s</span><span class="s1"> changed&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Corporation of user </span><span class="si">%s</span><span class="s2"> changed&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
         <span class="n">reset_clearance</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="update_users_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_users_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="update_users_from_esi"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.update_users_from_esi">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">update_users_from_esi</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterated through all users and updates their field from ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id__gt</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="p">))</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 </pre></div>
 
           </div>

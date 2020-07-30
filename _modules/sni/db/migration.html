@@ -52,40 +52,38 @@
 <span class="sd">    the given version, sets it to that version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
-        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;$lt&#39;</span><span class="p">:</span> <span class="n">version</span>
-        <span class="p">}},</span>
-        <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="n">version</span>
-        <span class="p">}},</span>
+        <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$lt&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">}},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">}},</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="has_outdated_documents"><a class="viewcode-back" href="../../../db.html#sni.db.migration.has_outdated_documents">[docs]</a><span class="k">def</span> <span class="nf">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span>
-                           <span class="n">schema_version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="has_outdated_documents"><a class="viewcode-back" href="../../../db.html#sni.db.migration.has_outdated_documents">[docs]</a><span class="k">def</span> <span class="nf">has_outdated_documents</span><span class="p">(</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">schema_version</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tells wether a (pymongo) collection has documents whose ``_version`` field</span>
 <span class="sd">    have value less than the given schema version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="n">schema_version</span>
-    <span class="p">}})</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">collection</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$ne&quot;</span><span class="p">:</span> <span class="n">schema_version</span><span class="p">}})</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_if_not_exist"><a class="viewcode-back" href="../../../db.html#sni.db.migration.set_if_not_exist">[docs]</a><span class="k">def</span> <span class="nf">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span>
-                     <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                     <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-                     <span class="o">*</span><span class="p">,</span>
-                     <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="set_if_not_exist"><a class="viewcode-back" href="../../../db.html#sni.db.migration.set_if_not_exist">[docs]</a><span class="k">def</span> <span class="nf">set_if_not_exist</span><span class="p">(</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span>
+    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a field with a given value in all documents, if that field does not</span>
 <span class="sd">    already exist. If the version kwargs if specified, only update documents of</span>
 <span class="sd">    that version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">query</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">field_name</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$exists&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
+    <span class="n">query</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">field_name</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$exists&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
     <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">query</span><span class="p">[</span><span class="s1">&#39;_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
-    <span class="n">update</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">field_name</span><span class="p">:</span> <span class="n">value</span><span class="p">}}</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;_version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">field_name</span><span class="p">:</span> <span class="n">value</span><span class="p">}}</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">update</span><span class="p">)</span></div>
 </pre></div>
 

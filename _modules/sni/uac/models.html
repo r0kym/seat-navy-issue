@@ -53,13 +53,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a token issued by SNI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="Token.TokenType"><a class="viewcode-back" href="../../../uac.html#sni.uac.models.Token.TokenType">[docs]</a>    <span class="k">class</span> <span class="nc">TokenType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Enumeration containing the various token types.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dyn</span> <span class="o">=</span> <span class="s1">&#39;dyn&#39;</span>  <span class="c1"># Dynamic app token</span>
-        <span class="n">per</span> <span class="o">=</span> <span class="s1">&#39;per&#39;</span>  <span class="c1"># Permanent app token</span>
-        <span class="n">use</span> <span class="o">=</span> <span class="s1">&#39;use&#39;</span>  <span class="c1"># User token</span></div>
+
+        <span class="n">dyn</span> <span class="o">=</span> <span class="s2">&quot;dyn&quot;</span>  <span class="c1"># Dynamic app token</span>
+        <span class="n">per</span> <span class="o">=</span> <span class="s2">&quot;per&quot;</span>  <span class="c1"># Permanent app token</span>
+        <span class="n">use</span> <span class="o">=</span> <span class="s2">&quot;use&quot;</span>  <span class="c1"># User token</span></div>
 
     <span class="n">callback</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">URLField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Callback URL of the application. When a new user token is issued, the</span>
@@ -74,15 +76,14 @@
     <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Self explanatory&quot;&quot;&quot;</span>
 
-    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span>
-                              <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                              <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span>
+    <span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Reference to the owner of this token&quot;&quot;&quot;</span>
 
-    <span class="n">parent</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
-                               <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                               <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                               <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span>
+        <span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reverse_delete_rule</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">CASCADE</span>
+    <span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Optional reference to the token that has been used to create this one&quot;&quot;&quot;</span>
 
     <span class="n">token_type</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">TokenType</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -97,12 +98,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;expires_on&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">],</span>
+        <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;expires_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,},],</span>
     <span class="p">}</span></div>
 
 
@@ -130,12 +126,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;created_on&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">],</span>
+        <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;created_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,},],</span>
     <span class="p">}</span></div>
 </pre></div>
 

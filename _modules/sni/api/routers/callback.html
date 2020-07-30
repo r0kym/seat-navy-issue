@@ -72,25 +72,26 @@
 <span class="sd">    manipulation error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
-        <span class="n">content</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;&lt;h1&gt;ESI token manipulation error&lt;/h1&gt;</span>
-<span class="s1">&lt;p&gt;Sorry, something went wrong while manipulating your ESI token. It could be a</span>
-<span class="s1">temporary outage of the EVE API, or a bug in SeAT Navy Issue.&lt;/p&gt;</span>
-<span class="s1">&lt;p&gt;If the problem persists, please contact the instance administrator.&lt;/p&gt;&#39;&#39;&#39;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;&lt;h1&gt;ESI token manipulation error&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Sorry, something went wrong while manipulating your ESI token. It could be a</span>
+<span class="s2">temporary outage of the EVE API, or a bug in SeAT Navy Issue.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;If the problem persists, please contact the instance administrator.&lt;/p&gt;&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="not_authorized_to_login_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.not_authorized_to_login_response">[docs]</a><span class="k">def</span> <span class="nf">not_authorized_to_login_response</span><span class="p">(</span><span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
+<div class="viewcode-block" id="not_authorized_to_login_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.not_authorized_to_login_response">[docs]</a><span class="k">def</span> <span class="nf">not_authorized_to_login_response</span><span class="p">(</span>
+    <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an HTML response explaing that the user is not allowed to login on</span>
 <span class="sd">    this instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
-        <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;&lt;h1&gt;Not authorized to login&lt;/h1&gt;</span>
-<span class="s1">&lt;p&gt;Character &lt;strong&gt;</span><span class="si">{character_name}</span><span class="s1">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s1">) is not allowed</span>
-<span class="s1">to login. Please contact the instance administrator.&lt;/p&gt;</span>
-<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;h1&gt;Not authorized to login&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Character &lt;strong&gt;</span><span class="si">{character_name}</span><span class="s2">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s2">) is not allowed</span>
+<span class="s2">to login. Please contact the instance administrator.&lt;/p&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
     <span class="p">)</span></div>
 
@@ -100,9 +101,9 @@
 <span class="sd">    Converts a string list to an HTML bullet list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">string_list</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt;p&gt;None&lt;/p&gt;&#39;</span>
-    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;&lt;li&gt;&lt;code&gt;</span><span class="si">{item}</span><span class="s1">&lt;/code&gt;&lt;/li&gt;&#39;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">string_list</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s1">&#39;&lt;ul&gt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">item_list</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/ul&gt;&#39;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;&lt;p&gt;None&lt;/p&gt;&quot;</span>
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;&lt;li&gt;&lt;code&gt;</span><span class="si">{item}</span><span class="s2">&lt;/code&gt;&lt;/li&gt;&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">string_list</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s2">&quot;&lt;ul&gt;&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">item_list</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;/ul&gt;&quot;</span></div>
 
 
 <div class="viewcode-block" id="not_enough_scopes_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.not_enough_scopes_response">[docs]</a><span class="k">def</span> <span class="nf">not_enough_scopes_response</span><span class="p">(</span>
@@ -116,21 +117,20 @@
 <span class="sd">    scopes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
-        <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;&lt;h1&gt;Not enough ESI scopes&lt;/h1&gt;</span>
-<span class="s1">&lt;p&gt;The ESI token does not provide enough scopes for character</span>
-<span class="s1">&lt;strong&gt;</span><span class="si">{character_name}</span><span class="s1">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s1">):&lt;/p&gt;</span>
-<span class="s1">&lt;h3&gt;Required&lt;/h3&gt;</span>
-<span class="s1">{string_list_to_html(required_scopes)}</span>
-<span class="s1">&lt;h3&gt;Provided&lt;/h3&gt;</span>
-<span class="s1">{string_list_to_html(provided_scopes)}</span>
-<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;h1&gt;Not enough ESI scopes&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;The ESI token does not provide enough scopes for character</span>
+<span class="s2">&lt;strong&gt;</span><span class="si">{character_name}</span><span class="s2">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s2">):&lt;/p&gt;</span>
+<span class="s2">&lt;h3&gt;Required&lt;/h3&gt;</span>
+<span class="s2">{string_list_to_html(required_scopes)}</span>
+<span class="s2">&lt;h3&gt;Provided&lt;/h3&gt;</span>
+<span class="s2">{string_list_to_html(provided_scopes)}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_callback_esi"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.get_callback_esi">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/esi&#39;</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;ESI callback&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/esi&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;ESI callback&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_callback_esi</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -143,7 +143,7 @@
 <span class="sd">    Reference:</span>
 <span class="sd">        `OAuth 2.0 for Web Based Applications &lt;https://docs.esi.evetech.net/docs/sso/web_based_sso_flow.html&gt;`_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received callback from ESI for state </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received callback from ESI for state </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
 
     <span class="n">state_code</span><span class="p">:</span> <span class="n">StateCode</span> <span class="o">=</span> <span class="n">StateCode</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
     <span class="n">state_code</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
@@ -157,8 +157,9 @@
 
     <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">access_token</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_authorized_to_login</span><span class="p">(</span><span class="n">usr</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">not_authorized_to_login_response</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-                                                <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">not_authorized_to_login_response</span><span class="p">(</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">token_has_enough_scopes</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">usr</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">not_enough_scopes_response</span><span class="p">(</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
@@ -169,37 +170,38 @@
 
     <span class="n">user_token</span> <span class="o">=</span> <span class="n">create_user_token</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
     <span class="n">user_jwt_str</span> <span class="o">=</span> <span class="n">to_jwt</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Issuing token </span><span class="si">%s</span><span class="s1"> to app </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span>
-                 <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Issuing token </span><span class="si">%s</span><span class="s2"> to app </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">user_jwt_str</span><span class="p">,</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;created_on&#39;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
-            <span class="s1">&#39;expires_on&#39;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">expires_on</span><span class="p">,</span>
-            <span class="s1">&#39;jwt&#39;</span><span class="p">:</span> <span class="n">user_jwt_str</span><span class="p">,</span>
-            <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;character_id&#39;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-                <span class="s1">&#39;character_name&#39;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-                <span class="s1">&#39;clearance_level&#39;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
+            <span class="s2">&quot;created_on&quot;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
+            <span class="s2">&quot;expires_on&quot;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">expires_on</span><span class="p">,</span>
+            <span class="s2">&quot;jwt&quot;</span><span class="p">:</span> <span class="n">user_jwt_str</span><span class="p">,</span>
+            <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;character_id&quot;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+                <span class="s2">&quot;character_name&quot;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+                <span class="s2">&quot;clearance_level&quot;</span><span class="p">:</span> <span class="n">user_token</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">}</span>
 
     <span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span>
-        <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
         <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="p">{</span>
-            <span class="s1">&#39;state_code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
-            <span class="s1">&#39;user_token&#39;</span><span class="p">:</span> <span class="n">user_jwt_str</span><span class="p">,</span>
+            <span class="s2">&quot;state_code&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+            <span class="s2">&quot;user_token&quot;</span><span class="p">:</span> <span class="n">user_jwt_str</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span><span class="o">.</span><span class="n">url</span>
     <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s1">&#39;Failed to redirect user to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+            <span class="s2">&quot;Failed to redirect user to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state_code</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Failed to redirect to </span><span class="si">{state_code.app_token.callback}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;Failed to redirect to </span><span class="si">{state_code.app_token.callback}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span></div>
 </pre></div>
 

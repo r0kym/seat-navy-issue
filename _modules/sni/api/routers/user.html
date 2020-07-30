@@ -67,18 +67,18 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for an element of ``GET /user`` response</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="GetUserShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.GetUserShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetUserShortOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetUserShortOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts a :class:`sni.user.models.User` to a</span>
 <span class="sd">        :class:`sni.api.routers.user.GetUserShortOut`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">GetUserShortOut</span><span class="p">(</span>
-            <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span> <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 
 
@@ -86,6 +86,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for ``GET /user/{character_name}`` responses</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">alliance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">available_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
@@ -102,25 +103,30 @@
     <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span>
 
 <div class="viewcode-block" id="GetUserOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.GetUserOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetUserOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetUserOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Populates a new :class:`sni.routers.user.GetUserOut` with the information</span>
 <span class="sd">        contained in a user database record.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">GetUserOut</span><span class="p">(</span>
-            <span class="n">alliance</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span>
-                      <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">alliance</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span> <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
             <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
             <span class="n">available_esi_scopes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">available_esi_scopes</span><span class="p">(</span><span class="n">usr</span><span class="p">)),</span>
             <span class="n">character_id</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">character_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
             <span class="n">clearance_level</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
             <span class="n">coalitions</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()],</span>
-            <span class="n">corporation</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span>
-                         <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">corporation</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span>
+                <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
             <span class="n">created_on</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
             <span class="n">cumulated_mandatory_esi_scopes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span>
-                <span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()),</span>
+                <span class="n">usr</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()</span>
+            <span class="p">),</span>
             <span class="n">is_ceo_of_alliance</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_alliance</span><span class="p">(),</span>
             <span class="n">is_ceo_of_corporation</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">(),</span>
             <span class="n">tickered_name</span><span class="o">=</span><span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">,</span>
@@ -132,61 +138,64 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for ``PUT /user/{character_id}`` requests</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
     <span class="n">clearance_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="get_user"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.get_user">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">],</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the user list&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">],</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get the user list&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the list of all user names. Requires a clearance level of 0 or</span>
 <span class="sd">    more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_user&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span> <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">()]</span></div>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_user&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;character_name&quot;</span><span class="p">)</span>
+    <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="delete_user"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.delete_user">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete a user&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{character_id}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Delete a user&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">delete_user</span><span class="p">(</span><span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
+<span class="k">def</span> <span class="nf">delete_user</span><span class="p">(</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes a user. Requires a clearance level of 9 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.delete_user&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.delete_user&quot;</span><span class="p">)</span>
     <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_user_name"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.get_user_name">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{character_id}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetUserOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get basic informations about a user&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get basic informations about a user&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_user_name</span><span class="p">(</span><span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                  <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
+<span class="k">def</span> <span class="nf">get_user_name</span><span class="p">(</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns details about a character. Requires a clearance level of 0 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_user&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_user&quot;</span><span class="p">)</span>
     <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">GetUserOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="put_user_name"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.user.put_user_name">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{character_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="n">response_model</span><span class="o">=</span><span class="n">GetUserOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update a user&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{character_id}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">GetUserOut</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Update a user&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">put_user_name</span><span class="p">(</span><span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                  <span class="n">data</span><span class="p">:</span> <span class="n">PutUserIn</span><span class="p">,</span>
-                  <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">)):</span>
+<span class="k">def</span> <span class="nf">put_user_name</span><span class="p">(</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">PutUserIn</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Manually updates non ESI data about a character. The required clearance</span>
 <span class="sd">    level depends on the modification.</span>
@@ -196,13 +205,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">data</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
                 <span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
-                <span class="n">detail</span><span class="o">=</span>
-                <span class="s1">&#39;Field clearance_level must be between 0 and 10 (inclusive).&#39;</span><span class="p">)</span>
-        <span class="n">scope_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;sni.set_clearance_level_</span><span class="si">{data.clearance_level}</span><span class="s1">&#39;</span>
+                <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Field clearance_level must be between 0 and 10 (inclusive).&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">scope_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sni.set_clearance_level_</span><span class="si">{data.clearance_level}</span><span class="s2">&quot;</span>
         <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">scope_name</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">clearance_level</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.set_authorized_to_login&#39;</span><span class="p">)</span>
+        <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.set_authorized_to_login&quot;</span><span class="p">)</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">GetUserOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span></div>

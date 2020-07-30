@@ -102,6 +102,7 @@
 <span class="sd">    wether a *source* user is authorized to perform an action against a</span>
 <span class="sd">    *target* user (see :meth:`sni.uac.clearance.AbstractScope.has_clearance`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="AbstractScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbstractScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pure virtual methode, raises a ``NotImplementedError``.</span>
@@ -120,7 +121,7 @@
 
 <div class="viewcode-block" id="AbsoluteScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.AbsoluteScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Absolute scopes should not have targets&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Absolute scopes should not have targets&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">&lt;=</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span></div></div>
 
 
@@ -144,15 +145,17 @@
 <span class="sd">        source must have at least the same clearance level than the target.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Clearance modification scopes must have a target&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Clearance modification scopes must have a target&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>  <span class="c1"># Cannot change own clearance</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">([</span>
-            <span class="n">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">,</span>
-            <span class="n">target</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
-        <span class="p">])</span></div></div>
+        <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ESIScope"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.ESIScope">[docs]</a><span class="nd">@dataclass</span>
@@ -165,139 +168,141 @@
 
 <div class="viewcode-block" id="ESIScope.has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.ESIScope.has_clearance">[docs]</a>    <span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;ESI scopes must have a target&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;ESI scopes must have a target&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="n">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">,</span>
-                                                          <span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span></div></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">clearance_level</span>
+            <span class="o">&gt;=</span> <span class="n">distance_penalty</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span>
+        <span class="p">)</span></div></div>
 
 
 <span class="n">SCOPES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AbstractScope</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;esi-alliances.read_contacts.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-assets.read_assets.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-assets.read_corporation_assets.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-bookmarks.read_character_bookmarks.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-bookmarks.read_corporation_bookmarks.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-calendar.read_calendar_events.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-calendar.respond_calendar_events.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_agents_research.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_blueprints.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_chat_channels.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_contacts.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_corporation_roles.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_fatigue.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_fw_stats.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_loyalty.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_medals.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_notifications.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_opportunities.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_standings.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.read_titles.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characters.write_contacts.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-characterstats.read.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-clones.read_clones.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-clones.read_implants.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-contracts.read_character_contracts.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-contracts.read_corporation_contracts.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_blueprints.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_contacts.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_container_logs.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_corporation_membership.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_divisions.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_facilities.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_fw_stats.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_medals.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_standings.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_starbases.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_structures.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.read_titles.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-corporations.track_members.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-fittings.read_fittings.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-fittings.write_fittings.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-fleets.read_fleet.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-fleets.write_fleet.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-industry.read_character_jobs.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-industry.read_character_mining.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-industry.read_corporation_jobs.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-industry.read_corporation_mining.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-killmails.read_corporation_killmails.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-killmails.read_killmails.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-location.read_location.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-location.read_online.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-location.read_ship_type.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-mail.organize_mail.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-mail.read_mail.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-mail.send_mail.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-markets.read_character_orders.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-markets.read_corporation_orders.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-markets.structure_markets.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-planets.manage_planets.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-planets.read_customs_offices.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-search.search_structures.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-skills.read_skillqueue.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-skills.read_skills.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-ui.open_window.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-ui.write_waypoint.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;esi-universe.read_structures.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-wallet.read_character_wallet.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-wallet.read_corporation_wallet.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;esi-wallet.read_corporation_wallets.v1&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;publicData&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.create_coalition&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.track_coalition&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.create_dyn_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.create_group&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.create_per_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.create_use_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.create_user&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_coalition&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_crash_report&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_dyn_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_group&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_per_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_use_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.delete_user&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.discord.auth&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.discord.read_user&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_coalition&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_crash_report&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_dyn_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_group&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_own_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_per_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_use_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_user&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_authorized_to_login&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_0&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_1&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_10&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_2&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_3&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_4&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_5&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_6&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_7&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_8&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
-    <span class="s1">&#39;sni.set_clearance_level_9&#39;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.teamspeak.auth&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.teamspeak.read_user&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.teamspeak.update_group_mapping&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.update_coalition&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.update_dyn_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.update_group&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.update_per_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.update_use_token&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.update_user&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
-    <span class="s1">&#39;sni.system.read_configuration&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.system.read_jobs&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.system.submit_job&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s1">&#39;sni.fetch_corporation&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
-    <span class="s1">&#39;sni.track_corporation&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_corporation&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.fetch_alliance&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
-    <span class="s1">&#39;sni.track_alliance&#39;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s1">&#39;sni.read_alliance&#39;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-alliances.read_contacts.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-assets.read_assets.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-assets.read_corporation_assets.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-bookmarks.read_character_bookmarks.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-bookmarks.read_corporation_bookmarks.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-calendar.read_calendar_events.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-calendar.respond_calendar_events.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_agents_research.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_blueprints.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_chat_channels.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_contacts.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_corporation_roles.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_fatigue.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_fw_stats.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_loyalty.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_medals.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_notifications.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_opportunities.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_standings.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.read_titles.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characters.write_contacts.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-characterstats.read.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-clones.read_clones.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-clones.read_implants.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-contracts.read_character_contracts.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-contracts.read_corporation_contracts.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_blueprints.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_contacts.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_container_logs.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_corporation_membership.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_divisions.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_facilities.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_fw_stats.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_medals.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_standings.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_starbases.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_structures.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.read_titles.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-corporations.track_members.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-fittings.read_fittings.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-fittings.write_fittings.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-fleets.read_fleet.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-fleets.write_fleet.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-industry.read_character_jobs.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-industry.read_character_mining.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-industry.read_corporation_jobs.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-industry.read_corporation_mining.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-killmails.read_corporation_killmails.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-killmails.read_killmails.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-location.read_location.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-location.read_online.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-location.read_ship_type.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-mail.organize_mail.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-mail.read_mail.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-mail.send_mail.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-markets.read_character_orders.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-markets.read_corporation_orders.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-markets.structure_markets.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-planets.manage_planets.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-planets.read_customs_offices.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-search.search_structures.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-skills.read_skillqueue.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-skills.read_skills.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-ui.open_window.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-ui.write_waypoint.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;esi-universe.read_structures.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-wallet.read_character_wallet.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-wallet.read_corporation_wallet.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;esi-wallet.read_corporation_wallets.v1&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;publicData&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_coalition&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.track_coalition&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_dyn_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_group&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_per_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_use_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_user&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_coalition&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_crash_report&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_dyn_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_group&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_per_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_use_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.delete_user&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.discord.auth&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.discord.read_user&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_coalition&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_crash_report&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_dyn_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_group&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_own_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_per_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_use_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_user&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_authorized_to_login&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_0&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_1&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_10&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_2&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_3&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_4&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_5&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_6&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_7&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_8&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
+    <span class="s2">&quot;sni.set_clearance_level_9&quot;</span><span class="p">:</span> <span class="n">ClearanceModificationScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.teamspeak.auth&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.teamspeak.read_user&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.teamspeak.update_group_mapping&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.update_coalition&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.update_dyn_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.update_group&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.update_per_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.update_use_token&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.update_user&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+    <span class="s2">&quot;sni.system.read_configuration&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.system.read_jobs&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.system.submit_job&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">&quot;sni.fetch_corporation&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
+    <span class="s2">&quot;sni.track_corporation&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_corporation&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.fetch_alliance&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
+    <span class="s2">&quot;sni.track_alliance&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_alliance&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
 <span class="p">}</span>
 
 
@@ -306,7 +311,12 @@
 <span class="sd">    Tells wether two users are in the same alliance. Users that have no</span>
 <span class="sd">    alliance are considered in a different alliance as everyone else.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span> <span class="o">==</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">alliance</span></div>
 
@@ -335,9 +345,9 @@
     <span class="k">return</span> <span class="n">user1</span><span class="o">.</span><span class="n">corporation</span> <span class="o">==</span> <span class="n">user2</span><span class="o">.</span><span class="n">corporation</span></div>
 
 
-<div class="viewcode-block" id="assert_has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.assert_has_clearance">[docs]</a><span class="k">def</span> <span class="nf">assert_has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
-                         <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                         <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="assert_has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.assert_has_clearance">[docs]</a><span class="k">def</span> <span class="nf">assert_has_clearance</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Like :meth:`sni.uac.clearance.has_clearance` but raises a</span>
 <span class="sd">    :class:`PermissionError` if the result is ``False``.</span>
@@ -364,9 +374,9 @@
     <span class="k">return</span> <span class="mi">7</span></div>
 
 
-<div class="viewcode-block" id="has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.has_clearance">[docs]</a><span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
-                  <span class="n">scope_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                  <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="has_clearance"><a class="viewcode-back" href="../../../uac.html#sni.uac.clearance.has_clearance">[docs]</a><span class="k">def</span> <span class="nf">has_clearance</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">scope_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check wether the *source* user has sufficient clearance to perform a given</span>
 <span class="sd">    action (or *scope*) against the *target* user.</span>
@@ -385,11 +395,11 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">has_clearance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="n">cache_set</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s1">&#39;Access </span><span class="si">%s</span><span class="s1"> --[</span><span class="si">%s</span><span class="s1">]--&gt; </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Access </span><span class="si">%s</span><span class="s2"> --[</span><span class="si">%s</span><span class="s2">]--&gt; </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">source</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
         <span class="n">scope_name</span><span class="p">,</span>
-        <span class="n">target</span><span class="o">.</span><span class="n">character_name</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;granted&#39;</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="s1">&#39;denied&#39;</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">character_name</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;granted&quot;</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="s2">&quot;denied&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
@@ -404,7 +414,9 @@
 <span class="sd">    10, then a level of 10 is applied (so that superusers are preserved no</span>
 <span class="sd">    matter what). Otherwise, the user&#39;s clearance level is set to 0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="k">elif</span> <span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_alliance</span><span class="p">():</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">4</span>
@@ -412,8 +424,11 @@
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Reset clearance level of </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-                  <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Reset clearance level of </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 </pre></div>

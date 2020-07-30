@@ -56,17 +56,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a pending authentication challenge.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">code</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this document&quot;&quot;&quot;</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;indexes&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;created_on&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">],</span>
+        <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;created_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,},],</span>
     <span class="p">}</span></div>
 
 
@@ -79,8 +75,11 @@
     <span class="n">usr</span> <span class="o">=</span> <span class="n">challenge</span><span class="o">.</span><span class="n">user</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">discord_user_id</span> <span class="o">=</span> <span class="n">discord_user</span><span class="o">.</span><span class="n">id</span>
     <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Authenticated Discord user </span><span class="si">%d</span><span class="s1"> to user </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">discord_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                 <span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Authenticated Discord user </span><span class="si">%d</span><span class="s2"> to user </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">discord_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">usr</span><span class="o">.</span><span class="n">tickered_name</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">challenge</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 
@@ -116,11 +115,11 @@
 <span class="sd">    3. The Discord client is notified, and check this code against the pending</span>
 <span class="sd">       Discort authentication challenges.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting Discord authentication challenge for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Starting Discord authentication challenge for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span>
+    <span class="p">)</span>
     <span class="n">challenge</span> <span class="o">=</span> <span class="n">DiscordAuthenticationChallenge</span><span class="p">(</span>
-        <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span>
-        <span class="n">code</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">random_code</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">random_code</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
     <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">challenge</span><span class="o">.</span><span class="n">code</span></div>
 </pre></div>

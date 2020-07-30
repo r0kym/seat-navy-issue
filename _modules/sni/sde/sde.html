@@ -57,9 +57,9 @@
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">EsiObjectName</span>
 
-<span class="n">SDE_ROOT_URL</span> <span class="o">=</span> <span class="s1">&#39;https://www.fuzzwork.co.uk/dump/&#39;</span>
-<span class="n">SDE_SQLITE_MD5_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s1">&#39;sqlite-latest.sqlite.bz2.md5&#39;</span>
-<span class="n">SDE_SQLITE_DUMP_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s1">&#39;sqlite-latest.sqlite.bz2&#39;</span>
+<span class="n">SDE_ROOT_URL</span> <span class="o">=</span> <span class="s2">&quot;https://www.fuzzwork.co.uk/dump/&quot;</span>
+<span class="n">SDE_SQLITE_MD5_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s2">&quot;sqlite-latest.sqlite.bz2.md5&quot;</span>
+<span class="n">SDE_SQLITE_DUMP_URL</span> <span class="o">=</span> <span class="n">SDE_ROOT_URL</span> <span class="o">+</span> <span class="s2">&quot;sqlite-latest.sqlite.bz2&quot;</span>
 
 
 <div class="viewcode-block" id="download_latest_sde"><a class="viewcode-back" href="../../../sde.html#sni.sde.sde.download_latest_sde">[docs]</a><span class="k">def</span> <span class="nf">download_latest_sde</span><span class="p">(</span><span class="n">dump_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -69,20 +69,21 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        The MD5 checksum of the dump (before decompression).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Downloading and decompressing SDE Sqlite dump to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                  <span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Downloading and decompressing SDE Sqlite dump to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dump_path</span>
+    <span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SDE_SQLITE_DUMP_URL</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
     <span class="n">decompressor</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2Decompressor</span><span class="p">()</span>
     <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>  <span class="c1"># nosec</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="s1">&#39;wb+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dump</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="s2">&quot;wb+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dump</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
             <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="n">decompressed_data</span> <span class="o">=</span> <span class="n">decompressor</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">decompressed_data</span><span class="p">:</span>
                 <span class="n">dump</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">decompressed_data</span><span class="p">)</span>
     <span class="n">md5</span> <span class="o">=</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Downloaded latest SDE with hash </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloaded latest SDE with hash </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">md5</span></div>
 
 
@@ -92,7 +93,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SDE_SQLITE_MD5_URL</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-    <span class="n">md5</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">md5</span></div>
 
 
@@ -115,16 +116,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the ``invCategories`` table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table invCategories&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invCategories;&#39;</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing SDE table invCategories&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM invCategories;&quot;</span><span class="p">):</span>
         <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">],</span>
-            <span class="n">field_names</span><span class="o">=</span><span class="s1">&#39;category_id&#39;</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;categoryID&quot;</span><span class="p">],</span> <span class="n">field_names</span><span class="o">=</span><span class="s2">&quot;category_id&quot;</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set___version</span><span class="o">=</span><span class="n">EsiObjectName</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
-            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryID&#39;</span><span class="p">],</span>
-            <span class="n">set__field_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">],</span>
-            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;categoryName&#39;</span><span class="p">],</span>
+            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;categoryID&quot;</span><span class="p">],</span>
+            <span class="n">set__field_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;category_id&quot;</span><span class="p">],</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;categoryName&quot;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -133,16 +133,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the ``invGroups`` table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table invGroups&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invGroups;&#39;</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing SDE table invGroups&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM invGroups;&quot;</span><span class="p">):</span>
         <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">],</span>
-            <span class="n">field_names</span><span class="o">=</span><span class="s1">&#39;group_id&#39;</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;groupID&quot;</span><span class="p">],</span> <span class="n">field_names</span><span class="o">=</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set___version</span><span class="o">=</span><span class="n">EsiObjectName</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
-            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupID&#39;</span><span class="p">],</span>
-            <span class="n">set__field_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;group_id&#39;</span><span class="p">],</span>
-            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;groupName&#39;</span><span class="p">],</span>
+            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;groupID&quot;</span><span class="p">],</span>
+            <span class="n">set__field_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;group_id&quot;</span><span class="p">],</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;groupName&quot;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -151,21 +150,20 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the ``invTypes`` table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table invTypes&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM invTypes;&#39;</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing SDE table invTypes&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM invTypes;&quot;</span><span class="p">):</span>
         <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeID&#39;</span><span class="p">],</span>
-            <span class="n">field_names</span><span class="o">=</span><span class="s1">&#39;type_id&#39;</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;typeID&quot;</span><span class="p">],</span> <span class="n">field_names</span><span class="o">=</span><span class="s2">&quot;type_id&quot;</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set___version</span><span class="o">=</span><span class="n">EsiObjectName</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
-            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeID&#39;</span><span class="p">],</span>
+            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;typeID&quot;</span><span class="p">],</span>
             <span class="n">set__field_names</span><span class="o">=</span><span class="p">[</span>
-                <span class="s1">&#39;item_type_id&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ship_type_id&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;type_id&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;weapon_type_id&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;item_type_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ship_type_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;weapon_type_id&quot;</span><span class="p">,</span>
             <span class="p">],</span>
-            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;typeName&#39;</span><span class="p">],</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;typeName&quot;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -174,16 +172,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the ``mapRegions`` table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table mapRegions&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM mapRegions;&#39;</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing SDE table mapRegions&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM mapRegions;&quot;</span><span class="p">):</span>
         <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionID&#39;</span><span class="p">],</span>
-            <span class="n">field_names</span><span class="o">=</span><span class="s1">&#39;region_id&#39;</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;regionID&quot;</span><span class="p">],</span> <span class="n">field_names</span><span class="o">=</span><span class="s2">&quot;region_id&quot;</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set___version</span><span class="o">=</span><span class="n">EsiObjectName</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
-            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionID&#39;</span><span class="p">],</span>
-            <span class="n">set__field_names</span><span class="o">=</span><span class="s1">&#39;region_id&#39;</span><span class="p">,</span>
-            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;regionName&#39;</span><span class="p">],</span>
+            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;regionID&quot;</span><span class="p">],</span>
+            <span class="n">set__field_names</span><span class="o">=</span><span class="s2">&quot;region_id&quot;</span><span class="p">,</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;regionName&quot;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -192,16 +189,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the ``mapConstellations`` table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table mapConstellations&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM mapConstellations;&#39;</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing SDE table mapConstellations&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM mapConstellations;&quot;</span><span class="p">):</span>
         <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationID&#39;</span><span class="p">],</span>
-            <span class="n">field_names</span><span class="o">=</span><span class="s1">&#39;constellation_id&#39;</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;constellationID&quot;</span><span class="p">],</span> <span class="n">field_names</span><span class="o">=</span><span class="s2">&quot;constellation_id&quot;</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set___version</span><span class="o">=</span><span class="n">EsiObjectName</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
-            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationID&#39;</span><span class="p">],</span>
-            <span class="n">set__field_names</span><span class="o">=</span><span class="s1">&#39;constellation_id&#39;</span><span class="p">,</span>
-            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;constellationName&#39;</span><span class="p">],</span>
+            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;constellationID&quot;</span><span class="p">],</span>
+            <span class="n">set__field_names</span><span class="o">=</span><span class="s2">&quot;constellation_id&quot;</span><span class="p">,</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;constellationName&quot;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -210,16 +206,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Imports the ``mapSolarSystems`` table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Importing SDE table mapSolarSystems&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM mapSolarSystems;&#39;</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing SDE table mapSolarSystems&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM mapSolarSystems;&quot;</span><span class="p">):</span>
         <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;solarSystemID&#39;</span><span class="p">],</span>
-            <span class="n">field_names</span><span class="o">=</span><span class="s1">&#39;solar_system_id&#39;</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;solarSystemID&quot;</span><span class="p">],</span> <span class="n">field_names</span><span class="o">=</span><span class="s2">&quot;solar_system_id&quot;</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">set___version</span><span class="o">=</span><span class="n">EsiObjectName</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
-            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;solarSystemID&#39;</span><span class="p">],</span>
-            <span class="n">set__field_names</span><span class="o">=</span><span class="s1">&#39;solar_system_id&#39;</span><span class="p">,</span>
-            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;solarSystemName&#39;</span><span class="p">],</span>
+            <span class="n">set__field_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;solarSystemID&quot;</span><span class="p">],</span>
+            <span class="n">set__field_names</span><span class="o">=</span><span class="s2">&quot;solar_system_id&quot;</span><span class="p">,</span>
+            <span class="n">set__name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;solarSystemName&quot;</span><span class="p">],</span>
             <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -229,15 +224,14 @@
 <span class="sd">    Fetches a document from the ``esi_object_name`` collection. See</span>
 <span class="sd">    :class:`sni.sde.models.EsiObjectName`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cache_key</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sde&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">]</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sde&quot;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">]</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">cache_key</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-                <span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">,</span>
-                <span class="n">field_names</span><span class="o">=</span><span class="n">field_name</span><span class="p">,</span>
+                <span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="n">field_name</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">query_set</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>

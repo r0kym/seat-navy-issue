@@ -65,7 +65,7 @@
     <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
         <span class="n">set__authorized_to_login</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">set__character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">set__character_name</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
+        <span class="n">set__character_name</span><span class="o">=</span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
         <span class="n">set__clearance_level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span></div>
@@ -77,8 +77,8 @@
 <span class="sd">    owner.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;superusers&#39;</span>
-    <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="s1">&#39;superusers&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">group_name</span> <span class="o">=</span> <span class="s2">&quot;superusers&quot;</span>
+    <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="s2">&quot;superusers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
         <span class="n">add_to_set__members</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
         <span class="n">set__authorized_to_login</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">set__description</span><span class="o">=</span><span class="s2">&quot;Superuser group&quot;</span><span class="p">,</span>
@@ -116,23 +116,24 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;alliance&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">Alliance</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Migrating collection &quot;alliance&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
+    <span class="p">)</span>
 
     <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Set authorized_to_login field to None</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;authorized_to_login&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># v2 to v3</span>
     <span class="c1"># Set mandatory_esi_scopes to []</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;mandatory_esi_scopes&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
@@ -149,37 +150,31 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;coalition&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">Coalition</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Migrating collection &quot;coalition&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
+    <span class="p">)</span>
 
     <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Set name field to coalition_name</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
-        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;$rename&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;coalition_name&#39;</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">2</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$rename&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;coalition_name&quot;</span><span class="p">},</span> <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},},</span>
     <span class="p">)</span>
 
     <span class="c1"># v2 to v3</span>
     <span class="c1"># Set authorized_to_login field to None</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;authorized_to_login&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># v3 to v4</span>
     <span class="c1"># Set mandatory_esi_scopes to []</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;mandatory_esi_scopes&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
@@ -196,23 +191,24 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;corporation&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-                 <span class="n">Corporation</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Migrating collection &quot;corporation&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
+    <span class="p">)</span>
 
     <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Set authorized_to_login field to None</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;authorized_to_login&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># v2 to v3</span>
     <span class="c1"># Set mandatory_esi_scopes to []</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;mandatory_esi_scopes&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;mandatory_esi_scopes&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
@@ -235,20 +231,13 @@
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Rename name field to group_name</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
-        <span class="p">{</span><span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;$rename&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;group_name&#39;</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">2</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$rename&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;group_name&quot;</span><span class="p">},</span> <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},},</span>
     <span class="p">)</span>
 
     <span class="c1"># v2 to v3</span>
@@ -258,29 +247,26 @@
     <span class="c1"># * map_to_discord exists (if not, sets it to True)</span>
     <span class="c1"># * map_to_teamspeak exists (if not, sets it to True)</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;superusers&quot;</span><span class="p">,},</span>
         <span class="p">{</span>
-            <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s1">&#39;group_name&#39;</span><span class="p">:</span> <span class="s1">&#39;superusers&#39;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;_version&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                <span class="s1">&#39;discord_role_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;map_to_discord&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                <span class="s1">&#39;map_to_teamspeak&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                <span class="s1">&#39;teamspeak_sgid&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;discord_role_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;map_to_discord&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;map_to_teamspeak&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;teamspeak_sgid&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;discord_role_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;teamspeak_sgid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;map_to_discord&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;map_to_teamspeak&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;discord_role_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;teamspeak_sgid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;map_to_discord&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;map_to_teamspeak&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># v3 to v4</span>
     <span class="c1"># Set authorized_to_login field to None</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;authorized_to_login&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
@@ -303,17 +289,17 @@
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;_version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># v1 to v2</span>
     <span class="c1"># Add discord_user_id and teamspeak_cldbid fields, and set them to None</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;discord_user_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;teamspeak_cldbid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;discord_user_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;teamspeak_cldbid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># v2 to v3</span>
     <span class="c1"># Set authorized_to_login field to None</span>
-    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s1">&#39;authorized_to_login&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;authorized_to_login&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>

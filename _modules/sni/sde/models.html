@@ -58,7 +58,7 @@
     <span class="n">expires_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;When this document expires, if applicable&quot;&quot;&quot;</span>
 
-    <span class="n">field_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique_with</span><span class="o">=</span><span class="s1">&#39;field_names&#39;</span><span class="p">)</span>
+    <span class="n">field_id</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">unique_with</span><span class="o">=</span><span class="s2">&quot;field_names&quot;</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;ID&quot;&quot;&quot;</span>
 
     <span class="n">field_names</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">())</span>
@@ -69,13 +69,10 @@
     <span class="sd">&quot;&quot;&quot;Name&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s1">&#39;field_id&#39;</span><span class="p">,</span>
-            <span class="p">(</span><span class="s1">&#39;field_names&#39;</span><span class="p">,</span> <span class="s1">&#39;field_id&#39;</span><span class="p">),</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;expires_on&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;expireAfterSeconds&#39;</span><span class="p">:</span> <span class="mi">0</span>
-            <span class="p">},</span>
+        <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;field_id&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;field_names&quot;</span><span class="p">,</span> <span class="s2">&quot;field_id&quot;</span><span class="p">),</span>
+            <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;expires_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
         <span class="p">],</span>
     <span class="p">}</span></div>
 </pre></div>

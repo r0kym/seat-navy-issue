@@ -46,6 +46,7 @@
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
+<span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
@@ -53,6 +54,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Alliance</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_alliance</span>
+<span class="kn">from</span> <span class="nn">sni.user.jobs</span> <span class="kn">import</span> <span class="n">ensure_alliance_members</span>
 
 <span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="n">GetTrackingOut</span>
 
@@ -63,11 +65,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Short alliance description</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">alliance_name</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="GetAllianceShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.GetAllianceShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GetAllianceShortOut&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetAllianceShortOut&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts an instance of :class:`sni.user.models.Alliance` to</span>
 <span class="sd">        :class:`sni.api.routers.alliance.GetAllianceShortOut`</span>
@@ -79,46 +82,44 @@
 
 
 <div class="viewcode-block" id="get_alliances"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.get_alliances">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetAllianceShortOut</span><span class="p">],</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the list of alliances&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get the list of alliances&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_alliances</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span> <span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_alliances</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the list of alliances registered in this instance. Requires a</span>
 <span class="sd">    clearance level of 0 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.read_alliance&#39;</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_alliance&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">GetAllianceShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">alliance</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">alliance</span> <span class="ow">in</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;alliance_name&quot;</span><span class="p">)</span>
     <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="post_alliance"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.post_alliance">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{alliance_id}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Manually fetch an alliance from the ESI&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{alliance_id}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Manually fetch an alliance from the ESI&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">post_alliance</span><span class="p">(</span>
-        <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Manually fetches an alliance from the ESI. Requires a clearance level of</span>
 <span class="sd">    8 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.fetch_alliance&#39;</span><span class="p">)</span>
-    <span class="n">ensure_alliance</span><span class="p">(</span><span class="n">alliance_id</span><span class="p">)</span></div>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.fetch_alliance&quot;</span><span class="p">)</span>
+    <span class="n">alliance</span> <span class="o">=</span> <span class="n">ensure_alliance</span><span class="p">(</span><span class="n">alliance_id</span><span class="p">)</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_alliance_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">alliance</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="get_alliance_tracking"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.get_alliance_tracking">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s1">&#39;/</span><span class="si">{alliance_id}</span><span class="s1">/tracking&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;/</span><span class="si">{alliance_id}</span><span class="s2">/tracking&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">GetTrackingOut</span><span class="p">,</span>
-    <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Alliance tracking&#39;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Alliance tracking&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_alliance_tracking</span><span class="p">(</span>
-        <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+    <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reports which member (of a given alliance) have a valid refresh token</span>
@@ -126,7 +127,7 @@
 <span class="sd">    having authority over this alliance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s1">&#39;sni.track_alliance&#39;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">ceo</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.track_alliance&quot;</span><span class="p">,</span> <span class="n">alliance</span><span class="o">.</span><span class="n">ceo</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">GetTrackingOut</span><span class="o">.</span><span class="n">from_user_iterator</span><span class="p">(</span><span class="n">alliance</span><span class="o">.</span><span class="n">user_iterator</span><span class="p">())</span></div>
 </pre></div>
 

@@ -54,7 +54,7 @@
 <span class="sd">    Called when the Discord client has been disconnected. Executes cleanup</span>
 <span class="sd">    tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Discord client disconnected&#39;</span><span class="p">)</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Discord client disconnected&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="on_ready"><a class="viewcode-back" href="../../../discord.html#sni.discord.events.on_ready">[docs]</a><span class="nd">@bot</span><span class="o">.</span><span class="n">event</span>
@@ -64,11 +64,10 @@
 <span class="sd">    scheduler.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">change_presence</span><span class="p">(</span>
-        <span class="n">status</span><span class="o">=</span><span class="n">discord</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">online</span><span class="p">,</span>
-        <span class="n">activity</span><span class="o">=</span><span class="n">discord</span><span class="o">.</span><span class="n">Game</span><span class="p">(</span><span class="s1">&#39;EVE Online&#39;</span><span class="p">),</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">discord</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">online</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="n">discord</span><span class="o">.</span><span class="n">Game</span><span class="p">(</span><span class="s2">&quot;EVE Online&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Discord client online&#39;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">log</span><span class="p">(</span><span class="s1">&#39;SeAT Navy Issue online o7&#39;</span><span class="p">)</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Discord client online&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">log</span><span class="p">(</span><span class="s2">&quot;SeAT Navy Issue online o7&quot;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

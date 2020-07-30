@@ -59,6 +59,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic router configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">include</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span>
     <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span>
@@ -68,77 +69,76 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds the current router to the FastAPI application.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding router </span><span class="si">%s</span><span class="s1"> at prefix </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">,</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Adding router </span><span class="si">%s</span><span class="s2"> at prefix </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="p">)</span>
         <span class="n">application</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span>
-            <span class="n">object_from_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">),</span>
-            <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span>
-            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="n">object_from_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">),</span> <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 
 
 <span class="n">ROUTERS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RouterConfig</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.alliance:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/alliance&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Alliance management&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.alliance:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/alliance&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alliance management&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.callback:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/callback&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Callbacks&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.callback:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/callback&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Callbacks&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.coalition:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/coalition&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Coalition management&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.coalition:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/coalition&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Coalition management&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.corporation:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/corporation&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Corporation management&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.corporation:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/corporation&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Corporation management&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.crash:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/crash&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Crash reports&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.crash:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/crash&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Crash reports&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.discord:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/discord&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Discord&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.discord:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/discord&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Discord&quot;</span><span class="p">]},</span>
         <span class="n">include</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">discord</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.esi:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/esi&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ESI&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.esi:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/esi&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ESI&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.group:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/group&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Group management&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.group:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/group&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Group management&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.teamspeak:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/teamspeak&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Teamspeak&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.teamspeak:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/teamspeak&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Teamspeak&quot;</span><span class="p">]},</span>
         <span class="n">include</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">enabled</span><span class="p">,</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.system:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/system&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;System administration&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.system:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/system&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;System administration&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.token:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/token&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Authentication &amp; tokens&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.token:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/token&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Authentication &amp; tokens&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
     <span class="n">RouterConfig</span><span class="p">(</span>
-        <span class="n">router</span><span class="o">=</span><span class="s1">&#39;sni.api.routers.user:router&#39;</span><span class="p">,</span>
-        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/user&#39;</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;User management&#39;</span><span class="p">]},</span>
+        <span class="n">router</span><span class="o">=</span><span class="s2">&quot;sni.api.routers.user:router&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/user&quot;</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;User management&quot;</span><span class="p">]},</span>
     <span class="p">),</span>
 <span class="p">]</span>
 
@@ -176,63 +176,60 @@
 <span class="sd">    :meth:`sni.api.server.start_api_server`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">log_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;()&#39;</span><span class="p">:</span> <span class="s1">&#39;uvicorn.logging.DefaultFormatter&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;fmt&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> [</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;use_colors&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;disable_existing_loggers&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;formatters&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;()&quot;</span><span class="p">:</span> <span class="s2">&quot;uvicorn.logging.DefaultFormatter&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fmt&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;use_colors&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;()&#39;</span><span class="p">:</span>
-                <span class="s1">&#39;uvicorn.logging.AccessFormatter&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;fmt&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%(levelprefix)s</span><span class="s1"> </span><span class="si">%(client_addr)s</span><span class="s1"> - &quot;</span><span class="si">%(request_line)s</span><span class="s1">&quot; &#39;</span>
-                        <span class="s1">&#39;</span><span class="si">%(status_code)s</span><span class="s1">&#39;</span><span class="p">),</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stderr&#39;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;access&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stdout&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;access&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;()&quot;</span><span class="p">:</span> <span class="s2">&quot;uvicorn.logging.AccessFormatter&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fmt&quot;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">%(levelprefix)s</span><span class="s1"> </span><span class="si">%(client_addr)s</span><span class="s1"> - &quot;</span><span class="si">%(request_line)s</span><span class="s1">&quot; &#39;</span>
+                    <span class="s2">&quot;</span><span class="si">%(status_code)s</span><span class="s2">&quot;</span>
+                <span class="p">),</span>
             <span class="p">},</span>
         <span class="p">},</span>
-        <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+        <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;ext://sys.stderr&quot;</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s1">&#39;uvicorn.error&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;access&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;access&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;ext://sys.stdout&quot;</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s1">&#39;uvicorn.access&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">],</span>
-                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
-                <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;loggers&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;uvicorn.error&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),},</span>
+            <span class="s2">&quot;uvicorn.access&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;access&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">},</span>
     <span class="p">}</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s1">&#39;Starting API server on </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+        <span class="s2">&quot;Starting API server on </span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="s1">&#39;sni.api.server:app&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;sni.api.server:app&quot;</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">),</span>
             <span class="n">log_config</span><span class="o">=</span><span class="n">log_config</span><span class="p">,</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">logging_level</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API server stopped&#39;</span><span class="p">)</span></div>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;API server stopped&quot;</span><span class="p">)</span></div>
 
 
 <span class="n">add_included_routers</span><span class="p">()</span>
