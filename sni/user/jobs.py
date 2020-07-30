@@ -85,7 +85,10 @@ def update_alliance_from_esi(alliance: Alliance):
     """
     logging.debug("Updating properties of alliance %s", alliance.alliance_name)
     data = esi_get(f"latest/alliances/{alliance.alliance_id}").data
-    alliance.executor_corporation_id = data["executor_corporation_id"]
+    old_executor = alliance.executor
+    alliance.executor_corporation_id = int(data["executor_corporation_id"])
+    if old_executor.corporation_id != alliance.executor_corporation_id:
+        reset_clearance(old_executor.ceo, save=True)
     alliance.save()
 
 
@@ -152,30 +155,6 @@ def update_corporation_autogroups():
         scheduler.add_job(update_corporation_autogroup, args=(corporation,))
 
 
-def update_corporation_from_esi(corporation: Corporation):
-    """
-    Updates a corporation from the ESI.
-    """
-    logging.debug(
-        "Updating properties of corporation %s", corporation.corporation_name
-    )
-    data = esi_get(f"latest/corporations/{corporation.corporation_id}").data
-    corporation.alliance = (
-        ensure_alliance(data["alliance_id"]) if "alliance_id" in data else None
-    )
-    corporation.ceo_character_id = data["ceo_id"]
-    corporation.save()
-
-
-@scheduler.scheduled_job("interval", days=1)
-def update_corporations_from_esi():
-    """
-    Updates the corporations properties from the ESI.
-    """
-    for corporation in Corporation.objects:
-        scheduler.add_job(update_corporation_from_esi, args=(corporation,))
-
-
 def ensure_corporation_members(corporation: Corporation):
     """
     Ensure that all members of a corporation exist in the database.
@@ -227,7 +206,7 @@ def ensure_corporations_members():
         scheduler.add_job(ensure_corporation_members, args=(corporation,))
 
 
-def update_corporation(corporation: Corporation):
+def update_corporation_from_esi(corporation: Corporation):
     """
     Updates a corporation properties from the ESI.
     """
@@ -238,17 +217,20 @@ def update_corporation(corporation: Corporation):
     corporation.alliance = (
         ensure_alliance(data["alliance_id"]) if "alliance_id" in data else None
     )
+    old_ceo = corporation.ceo
     corporation.ceo_character_id = int(data["ceo_id"])
+    if old_ceo.character_id != corporation.ceo_character_id:
+        reset_clearance(old_ceo, save=True)
     corporation.save()
 
 
 @scheduler.scheduled_job("interval", days=1)
-def update_corporations():
+def update_corporations_from_esi():
     """
     Updates corporations properties. (yes)
     """
     for corporation in Corporation.objects:
-        scheduler.add_job(update_corporation, args=(corporation,))
+        scheduler.add_job(update_corporation_from_esi, args=(corporation,))
 
 
 def update_user_autogroup(usr: User):

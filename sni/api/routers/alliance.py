@@ -7,6 +7,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
+from sni.scheduler import scheduler
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
     from_authotization_header_nondyn,
@@ -14,6 +15,7 @@ from sni.uac.token import (
 )
 from sni.user.models import Alliance
 from sni.user.user import ensure_alliance
+from sni.user.jobs import ensure_alliance_members
 
 from .corporation import GetTrackingOut
 
@@ -68,7 +70,8 @@ def post_alliance(
     8 or more.
     """
     assert_has_clearance(tkn.owner, "sni.fetch_alliance")
-    ensure_alliance(alliance_id)
+    alliance = ensure_alliance(alliance_id)
+    scheduler.add_job(ensure_alliance_members, args=(alliance,))
 
 
 @router.get(

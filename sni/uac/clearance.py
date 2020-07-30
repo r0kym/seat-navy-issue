@@ -375,7 +375,9 @@ def reset_clearance(usr: User, save: bool = False):
     10, then a level of 10 is applied (so that superusers are preserved no
     matter what). Otherwise, the user's clearance level is set to 0.
     """
-    if usr.character_id == 0 or usr.clearance_level == 10:
+    if usr.clearance_level >= 9:
+        return
+    if usr.character_id == 0:
         usr.clearance_level = 10
     elif usr.is_ceo_of_alliance():
         usr.clearance_level = 4

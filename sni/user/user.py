@@ -17,7 +17,7 @@ def ensure_alliance(alliance_id: int) -> Alliance:
     Ensures that an alliance exists, and returns it. It it does not, creates
     it by fetching relevant data from the ESI.
     """
-    alliance = Alliance.objects(alliance_id=alliance_id).first()
+    alliance: Alliance = Alliance.objects(alliance_id=alliance_id).first()
     if alliance is None:
         data = esi_get(f"latest/alliances/{alliance_id}").data
         alliance = Alliance(
@@ -26,6 +26,7 @@ def ensure_alliance(alliance_id: int) -> Alliance:
             executor_corporation_id=int(data["executor_corporation_id"]),
             ticker=data["ticker"],
         ).save()
+        ensure_corporation(alliance.executor_corporation_id)
     return alliance
 
 
@@ -45,7 +46,9 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     Ensures that a corporation exists, and returns it. It it does not, creates
     it by fetching relevant data from the ESI.
     """
-    corporation = Corporation.objects(corporation_id=corporation_id).first()
+    corporation: Corporation = Corporation.objects(
+        corporation_id=corporation_id
+    ).first()
     if corporation is None:
         data = esi_get(f"latest/corporations/{corporation_id}").data
         alliance = (
@@ -60,6 +63,7 @@ def ensure_corporation(corporation_id: int) -> Corporation:
             corporation_name=data["name"],
             ticker=data["ticker"],
         ).save()
+        ensure_user(corporation.ceo_character_id)
     return corporation
 
 
