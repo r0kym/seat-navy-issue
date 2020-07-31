@@ -98,6 +98,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="Alliance.cumulated_mandatory_esi_scopes"><a class="viewcode-back" href="../../../user.html#sni.user.models.Alliance.cumulated_mandatory_esi_scopes">[docs]</a>    <span class="k">def</span> <span class="nf">cumulated_mandatory_esi_scopes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list (although it really is a set) of all the ESI scopes</span>
+<span class="sd">        required by this alliance, and all the coalitions this alliance belongs</span>
+<span class="sd">        to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coalition_scopes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coalitions</span><span class="p">():</span>
+            <span class="n">coalition_scopes</span> <span class="o">+=</span> <span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="o">+</span> <span class="n">coalition_scopes</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">executor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Corporation&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -280,6 +291,32 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ceo_character_id</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Corporation.coalitions"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.coalitions">[docs]</a>    <span class="k">def</span> <span class="nf">coalitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Coalition</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of coalition this user is part of.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Corporation.cumulated_mandatory_esi_scopes"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.cumulated_mandatory_esi_scopes">[docs]</a>    <span class="k">def</span> <span class="nf">cumulated_mandatory_esi_scopes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list (although it really is a set) of all the ESI scopes</span>
+<span class="sd">        required by this corporation, alliance, and all the coalitions this</span>
+<span class="sd">        corporation is part of.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alliance_scopes</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="n">coalition_scopes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coalitions</span><span class="p">():</span>
+            <span class="n">coalition_scopes</span> <span class="o">+=</span> <span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="o">+</span> <span class="n">alliance_scopes</span> <span class="o">+</span> <span class="n">coalition_scopes</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="Corporation.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the member list of this corporation, according to the database.</span>
@@ -428,27 +465,16 @@
 <span class="sd">        required by the corporation, alliance, and all the coalitions the user</span>
 <span class="sd">        is part of.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">corporation_scopes</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="p">[]</span>
-        <span class="p">)</span>
-        <span class="n">alliance_scopes</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="p">[]</span>
-        <span class="p">)</span>
-        <span class="n">coalition_scopes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coalitions</span><span class="p">():</span>
-            <span class="n">coalition_scopes</span> <span class="o">+=</span> <span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
-        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">corporation_scopes</span> <span class="o">+</span> <span class="n">alliance_scopes</span> <span class="o">+</span> <span class="n">coalition_scopes</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="User.coalitions"><a class="viewcode-back" href="../../../user.html#sni.user.models.User.coalitions">[docs]</a>    <span class="k">def</span> <span class="nf">coalitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Coalition</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the list of coalition this user is part of.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation</span><span class="o">.</span><span class="n">coalitions</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 
 <div class="viewcode-block" id="User.is_ceo_of_alliance"><a class="viewcode-back" href="../../../user.html#sni.user.models.User.is_ceo_of_alliance">[docs]</a>    <span class="k">def</span> <span class="nf">is_ceo_of_alliance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

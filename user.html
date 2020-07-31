@@ -134,6 +134,14 @@ creates the character’s corporation and alliance (if applicable).</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="sni.user.models.Alliance.cumulated_mandatory_esi_scopes">
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set[str]<a class="reference internal" href="_modules/sni/user/models.html#Alliance.cumulated_mandatory_esi_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Alliance.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list (although it really is a set) of all the ESI scopes
+required by this alliance, and all the coalitions this alliance belongs
+to.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="sni.user.models.Alliance.executor">
 <em class="property">property </em><code class="sig-name descname">executor</code><a class="headerlink" href="#sni.user.models.Alliance.executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the alliance’s executor corporation as a
@@ -295,6 +303,12 @@ to be created manually. An alliance can be part of multiple coalitions.</p>
 <dd><p>Character id (according to the ESI) of the CEO. See also <a class="reference internal" href="#sni.user.models.Corporation.ceo" title="sni.user.models.Corporation.ceo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.models.Corporation.ceo()</span></code></a>.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="sni.user.models.Corporation.coalitions">
+<code class="sig-name descname">coalitions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.Coalition]<a class="reference internal" href="_modules/sni/user/models.html#Corporation.coalitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation.coalitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of coalition this user is part of.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="sni.user.models.Corporation.corporation_id">
 <code class="sig-name descname">corporation_id</code><a class="headerlink" href="#sni.user.models.Corporation.corporation_id" title="Permalink to this definition">¶</a></dt>
@@ -305,6 +319,14 @@ to be created manually. An alliance can be part of multiple coalitions.</p>
 <dt id="sni.user.models.Corporation.corporation_name">
 <code class="sig-name descname">corporation_name</code><a class="headerlink" href="#sni.user.models.Corporation.corporation_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the corporation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Corporation.cumulated_mandatory_esi_scopes">
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set[str]<a class="reference internal" href="_modules/sni/user/models.html#Corporation.cumulated_mandatory_esi_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list (although it really is a set) of all the ESI scopes
+required by this corporation, alliance, and all the coalitions this
+corporation is part of.</p>
 </dd></dl>
 
 <dl class="attribute">

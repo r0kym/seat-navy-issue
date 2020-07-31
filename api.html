@@ -262,6 +262,75 @@ sure all users are in the good corp, etc.)</p>
 <span id="sni-api-routers-alliance"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.alliance</span></code><a class="headerlink" href="#module-sni.api.routers.alliance" title="Permalink to this headline">¶</a></h3>
 <p>Alliance management paths</p>
 <dl class="class">
+<dt id="sni.api.routers.alliance.GetAllianceOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">GetAllianceOut</code><a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Get an alliance data</p>
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.alliance_id">
+<code class="sig-name descname">alliance_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.alliance_name">
+<code class="sig-name descname">alliance_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.ceo_character_id">
+<code class="sig-name descname">ceo_character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.ceo_character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.ceo_character_name">
+<code class="sig-name descname">ceo_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.ceo_character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.cumulated_mandatory_esi_scopes">
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.executor_corporation_id">
+<code class="sig-name descname">executor_corporation_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.executor_corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.executor_corporation_name">
+<code class="sig-name descname">executor_corporation_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.executor_corporation_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.alliance.GetAllianceOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.alliance.GetAllianceOut<a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Alliance" title="sni.user.models.Alliance"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Alliance</span></code></a> to
+<a class="reference internal" href="#sni.api.routers.alliance.GetAllianceOut" title="sni.api.routers.alliance.GetAllianceOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.alliance.GetAllianceOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.GetAllianceOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.api.routers.alliance.GetAllianceShortOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">GetAllianceShortOut</code><a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -285,6 +354,29 @@ sure all users are in the good corp, etc.)</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="sni.api.routers.alliance.PutAllianceIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">PutAllianceIn</code><a class="reference internal" href="_modules/sni/api/routers/alliance.html#PutAllianceIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.PutAllianceIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/alliance/{alliance_id}</span></code> requests</p>
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.PutAllianceIn.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.PutAllianceIn.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.alliance.PutAllianceIn.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.PutAllianceIn.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.alliance.get_alliance">
+<code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">get_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#get_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.get_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets data about an alliance</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.api.routers.alliance.get_alliance_tracking">
 <code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">get_alliance_tracking</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#get_alliance_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.get_alliance_tracking" title="Permalink to this definition">¶</a></dt>
@@ -305,6 +397,13 @@ clearance level of 0 or more.</p>
 <code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">post_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#post_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.post_alliance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manually fetches an alliance from the ESI. Requires a clearance level of
 8 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.alliance.put_alliance">
+<code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">put_alliance</code><span class="sig-paren">(</span><em class="sig-param">alliance_id: int</em>, <em class="sig-param">data: sni.api.routers.alliance.PutAllianceIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/alliance.html#put_alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.put_alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify an alliance registered on SNI. Note that it does not modify it on an
+ESI level. Requires a clearance level of 4 or more.</p>
 </dd></dl>
 
 </div>
@@ -536,6 +635,65 @@ more.</p>
 <span id="sni-api-routers-corporation"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.corporation</span></code><a class="headerlink" href="#module-sni.api.routers.corporation" title="Permalink to this headline">¶</a></h3>
 <p>Corporation management paths</p>
 <dl class="class">
+<dt id="sni.api.routers.corporation.GetCorporationOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetCorporationOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetCorporationOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Corporation data</p>
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.alliance_id">
+<code class="sig-name descname">alliance_id</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.alliance_name">
+<code class="sig-name descname">alliance_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.ceo_character_id">
+<code class="sig-name descname">ceo_character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.ceo_character_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.ceo_character_name">
+<code class="sig-name descname">ceo_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.ceo_character_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.cumulated_mandatory_esi_scopes">
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.corporation.GetCorporationOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">corporation: sni.user.models.Corporation</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.corporation.GetCorporationOut<a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetCorporationOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Corporation" title="sni.user.models.Corporation"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Corporation</span></code></a> to
+<a class="reference internal" href="#sni.api.routers.corporation.GetCorporationOut" title="sni.api.routers.corporation.GetCorporationOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.corporation.GetCorporationOut</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.ticker">
+<code class="sig-name descname">ticker</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.ticker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.updated_on">
+<code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.updated_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.api.routers.corporation.GetCorporationShortOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetCorporationShortOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetCorporationShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationShortOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -588,6 +746,30 @@ more.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="sni.api.routers.corporation.PutCorporationIn">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">PutCorporationIn</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#PutCorporationIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.PutCorporationIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/corporation/{corporation_id}</span></code> requests</p>
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.PutCorporationIn.authorized_to_login">
+<code class="sig-name descname">authorized_to_login</code><em class="property">: Optional[bool]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.PutCorporationIn.authorized_to_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.PutCorporationIn.mandatory_esi_scopes">
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.PutCorporationIn.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.corporation.get_corporation">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">get_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#get_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.get_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get informations about a corporation. Note that this corporation must be
+registered on SNI</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="sni.api.routers.corporation.get_corporation_tracking">
 <code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">get_corporation_tracking</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#get_corporation_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.get_corporation_tracking" title="Permalink to this definition">¶</a></dt>
@@ -608,6 +790,13 @@ clearance level of 0 or more.</p>
 <code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">post_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#post_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.post_corporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manually fetches a corporation from the ESI. Requires a clearance level of
 8 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.corporation.put_corporation">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">put_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">data: sni.api.routers.corporation.PutCorporationIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#put_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.put_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify a corporation registered on SNI. Note that it does not modify it on
+an ESI level. Requires a clearance level of 4 or more.</p>
 </dd></dl>
 
 </div>
