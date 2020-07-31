@@ -258,6 +258,60 @@ components:
           type: integer
       title: GeneralConfig
       type: object
+    GetAllianceOut:
+      description: Get an alliance data
+      properties:
+        alliance_id:
+          title: Alliance Id
+          type: integer
+        alliance_name:
+          title: Alliance Name
+          type: string
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        ceo_character_id:
+          title: Ceo Character Id
+          type: integer
+        ceo_character_name:
+          title: Ceo Character Name
+          type: string
+        cumulated_mandatory_esi_scopes:
+          items:
+            type: string
+          title: Cumulated Mandatory Esi Scopes
+          type: array
+        executor_corporation_id:
+          title: Executor Corporation Id
+          type: integer
+        executor_corporation_name:
+          title: Executor Corporation Name
+          type: string
+        mandatory_esi_scopes:
+          items:
+            type: string
+          title: Mandatory Esi Scopes
+          type: array
+        ticker:
+          title: Ticker
+          type: string
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - alliance_id
+      - alliance_name
+      - ceo_character_id
+      - ceo_character_name
+      - cumulated_mandatory_esi_scopes
+      - executor_corporation_id
+      - executor_corporation_name
+      - mandatory_esi_scopes
+      - ticker
+      - updated_on
+      title: GetAllianceOut
+      type: object
     GetAllianceShortOut:
       description: Short alliance description
       properties:
@@ -447,6 +501,50 @@ components:
       - coalition_id
       - coalition_name
       title: GetCoalitionShortOut
+      type: object
+    GetCorporationOut:
+      description: Corporation data
+      properties:
+        alliance_id:
+          title: Alliance Id
+          type: integer
+        alliance_name:
+          title: Alliance Name
+          type: string
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        ceo_character_id:
+          title: Ceo Character Id
+          type: integer
+        ceo_character_name:
+          title: Ceo Character Name
+          type: string
+        cumulated_mandatory_esi_scopes:
+          items:
+            type: string
+          title: Cumulated Mandatory Esi Scopes
+          type: array
+        mandatory_esi_scopes:
+          items:
+            type: string
+          title: Mandatory Esi Scopes
+          type: array
+        ticker:
+          title: Ticker
+          type: string
+        updated_on:
+          format: date-time
+          title: Updated On
+          type: string
+      required:
+      - ceo_character_id
+      - ceo_character_name
+      - cumulated_mandatory_esi_scopes
+      - mandatory_esi_scopes
+      - ticker
+      - updated_on
+      title: GetCorporationOut
       type: object
     GetCorporationShortOut:
       description: Short corporation description
@@ -1000,6 +1098,19 @@ components:
       - user_token
       title: PostUseFromPerOut
       type: object
+    PutAllianceIn:
+      description: Model for ``PUT /alliance/{alliance_id}`` requests
+      properties:
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        mandatory_esi_scopes:
+          items:
+            type: string
+          title: Mandatory Esi Scopes
+          type: array
+      title: PutAllianceIn
+      type: object
     PutCoalitionIn:
       description: Model for `PUT /coalition/{coalition_id}` responses.
       properties:
@@ -1030,6 +1141,19 @@ components:
           title: Ticker
           type: string
       title: PutCoalitionIn
+      type: object
+    PutCorporationIn:
+      description: Model for ``PUT /corporation/{corporation_id}`` requests
+      properties:
+        authorized_to_login:
+          title: Authorized To Login
+          type: boolean
+        mandatory_esi_scopes:
+          items:
+            type: string
+          title: Mandatory Esi Scopes
+          type: array
+      title: PutCorporationIn
       type: object
     PutGroupIn:
       description: Model for `POST /group` responses.
@@ -1253,12 +1377,9 @@ paths:
       tags:
       - Alliance management
   /alliance/{alliance_id}:
-    post:
-      description: 'Manually fetches an alliance from the ESI. Requires a clearance
-        level of
-
-        8 or more.'
-      operationId: post_alliance_alliance__alliance_id__post
+    get:
+      description: Gets data about an alliance
+      operationId: get_alliance_alliance__alliance_id__get
       parameters:
       - in: path
         name: alliance_id
@@ -1284,7 +1405,83 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
+      summary: Get data about an alliance
+      tags:
+      - Alliance management
+    post:
+      description: 'Manually fetches an alliance from the ESI. Requires a clearance
+        level of
+
+        8 or more.'
+      operationId: post_alliance_alliance__alliance_id__post
+      parameters:
+      - in: path
+        name: alliance_id
+        required: true
+        schema:
+          title: Alliance Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllianceOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
       summary: Manually fetch an alliance from the ESI
+      tags:
+      - Alliance management
+    put:
+      description: 'Modify an alliance registered on SNI. Note that it does not modify
+        it on an
+
+        ESI level. Requires a clearance level of 4 or more.'
+      operationId: put_alliance_alliance__alliance_id__put
+      parameters:
+      - in: path
+        name: alliance_id
+        required: true
+        schema:
+          title: Alliance Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutAllianceIn'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllianceOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Modify an alliance registered on SNI
       tags:
       - Alliance management
   /alliance/{alliance_id}/tracking:
@@ -1603,6 +1800,41 @@ paths:
       tags:
       - Corporation management
   /corporation/{corporation_id}:
+    get:
+      description: 'Get informations about a corporation. Note that this corporation
+        must be
+
+        registered on SNI'
+      operationId: get_corporation_corporation__corporation_id__get
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCorporationOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get informations about a corporation
+      tags:
+      - Corporation management
     post:
       description: 'Manually fetches a corporation from the ESI. Requires a clearance
         level of
@@ -1626,7 +1858,8 @@ paths:
         '200':
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/GetCorporationOut'
           description: Successful Response
         '422':
           content:
@@ -1635,6 +1868,47 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Manually fetch a corporation from the ESI
+      tags:
+      - Corporation management
+    put:
+      description: 'Modify a corporation registered on SNI. Note that it does not
+        modify it on
+
+        an ESI level. Requires a clearance level of 4 or more.'
+      operationId: put_corporation_corporation__corporation_id__put
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutCorporationIn'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCorporationOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Modify a corporation registered on SNI
       tags:
       - Corporation management
   /corporation/{corporation_id}/tracking:

@@ -2,7 +2,8 @@
 Corporation management paths
 """
 
-from typing import Dict, Iterator, List
+from datetime import datetime
+from typing import Dict, Iterator, List, Optional
 
 from fastapi import APIRouter, Depends
 import pydantic as pdt
@@ -19,6 +20,46 @@ from sni.user.user import ensure_corporation
 from .user import GetUserShortOut
 
 router = APIRouter()
+
+
+class GetCorporationOut(pdt.BaseModel):
+    """
+    Corporation data
+    """
+
+    alliance_id: Optional[int]
+    alliance_name: Optional[str]
+    authorized_to_login: Optional[bool]
+    ceo_character_id: int
+    ceo_character_name: str
+    cumulated_mandatory_esi_scopes: List[str]
+    mandatory_esi_scopes: List[str]
+    ticker: str
+    updated_on: datetime
+
+    @staticmethod
+    def from_record(corporation: Corporation) -> "GetCorporationOut":
+        """
+        Converts an instance of :class:`sni.user.models.Corporation` to
+        :class:`sni.api.routers.corporation.GetCorporationOut`
+        """
+        return GetCorporationOut(
+            alliance_id=corporation.alliance.alliance_id
+            if corporation.alliance is not None
+            else None,
+            alliance_name=corporation.alliance.alliance_name
+            if corporation.alliance is not None
+            else None,
+            authorized_to_login=corporation.authorized_to_login,
+            ceo_character_id=corporation.ceo.character_id,
+            ceo_character_name=corporation.ceo.character_name,
+            cumulated_mandatory_esi_scopes=list(
+                corporation.cumulated_mandatory_esi_scopes()
+            ),
+            mandatory_esi_scopes=corporation.mandatory_esi_scopes,
+            ticker=corporation.ticker,
+            updated_on=corporation.updated_on,
+        )
 
 
 class GetCorporationShortOut(pdt.BaseModel):
@@ -68,6 +109,15 @@ class GetTrackingOut(pdt.BaseModel):
         return result
 
 
+class PutCorporationIn(pdt.BaseModel):
+    """
+    Model for ``PUT /corporation/{corporation_id}`` requests
+    """
+
+    authorized_to_login: Optional[bool]
+    mandatory_esi_scopes: Optional[List[str]]
+
+
 @router.get(
     "",
     response_model=List[GetCorporationShortOut],
@@ -85,8 +135,28 @@ def get_corporations(tkn: Token = Depends(from_authotization_header_nondyn),):
     ]
 
 
+@router.get(
+    "/{corporation_id}",
+    response_model=GetCorporationOut,
+    summary="Get informations about a corporation",
+)
+def get_corporation(
+    corporation_id: int,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Get informations about a corporation. Note that this corporation must be
+    registered on SNI
+    """
+    assert_has_clearance(tkn.owner, "sni.read_corporation")
+    corporation = Corporation.objects(corporation_id=corporation_id).get()
+    return GetCorporationOut.from_record(corporation)
+
+
 @router.post(
-    "/{corporation_id}", summary="Manually fetch a corporation from the ESI",
+    "/{corporation_id}",
+    response_model=GetCorporationOut,
+    summary="Manually fetch a corporation from the ESI",
 )
 def post_corporation(
     corporation_id: int,
@@ -97,7 +167,33 @@ def post_corporation(
     8 or more.
     """
     assert_has_clearance(tkn.owner, "sni.fetch_corporation")
-    ensure_corporation(corporation_id)
+    corporation = ensure_corporation(corporation_id)
+    return GetCorporationOut.from_record(corporation)
+
+
+@router.put(
+    "/{corporation_id}",
+    response_model=GetCorporationOut,
+    summary="Modify a corporation registered on SNI",
+)
+def put_corporation(
+    corporation_id: int,
+    data: PutCorporationIn,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Modify a corporation registered on SNI. Note that it does not modify it on
+    an ESI level. Requires a clearance level of 4 or more.
+    """
+    corporation: Corporation = Corporation.objects(
+        corporation_id=corporation_id
+    ).get()
+    assert_has_clearance(tkn.owner, "sni.update_corporation", corporation.ceo)
+    corporation.authorized_to_login = data.authorized_to_login
+    if data.mandatory_esi_scopes is not None:
+        corporation.mandatory_esi_scopes = data.mandatory_esi_scopes
+    corporation.save()
+    return GetCorporationOut.from_record(corporation)
 
 
 @router.get(

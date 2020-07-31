@@ -252,6 +252,32 @@ class Corporation(me.Document):
         """
         return User.objects.get(character_id=self.ceo_character_id)
 
+    def coalitions(self) -> List[Coalition]:
+        """
+        Returns the list of coalition this user is part of.
+        """
+        if self.alliance is not None:
+            return self.alliance.coalitions()
+        return []
+
+    def cumulated_mandatory_esi_scopes(self) -> Set[str]:
+        """
+        Returns the list (although it really is a set) of all the ESI scopes
+        required by this corporation, alliance, and all the coalitions this
+        corporation is part of.
+        """
+        alliance_scopes = (
+            self.alliance.mandatory_esi_scopes
+            if self.alliance is not None
+            else []
+        )
+        coalition_scopes = []
+        for coalition in self.coalitions():
+            coalition_scopes += coalition.mandatory_esi_scopes
+        return set(
+            self.mandatory_esi_scopes + alliance_scopes + coalition_scopes
+        )
+
     def users(self) -> List["User"]:
         """
         Return the member list of this corporation, according to the database.
@@ -400,27 +426,16 @@ class User(me.Document):
         required by the corporation, alliance, and all the coalitions the user
         is part of.
         """
-        corporation_scopes = (
-            self.corporation.mandatory_esi_scopes
-            if self.corporation is not None
-            else []
-        )
-        alliance_scopes = (
-            self.alliance.mandatory_esi_scopes
-            if self.alliance is not None
-            else []
-        )
-        coalition_scopes = []
-        for coalition in self.coalitions():
-            coalition_scopes += coalition.mandatory_esi_scopes
-        return set(corporation_scopes + alliance_scopes + coalition_scopes)
+        if self.corporation is not None:
+            return self.corporation.cumulated_mandatory_esi_scopes()
+        return set()
 
     def coalitions(self) -> List[Coalition]:
         """
         Returns the list of coalition this user is part of.
         """
-        if self.alliance is not None:
-            return self.alliance.coalitions()
+        if self.corporation is not None:
+            return self.corporation.coalitions()
         return []
 
     def is_ceo_of_alliance(self) -> bool:
