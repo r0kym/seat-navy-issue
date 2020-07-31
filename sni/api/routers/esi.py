@@ -17,6 +17,7 @@ import pydantic as pdt
 
 from sni.user.models import User
 
+from sni.index.index import get_user_location
 from sni.esi.token import get_access_token
 from sni.esi.esi import (
     esi_get_all_pages,
@@ -270,6 +271,29 @@ def get_history_character_location(
         GetCharacterLocationOut.from_record(location)
         for location in paginate(query_set, 50, page, response)
     ]
+
+
+@router.post(
+    "/history/characters/{character_id}/location/now",
+    response_model=GetCharacterLocationOut,
+    summary="Get character's current location",
+)
+def post_history_character_location_now(
+    character_id: int, tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Get and save the current location of a character. Requires having clearance
+    to access the ESI scopes ``esi-location.read_location.v1``,
+    ``esi-location.read_online.v1``, and ``esi-location.read_ship_type.v1``, of
+    the character.
+    """
+    usr: User = User.objects(character_id=character_id).get()
+    assert_has_clearance(tkn.owner, "esi-location.read_location.v1", usr)
+    assert_has_clearance(tkn.owner, "esi-location.read_online.v1", usr)
+    assert_has_clearance(tkn.owner, "esi-location.read_ship_type.v1", usr)
+    location = get_user_location(usr, invalidate_token_on_error=True)
+    location.save()
+    return GetCharacterLocationOut.from_record(location)
 
 
 @router.get(

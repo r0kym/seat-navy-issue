@@ -10,8 +10,8 @@ from sni.esi.token import esi_get_on_befalf_of, has_esi_scope
 from sni.scheduler import scheduler
 from sni.user.models import User
 
+from .index import get_user_location
 from .models import (
-    EsiCharacterLocation,
     EsiMail,
     EsiMailRecipient,
     EsiSkillPoints,
@@ -34,34 +34,8 @@ def index_user_location(usr: User):
     Indexes a user's location, online status, and ship
     """
     try:
-        location_data = esi_get_on_befalf_of(
-            f"latest/characters/{usr.character_id}/location/",
-            usr.character_id,
-            invalidate_token_on_error=True,
-            raise_for_status=True,
-        ).data
-        online_data = esi_get_on_befalf_of(
-            f"latest/characters/{usr.character_id}/online/",
-            usr.character_id,
-            invalidate_token_on_error=True,
-            raise_for_status=True,
-        ).data
-        ship_data = esi_get_on_befalf_of(
-            f"latest/characters/{usr.character_id}/ship/",
-            usr.character_id,
-            invalidate_token_on_error=True,
-            raise_for_status=True,
-        ).data
-        EsiCharacterLocation(
-            online=online_data["online"],
-            ship_item_id=ship_data["ship_item_id"],
-            ship_name=ship_data["ship_name"],
-            ship_type_id=ship_data["ship_type_id"],
-            solar_system_id=location_data["solar_system_id"],
-            station_id=location_data.get("station_id"),
-            structure_id=location_data.get("structure_id"),
-            user=usr,
-        ).save()
+        location = get_user_location(usr, invalidate_token_on_error=True)
+        location.save()
     except Exception as error:
         logging.error(
             "Could not index location of character %d (%s): %s",
