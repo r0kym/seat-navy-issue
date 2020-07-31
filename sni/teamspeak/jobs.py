@@ -28,8 +28,8 @@ def message_registered_clients_with_wrong_name():
     """
     connection = new_teamspeak_connection()
     for ts_client in client_list(connection):
-        if ts_client.client_nickname == conf.teamspeak.bot_name:
-            # TS client is the bot
+        if ts_client.client_nickname.startswith(conf.teamspeak.bot_name):
+            # TS client is probably the bot
             continue
         usr: User = User.objects(
             teamspeak_cldbid=ts_client.client_database_id
