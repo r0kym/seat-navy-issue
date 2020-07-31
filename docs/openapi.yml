@@ -1144,7 +1144,7 @@ components:
           default:
           - publicData
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Scopes
           type: array
       title: PostTokenUseFromDynIn

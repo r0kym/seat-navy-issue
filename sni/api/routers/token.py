@@ -14,6 +14,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.esi.esi import EsiScope
 from sni.esi.sso import get_auth_url
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -52,7 +53,7 @@ class PostTokenUseFromDynIn(pdt.BaseModel):
     Model for ``POST /token/use/from/dyn`` requests.
     """
 
-    scopes: List[str] = pdt.Field(["publicData"])
+    scopes: List[EsiScope] = pdt.Field([EsiScope.PUBLICDATA])
 
 
 class PostTokenUseFromDynOut(pdt.BaseModel):
