@@ -74,9 +74,6 @@ def start_scheduler() -> None:
     """
     Clears the job store and starts the scheduler.
     """
-    redis = new_redis_connection()
-    scheduler.remove_all_jobs()
-    redis.delete(JOBS_KEY, RUN_TIMES_KEY)
     scheduler.start()
     logging.debug("Started scheduler")
 
@@ -87,6 +84,10 @@ def stop_scheduler() -> None:
     """
     scheduler.shutdown()
     logging.debug("Stopped scheduler")
+    redis = new_redis_connection()
+    scheduler.remove_all_jobs()
+    redis.delete(JOBS_KEY, RUN_TIMES_KEY)
+    logging.debug("Flushed jobstore")
 
 
 def _test_tick() -> None:
