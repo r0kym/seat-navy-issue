@@ -139,6 +139,12 @@ def main():
         print_openapi_spec()
         sys.exit()
 
+    if arguments.flush_cache:
+        from sni.db.cache import new_redis_connection
+
+        logging.info("Flushing Redis cache")
+        new_redis_connection().flushdb()
+
     # --------------------------------------------------------------------------
     # Database migration
     # --------------------------------------------------------------------------
@@ -162,12 +168,6 @@ def main():
     load_esi_openapi()
     if arguments.reload_esi_openapi_spec:
         sys.exit()
-
-    if arguments.flush_cache:
-        from sni.db.cache import new_redis_connection
-
-        logging.info("Flushing Redis cache")
-        new_redis_connection().flushdb()
 
     # --------------------------------------------------------------------------
     # Scheduler start
