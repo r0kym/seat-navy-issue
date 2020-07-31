@@ -13,8 +13,9 @@ from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
+from sni.user.models import User
 
-from sni.api.models import CrashReport
+from sni.api.models import CrashReport, CrashReportRequest, CrashReportToken
 
 from .common import BSONObjectId
 
@@ -31,6 +32,19 @@ class GetCrashReportRequestOut(pdt.BaseModel):
     params: Optional[Any]
     url: str
 
+    @staticmethod
+    def from_record(request: CrashReportRequest) -> "GetCrashReportRequestOut":
+        """
+        Converts a :class:`sni.api.models.CrashReportRequest` to a
+        :class:`sni.api.routers.GetCrashReportRequestOut`.
+        """
+        return GetCrashReportRequestOut(
+            headers=request.headers,
+            method=request.method,
+            params=request.params,
+            url=request.url,
+        )
+
 
 class GetCrashReportTokenUserOut(pdt.BaseModel):
     """
@@ -43,6 +57,20 @@ class GetCrashReportTokenUserOut(pdt.BaseModel):
     clearance_level: int
     created_on: datetime
     updated_on: datetime
+
+    @staticmethod
+    def from_record(usr: User) -> "GetCrashReportTokenUserOut":
+        """
+        Converts a :class:`sni.user.models.User` to a :class:`sni.api.routers.crash.GetCrashReportTokenUserOut`
+        """
+        return GetCrashReportTokenUserOut(
+            authorized_to_login=usr.authorized_to_login,
+            character_id=usr.character_id,
+            character_name=usr.character_name,
+            clearance_level=usr.clearance_level,
+            created_on=usr.created_on,
+            updated_on=usr.updated_on,
+        )
 
 
 class GetCrashReportTokenOut(pdt.BaseModel):
@@ -57,23 +85,16 @@ class GetCrashReportTokenOut(pdt.BaseModel):
     uuid: str
 
     @staticmethod
-    def from_record(crash: CrashReport) -> "GetCrashReportTokenOut":
+    def from_record(token: CrashReportToken) -> "GetCrashReportTokenOut":
         """
         Reports basic informations about a token used at the moment of a crash.
         """
         return GetCrashReportTokenOut(
-            created_on=crash.token.created_on,
-            expires_on=crash.token.expires_on,
-            owner=GetCrashReportTokenUserOut(
-                authorized_to_login=crash.token.owner.authorized_to_login,
-                character_id=crash.token.owner.character_id,
-                character_name=crash.token.owner.character_name,
-                clearance_level=crash.token.owner.clearance_level,
-                created_on=crash.token.owner.created_on,
-                updated_on=crash.token.owner.updated_on,
-            ),
-            token_type=crash.token.token_type,
-            uuid=str(crash.token.uuid),
+            created_on=token.created_on,
+            expires_on=token.expires_on,
+            owner=GetCrashReportTokenUserOut.from_record(token.owner),
+            token_type=token.token_type,
+            uuid=str(token.uuid),
         )
 
 
@@ -95,12 +116,7 @@ class GetCrashReportOut(pdt.BaseModel):
         """
         return GetCrashReportOut(
             id=str(crash.pk),
-            request=GetCrashReportRequestOut(
-                headers=crash.request.headers,
-                method=crash.request.method,
-                params=crash.request.params,
-                url=crash.request.url,
-            ),
+            request=GetCrashReportRequestOut.from_record(crash.request),
             timestamp=crash.timestamp,
             trace=crash.trace,
             token=GetCrashReportTokenOut.from_record(crash.token)
