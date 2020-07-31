@@ -148,8 +148,8 @@ def start_api_server():
             "access": {
                 "()": "uvicorn.logging.AccessFormatter",
                 "fmt": (
-                    '%(levelprefix)s %(client_addr)s - "%(request_line)s" '
-                    "%(status_code)s"
+                    "%(asctime)s [%(levelname)s] %(client_addr)s: "
+                    "%(request_line)s %(status_code)s"
                 ),
             },
         },
