@@ -2,7 +2,8 @@
 Alliance management paths
 """
 
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends
 import pydantic as pdt
@@ -20,6 +21,46 @@ from sni.user.jobs import ensure_alliance_members
 from .corporation import GetTrackingOut
 
 router = APIRouter()
+
+
+class GetAllianceOut(pdt.BaseModel):
+    """
+    Get an alliance data
+    """
+
+    alliance_id: int
+    alliance_name: str
+    authorized_to_login: Optional[bool]
+    ceo_character_id: int
+    ceo_character_name: str
+    cumulated_mandatory_esi_scopes: List[str]
+    executor_corporation_id: int
+    executor_corporation_name: str
+    mandatory_esi_scopes: List[str]
+    ticker: str
+    updated_on: datetime
+
+    @staticmethod
+    def from_record(alliance: Alliance) -> "GetAllianceOut":
+        """
+        Converts an instance of :class:`sni.user.models.Alliance` to
+        :class:`sni.api.routers.alliance.GetAllianceOut`
+        """
+        return GetAllianceOut(
+            alliance_id=alliance.alliance_id,
+            alliance_name=alliance.alliance_name,
+            authorized_to_login=alliance.authorized_to_login,
+            ceo_character_id=alliance.ceo.character_id,
+            ceo_character_name=alliance.ceo.character_name,
+            executor_corporation_id=alliance.executor.corporation_id,
+            executor_corporation_name=alliance.executor.corporation_name,
+            mandatory_esi_scopes=alliance.mandatory_esi_scopes,
+            cumulated_mandatory_esi_scopes=list(
+                alliance.cumulated_mandatory_esi_scopes()
+            ),
+            ticker=alliance.ticker,
+            updated_on=alliance.updated_on,
+        )
 
 
 class GetAllianceShortOut(pdt.BaseModel):
@@ -42,6 +83,15 @@ class GetAllianceShortOut(pdt.BaseModel):
         )
 
 
+class PutAllianceIn(pdt.BaseModel):
+    """
+    Model for ``PUT /alliance/{alliance_id}`` requests
+    """
+
+    authorized_to_login: Optional[bool]
+    mandatory_esi_scopes: Optional[List[str]]
+
+
 @router.get(
     "",
     response_model=List[GetAllianceShortOut],
@@ -59,8 +109,24 @@ def get_alliances(tkn: Token = Depends(from_authotization_header_nondyn),):
     ]
 
 
+@router.get(
+    "/{alliance_id}", summary="Get data about an alliance",
+)
+def get_alliance(
+    alliance_id: int, tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Gets data about an alliance
+    """
+    assert_has_clearance(tkn.owner, "sni.read_alliance")
+    alliance = Alliance.objects(alliance_id=alliance_id).get()
+    return GetAllianceOut.from_record(alliance)
+
+
 @router.post(
-    "/{alliance_id}", summary="Manually fetch an alliance from the ESI",
+    "/{alliance_id}",
+    response_model=GetAllianceOut,
+    summary="Manually fetch an alliance from the ESI",
 )
 def post_alliance(
     alliance_id: int, tkn: Token = Depends(from_authotization_header_nondyn),
@@ -72,6 +138,30 @@ def post_alliance(
     assert_has_clearance(tkn.owner, "sni.fetch_alliance")
     alliance = ensure_alliance(alliance_id)
     scheduler.add_job(ensure_alliance_members, args=(alliance,))
+    return GetAllianceOut.from_record(alliance)
+
+
+@router.put(
+    "/{alliance_id}",
+    response_model=GetAllianceOut,
+    summary="Modify an alliance registered on SNI",
+)
+def put_alliance(
+    alliance_id: int,
+    data: PutAllianceIn,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Modify an alliance registered on SNI. Note that it does not modify it on an
+    ESI level. Requires a clearance level of 4 or more.
+    """
+    alliance: Alliance = Alliance.objects(alliance_id=alliance_id).get()
+    assert_has_clearance(tkn.owner, "sni.update_alliance", alliance.ceo)
+    alliance.authorized_to_login = data.authorized_to_login
+    if data.mandatory_esi_scopes is not None:
+        alliance.mandatory_esi_scopes = data.mandatory_esi_scopes
+    alliance.save()
+    return GetAllianceOut.from_record(alliance)
 
 
 @router.get(

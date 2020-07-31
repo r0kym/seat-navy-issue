@@ -59,6 +59,17 @@ class Alliance(me.Document):
         """
         return list(Coalition.objects(members=self))
 
+    def cumulated_mandatory_esi_scopes(self) -> Set[str]:
+        """
+        Returns the list (although it really is a set) of all the ESI scopes
+        required by this alliance, and all the coalitions this alliance belongs
+        to.
+        """
+        coalition_scopes = []
+        for coalition in self.coalitions():
+            coalition_scopes += coalition.mandatory_esi_scopes
+        return set(self.mandatory_esi_scopes + coalition_scopes)
+
     @property
     def executor(self) -> "Corporation":
         """
