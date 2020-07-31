@@ -27,7 +27,9 @@ def fix_ceo_clearance():
             )
             ceo.update(set__clearance_level=2)
     for alliance in Alliance.objects():
-        executor: Corporation = ensure_corporation(alliance.executor_corporation_id)
+        executor: Corporation = ensure_corporation(
+            alliance.executor_corporation_id
+        )
         ceo: User = ensure_user(executor.ceo_character_id)
         if ceo.clearance_level < 4:
             logging.info(
