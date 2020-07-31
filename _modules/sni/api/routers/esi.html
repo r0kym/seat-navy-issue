@@ -56,6 +56,7 @@
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 
+<span class="kn">from</span> <span class="nn">sni.index.index</span> <span class="kn">import</span> <span class="n">get_user_location</span>
 <span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="n">get_access_token</span>
 <span class="kn">from</span> <span class="nn">sni.esi.esi</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">esi_get_all_pages</span><span class="p">,</span>
@@ -309,6 +310,29 @@
         <span class="n">GetCharacterLocationOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">paginate</span><span class="p">(</span><span class="n">query_set</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
     <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="post_history_character_location_now"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.post_history_character_location_now">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;/history/characters/</span><span class="si">{character_id}</span><span class="s2">/location/now&quot;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">GetCharacterLocationOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Get character&#39;s current location&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">post_history_character_location_now</span><span class="p">(</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get and save the current location of a character. Requires having clearance</span>
+<span class="sd">    to access the ESI scopes ``esi-location.read_location.v1``,</span>
+<span class="sd">    ``esi-location.read_online.v1``, and ``esi-location.read_ship_type.v1``, of</span>
+<span class="sd">    the character.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usr</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_location.v1&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_online.v1&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_ship_type.v1&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">get_user_location</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">location</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">GetCharacterLocationOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">location</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_history_character_mails"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.get_history_character_mails">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>

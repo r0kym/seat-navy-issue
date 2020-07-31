@@ -187,8 +187,8 @@
             <span class="s2">&quot;access&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;()&quot;</span><span class="p">:</span> <span class="s2">&quot;uvicorn.logging.AccessFormatter&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;fmt&quot;</span><span class="p">:</span> <span class="p">(</span>
-                    <span class="s1">&#39;</span><span class="si">%(levelprefix)s</span><span class="s1"> </span><span class="si">%(client_addr)s</span><span class="s1"> - &quot;</span><span class="si">%(request_line)s</span><span class="s1">&quot; &#39;</span>
-                    <span class="s2">&quot;</span><span class="si">%(status_code)s</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(client_addr)s</span><span class="s2">: &quot;</span>
+                    <span class="s2">&quot;</span><span class="si">%(request_line)s</span><span class="s2"> </span><span class="si">%(status_code)s</span><span class="s2">&quot;</span>
                 <span class="p">),</span>
             <span class="p">},</span>
         <span class="p">},</span>

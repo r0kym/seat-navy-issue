@@ -935,6 +935,15 @@ character. The results are sorted by most to least recent, and paginated by
 pages of 50 items. The page count in returned in the <code class="docutils literal notranslate"><span class="pre">X-Pages</span></code> header.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="sni.api.routers.esi.post_history_character_location_now">
+<code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">post_history_character_location_now</code><span class="sig-paren">(</span><em class="sig-param">character_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/esi.html#post_history_character_location_now"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.post_history_character_location_now" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and save the current location of a character. Requires having clearance
+to access the ESI scopes <code class="docutils literal notranslate"><span class="pre">esi-location.read_location.v1</span></code>,
+<code class="docutils literal notranslate"><span class="pre">esi-location.read_online.v1</span></code>, and <code class="docutils literal notranslate"><span class="pre">esi-location.read_ship_type.v1</span></code>, of
+the character.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-sni.api.routers.group">
 <span id="sni-api-routers-group"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.group</span></code><a class="headerlink" href="#module-sni.api.routers.group" title="Permalink to this headline">¶</a></h3>
@@ -982,12 +991,12 @@ pages of 50 items. The page count in returned in the <code class="docutils liter
 
 <dl class="attribute">
 <dt id="sni.api.routers.group.GetGroupOut.members">
-<code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.group.GetGroupOut.members" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">members</code><em class="property">: List[GetUserShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.group.GetGroupOut.members" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="sni.api.routers.group.GetGroupOut.owner">
-<code class="sig-name descname">owner</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.group.GetGroupOut.owner" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">owner</code><em class="property">: Optional[GetUserShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.group.GetGroupOut.owner" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

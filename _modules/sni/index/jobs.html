@@ -49,8 +49,8 @@
 <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 
+<span class="kn">from</span> <span class="nn">.index</span> <span class="kn">import</span> <span class="n">get_user_location</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">EsiCharacterLocation</span><span class="p">,</span>
     <span class="n">EsiMail</span><span class="p">,</span>
     <span class="n">EsiMailRecipient</span><span class="p">,</span>
     <span class="n">EsiSkillPoints</span><span class="p">,</span>
@@ -73,34 +73,8 @@
 <span class="sd">    Indexes a user&#39;s location, online status, and ship</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">location_data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/location/&quot;</span><span class="p">,</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">online_data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/online/&quot;</span><span class="p">,</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">ship_data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/ship/&quot;</span><span class="p">,</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">EsiCharacterLocation</span><span class="p">(</span>
-            <span class="n">online</span><span class="o">=</span><span class="n">online_data</span><span class="p">[</span><span class="s2">&quot;online&quot;</span><span class="p">],</span>
-            <span class="n">ship_item_id</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s2">&quot;ship_item_id&quot;</span><span class="p">],</span>
-            <span class="n">ship_name</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s2">&quot;ship_name&quot;</span><span class="p">],</span>
-            <span class="n">ship_type_id</span><span class="o">=</span><span class="n">ship_data</span><span class="p">[</span><span class="s2">&quot;ship_type_id&quot;</span><span class="p">],</span>
-            <span class="n">solar_system_id</span><span class="o">=</span><span class="n">location_data</span><span class="p">[</span><span class="s2">&quot;solar_system_id&quot;</span><span class="p">],</span>
-            <span class="n">station_id</span><span class="o">=</span><span class="n">location_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;station_id&quot;</span><span class="p">),</span>
-            <span class="n">structure_id</span><span class="o">=</span><span class="n">location_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure_id&quot;</span><span class="p">),</span>
-            <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">get_user_location</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">location</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="s2">&quot;Could not index location of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
