@@ -330,7 +330,7 @@
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_location.v1&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_online.v1&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_ship_type.v1&quot;</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
-    <span class="n">location</span> <span class="o">=</span> <span class="n">get_user_location</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">get_user_location</span><span class="p">(</span><span class="n">usr</span><span class="p">)</span>
     <span class="n">location</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">GetCharacterLocationOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">location</span><span class="p">)</span></div>
 
