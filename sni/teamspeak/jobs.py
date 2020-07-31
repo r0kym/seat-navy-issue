@@ -127,3 +127,4 @@ def update_teamspeak_groups():
                     grp.group_name,
                     str(error),
                 )
+    connection.close()

@@ -3,6 +3,7 @@ Teamspeak related paths
 """
 
 from datetime import datetime
+from typing import Optional
 
 from fastapi import (
     APIRouter,
@@ -69,17 +70,20 @@ def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
     `POST /teamspeak/auth/start` documentation.
     """
     assert_has_clearance(tkn.owner, "sni.teamspeak.auth")
+    exception: Optional[HTTPException] = None
     try:
         connection = new_teamspeak_connection()
         complete_authentication_challenge(connection, tkn.owner)
-        connection.close()
     except LookupError:
-        raise HTTPException(
+        exception = HTTPException(
             status.HTTP_404_NOT_FOUND,
             detail="Could not find corresponding teamspeak client",
         )
     except me.DoesNotExist:
-        raise HTTPException(
+        exception = HTTPException(
             status.HTTP_404_NOT_FOUND,
             detail="Could not find challenge for user",
         )
+    connection.close()
+    if exception is not None:
+        raise exception
