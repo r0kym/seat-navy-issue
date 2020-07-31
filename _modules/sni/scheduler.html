@@ -113,9 +113,6 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Clears the job store and starts the scheduler.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">redis</span> <span class="o">=</span> <span class="n">new_redis_connection</span><span class="p">()</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">remove_all_jobs</span><span class="p">()</span>
-    <span class="n">redis</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">JOBS_KEY</span><span class="p">,</span> <span class="n">RUN_TIMES_KEY</span><span class="p">)</span>
     <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Started scheduler&quot;</span><span class="p">)</span></div>
 
@@ -125,7 +122,11 @@
 <span class="sd">    Stops the scheduler and cleans up things</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">scheduler</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stopped scheduler&quot;</span><span class="p">)</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stopped scheduler&quot;</span><span class="p">)</span>
+    <span class="n">redis</span> <span class="o">=</span> <span class="n">new_redis_connection</span><span class="p">()</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">remove_all_jobs</span><span class="p">()</span>
+    <span class="n">redis</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">JOBS_KEY</span><span class="p">,</span> <span class="n">RUN_TIMES_KEY</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Flushed jobstore&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="_test_tick"><a class="viewcode-back" href="../../sni.html#sni.scheduler._test_tick">[docs]</a><span class="k">def</span> <span class="nf">_test_tick</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
