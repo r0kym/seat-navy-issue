@@ -21,6 +21,7 @@ from sni.uac.token import (
     Token,
 )
 
+from .user import GetUserShortOut
 from .common import BSONObjectId
 
 router = APIRouter()
@@ -46,8 +47,8 @@ class GetGroupOut(pdt.BaseModel):
     group_id: str
     group_name: str
     is_autogroup: bool
-    members: List[str]
-    owner: Optional[str]
+    members: List[GetUserShortOut]
+    owner: Optional[GetUserShortOut]
     updated_on: datetime
 
     @staticmethod
@@ -62,8 +63,12 @@ class GetGroupOut(pdt.BaseModel):
             group_id=str(grp.pk),
             group_name=grp.group_name,
             is_autogroup=grp.is_autogroup,
-            members=[member.character_name for member in grp.members],
-            owner=grp.owner.character_name if grp.owner is not None else None,
+            members=[
+                GetUserShortOut.from_record(member) for member in grp.members
+            ],
+            owner=GetUserShortOut.from_record(grp.owner)
+            if grp.owner is not None
+            else None,
             updated_on=grp.updated_on,
         )
 
