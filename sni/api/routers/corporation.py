@@ -8,6 +8,7 @@ from typing import Dict, Iterator, List, Optional
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
+from sni.esi.esi import EsiScope
 from sni.esi.token import tracking_status, TrackingStatus
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -115,7 +116,7 @@ class PutCorporationIn(pdt.BaseModel):
     """
 
     authorized_to_login: Optional[bool]
-    mandatory_esi_scopes: Optional[List[str]]
+    mandatory_esi_scopes: Optional[List[EsiScope]]
 
 
 @router.get(

@@ -8,6 +8,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
+from sni.esi.esi import EsiScope
 from sni.scheduler import scheduler
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -89,7 +90,7 @@ class PutAllianceIn(pdt.BaseModel):
     """
 
     authorized_to_login: Optional[bool]
-    mandatory_esi_scopes: Optional[List[str]]
+    mandatory_esi_scopes: Optional[List[EsiScope]]
 
 
 @router.get(

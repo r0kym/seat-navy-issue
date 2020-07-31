@@ -16,6 +16,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.esi.esi import EsiScope
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
     from_authotization_header_nondyn,
@@ -95,7 +96,7 @@ class PutCoalitionIn(pdt.BaseModel):
 
     add_members: Optional[List[int]] = None
     authorized_to_login: Optional[bool] = None
-    mandatory_esi_scopes: Optional[List[str]] = None
+    mandatory_esi_scopes: Optional[List[EsiScope]] = None
     members: Optional[List[int]] = None
     remove_members: Optional[List[int]] = None
     ticker: Optional[str] = None
