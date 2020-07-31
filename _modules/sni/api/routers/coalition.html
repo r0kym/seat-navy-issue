@@ -55,6 +55,7 @@
 <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
+<span class="kn">from</span> <span class="nn">sni.esi.esi</span> <span class="kn">import</span> <span class="n">EsiScope</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
@@ -134,7 +135,7 @@
 
     <span class="n">add_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">remove_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">ticker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
