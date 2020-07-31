@@ -291,7 +291,7 @@ def post_history_character_location_now(
     assert_has_clearance(tkn.owner, "esi-location.read_location.v1", usr)
     assert_has_clearance(tkn.owner, "esi-location.read_online.v1", usr)
     assert_has_clearance(tkn.owner, "esi-location.read_ship_type.v1", usr)
-    location = get_user_location(usr, invalidate_token_on_error=True)
+    location = get_user_location(usr)
     location.save()
     return GetCharacterLocationOut.from_record(location)
 
