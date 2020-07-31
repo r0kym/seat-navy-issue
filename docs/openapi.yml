@@ -485,7 +485,6 @@ components:
       - id
       - request
       - timestamp
-      - token
       - trace
       title: GetCrashReportOut
       type: object
@@ -525,7 +524,6 @@ components:
           title: Url
           type: string
       required:
-      - character_id
       - id
       - timestamp
       - url
@@ -613,12 +611,11 @@ components:
           type: boolean
         members:
           items:
-            type: string
+            $ref: '#/components/schemas/GetUserShortOut'
           title: Members
           type: array
         owner:
-          title: Owner
-          type: string
+          $ref: '#/components/schemas/GetUserShortOut'
         updated_on:
           format: date-time
           title: Updated On
@@ -1864,6 +1861,46 @@ paths:
       summary: Get character location history
       tags:
       - ESI
+  /esi/history/characters/{character_id}/location/now:
+    post:
+      description: 'Get and save the current location of a character. Requires having
+        clearance
+
+        to access the ESI scopes ``esi-location.read_location.v1``,
+
+        ``esi-location.read_online.v1``, and ``esi-location.read_ship_type.v1``, of
+
+        the character.'
+      operationId: post_history_character_location_now_esi_history_characters__character_id__location_now_post
+      parameters:
+      - in: path
+        name: character_id
+        required: true
+        schema:
+          title: Character Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCharacterLocationOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get character's current location
+      tags:
+      - ESI
   /esi/history/characters/{character_id}/mail:
     get:
       description: "Get the email history of a character. Requires having clearance\
@@ -2240,19 +2277,6 @@ paths:
       summary: Update a group
       tags:
       - Group management
-  /ping:
-    get:
-      description: Replies ``pong``. That is all.
-      operationId: get_ping_ping_get
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: Successful Response
-      summary: Replies "pong"
-      tags:
-      - Testing
   /system/configuration:
     get:
       description: 'Gets the configuration of the SNI instance. Secrets are redacted.
