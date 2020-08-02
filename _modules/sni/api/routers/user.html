@@ -52,6 +52,7 @@
 <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 
+<span class="kn">from</span> <span class="nn">sni.esi.models</span> <span class="kn">import</span> <span class="n">EsiScope</span>
 <span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="n">available_esi_scopes</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
@@ -89,14 +90,14 @@
 
     <span class="n">alliance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="n">available_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">available_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span>
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">clearance_level</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">coalitions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">corporation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
-    <span class="n">cumulated_mandatory_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">cumulated_mandatory_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span>
     <span class="n">is_ceo_of_alliance</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">is_ceo_of_corporation</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">tickered_name</span><span class="p">:</span> <span class="nb">str</span>

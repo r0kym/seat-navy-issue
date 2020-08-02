@@ -41,7 +41,6 @@
 <span class="sd">EVE ESI (public API) layer</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -56,7 +55,7 @@
 <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">EsiPath</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">EsiPath</span><span class="p">,</span> <span class="n">EsiScope</span>
 
 <span class="n">ESI_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://esi.evetech.net/&quot;</span>
 <span class="n">ESI_SWAGGER</span> <span class="o">=</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="s2">&quot;latest/swagger.json&quot;</span>
@@ -83,127 +82,6 @@
             <span class="n">headers</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
             <span class="n">status_code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
         <span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="EsiScope"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.EsiScope">[docs]</a><span class="k">class</span> <span class="nc">EsiScope</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Enumeration of the ESI scopes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ESI_ALLIANCES_READ_CONTACTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-alliances.read_contacts.v1&quot;</span>
-    <span class="n">ESI_ASSETS_READ_ASSETS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-assets.read_assets.v1&quot;</span>
-    <span class="n">ESI_ASSETS_READ_CORPORATION_ASSETS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-assets.read_corporation_assets.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_BOOKMARKS_READ_CHARACTER_BOOKMARKS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-bookmarks.read_character_bookmarks.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_BOOKMARKS_READ_CORPORATION_BOOKMARKS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-bookmarks.read_corporation_bookmarks.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CALENDAR_READ_CALENDAR_EVENTS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-calendar.read_calendar_events.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CALENDAR_RESPOND_CALENDAR_EVENTS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-calendar.respond_calendar_events.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CHARACTERS_READ_AGENTS_RESEARCH_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-characters.read_agents_research.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CHARACTERS_READ_BLUEPRINTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_blueprints.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_CHAT_CHANNELS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-characters.read_chat_channels.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CHARACTERS_READ_CONTACTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_contacts.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_CORPORATION_ROLES_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-characters.read_corporation_roles.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CHARACTERS_READ_FATIGUE_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_fatigue.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_FW_STATS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_fw_stats.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_LOYALTY_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_loyalty.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_MEDALS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_medals.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_NOTIFICATIONS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-characters.read_notifications.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CHARACTERS_READ_OPPORTUNITIES_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-characters.read_opportunities.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CHARACTERS_READ_STANDINGS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_standings.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_READ_TITLES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.read_titles.v1&quot;</span>
-    <span class="n">ESI_CHARACTERS_WRITE_CONTACTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characters.write_contacts.v1&quot;</span>
-    <span class="n">ESI_CHARACTERSTATS_READ_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-characterstats.read.v1&quot;</span>
-    <span class="n">ESI_CLONES_READ_CLONES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-clones.read_clones.v1&quot;</span>
-    <span class="n">ESI_CLONES_READ_IMPLANTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-clones.read_implants.v1&quot;</span>
-    <span class="n">ESI_CONTRACTS_READ_CHARACTER_CONTRACTS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-contracts.read_character_contracts.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CONTRACTS_READ_CORPORATION_CONTRACTS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-contracts.read_corporation_contracts.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CORPORATIONS_READ_BLUEPRINTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_blueprints.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_CONTACTS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_contacts.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_CONTAINER_LOGS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-corporations.read_container_logs.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CORPORATIONS_READ_CORPORATION_MEMBERSHIP_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-corporations.read_corporation_membership.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_CORPORATIONS_READ_DIVISIONS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_divisions.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_FACILITIES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_facilities.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_FW_STATS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_fw_stats.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_MEDALS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_medals.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_STANDINGS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_standings.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_STARBASES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_starbases.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_STRUCTURES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_structures.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_READ_TITLES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_titles.v1&quot;</span>
-    <span class="n">ESI_CORPORATIONS_TRACK_MEMBERS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.track_members.v1&quot;</span>
-    <span class="n">ESI_FITTINGS_READ_FITTINGS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-fittings.read_fittings.v1&quot;</span>
-    <span class="n">ESI_FITTINGS_WRITE_FITTINGS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-fittings.write_fittings.v1&quot;</span>
-    <span class="n">ESI_FLEETS_READ_FLEET_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-fleets.read_fleet.v1&quot;</span>
-    <span class="n">ESI_FLEETS_WRITE_FLEET_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-fleets.write_fleet.v1&quot;</span>
-    <span class="n">ESI_INDUSTRY_READ_CHARACTER_JOBS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-industry.read_character_jobs.v1&quot;</span>
-    <span class="n">ESI_INDUSTRY_READ_CHARACTER_MINING_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-industry.read_character_mining.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_INDUSTRY_READ_CORPORATION_JOBS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-industry.read_corporation_jobs.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_INDUSTRY_READ_CORPORATION_MINING_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-industry.read_corporation_mining.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_KILLMAILS_READ_CORPORATION_KILLMAILS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-killmails.read_corporation_killmails.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_KILLMAILS_READ_KILLMAILS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-killmails.read_killmails.v1&quot;</span>
-    <span class="n">ESI_LOCATION_READ_LOCATION_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-location.read_location.v1&quot;</span>
-    <span class="n">ESI_LOCATION_READ_ONLINE_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-location.read_online.v1&quot;</span>
-    <span class="n">ESI_LOCATION_READ_SHIP_TYPE_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-location.read_ship_type.v1&quot;</span>
-    <span class="n">ESI_MAIL_ORGANIZE_MAIL_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-mail.organize_mail.v1&quot;</span>
-    <span class="n">ESI_MAIL_READ_MAIL_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-mail.read_mail.v1&quot;</span>
-    <span class="n">ESI_MAIL_SEND_MAIL_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-mail.send_mail.v1&quot;</span>
-    <span class="n">ESI_MARKETS_READ_CHARACTER_ORDERS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-markets.read_character_orders.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_MARKETS_READ_CORPORATION_ORDERS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-markets.read_corporation_orders.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_MARKETS_STRUCTURE_MARKETS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-markets.structure_markets.v1&quot;</span>
-    <span class="n">ESI_PLANETS_MANAGE_PLANETS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-planets.manage_planets.v1&quot;</span>
-    <span class="n">ESI_PLANETS_READ_CUSTOMS_OFFICES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-planets.read_customs_offices.v1&quot;</span>
-    <span class="n">ESI_SEARCH_SEARCH_STRUCTURES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-search.search_structures.v1&quot;</span>
-    <span class="n">ESI_SKILLS_READ_SKILLQUEUE_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-skills.read_skillqueue.v1&quot;</span>
-    <span class="n">ESI_SKILLS_READ_SKILLS_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-skills.read_skills.v1&quot;</span>
-    <span class="n">ESI_UI_OPEN_WINDOW_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-ui.open_window.v1&quot;</span>
-    <span class="n">ESI_UI_WRITE_WAYPOINT_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-ui.write_waypoint.v1&quot;</span>
-    <span class="n">ESI_UNIVERSE_READ_STRUCTURES_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-universe.read_structures.v1&quot;</span>
-    <span class="n">ESI_WALLET_READ_CHARACTER_WALLET_V1</span> <span class="o">=</span> <span class="s2">&quot;esi-wallet.read_character_wallet.v1&quot;</span>
-    <span class="n">ESI_WALLET_READ_CORPORATION_WALLET_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-wallet.read_corporation_wallet.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">ESI_WALLET_READ_CORPORATION_WALLETS_V1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;esi-wallet.read_corporation_wallets.v1&quot;</span>
-    <span class="p">)</span>
-    <span class="n">PUBLICDATA</span> <span class="o">=</span> <span class="s2">&quot;publicData&quot;</span></div>
 
 
 <span class="c1"># pylint: disable=dangerous-default-value</span>
@@ -329,7 +207,7 @@
     <span class="k">return</span> <span class="n">response</span></div>
 
 
-<div class="viewcode-block" id="get_esi_path_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.get_esi_path_scope">[docs]</a><span class="k">def</span> <span class="nf">get_esi_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_esi_path_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.get_esi_path_scope">[docs]</a><span class="k">def</span> <span class="nf">get_esi_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the ESI scope that is required for a given ESI path.</span>
 
@@ -345,7 +223,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">esi_path</span><span class="p">:</span> <span class="n">EsiPath</span>
     <span class="k">for</span> <span class="n">esi_path</span> <span class="ow">in</span> <span class="n">EsiPath</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-        <span class="c1"># print(esi_path.to_json())</span>
         <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">esi_path</span><span class="o">.</span><span class="n">path_re</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">esi_path</span><span class="o">.</span><span class="n">scope</span>
     <span class="k">raise</span> <span class="n">me</span><span class="o">.</span><span class="n">DoesNotExist</span></div>

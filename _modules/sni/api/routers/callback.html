@@ -42,7 +42,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">status</span>
 <span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="p">(</span>
@@ -59,6 +59,7 @@
     <span class="n">EsiTokenError</span><span class="p">,</span>
     <span class="n">get_access_token_from_callback_code</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sni.esi.models</span> <span class="kn">import</span> <span class="n">EsiScope</span>
 <span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="n">save_esi_tokens</span><span class="p">,</span> <span class="n">token_has_enough_scopes</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="n">create_user_token</span><span class="p">,</span> <span class="n">StateCode</span><span class="p">,</span> <span class="n">to_jwt</span>
 <span class="kn">from</span> <span class="nn">sni.uac.uac</span> <span class="kn">import</span> <span class="n">is_authorized_to_login</span>
@@ -96,7 +97,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="string_list_to_html"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.string_list_to_html">[docs]</a><span class="k">def</span> <span class="nf">string_list_to_html</span><span class="p">(</span><span class="n">string_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="string_list_to_html"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.string_list_to_html">[docs]</a><span class="k">def</span> <span class="nf">string_list_to_html</span><span class="p">(</span><span class="n">string_list</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a string list to an HTML bullet list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -109,8 +110,8 @@
 <div class="viewcode-block" id="not_enough_scopes_response"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.callback.not_enough_scopes_response">[docs]</a><span class="k">def</span> <span class="nf">not_enough_scopes_response</span><span class="p">(</span>
     <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">required_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">provided_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">required_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">],</span>
+    <span class="n">provided_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an HTML response explaing that the user did not provide enough ESI</span>

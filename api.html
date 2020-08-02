@@ -293,7 +293,7 @@ sure all users are in the good corp, etc.)</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.alliance.GetAllianceOut.cumulated_mandatory_esi_scopes">
-<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -315,7 +315,7 @@ sure all users are in the good corp, etc.)</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.alliance.GetAllianceOut.mandatory_esi_scopes">
-<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -432,14 +432,14 @@ this instance.</p>
 
 <dl class="function">
 <dt id="sni.api.routers.callback.not_enough_scopes_response">
-<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">not_enough_scopes_response</code><span class="sig-paren">(</span><em class="sig-param">character_name: str, character_id: int, required_scopes: List[str], provided_scopes: List[str]</em><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#not_enough_scopes_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.not_enough_scopes_response" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">not_enough_scopes_response</code><span class="sig-paren">(</span><em class="sig-param">character_name: str, character_id: int, required_scopes: List[sni.user.models.EsiScope], provided_scopes: List[sni.user.models.EsiScope]</em><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#not_enough_scopes_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.not_enough_scopes_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an HTML response explaing that the user did not provide enough ESI
 scopes.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sni.api.routers.callback.string_list_to_html">
-<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">string_list_to_html</code><span class="sig-paren">(</span><em class="sig-param">string_list: List[str]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/api/routers/callback.html#string_list_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.string_list_to_html" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">string_list_to_html</code><span class="sig-paren">(</span><em class="sig-param">string_list: Sequence[str]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/api/routers/callback.html#string_list_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.string_list_to_html" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a string list to an HTML bullet list.</p>
 </dd></dl>
 
@@ -491,7 +491,7 @@ manipulation error.</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.coalition.GetCoalitionOut.mandatory_esi_scopes">
-<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -665,8 +665,18 @@ more.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.corporation_id">
+<code class="sig-name descname">corporation_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.corporation_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetCorporationOut.corporation_name">
+<code class="sig-name descname">corporation_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.corporation_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.api.routers.corporation.GetCorporationOut.cumulated_mandatory_esi_scopes">
-<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -678,7 +688,7 @@ more.</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.corporation.GetCorporationOut.mandatory_esi_scopes">
-<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mandatory_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1645,7 +1655,7 @@ to the owner of that app token.</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.user.GetUserOut.available_esi_scopes">
-<code class="sig-name descname">available_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.user.GetUserOut.available_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">available_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.user.GetUserOut.available_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1680,7 +1690,7 @@ to the owner of that app token.</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.user.GetUserOut.cumulated_mandatory_esi_scopes">
-<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.user.GetUserOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cumulated_mandatory_esi_scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.user.GetUserOut.cumulated_mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
