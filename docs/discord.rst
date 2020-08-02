@@ -21,6 +21,11 @@ Discord bot events
 
 .. automodule:: sni.discord.events
 
+Database models
+---------------
+
+.. automodule:: sni.discord.models
+
 Jobs
 ----
 

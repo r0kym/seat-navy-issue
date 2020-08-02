@@ -5,26 +5,12 @@ Discord related functionalities
 import logging
 
 import discord
-import mongoengine as me
 
 from sni.user.models import Group, User
 import sni.utils as utils
 
 from .bot import get_guild
-
-
-class DiscordAuthenticationChallenge(me.Document):
-    """
-    Represents a pending authentication challenge.
-    """
-
-    code = me.StringField(required=True, unique=True)
-    created_on = me.DateTimeField(default=utils.now, required=True)
-    """Timestamp of the creation of this document"""
-    user = me.ReferenceField(User, required=True, unique=True)
-    meta = {
-        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 60,},],
-    }
+from .models import DiscordAuthenticationChallenge
 
 
 def complete_authentication_challenge(discord_user: discord.User, code: str):
