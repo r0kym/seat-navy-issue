@@ -23,5 +23,5 @@ class DiscordAuthenticationChallenge(me.Document):
     """User that stated this authentication challenge"""
 
     meta = {
-        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 60,},],
+        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 120},],
     }
