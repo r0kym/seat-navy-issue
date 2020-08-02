@@ -595,6 +595,12 @@ components:
         ceo_character_name:
           title: Ceo Character Name
           type: string
+        corporation_id:
+          title: Corporation Id
+          type: integer
+        corporation_name:
+          title: Corporation Name
+          type: string
         cumulated_mandatory_esi_scopes:
           items:
             type: string
@@ -615,6 +621,8 @@ components:
       required:
       - ceo_character_id
       - ceo_character_name
+      - corporation_id
+      - corporation_name
       - cumulated_mandatory_esi_scopes
       - mandatory_esi_scopes
       - ticker

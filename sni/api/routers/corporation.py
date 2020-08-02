@@ -33,6 +33,8 @@ class GetCorporationOut(pdt.BaseModel):
     authorized_to_login: Optional[bool]
     ceo_character_id: int
     ceo_character_name: str
+    corporation_id: int
+    corporation_name: str
     cumulated_mandatory_esi_scopes: List[str]
     mandatory_esi_scopes: List[str]
     ticker: str
@@ -54,6 +56,8 @@ class GetCorporationOut(pdt.BaseModel):
             authorized_to_login=corporation.authorized_to_login,
             ceo_character_id=corporation.ceo.character_id,
             ceo_character_name=corporation.ceo.character_name,
+            corporation_id=corporation.corporation_id,
+            corporation_name=corporation.corporation_name,
             cumulated_mandatory_esi_scopes=list(
                 corporation.cumulated_mandatory_esi_scopes()
             ),
