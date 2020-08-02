@@ -53,7 +53,7 @@ from dataclasses import dataclass
 import logging
 from typing import Dict, Optional
 
-from sni.esi.esi import EsiScope
+from sni.esi.models import EsiScope
 from sni.db.cache import cache_get, cache_set
 from sni.user.models import Coalition, User
 

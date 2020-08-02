@@ -57,7 +57,7 @@ class GetCoalitionOut(pdt.BaseModel):
     authorized_to_login: Optional[bool]
     coalition_id: str
     created_on: datetime
-    mandatory_esi_scopes: List[str]
+    mandatory_esi_scopes: List[EsiScope]
     members: List[str]
     coalition_name: str
     ticker: str

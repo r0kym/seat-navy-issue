@@ -353,7 +353,7 @@ components:
           type: string
         cumulated_mandatory_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Cumulated Mandatory Esi Scopes
           type: array
         executor_corporation_id:
@@ -364,7 +364,7 @@ components:
           type: string
         mandatory_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
         ticker:
@@ -538,7 +538,7 @@ components:
           type: string
         mandatory_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
         members:
@@ -603,12 +603,12 @@ components:
           type: string
         cumulated_mandatory_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Cumulated Mandatory Esi Scopes
           type: array
         mandatory_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
         ticker:
@@ -940,7 +940,7 @@ components:
           type: boolean
         available_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Available Esi Scopes
           type: array
         character_id:
@@ -966,7 +966,7 @@ components:
           type: string
         cumulated_mandatory_esi_scopes:
           items:
-            type: string
+            $ref: '#/components/schemas/EsiScope'
           title: Cumulated Mandatory Esi Scopes
           type: array
         is_ceo_of_alliance:

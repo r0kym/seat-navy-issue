@@ -8,7 +8,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
-from sni.esi.esi import EsiScope
+from sni.esi.models import EsiScope
 from sni.scheduler import scheduler
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -34,10 +34,10 @@ class GetAllianceOut(pdt.BaseModel):
     authorized_to_login: Optional[bool]
     ceo_character_id: int
     ceo_character_name: str
-    cumulated_mandatory_esi_scopes: List[str]
+    cumulated_mandatory_esi_scopes: List[EsiScope]
     executor_corporation_id: int
     executor_corporation_name: str
-    mandatory_esi_scopes: List[str]
+    mandatory_esi_scopes: List[EsiScope]
     ticker: str
     updated_on: datetime
 

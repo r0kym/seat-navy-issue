@@ -8,7 +8,7 @@ from typing import Dict, Iterator, List, Optional
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
-from sni.esi.esi import EsiScope
+from sni.esi.models import EsiScope
 from sni.esi.token import tracking_status, TrackingStatus
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -35,8 +35,8 @@ class GetCorporationOut(pdt.BaseModel):
     ceo_character_name: str
     corporation_id: int
     corporation_name: str
-    cumulated_mandatory_esi_scopes: List[str]
-    mandatory_esi_scopes: List[str]
+    cumulated_mandatory_esi_scopes: List[EsiScope]
+    mandatory_esi_scopes: List[EsiScope]
     ticker: str
     updated_on: datetime
 

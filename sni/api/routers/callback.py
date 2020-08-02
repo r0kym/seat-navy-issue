@@ -3,7 +3,7 @@ Callback paths
 """
 
 import logging
-from typing import List
+from typing import List, Sequence
 
 from fastapi import APIRouter, status
 from fastapi.responses import (
@@ -20,6 +20,7 @@ from sni.esi.sso import (
     EsiTokenError,
     get_access_token_from_callback_code,
 )
+from sni.esi.models import EsiScope
 from sni.esi.token import save_esi_tokens, token_has_enough_scopes
 from sni.uac.token import create_user_token, StateCode, to_jwt
 from sni.uac.uac import is_authorized_to_login
@@ -57,7 +58,7 @@ to login. Please contact the instance administrator.</p>
     )
 
 
-def string_list_to_html(string_list: List[str]) -> str:
+def string_list_to_html(string_list: Sequence[str]) -> str:
     """
     Converts a string list to an HTML bullet list.
     """
@@ -70,8 +71,8 @@ def string_list_to_html(string_list: List[str]) -> str:
 def not_enough_scopes_response(
     character_name: str,
     character_id: int,
-    required_scopes: List[str],
-    provided_scopes: List[str],
+    required_scopes: List[EsiScope],
+    provided_scopes: List[EsiScope],
 ) -> HTMLResponse:
     """
     Returns an HTML response explaing that the user did not provide enough ESI

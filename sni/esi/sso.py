@@ -15,6 +15,8 @@ import requests
 
 from sni.conf import CONFIGURATION as conf
 
+from .models import EsiScope
+
 
 class AuthorizationCodeResponse(pdt.BaseModel):
     """
@@ -61,7 +63,7 @@ class DecodedAccessToken(pdt.BaseModel):
     kid: str
     name: str
     owner: str
-    scp: List[str]
+    scp: List[EsiScope]
     sub: str
 
     @property
@@ -96,7 +98,8 @@ def decode_access_token(access_token: str) -> DecodedAccessToken:
 
 
 def get_auth_url(
-    esi_scopes: List[str], state: str = "00000000-0000-0000-0000-000000000000"
+    esi_scopes: List[EsiScope],
+    state: str = "00000000-0000-0000-0000-000000000000",
 ) -> str:
     """
     Returns an EVE SSO login url based on the scopes passed in argument.
@@ -112,7 +115,7 @@ def get_auth_url(
         logging.warning(
             "Scope list cannot be empty, replaced by ['publicData']"
         )
-        esi_scopes = ["publicData"]
+        esi_scopes = [EsiScope.PUBLICDATA]
     params = {
         "client_id": conf.esi.client_id.get_secret_value(),
         "redirect_uri": urljoin(conf.general.root_url, "/callback/esi"),

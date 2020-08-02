@@ -13,6 +13,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
+from sni.esi.models import EsiScope
 from sni.esi.token import available_esi_scopes
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -50,14 +51,14 @@ class GetUserOut(pdt.BaseModel):
 
     alliance: Optional[int]
     authorized_to_login: Optional[bool]
-    available_esi_scopes: List[str]
+    available_esi_scopes: List[EsiScope]
     character_id: int
     character_name: str
     clearance_level: int
     coalitions: List[str]
     corporation: Optional[str]
     created_on: datetime
-    cumulated_mandatory_esi_scopes: List[str]
+    cumulated_mandatory_esi_scopes: List[EsiScope]
     is_ceo_of_alliance: bool
     is_ceo_of_corporation: bool
     tickered_name: str

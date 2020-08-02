@@ -4,8 +4,8 @@ ESI related database models
 
 import mongoengine as me
 
+from sni.user.models import EsiScope, User
 import sni.utils as utils
-from sni.user.models import User
 
 
 class EsiPath(me.Document):
@@ -26,7 +26,7 @@ class EsiPath(me.Document):
     path = me.StringField(required=True, unique_with="http_method")
     """String form of the path, e.g. ``/characters/{character_id}/``"""
 
-    scope = me.StringField(required=False)
+    scope = me.StringField(choices=EsiScope, required=False)
     """Scope required for this path"""
 
     version = me.StringField(required=True)
@@ -59,7 +59,9 @@ class EsiRefreshToken(me.Document):
     refresh_token = me.StringField(required=True)
     """The ESI refresh token string"""
 
-    scopes = me.ListField(me.StringField(), required=True, default=[])
+    scopes = me.ListField(
+        me.StringField(choices=EsiScope), required=True, default=[]
+    )
     """ESI scopes of the refresh token"""
 
     valid = me.BooleanField(default=True)
@@ -101,7 +103,9 @@ class EsiAccessToken(me.Document):
     )
     """Reference towards the refresh token that issued this access token"""
 
-    scopes = me.ListField(me.StringField(), required=True, default=[])
+    scopes = me.ListField(
+        me.StringField(choices=EsiScope), required=True, default=[]
+    )
     """ESI scopes of the access token"""
 
     meta = {

@@ -15,7 +15,7 @@ from .esi import (
     EsiResponse,
     get_esi_path_scope,
 )
-from .models import EsiAccessToken, EsiRefreshToken
+from .models import EsiAccessToken, EsiRefreshToken, EsiScope
 from .sso import (
     AuthorizationCodeResponse,
     decode_access_token,
@@ -35,12 +35,12 @@ class TrackingStatus(int, Enum):
     HAS_A_VALID_REFRESH_TOKEN = 2
 
 
-def available_esi_scopes(usr: User) -> Set[str]:
+def available_esi_scopes(usr: User) -> Set[EsiScope]:
     """
     Given a user, returns all the scopes for which SNI has a valid refresh
     token.
     """
-    scopes: List[str] = []
+    scopes: List[EsiScope] = []
     for refresh_token in EsiRefreshToken.objects(owner=usr, valid=True):
         scopes += refresh_token.scopes
     return set(scopes)
