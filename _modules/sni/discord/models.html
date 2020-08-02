@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>sni.teamspeak.models &#8212; SeAT Navy Issue alpha documentation</title>
+    <title>sni.discord.models &#8212; SeAT Navy Issue alpha documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -36,9 +36,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for sni.teamspeak.models</h1><div class="highlight"><pre>
+  <h1>Source code for sni.discord.models</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Teamspeak database models</span>
+<span class="sd">Database models</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
@@ -47,23 +47,19 @@
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 
-<div class="viewcode-block" id="TeamspeakAuthenticationChallenge"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.models.TeamspeakAuthenticationChallenge">[docs]</a><span class="k">class</span> <span class="nc">TeamspeakAuthenticationChallenge</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscordAuthenticationChallenge"><a class="viewcode-back" href="../../../discord.html#sni.discord.models.DiscordAuthenticationChallenge">[docs]</a><span class="k">class</span> <span class="nc">DiscordAuthenticationChallenge</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents a teamspeak authentication challenge, akin to</span>
-<span class="sd">    :class:`sni.uac.token.StateCode`.</span>
-
-<span class="sd">    See also:</span>
-<span class="sd">        :meth:`sni.teamspeak.new_authentication_challenge`</span>
+<span class="sd">    Represents a pending authentication challenge.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">code</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Challenge code&quot;&quot;&quot;</span>
 
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the creation of this document&quot;&quot;&quot;</span>
 
     <span class="n">user</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;&quot;Corresponding user&quot;&quot;&quot;</span>
-
-    <span class="n">challenge_nickname</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;See :meth:`sni.teamspeak.teamspeak.new_authentication_challenge`&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;User that stated this authentication challenge&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;created_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">},],</span>
