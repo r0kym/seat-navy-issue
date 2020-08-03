@@ -13,9 +13,16 @@ class EsiCharacterLocation(me.Document):
     Represents a character location, along with the ship it is currently
     flying. Thus, it is a combination of the ESI
     ``/characters/{character_id}/location``,
-    ``/characters/{character_id}/online``, and
-    ``/characters/{character_id}/ship`` paths.
+    ``/characters/{character_id}/online``,
+    ``/characters/{character_id}/ship``, and
+    ``/universe/structures/{structure_id}/`` (if applicable).
     """
+
+    SCHEMA_VERSION = 2
+    """Latest schema version for this collection"""
+
+    _version = me.IntField(default=SCHEMA_VERSION)
+    """Schema version of this document"""
 
     online = me.BooleanField()
     """Wether the character is online"""
@@ -36,7 +43,10 @@ class EsiCharacterLocation(me.Document):
     """Station ID, if applicable"""
 
     structure_id = me.IntField(default=None, null=True)
-    """Structire ID, if applicable"""
+    """Structure ID, if applicable"""
+
+    structure_name = me.StringField(default=None, null=True)
+    """Structure name, if applicable"""
 
     timestamp = me.DateTimeField(default=utils.now)
     """Timestamp"""

@@ -72,6 +72,7 @@ class GetCharacterLocationOut(pdt.BaseModel):
     station_id: Optional[int] = None
     station_name: Optional[str] = None
     structure_id: Optional[int] = None
+    structure_name: Optional[str] = None
     timestamp: datetime
 
     @staticmethod
@@ -103,6 +104,7 @@ class GetCharacterLocationOut(pdt.BaseModel):
             station_id=location.station_id,
             station_name=station_name,
             structure_id=location.structure_id,
+            structure_name=location.structure_name,
             timestamp=location.timestamp,
         )
 
