@@ -3,7 +3,6 @@ Main indexation module. Allows searches and analytics over data pulled from the
 ESI.
 """
 
-from sni.esi.esi import id_to_name
 from sni.esi.token import esi_get_on_befalf_of
 from sni.user.models import User
 

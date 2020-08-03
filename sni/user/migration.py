@@ -1,13 +1,12 @@
 """
 Migration methode for user related collections
 """
-import logging
 
-from sni.db.mongodb import get_pymongo_collection
 from sni.db.migration import (
     ensure_minimum_version,
-    has_outdated_documents,
+    finalize_migration,
     set_if_not_exist,
+    start_migration,
 )
 
 from .models import (
@@ -71,17 +70,9 @@ def migrate_alliance():
     """
     Migrate the alliances documents to the latest schema
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(Alliance._get_collection_name())
-
-    if not has_outdated_documents(collection, Alliance.SCHEMA_VERSION):
+    collection = start_migration(Alliance)
+    if collection is None:
         return
-
-    logging.info(
-        'Migrating collection "alliance" to v%d', Alliance.SCHEMA_VERSION
-    )
-
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -98,24 +89,16 @@ def migrate_alliance():
     ensure_minimum_version(collection, 3)
 
     # Finally
-    Alliance.ensure_indexes()
+    finalize_migration(Alliance)
 
 
 def migrate_coalition():
     """
     Migrate the coalition documents to the latest schema
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(Coalition._get_collection_name())
-
-    if not has_outdated_documents(collection, Coalition.SCHEMA_VERSION):
+    collection = start_migration(Coalition)
+    if collection is None:
         return
-
-    logging.info(
-        'Migrating collection "coalition" to v%d', Coalition.SCHEMA_VERSION
-    )
-
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -139,24 +122,16 @@ def migrate_coalition():
     ensure_minimum_version(collection, 4)
 
     # Finally
-    Coalition.ensure_indexes()
+    finalize_migration(Coalition)
 
 
 def migrate_corporation():
     """
     Migrate the corporation documents to the latest schema
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(Corporation._get_collection_name())
-
-    if not has_outdated_documents(collection, Corporation.SCHEMA_VERSION):
+    collection = start_migration(Corporation)
+    if collection is None:
         return
-
-    logging.info(
-        'Migrating collection "corporation" to v%d', Corporation.SCHEMA_VERSION
-    )
-
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -173,22 +148,16 @@ def migrate_corporation():
     ensure_minimum_version(collection, 3)
 
     # Finally
-    Corporation.ensure_indexes()
+    finalize_migration(Corporation)
 
 
 def migrate_group():
     """
     Migrate the group documents to the latest schema
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(Group._get_collection_name())
-
-    if not has_outdated_documents(collection, Group.SCHEMA_VERSION):
+    collection = start_migration(Group)
+    if collection is None:
         return
-
-    logging.info('Migrating collection "group" to v%d', Group.SCHEMA_VERSION)
-
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -231,22 +200,16 @@ def migrate_group():
     ensure_minimum_version(collection, 4)
 
     # Finally
-    Group.ensure_indexes()
+    finalize_migration(Group)
 
 
 def migrate_user():
     """
     Migrate the user documents to the latest schema
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(User._get_collection_name())
-
-    if not has_outdated_documents(collection, User.SCHEMA_VERSION):
+    collection = start_migration(User)
+    if collection is None:
         return
-
-    logging.info('Migrating collection "user" to v%d', User.SCHEMA_VERSION)
-
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -264,4 +227,4 @@ def migrate_user():
     ensure_minimum_version(collection, 3)
 
     # Finally
-    User.ensure_indexes()
+    finalize_migration(User)

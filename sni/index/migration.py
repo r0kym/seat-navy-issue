@@ -2,14 +2,11 @@
 Database migrations
 """
 
-
-import logging
-
-from sni.db.mongodb import get_pymongo_collection
 from sni.db.migration import (
     ensure_minimum_version,
-    has_outdated_documents,
+    finalize_migration,
     set_if_not_exist,
+    start_migration,
 )
 
 
@@ -27,22 +24,9 @@ def migrate_character_location() -> None:
     """
     Migrate the ``esi_character_location`` collection
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(
-        EsiCharacterLocation._get_collection_name()
-    )
-
-    if not has_outdated_documents(
-        collection, EsiCharacterLocation.SCHEMA_VERSION
-    ):
+    collection = start_migration(EsiCharacterLocation)
+    if collection is None:
         return
-
-    logging.info(
-        'Migrating collection "esi_character_location" to v%d',
-        EsiCharacterLocation.SCHEMA_VERSION,
-    )
-
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -54,4 +38,4 @@ def migrate_character_location() -> None:
     ensure_minimum_version(collection, 2)
 
     # Finally
-    EsiCharacterLocation.ensure_indexes()
+    finalize_migration(EsiCharacterLocation)

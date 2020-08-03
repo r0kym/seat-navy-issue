@@ -2,13 +2,12 @@
 Database migrations
 """
 
-import logging
 
-from sni.db.mongodb import get_pymongo_collection
 from sni.db.migration import (
     ensure_minimum_version,
-    has_outdated_documents,
+    finalize_migration,
     set_if_not_exist,
+    start_migration,
 )
 
 from .models import EsiAccessToken, EsiRefreshToken
@@ -26,15 +25,9 @@ def migrate_esi_access_token() -> None:
     """
     Run migration tasks on the ``esi_access_token`` connection.
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(EsiAccessToken._get_collection_name())
-    schema_version = EsiAccessToken.SCHEMA_VERSION
-    if not has_outdated_documents(collection, schema_version):
+    collection = start_migration(EsiAccessToken)
+    if collection is None:
         return
-    logging.info(
-        'Migrating collection "esi_refresh_token" to v%d', schema_version
-    )
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -46,22 +39,16 @@ def migrate_esi_access_token() -> None:
     ensure_minimum_version(collection, 2)
 
     # Finally
-    EsiAccessToken.ensure_indexes()
+    finalize_migration(EsiAccessToken)
 
 
 def migrate_esi_refresh_token() -> None:
     """
-    Run migration tasks on the ``esi_refresh_token`` connection.
+    Run migration tasks on the ``esi_refresh_token`` collection.
     """
-    # pylint: disable=protected-access
-    collection = get_pymongo_collection(EsiRefreshToken._get_collection_name())
-    schema_version = EsiRefreshToken.SCHEMA_VERSION
-    if not has_outdated_documents(collection, schema_version):
+    collection = start_migration(EsiRefreshToken)
+    if collection is None:
         return
-    logging.info(
-        'Migrating collection "esi_refresh_token" to v%d', schema_version
-    )
-    collection.drop_indexes()
 
     # v0 to v1
     # Set _version field to 1
@@ -73,4 +60,4 @@ def migrate_esi_refresh_token() -> None:
     ensure_minimum_version(collection, 2)
 
     # Finally
-    EsiRefreshToken.ensure_indexes()
+    finalize_migration(EsiRefreshToken)
