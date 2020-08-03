@@ -111,6 +111,7 @@
     <span class="n">station_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">station_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">structure_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">structure_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
 
 <div class="viewcode-block" id="GetCharacterLocationOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.esi.GetCharacterLocationOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -142,6 +143,7 @@
             <span class="n">station_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">station_id</span><span class="p">,</span>
             <span class="n">station_name</span><span class="o">=</span><span class="n">station_name</span><span class="p">,</span>
             <span class="n">structure_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">structure_id</span><span class="p">,</span>
+            <span class="n">structure_name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">structure_name</span><span class="p">,</span>
             <span class="n">timestamp</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 

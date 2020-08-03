@@ -55,8 +55,21 @@
 <p>Represents a character location, along with the ship it is currently
 flying. Thus, it is a combination of the ESI
 <code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/location</span></code>,
-<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/online</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/ship</span></code> paths.</p>
+<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/online</span></code>,
+<code class="docutils literal notranslate"><span class="pre">/characters/{character_id}/ship</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">/universe/structures/{structure_id}/</span></code> (if applicable).</p>
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.SCHEMA_VERSION">
+<code class="sig-name descname">SCHEMA_VERSION</code><em class="property"> = 2</em><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.SCHEMA_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Latest schema version for this collection</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema version of this document</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="sni.index.models.EsiCharacterLocation.online">
 <code class="sig-name descname">online</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.online" title="Permalink to this definition">¶</a></dt>
@@ -96,7 +109,13 @@ flying. Thus, it is a combination of the ESI
 <dl class="attribute">
 <dt id="sni.index.models.EsiCharacterLocation.structure_id">
 <code class="sig-name descname">structure_id</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.structure_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structire ID, if applicable</p>
+<dd><p>Structure ID, if applicable</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.index.models.EsiCharacterLocation.structure_name">
+<code class="sig-name descname">structure_name</code><a class="headerlink" href="#sni.index.models.EsiCharacterLocation.structure_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure name, if applicable</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -327,6 +346,12 @@ flying. Thus, it is a combination of the ESI
 <dt id="sni.index.migration.migrate">
 <code class="sig-prename descclassname">sni.index.migration.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/index/migration.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.migration.migrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs migration tasks</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.index.migration.migrate_character_location">
+<code class="sig-prename descclassname">sni.index.migration.</code><code class="sig-name descname">migrate_character_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/index/migration.html#migrate_character_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.index.migration.migrate_character_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate the <code class="docutils literal notranslate"><span class="pre">esi_character_location</span></code> collection</p>
 </dd></dl>
 
 </div>
