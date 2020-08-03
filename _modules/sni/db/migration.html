@@ -41,9 +41,12 @@
 <span class="sd">Database migration utilities</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pymongo.collection</span> <span class="kn">import</span> <span class="n">Collection</span>
+
+<span class="kn">from</span> <span class="nn">.mongodb</span> <span class="kn">import</span> <span class="n">get_pymongo_collection</span>
 
 
 <div class="viewcode-block" id="ensure_minimum_version"><a class="viewcode-back" href="../../../db.html#sni.db.migration.ensure_minimum_version">[docs]</a><span class="k">def</span> <span class="nf">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -54,6 +57,21 @@
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
         <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$lt&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">}},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">}},</span>
     <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="finalize_migration"><a class="viewcode-back" href="../../../db.html#sni.db.migration.finalize_migration">[docs]</a><span class="k">def</span> <span class="nf">finalize_migration</span><span class="p">(</span><span class="n">mongoengine_model_class</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finalizes the migration process for a collection.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        collection = start_migration(EsiRefreshToken)</span>
+<span class="sd">        if collection is None:</span>
+<span class="sd">            return</span>
+<span class="sd">        ...</span>
+<span class="sd">        finalize_migration(EsiRefreshToken)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mongoengine_model_class</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="has_outdated_documents"><a class="viewcode-back" href="../../../db.html#sni.db.migration.has_outdated_documents">[docs]</a><span class="k">def</span> <span class="nf">has_outdated_documents</span><span class="p">(</span>
@@ -85,6 +103,36 @@
         <span class="n">query</span><span class="p">[</span><span class="s2">&quot;_version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
     <span class="n">update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">field_name</span><span class="p">:</span> <span class="n">value</span><span class="p">}}</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">update</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="start_migration"><a class="viewcode-back" href="../../../db.html#sni.db.migration.start_migration">[docs]</a><span class="k">def</span> <span class="nf">start_migration</span><span class="p">(</span><span class="n">mongoengine_model_class</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Starts the migration of a collection. If the returned value is ``None``,</span>
+<span class="sd">    then the collection is up to date.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        collection = start_migration(EsiRefreshToken)</span>
+<span class="sd">        if collection is None:</span>
+<span class="sd">            return</span>
+<span class="sd">        ...</span>
+<span class="sd">        finalize_migration(EsiRefreshToken)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">collection_name</span> <span class="o">=</span> <span class="n">mongoengine_model_class</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">()</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span>
+        <span class="n">collection</span><span class="p">,</span> <span class="n">mongoengine_model_class</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Migrating collection &quot;</span><span class="si">%s</span><span class="s1">&quot; to version </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">collection_name</span><span class="p">,</span>
+        <span class="n">mongoengine_model_class</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">collection</span></div>
 </pre></div>
 
           </div>

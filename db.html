@@ -98,6 +98,20 @@ the given version, sets it to that version.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.db.migration.finalize_migration">
+<code class="sig-prename descclassname">sni.db.migration.</code><code class="sig-name descname">finalize_migration</code><span class="sig-paren">(</span><em class="sig-param">mongoengine_model_class</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/db/migration.html#finalize_migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migration.finalize_migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finalizes the migration process for a collection.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">EsiRefreshToken</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>
+<span class="o">...</span>
+<span class="n">finalize_migration</span><span class="p">(</span><span class="n">EsiRefreshToken</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.db.migration.has_outdated_documents">
 <code class="sig-prename descclassname">sni.db.migration.</code><code class="sig-name descname">has_outdated_documents</code><span class="sig-paren">(</span><em class="sig-param">collection: pymongo.collection.Collection</em>, <em class="sig-param">schema_version: int</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/sni/db/migration.html#has_outdated_documents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migration.has_outdated_documents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tells wether a (pymongo) collection has documents whose <code class="docutils literal notranslate"><span class="pre">_version</span></code> field
@@ -110,6 +124,21 @@ have value less than the given schema version.</p>
 <dd><p>Creates a field with a given value in all documents, if that field does not
 already exist. If the version kwargs if specified, only update documents of
 that version.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.db.migration.start_migration">
+<code class="sig-prename descclassname">sni.db.migration.</code><code class="sig-name descname">start_migration</code><span class="sig-paren">(</span><em class="sig-param">mongoengine_model_class</em><span class="sig-paren">)</span> &#x2192; Optional[pymongo.collection.Collection]<a class="reference internal" href="_modules/sni/db/migration.html#start_migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.db.migration.start_migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the migration of a collection. If the returned value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+then the collection is up to date.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">EsiRefreshToken</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>
+<span class="o">...</span>
+<span class="n">finalize_migration</span><span class="p">(</span><span class="n">EsiRefreshToken</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>

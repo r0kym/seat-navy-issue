@@ -40,13 +40,12 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Migration methode for user related collections</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">sni.db.mongodb</span> <span class="kn">import</span> <span class="n">get_pymongo_collection</span>
 <span class="kn">from</span> <span class="nn">sni.db.migration</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ensure_minimum_version</span><span class="p">,</span>
-    <span class="n">has_outdated_documents</span><span class="p">,</span>
+    <span class="n">finalize_migration</span><span class="p">,</span>
     <span class="n">set_if_not_exist</span><span class="p">,</span>
+    <span class="n">start_migration</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
@@ -110,17 +109,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Migrate the alliances documents to the latest schema</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Alliance</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">Alliance</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s1">&#39;Migrating collection &quot;alliance&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Alliance</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
-    <span class="p">)</span>
-
-    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
@@ -137,24 +128,16 @@
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
-    <span class="n">Alliance</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+    <span class="n">finalize_migration</span><span class="p">(</span><span class="n">Alliance</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate_coalition"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_coalition">[docs]</a><span class="k">def</span> <span class="nf">migrate_coalition</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Migrate the coalition documents to the latest schema</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Coalition</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">Coalition</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s1">&#39;Migrating collection &quot;coalition&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
-    <span class="p">)</span>
-
-    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
@@ -178,24 +161,16 @@
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
-    <span class="n">Coalition</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+    <span class="n">finalize_migration</span><span class="p">(</span><span class="n">Coalition</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate_corporation"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_corporation">[docs]</a><span class="k">def</span> <span class="nf">migrate_corporation</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Migrate the corporation documents to the latest schema</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Corporation</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">Corporation</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s1">&#39;Migrating collection &quot;corporation&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span>
-    <span class="p">)</span>
-
-    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
@@ -212,22 +187,16 @@
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
-    <span class="n">Corporation</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+    <span class="n">finalize_migration</span><span class="p">(</span><span class="n">Corporation</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate_group"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_group">[docs]</a><span class="k">def</span> <span class="nf">migrate_group</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Migrate the group documents to the latest schema</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">Group</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">Group</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">Group</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;group&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Group</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
-
-    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
@@ -270,22 +239,16 @@
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
-    <span class="n">Group</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+    <span class="n">finalize_migration</span><span class="p">(</span><span class="n">Group</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="migrate_user"><a class="viewcode-back" href="../../../user.html#sni.user.migration.migrate_user">[docs]</a><span class="k">def</span> <span class="nf">migrate_user</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Migrate the user documents to the latest schema</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">get_pymongo_collection</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">_get_collection_name</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_outdated_documents</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">):</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Migrating collection &quot;user&quot; to v</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
-
-    <span class="n">collection</span><span class="o">.</span><span class="n">drop_indexes</span><span class="p">()</span>
 
     <span class="c1"># v0 to v1</span>
     <span class="c1"># Set _version field to 1</span>
@@ -303,7 +266,7 @@
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Finally</span>
-    <span class="n">User</span><span class="o">.</span><span class="n">ensure_indexes</span><span class="p">()</span></div>
+    <span class="n">finalize_migration</span><span class="p">(</span><span class="n">User</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
