@@ -437,6 +437,9 @@ components:
         structure_id:
           title: Structure Id
           type: integer
+        structure_name:
+          title: Structure Name
+          type: string
         timestamp:
           format: date-time
           title: Timestamp
