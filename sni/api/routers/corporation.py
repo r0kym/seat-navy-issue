@@ -12,6 +12,7 @@ from sni.esi.models import EsiScope
 from sni.esi.token import tracking_status, TrackingStatus
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
+    create_state_code,
     from_authotization_header_nondyn,
     Token,
 )
@@ -65,6 +66,14 @@ class GetCorporationOut(pdt.BaseModel):
             ticker=corporation.ticker,
             updated_on=corporation.updated_on,
         )
+
+
+class PostCorporationGuestOut(pdt.BaseModel):
+    """
+    Model for ``POST /corporation/{corporation_id}/guest`` reponses.
+    """
+
+    state_code: str
 
 
 class GetCorporationShortOut(pdt.BaseModel):
@@ -223,6 +232,29 @@ def get_corporation_guests(
         GetUserShortOut.from_record(guest)
         for guest in corporation.guest_iterator()
     ]
+
+
+@router.post(
+    "/{corporation_id}/guest",
+    response_model=PostCorporationGuestOut,
+    summary="Creates a state code for a new guest to this corporation",
+)
+def post_corporation_guest(
+    corporation_id: int,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Creates a state code for a new guest to this corporation. The user then has
+    to login with this state code to be considered a guest.
+    """
+    corporation: Corporation = Corporation.objects(
+        corporation_id=corporation_id
+    ).get()
+    assert_has_clearance(
+        tkn.owner, "sni.create_corporation_guest", corporation.ceo
+    )
+    state_code = create_state_code(tkn.parent, corporation)
+    return PostCorporationGuestOut(state_code=str(state_code.uuid))
 
 
 @router.get(

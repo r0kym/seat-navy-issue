@@ -74,15 +74,6 @@ class PostUseFromPerOut(pdt.BaseModel):
     user_token: str
 
 
-class PostTokenUseFromUseOut(pdt.BaseModel):
-    """
-    Model for ``POST /token/use/from/dyn`` reponses.
-    """
-
-    cumulated_mandatory_esi_scopes: List[EsiScope]
-    state_code: str
-
-
 class PostTokenDynIn(pdt.BaseModel):
     """
     Model for ``POST /token/dyn`` requests.
@@ -261,38 +252,3 @@ async def post_token_use_from_per(
     user_token = create_user_token(tkn, User.objects.get(character_id=0),)
     user_token_str = to_jwt(user_token)
     return PostUseFromPerOut(user_token=user_token_str)
-
-
-@router.post(
-    "/use/from/use",
-    response_model=PostTokenUseFromUseOut,
-    summary="Creates a new state code to invite an EVE character to login",
-)
-async def post_token_use_from_use(
-    tkn: Token = Depends(from_authotization_header),
-):
-    """
-    Authenticates an application permanent token and returns a user token tied
-    to the owner of that app token.
-    """
-    if tkn.token_type != Token.TokenType.use:
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
-            detail="Must use a user token for this path.",
-        )
-    assert_has_clearance(tkn.owner, "sni.create_state_code")
-    if tkn.owner.corporation is None:
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
-            detail=(
-                f"User {tkn.owner.character_name} ({tkn.owner.character_id}) "
-                "does not have a coropration."
-            ),
-        )
-    state_code = create_state_code(tkn.parent, tkn.owner.corporation)
-    return PostTokenUseFromUseOut(
-        cumulated_mandatory_esi_scopes=list(
-            tkn.owner.corporation.cumulated_mandatory_esi_scopes()
-        ),
-        state_code=str(state_code.uuid),
-    )

@@ -1082,6 +1082,16 @@ components:
       - ticker
       title: PostCoalitionIn
       type: object
+    PostCorporationGuestOut:
+      description: Model for ``POST /corporation/{corporation_id}/guest`` reponses.
+      properties:
+        state_code:
+          title: State Code
+          type: string
+      required:
+      - state_code
+      title: PostCorporationGuestOut
+      type: object
     PostGroupIn:
       description: Model for `POST /group` responses.
       properties:
@@ -1176,22 +1186,6 @@ components:
       - login_url
       - state_code
       title: PostTokenUseFromDynOut
-      type: object
-    PostTokenUseFromUseOut:
-      description: Model for ``POST /token/use/from/dyn`` reponses.
-      properties:
-        cumulated_mandatory_esi_scopes:
-          items:
-            $ref: '#/components/schemas/EsiScope'
-          title: Cumulated Mandatory Esi Scopes
-          type: array
-        state_code:
-          title: State Code
-          type: string
-      required:
-      - cumulated_mandatory_esi_scopes
-      - state_code
-      title: PostTokenUseFromUseOut
       type: object
     PostUseFromPerOut:
       description: Model for ``POST /token/use/from/per`` reponses.
@@ -2051,6 +2045,41 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Corporation guests
+      tags:
+      - Corporation management
+    post:
+      description: 'Creates a state code for a new guest to this corporation. The
+        user then has
+
+        to login with this state code to be considered a guest.'
+      operationId: post_corporation_guest_corporation__corporation_id__guest_post
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCorporationGuestOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Creates a state code for a new guest to this corporation
       tags:
       - Corporation management
   /corporation/{corporation_id}/tracking:
@@ -3055,36 +3084,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Create a new user token with a permanent app token
-      tags:
-      - Authentication & tokens
-  /token/use/from/use:
-    post:
-      description: 'Authenticates an application permanent token and returns a user
-        token tied
-
-        to the owner of that app token.'
-      operationId: post_token_use_from_use_token_use_from_use_post
-      parameters:
-      - in: header
-        name: authorization
-        required: false
-        schema:
-          title: Authorization
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostTokenUseFromUseOut'
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Creates a new state code to invite an EVE character to login
       tags:
       - Authentication & tokens
   /user:
