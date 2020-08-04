@@ -52,7 +52,11 @@ def not_authorized_to_login_response(
     return HTMLResponse(
         content=f"""<h1>Not authorized to login</h1>
 <p>Character <strong>{character_name}</strong> ({character_id}) is not allowed
-to login. Please contact the instance administrator.</p>
+to login. This is due to the fact that your character and/or corporation and/or
+alliance is not whitelisted.</p>
+<p>If your alliance recently joined a coalition registered on this instance,
+ask the coalition managed to add your alliance, and try again.</p>
+<p>If the problem persists, please contact the instance administrator.</p>
 """,
         status_code=status.HTTP_401_UNAUTHORIZED,
     )
