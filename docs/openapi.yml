@@ -1158,6 +1158,9 @@ components:
             $ref: '#/components/schemas/EsiScope'
           title: Scopes
           type: array
+        state_code:
+          title: State Code
+          type: string
       title: PostTokenUseFromDynIn
       type: object
     PostTokenUseFromDynOut:
@@ -2011,6 +2014,43 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Modify a corporation registered on SNI
+      tags:
+      - Corporation management
+  /corporation/{corporation_id}/guest:
+    get:
+      description: Returns the list of guests in this corporation.
+      operationId: get_corporation_guests_corporation__corporation_id__guest_get
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetUserShortOut'
+                title: Response Get Corporation Guests Corporation  Corporation Id  Guest
+                  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Corporation guests
       tags:
       - Corporation management
   /corporation/{corporation_id}/tracking:

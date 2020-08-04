@@ -202,6 +202,30 @@ def put_corporation(
 
 
 @router.get(
+    "/{corporation_id}/guest",
+    response_model=List[GetUserShortOut],
+    summary="Corporation guests",
+)
+def get_corporation_guests(
+    corporation_id: int,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Returns the list of guests in this corporation.
+    """
+    corporation: Corporation = Corporation.objects(
+        corporation_id=corporation_id
+    ).get()
+    assert_has_clearance(
+        tkn.owner, "sni.read_corporation_guests", corporation.ceo
+    )
+    return [
+        GetUserShortOut.from_record(guest)
+        for guest in corporation.guest_iterator()
+    ]
+
+
+@router.get(
     "/{corporation_id}/tracking",
     response_model=GetTrackingOut,
     summary="Corporation tracking",

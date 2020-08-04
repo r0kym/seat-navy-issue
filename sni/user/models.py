@@ -236,7 +236,12 @@ class Alliance(me.Document):
                     },
                 },
                 {"$unwind": "$alliance_data"},
-                {"$match": {"alliance_data.alliance_id": self.alliance_id}},
+                {
+                    "$match": {
+                        "clearance_level": {"$gte": 0},
+                        "alliance_data.alliance_id": self.alliance_id,
+                    }
+                },
                 {
                     "$set": {
                         "character_name_lower": {"$toLower": "$character_name"}
@@ -318,7 +323,12 @@ class Coalition(me.Document):
                     },
                 },
                 {"$unwind": "$alliance_data"},
-                {"$match": {"alliance_data._id": {"$in": members_ids}}},
+                {
+                    "$match": {
+                        "clearance_level": {"$gte": 0},
+                        "alliance_data._id": {"$in": members_ids},
+                    }
+                },
                 {
                     "$set": {
                         "character_name_lower": {"$toLower": "$character_name"}
@@ -406,6 +416,47 @@ class Corporation(me.Document):
             self.mandatory_esi_scopes + alliance_scopes + coalition_scopes
         )
 
+    def guests(self) -> List["User"]:
+        """
+        Return the guest list of this corporation, according to the database. A
+        guest is a member with a clearance level of -1.
+        """
+        return list(self.guest_iterator())
+
+    def guest_iterator(self) -> Iterator["User"]:
+        """
+        Returns an iterator over all the guests of this corporation, according
+        to the database. A guest is a member with a clearance level of -1.
+        """
+        result = User.objects.aggregate(
+            [
+                {
+                    "$lookup": {
+                        "as": "corporation_data",
+                        "foreignField": "_id",
+                        "from": "corporation",
+                        "localField": "corporation",
+                    },
+                },
+                {"$unwind": "$corporation_data"},
+                {
+                    "$match": {
+                        "clearance_level": {"$gt": -1},
+                        "corporation_data.corporation_id": self.corporation_id,
+                    }
+                },
+                {
+                    "$set": {
+                        "character_name_lower": {"$toLower": "$character_name"}
+                    }
+                },
+                {"$sort": {"character_name_lower": 1}},
+                {"$project": {"_id": True}},
+            ]
+        )
+        for item in result:
+            yield User.objects(pk=item["_id"]).get()
+
     def users(self) -> List["User"]:
         """
         Return the member list of this corporation, according to the database.
@@ -431,7 +482,8 @@ class Corporation(me.Document):
                 {"$unwind": "$corporation_data"},
                 {
                     "$match": {
-                        "corporation_data.corporation_id": self.corporation_id
+                        "clearance_level": {"$gte": 0},
+                        "corporation_data.corporation_id": self.corporation_id,
                     }
                 },
                 {

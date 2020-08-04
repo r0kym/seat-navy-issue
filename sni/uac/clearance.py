@@ -2,6 +2,8 @@
 Clearance management and verification. Each user has a **clearance level**,
 which is an integer:
 
+* Level -1: User is a guest and has no priviledge whatsoever.
+
 * Level 0: User only have access to public data and read-write access to its
   own ESI.
 
@@ -262,6 +264,7 @@ SCOPES: Dict[str, AbstractScope] = {
     "sni.system.submit_job": AbsoluteScope(10),
     "sni.fetch_corporation": AbsoluteScope(8),
     "sni.track_corporation": ESIScope(0),
+    "sni.read_corporation_guests": ESIScope(0),
     "sni.read_corporation": AbsoluteScope(0),
     "sni.update_corporation": ESIScope(1),
     "sni.fetch_alliance": AbsoluteScope(8),
@@ -387,12 +390,12 @@ def reset_clearance(usr: User, save: bool = False):
         usr.clearance_level = 4
     elif usr.is_ceo_of_corporation():
         usr.clearance_level = 2
-    else:
+    elif usr.clearance_level >= 0:
         usr.clearance_level = 0
-    logging.debug(
-        "Reset clearance level of %s to %d",
-        usr.character_name,
-        usr.clearance_level,
-    )
     if save:
+        logging.debug(
+            "Reset clearance level of %s to %d",
+            usr.character_name,
+            usr.clearance_level,
+        )
         usr.save()
