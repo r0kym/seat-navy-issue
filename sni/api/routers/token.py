@@ -54,6 +54,7 @@ class PostTokenUseFromDynIn(pdt.BaseModel):
     """
 
     scopes: List[EsiScope] = pdt.Field([EsiScope.PUBLICDATA])
+    state_code: Optional[str] = None
 
 
 class PostTokenUseFromDynOut(pdt.BaseModel):
@@ -229,10 +230,13 @@ async def post_token_use_from_dyn(
             detail="Must use a dynamic app token for this path.",
         )
     assert_has_clearance(tkn.owner, "sni.create_use_token")
-    state_code = create_state_code(tkn)
+    state_code = (
+        data.state_code
+        if data.state_code is not None
+        else str(create_state_code(tkn).uuid)
+    )
     return PostTokenUseFromDynOut(
-        login_url=get_auth_url(data.scopes, str(state_code.uuid)),
-        state_code=str(state_code.uuid),
+        login_url=get_auth_url(data.scopes, state_code), state_code=state_code,
     )
 
 
