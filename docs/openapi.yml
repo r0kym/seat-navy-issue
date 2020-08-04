@@ -1174,6 +1174,22 @@ components:
       - state_code
       title: PostTokenUseFromDynOut
       type: object
+    PostTokenUseFromUseOut:
+      description: Model for ``POST /token/use/from/dyn`` reponses.
+      properties:
+        cumulated_mandatory_esi_scopes:
+          items:
+            $ref: '#/components/schemas/EsiScope'
+          title: Cumulated Mandatory Esi Scopes
+          type: array
+        state_code:
+          title: State Code
+          type: string
+      required:
+      - cumulated_mandatory_esi_scopes
+      - state_code
+      title: PostTokenUseFromUseOut
+      type: object
     PostUseFromPerOut:
       description: Model for ``POST /token/use/from/per`` reponses.
       properties:
@@ -2999,6 +3015,36 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Create a new user token with a permanent app token
+      tags:
+      - Authentication & tokens
+  /token/use/from/use:
+    post:
+      description: 'Authenticates an application permanent token and returns a user
+        token tied
+
+        to the owner of that app token.'
+      operationId: post_token_use_from_use_token_use_from_use_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTokenUseFromUseOut'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Creates a new state code to invite an EVE character to login
       tags:
       - Authentication & tokens
   /user:

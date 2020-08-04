@@ -255,6 +255,7 @@ SCOPES: Dict[str, AbstractScope] = {
     "sni.update_group": AbsoluteScope(9),
     "sni.update_per_token": AbsoluteScope(10),
     "sni.update_use_token": AbsoluteScope(0),
+    "sni.create_state_code": AbsoluteScope(1),
     "sni.update_user": AbsoluteScope(9),
     "sni.system.read_configuration": AbsoluteScope(10),
     "sni.system.read_jobs": AbsoluteScope(10),

@@ -6,7 +6,7 @@ from enum import Enum
 
 import mongoengine as me
 
-from sni.user.models import User
+from sni.user.models import Corporation, User
 import sni.utils as utils
 
 
@@ -72,11 +72,22 @@ class StateCode(me.Document):
     end user logs in to EVE SSO.
     """
 
+    SCHEMA_VERSION = 2
+    """Latest schema version for this collection"""
+
+    _version = me.IntField(default=SCHEMA_VERSION)
+    """Schema version of this document"""
+
     app_token = me.ReferenceField(Token, required=True)
     """The app token that created this state code"""
 
     created_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the creation of this document"""
+
+    inviting_corporation = me.ReferenceField(
+        Corporation, default=None, null=True, required=False
+    )
+    """Corporation inviting the user of that state code, if any"""
 
     uuid = me.UUIDField(binary=False, unique=True)
     """

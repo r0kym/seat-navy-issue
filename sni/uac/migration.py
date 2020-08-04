@@ -5,7 +5,15 @@ UAC specific migrations
 import logging
 
 from sni.user.models import User
+from sni.db.migration import (
+    ensure_minimum_version,
+    finalize_migration,
+    set_if_not_exist,
+    start_migration,
+)
+
 import sni.uac.token as token
+from .models import StateCode
 
 
 def ensure_root_per_token() -> None:
@@ -56,3 +64,23 @@ def migrate():
     """
     ensure_root_dyn_token()
     ensure_root_per_token()
+
+
+def migrate_state_code():
+    """
+    Migrates the ``state_code`` collection
+    """
+    collection = start_migration(StateCode)
+    if collection is None:
+        return
+
+    # v0 to v1
+    # Set _version field to 1
+    set_if_not_exist(collection, "_version", 1)
+
+    # v1 to v2
+    # Set inviting_corporation field to None
+    set_if_not_exist(collection, "inviting_corporation", None, version=1)
+    ensure_minimum_version(collection, 2)
+
+    finalize_migration(StateCode)

@@ -10,7 +10,7 @@ import fastapi
 import jwt
 import jwt.exceptions as jwt_exceptions
 
-from sni.user.models import User
+from sni.user.models import Corporation, User
 from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
@@ -69,7 +69,10 @@ def create_permanent_app_token(
     return new_token
 
 
-def create_state_code(app_token: Token) -> StateCode:
+def create_state_code(
+    app_token: Optional[Token],
+    inviting_corporation: Optional[Corporation] = None,
+) -> StateCode:
     """
     Creates a new state code.
 
@@ -77,11 +80,16 @@ def create_state_code(app_token: Token) -> StateCode:
         :class:`sni.uac.token.StateCode`
     """
     state_code = StateCode(
-        app_token=app_token, created_on=utils.now(), uuid=str(uuid4()),
+        app_token=app_token,
+        created_on=utils.now(),
+        inviting_corporation=inviting_corporation,
+        uuid=str(uuid4()),
     )
     state_code.save()
     logging.info(
-        "Created state code %s for app %s", state_code.uuid, app_token.uuid
+        "Created state code %s deriving from app token %s",
+        state_code.uuid,
+        app_token.uuid if app_token is not None else "N/A",
     )
     return state_code
 
