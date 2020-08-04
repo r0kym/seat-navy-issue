@@ -41,6 +41,8 @@
 <span class="sd">Clearance management and verification. Each user has a **clearance level**,</span>
 <span class="sd">which is an integer:</span>
 
+<span class="sd">* Level -1: User is a guest and has no priviledge whatsoever.</span>
+
 <span class="sd">* Level 0: User only have access to public data and read-write access to its</span>
 <span class="sd">  own ESI.</span>
 
@@ -300,6 +302,8 @@
     <span class="s2">&quot;sni.system.submit_job&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
     <span class="s2">&quot;sni.fetch_corporation&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
     <span class="s2">&quot;sni.track_corporation&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.create_corporation_guest&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;sni.read_corporation_guests&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s2">&quot;sni.read_corporation&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s2">&quot;sni.update_corporation&quot;</span><span class="p">:</span> <span class="n">ESIScope</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="s2">&quot;sni.fetch_alliance&quot;</span><span class="p">:</span> <span class="n">AbsoluteScope</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
@@ -425,14 +429,14 @@
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="k">elif</span> <span class="n">usr</span><span class="o">.</span><span class="n">is_ceo_of_corporation</span><span class="p">():</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;Reset clearance level of </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-        <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Reset clearance level of </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">clearance_level</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 </pre></div>
 

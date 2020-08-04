@@ -92,7 +92,8 @@
 <span class="sd">    Model for ``POST /token/use/from/dyn`` requests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">([</span><span class="n">EsiScope</span><span class="o">.</span><span class="n">PUBLICDATA</span><span class="p">])</span></div>
+    <span class="n">scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">([</span><span class="n">EsiScope</span><span class="o">.</span><span class="n">PUBLICDATA</span><span class="p">])</span>
+    <span class="n">state_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="PostTokenUseFromDynOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenUseFromDynOut">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -259,10 +260,13 @@
             <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Must use a dynamic app token for this path.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.create_use_token&quot;</span><span class="p">)</span>
-    <span class="n">state_code</span> <span class="o">=</span> <span class="n">create_state_code</span><span class="p">(</span><span class="n">tkn</span><span class="p">)</span>
+    <span class="n">state_code</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">state_code</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">state_code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">create_state_code</span><span class="p">(</span><span class="n">tkn</span><span class="p">)</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">PostTokenUseFromDynOut</span><span class="p">(</span>
-        <span class="n">login_url</span><span class="o">=</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">)),</span>
-        <span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="n">login_url</span><span class="o">=</span><span class="n">get_auth_url</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="n">state_code</span><span class="p">),</span> <span class="n">state_code</span><span class="o">=</span><span class="n">state_code</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 

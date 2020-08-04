@@ -49,7 +49,7 @@
 <span class="kn">import</span> <span class="nn">jwt</span>
 <span class="kn">import</span> <span class="nn">jwt.exceptions</span> <span class="k">as</span> <span class="nn">jwt_exceptions</span>
 
-<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Corporation</span><span class="p">,</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
@@ -108,7 +108,10 @@
     <span class="k">return</span> <span class="n">new_token</span></div>
 
 
-<div class="viewcode-block" id="create_state_code"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_state_code">[docs]</a><span class="k">def</span> <span class="nf">create_state_code</span><span class="p">(</span><span class="n">app_token</span><span class="p">:</span> <span class="n">Token</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StateCode</span><span class="p">:</span>
+<div class="viewcode-block" id="create_state_code"><a class="viewcode-back" href="../../../uac.html#sni.uac.token.create_state_code">[docs]</a><span class="k">def</span> <span class="nf">create_state_code</span><span class="p">(</span>
+    <span class="n">app_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Token</span><span class="p">],</span>
+    <span class="n">inviting_corporation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Corporation</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StateCode</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a new state code.</span>
 
@@ -116,11 +119,16 @@
 <span class="sd">        :class:`sni.uac.token.StateCode`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">state_code</span> <span class="o">=</span> <span class="n">StateCode</span><span class="p">(</span>
-        <span class="n">app_token</span><span class="o">=</span><span class="n">app_token</span><span class="p">,</span> <span class="n">created_on</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+        <span class="n">app_token</span><span class="o">=</span><span class="n">app_token</span><span class="p">,</span>
+        <span class="n">created_on</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">inviting_corporation</span><span class="o">=</span><span class="n">inviting_corporation</span><span class="p">,</span>
+        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
     <span class="p">)</span>
     <span class="n">state_code</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s2">&quot;Created state code </span><span class="si">%s</span><span class="s2"> for app </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span>
+        <span class="s2">&quot;Created state code </span><span class="si">%s</span><span class="s2"> deriving from app token </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+        <span class="n">app_token</span><span class="o">.</span><span class="n">uuid</span> <span class="k">if</span> <span class="n">app_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">state_code</span></div>
 

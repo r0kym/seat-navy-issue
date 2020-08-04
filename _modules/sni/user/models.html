@@ -275,7 +275,12 @@
                     <span class="p">},</span>
                 <span class="p">},</span>
                 <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$alliance_data&quot;</span><span class="p">},</span>
-                <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;alliance_data.alliance_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance_id</span><span class="p">}},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;clearance_level&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+                        <span class="s2">&quot;alliance_data.alliance_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance_id</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
                         <span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$toLower&quot;</span><span class="p">:</span> <span class="s2">&quot;$character_name&quot;</span><span class="p">}</span>
@@ -357,7 +362,12 @@
                     <span class="p">},</span>
                 <span class="p">},</span>
                 <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$alliance_data&quot;</span><span class="p">},</span>
-                <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;alliance_data._id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">members_ids</span><span class="p">}}},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;clearance_level&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+                        <span class="s2">&quot;alliance_data._id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">members_ids</span><span class="p">},</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
                         <span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$toLower&quot;</span><span class="p">:</span> <span class="s2">&quot;$character_name&quot;</span><span class="p">}</span>
@@ -445,6 +455,47 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="o">+</span> <span class="n">alliance_scopes</span> <span class="o">+</span> <span class="n">coalition_scopes</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="Corporation.guests"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.guests">[docs]</a>    <span class="k">def</span> <span class="nf">guests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the guest list of this corporation, according to the database. A</span>
+<span class="sd">        guest is a member with a clearance level of -1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guest_iterator</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Corporation.guest_iterator"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.guest_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">guest_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an iterator over all the guests of this corporation, according</span>
+<span class="sd">        to the database. A guest is a member with a clearance level of -1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation_data&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;corporation&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$corporation_data&quot;</span><span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;clearance_level&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gt&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+                        <span class="s2">&quot;corporation_data.corporation_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$toLower&quot;</span><span class="p">:</span> <span class="s2">&quot;$character_name&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;$sort&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;character_name_lower&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
+                <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Corporation.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Corporation.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the member list of this corporation, according to the database.</span>
@@ -470,7 +521,8 @@
                 <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$corporation_data&quot;</span><span class="p">},</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;corporation_data.corporation_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation_id</span>
+                        <span class="s2">&quot;clearance_level&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+                        <span class="s2">&quot;corporation_data.corporation_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">,</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>

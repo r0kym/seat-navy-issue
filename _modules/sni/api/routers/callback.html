@@ -91,7 +91,11 @@
     <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span>
         <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;h1&gt;Not authorized to login&lt;/h1&gt;</span>
 <span class="s2">&lt;p&gt;Character &lt;strong&gt;</span><span class="si">{character_name}</span><span class="s2">&lt;/strong&gt; (</span><span class="si">{character_id}</span><span class="s2">) is not allowed</span>
-<span class="s2">to login. Please contact the instance administrator.&lt;/p&gt;</span>
+<span class="s2">to login. This is due to the fact that your character and/or corporation and/or</span>
+<span class="s2">alliance is not whitelisted.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;If your alliance recently joined a coalition registered on this instance,</span>
+<span class="s2">ask the coalition managed to add your alliance, and try again.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;If the problem persists, please contact the instance administrator.&lt;/p&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
     <span class="p">)</span></div>

@@ -51,6 +51,7 @@
 <span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="n">tracking_status</span><span class="p">,</span> <span class="n">TrackingStatus</span>
 <span class="kn">from</span> <span class="nn">sni.uac.clearance</span> <span class="kn">import</span> <span class="n">assert_has_clearance</span>
 <span class="kn">from</span> <span class="nn">sni.uac.token</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_state_code</span><span class="p">,</span>
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
@@ -104,6 +105,14 @@
             <span class="n">ticker</span><span class="o">=</span><span class="n">corporation</span><span class="o">.</span><span class="n">ticker</span><span class="p">,</span>
             <span class="n">updated_on</span><span class="o">=</span><span class="n">corporation</span><span class="o">.</span><span class="n">updated_on</span><span class="p">,</span>
         <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PostCorporationGuestOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.PostCorporationGuestOut">[docs]</a><span class="k">class</span> <span class="nc">PostCorporationGuestOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for ``POST /corporation/{corporation_id}/guest`` reponses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">state_code</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="GetCorporationShortOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.GetCorporationShortOut">[docs]</a><span class="k">class</span> <span class="nc">GetCorporationShortOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -238,6 +247,53 @@
         <span class="n">corporation</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
     <span class="n">corporation</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">GetCorporationOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">corporation</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_corporation_guests"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.get_corporation_guests">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s2">&quot;/</span><span class="si">{corporation_id}</span><span class="s2">/guest&quot;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">],</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Corporation guests&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_corporation_guests</span><span class="p">(</span>
+    <span class="n">corporation_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the list of guests in this corporation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_corporation_guests&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">ceo</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">guest</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">guest</span> <span class="ow">in</span> <span class="n">corporation</span><span class="o">.</span><span class="n">guest_iterator</span><span class="p">()</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="post_corporation_guest"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.post_corporation_guest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;/</span><span class="si">{corporation_id}</span><span class="s2">/guest&quot;</span><span class="p">,</span>
+    <span class="n">response_model</span><span class="o">=</span><span class="n">PostCorporationGuestOut</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Creates a state code for a new guest to this corporation&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">post_corporation_guest</span><span class="p">(</span>
+    <span class="n">corporation_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a state code for a new guest to this corporation. The user then has</span>
+<span class="sd">    to login with this state code to be considered a guest.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.create_corporation_guest&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">ceo</span>
+    <span class="p">)</span>
+    <span class="n">state_code</span> <span class="o">=</span> <span class="n">create_state_code</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">corporation</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PostCorporationGuestOut</span><span class="p">(</span><span class="n">state_code</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">state_code</span><span class="o">.</span><span class="n">uuid</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="get_corporation_tracking"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.get_corporation_tracking">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>

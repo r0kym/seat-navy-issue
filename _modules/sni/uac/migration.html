@@ -44,7 +44,15 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sni.db.migration</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ensure_minimum_version</span><span class="p">,</span>
+    <span class="n">finalize_migration</span><span class="p">,</span>
+    <span class="n">set_if_not_exist</span><span class="p">,</span>
+    <span class="n">start_migration</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="kn">import</span> <span class="nn">sni.uac.token</span> <span class="k">as</span> <span class="nn">token</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">StateCode</span>
 
 
 <div class="viewcode-block" id="ensure_root_per_token"><a class="viewcode-back" href="../../../uac.html#sni.uac.migration.ensure_root_per_token">[docs]</a><span class="k">def</span> <span class="nf">ensure_root_per_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -95,6 +103,26 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ensure_root_dyn_token</span><span class="p">()</span>
     <span class="n">ensure_root_per_token</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="migrate_state_code"><a class="viewcode-back" href="../../../uac.html#sni.uac.migration.migrate_state_code">[docs]</a><span class="k">def</span> <span class="nf">migrate_state_code</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrates the ``state_code`` collection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">start_migration</span><span class="p">(</span><span class="n">StateCode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># v0 to v1</span>
+    <span class="c1"># Set _version field to 1</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># v1 to v2</span>
+    <span class="c1"># Set inviting_corporation field to None</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;inviting_corporation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">finalize_migration</span><span class="p">(</span><span class="n">StateCode</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

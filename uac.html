@@ -71,6 +71,7 @@ status of the group he’s part of.</p>
 <p>Clearance management and verification. Each user has a <strong>clearance level</strong>,
 which is an integer:</p>
 <ul class="simple">
+<li><p>Level -1: User is a guest and has no priviledge whatsoever.</p></li>
 <li><p>Level 0: User only have access to public data and read-write access to its
 own ESI.</p></li>
 <li><p>Level 1: User has access to read-only ESI (i.e. <code class="docutils literal notranslate"><span class="pre">GET</span></code> calls) of all members
@@ -253,7 +254,7 @@ matter what). Otherwise, the user’s clearance level is set to 0.</p>
 
 <dl class="function">
 <dt id="sni.uac.token.create_state_code">
-<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">create_state_code</code><span class="sig-paren">(</span><em class="sig-param">app_token: sni.uac.models.Token</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.StateCode<a class="reference internal" href="_modules/sni/uac/token.html#create_state_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.create_state_code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.uac.token.</code><code class="sig-name descname">create_state_code</code><span class="sig-paren">(</span><em class="sig-param">app_token: Optional[sni.uac.models.Token], inviting_corporation: Optional[sni.user.models.Corporation] = None</em><span class="sig-paren">)</span> &#x2192; sni.uac.models.StateCode<a class="reference internal" href="_modules/sni/uac/token.html#create_state_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.token.create_state_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new state code.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -309,6 +310,18 @@ token is dynamic, raises a <code class="docutils literal notranslate"><span clas
 token, and is a way for SNI to remeber about the authentication while the
 end user logs in to EVE SSO.</p>
 <dl class="attribute">
+<dt id="sni.uac.models.StateCode.SCHEMA_VERSION">
+<code class="sig-name descname">SCHEMA_VERSION</code><em class="property"> = 2</em><a class="headerlink" href="#sni.uac.models.StateCode.SCHEMA_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Latest schema version for this collection</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode._version">
+<code class="sig-name descname">_version</code><a class="headerlink" href="#sni.uac.models.StateCode._version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema version of this document</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="sni.uac.models.StateCode.app_token">
 <code class="sig-name descname">app_token</code><a class="headerlink" href="#sni.uac.models.StateCode.app_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>The app token that created this state code</p>
@@ -318,6 +331,12 @@ end user logs in to EVE SSO.</p>
 <dt id="sni.uac.models.StateCode.created_on">
 <code class="sig-name descname">created_on</code><a class="headerlink" href="#sni.uac.models.StateCode.created_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timestamp of the creation of this document</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.uac.models.StateCode.inviting_corporation">
+<code class="sig-name descname">inviting_corporation</code><a class="headerlink" href="#sni.uac.models.StateCode.inviting_corporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Corporation inviting the user of that state code, if any</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -438,6 +457,12 @@ corresponding application is notified at this URL.</p>
 <dt id="sni.uac.migration.migrate">
 <code class="sig-prename descclassname">sni.uac.migration.</code><code class="sig-name descname">migrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/migration.html#migrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.migration.migrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Migrates all schema and ensures basic documents</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.uac.migration.migrate_state_code">
+<code class="sig-prename descclassname">sni.uac.migration.</code><code class="sig-name descname">migrate_state_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/uac/migration.html#migrate_state_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.uac.migration.migrate_state_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrates the <code class="docutils literal notranslate"><span class="pre">state_code</span></code> collection</p>
 </dd></dl>
 
 </div>

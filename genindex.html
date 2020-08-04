@@ -87,6 +87,8 @@
 </li>
         <li><a href="sde.html#sni.sde.models.EsiObjectName._version">(sni.sde.models.EsiObjectName attribute)</a>
 </li>
+        <li><a href="uac.html#sni.uac.models.StateCode._version">(sni.uac.models.StateCode attribute)</a>
+</li>
         <li><a href="user.html#sni.user.models.Alliance._version">(sni.user.models.Alliance attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.Coalition._version">(sni.user.models.Coalition attribute)</a>
@@ -926,6 +928,8 @@
 </li>
       <li><a href="api.html#sni.api.routers.corporation.get_corporation">get_corporation() (in module sni.api.routers.corporation)</a>
 </li>
+      <li><a href="api.html#sni.api.routers.corporation.get_corporation_guests">get_corporation_guests() (in module sni.api.routers.corporation)</a>
+</li>
       <li><a href="api.html#sni.api.routers.corporation.get_corporation_tracking">get_corporation_tracking() (in module sni.api.routers.corporation)</a>
 </li>
       <li><a href="api.html#sni.api.routers.corporation.get_corporations">get_corporations() (in module sni.api.routers.corporation)</a>
@@ -1024,6 +1028,10 @@
         <li><a href="user.html#sni.user.models.Group.group_name">(sni.user.models.Group attribute)</a>
 </li>
       </ul></li>
+      <li><a href="user.html#sni.user.models.Corporation.guest_iterator">guest_iterator() (sni.user.models.Corporation method)</a>
+</li>
+      <li><a href="user.html#sni.user.models.Corporation.guests">guests() (sni.user.models.Corporation method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1133,6 +1141,8 @@
       <li><a href="db.html#sni.db.mongodb.init_mongodb">init_mongodb() (in module sni.db.mongodb)</a>
 </li>
       <li><a href="api.html#sni.api.routers.corporation.GetTrackingOut.invalid_refresh_token">invalid_refresh_token (sni.api.routers.corporation.GetTrackingOut attribute)</a>
+</li>
+      <li><a href="uac.html#sni.uac.models.StateCode.inviting_corporation">inviting_corporation (sni.uac.models.StateCode attribute)</a>
 </li>
       <li><a href="uac.html#sni.uac.uac.is_authorized_to_login">is_authorized_to_login() (in module sni.uac.uac)</a>
 </li>
@@ -1316,6 +1326,8 @@
 </li>
       <li><a href="user.html#sni.user.migration.migrate_group">migrate_group() (in module sni.user.migration)</a>
 </li>
+      <li><a href="uac.html#sni.uac.migration.migrate_state_code">migrate_state_code() (in module sni.uac.migration)</a>
+</li>
       <li><a href="user.html#sni.user.migration.migrate_user">migrate_user() (in module sni.user.migration)</a>
 </li>
       <li><a href="api.html#sni.api.routers.system.GetJobOut.misfire_grace_time">misfire_grace_time (sni.api.routers.system.GetJobOut attribute)</a>
@@ -1466,6 +1478,8 @@
 </li>
       <li><a href="api.html#sni.api.routers.corporation.post_corporation">post_corporation() (in module sni.api.routers.corporation)</a>
 </li>
+      <li><a href="api.html#sni.api.routers.corporation.post_corporation_guest">post_corporation_guest() (in module sni.api.routers.corporation)</a>
+</li>
       <li><a href="api.html#sni.api.routers.group.post_groups">post_groups() (in module sni.api.routers.group)</a>
 </li>
       <li><a href="api.html#sni.api.routers.esi.post_history_character_location_now">post_history_character_location_now() (in module sni.api.routers.esi)</a>
@@ -1485,6 +1499,8 @@
       <li><a href="api.html#sni.api.routers.teamspeak.PostAuthStartOut">PostAuthStartOut (class in sni.api.routers.teamspeak)</a>
 </li>
       <li><a href="api.html#sni.api.routers.coalition.PostCoalitionIn">PostCoalitionIn (class in sni.api.routers.coalition)</a>
+</li>
+      <li><a href="api.html#sni.api.routers.corporation.PostCorporationGuestOut">PostCorporationGuestOut (class in sni.api.routers.corporation)</a>
 </li>
       <li><a href="api.html#sni.api.routers.group.PostGroupIn">PostGroupIn (class in sni.api.routers.group)</a>
 </li>
@@ -1626,6 +1642,8 @@
         <li><a href="indexation.html#sni.index.models.EsiSkillPoints.SCHEMA_VERSION">(sni.index.models.EsiSkillPoints attribute)</a>
 </li>
         <li><a href="sde.html#sni.sde.models.EsiObjectName.SCHEMA_VERSION">(sni.sde.models.EsiObjectName attribute)</a>
+</li>
+        <li><a href="uac.html#sni.uac.models.StateCode.SCHEMA_VERSION">(sni.uac.models.StateCode attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.Alliance.SCHEMA_VERSION">(sni.user.models.Alliance attribute)</a>
 </li>
@@ -1830,8 +1848,14 @@
         <li><a href="sni.html#sni.scheduler.start_scheduler">(in module sni.scheduler)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#sni.api.routers.token.PostTokenUseFromDynOut.state_code">state_code (sni.api.routers.token.PostTokenUseFromDynOut attribute)</a>
+      <li><a href="api.html#sni.api.routers.corporation.PostCorporationGuestOut.state_code">state_code (sni.api.routers.corporation.PostCorporationGuestOut attribute)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.routers.token.PostTokenUseFromDynIn.state_code">(sni.api.routers.token.PostTokenUseFromDynIn attribute)</a>
 </li>
+        <li><a href="api.html#sni.api.routers.token.PostTokenUseFromDynOut.state_code">(sni.api.routers.token.PostTokenUseFromDynOut attribute)</a>
+</li>
+      </ul></li>
       <li><a href="uac.html#sni.uac.models.StateCode">StateCode (class in sni.uac.models)</a>
 </li>
       <li><a href="api.html#sni.api.routers.esi.GetCharacterLocationOut.station_id">station_id (sni.api.routers.esi.GetCharacterLocationOut attribute)</a>

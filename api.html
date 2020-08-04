@@ -757,6 +757,18 @@ more.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="sni.api.routers.corporation.PostCorporationGuestOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">PostCorporationGuestOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#PostCorporationGuestOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.PostCorporationGuestOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/corporation/{corporation_id}/guest</span></code> reponses.</p>
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.PostCorporationGuestOut.state_code">
+<code class="sig-name descname">state_code</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.PostCorporationGuestOut.state_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.api.routers.corporation.PutCorporationIn">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">PutCorporationIn</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#PutCorporationIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.PutCorporationIn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -781,6 +793,12 @@ registered on SNI</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.api.routers.corporation.get_corporation_guests">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">get_corporation_guests</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#get_corporation_guests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.get_corporation_guests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of guests in this corporation.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.api.routers.corporation.get_corporation_tracking">
 <code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">get_corporation_tracking</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#get_corporation_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.get_corporation_tracking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reports which member (of a given corporation) have a valid refresh token
@@ -800,6 +818,13 @@ clearance level of 0 or more.</p>
 <code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">post_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#post_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.post_corporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manually fetches a corporation from the ESI. Requires a clearance level of
 8 or more.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sni.api.routers.corporation.post_corporation_guest">
+<code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">post_corporation_guest</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#post_corporation_guest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.post_corporation_guest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a state code for a new guest to this corporation. The user then has
+to login with this state code to be considered a guest.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1562,6 +1587,11 @@ user has 1 minute to update its teamspeak nickname to it, and then call
 <dl class="attribute">
 <dt id="sni.api.routers.token.PostTokenUseFromDynIn.scopes">
 <code class="sig-name descname">scopes</code><em class="property">: List[EsiScope]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.token.PostTokenUseFromDynIn.scopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.token.PostTokenUseFromDynIn.state_code">
+<code class="sig-name descname">state_code</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.token.PostTokenUseFromDynIn.state_code" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

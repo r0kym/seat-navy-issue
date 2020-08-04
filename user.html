@@ -329,6 +329,20 @@ required by this corporation, alliance, and all the coalitions this
 corporation is part of.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="sni.user.models.Corporation.guest_iterator">
+<code class="sig-name descname">guest_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Corporation.guest_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation.guest_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all the guests of this corporation, according
+to the database. A guest is a member with a clearance level of -1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sni.user.models.Corporation.guests">
+<code class="sig-name descname">guests</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[sni.user.models.User]<a class="reference internal" href="_modules/sni/user/models.html#Corporation.guests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.user.models.Corporation.guests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the guest list of this corporation, according to the database. A
+guest is a member with a clearance level of -1.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="sni.user.models.Corporation.mandatory_esi_scopes">
 <code class="sig-name descname">mandatory_esi_scopes</code><a class="headerlink" href="#sni.user.models.Corporation.mandatory_esi_scopes" title="Permalink to this definition">¶</a></dt>
