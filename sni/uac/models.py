@@ -98,5 +98,7 @@ class StateCode(me.Document):
     """
 
     meta = {
-        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 600,},],
+        "indexes": [
+            {"fields": ["created_on"], "expireAfterSeconds": 3600 * 24,},
+        ],
     }
