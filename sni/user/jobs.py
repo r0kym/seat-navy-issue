@@ -163,7 +163,6 @@ def ensure_corporation_members(corporation: Corporation):
         "Ensuring members of corporation %s", corporation.corporation_name
     )
     scope = "esi-corporations.read_corporation_membership.v1"
-    # pylint: disable=protected-access
     query = EsiRefreshToken.objects.aggregate(
         [
             {
@@ -174,25 +173,49 @@ def ensure_corporation_members(corporation: Corporation):
                     "localField": "owner",
                 },
             },
+            {"$unwind": "$owner_data"},
             {
                 "$match": {
                     "owner_data.corporation": corporation.pk,
                     "scopes": scope,
                     "valid": True,
-                },
+                }
             },
-            {"$project": {"owner_data.character_id": 1,},},
+            {"$project": {"owner_data.character_id": 1}},
         ]
     )
-    esi_access_token = get_access_token(
-        query.next()["owner_data"][0]["character_id"], scope,
-    )
-    response = esi_get(
-        f"latest/corporations/{corporation.corporation_id}/members/",
-        token=esi_access_token.access_token,
-    )
-    for character_id in response.data:
-        scheduler.add_job(ensure_user, args=(character_id,))
+    try:
+        esi_access_token = get_access_token(
+            query.next()["owner_data"]["character_id"], scope,
+        )
+        response = esi_get(
+            f"latest/corporations/{corporation.corporation_id}/members/",
+            token=esi_access_token.access_token,
+        )
+        for character_id in response.data:
+            if not isinstance(character_id, int):
+                raise ValueError
+            scheduler.add_job(ensure_user, args=(character_id,))
+    except StopIteration:
+        logging.info(
+            (
+                "Could not list members of corporation %s (%d): "
+                "no refresh token with scope %s"
+            ),
+            corporation.corporation_name,
+            corporation.corporation_id,
+            scope,
+        )
+    except ValueError:
+        logging.warning(
+            (
+                "Unexpected ESI reponse while iterating though "
+                "members of corporation %s (%d): %s"
+            ),
+            corporation.corporation_name,
+            corporation.corporation_id,
+            str(response.data),
+        )
 
 
 @scheduler.scheduled_job("interval", hours=1)
