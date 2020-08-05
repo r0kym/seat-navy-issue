@@ -190,7 +190,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resets the corporations autogroups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation_id__gte</span><span class="o">=</span><span class="mi">2000000</span><span class="p">):</span>
         <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_autogroup</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,))</span></div>
 
 
@@ -264,7 +264,7 @@
 <span class="sd">    members exist in the database. See</span>
 <span class="sd">    :meth:`sni.user.jobs.ensure_corporation_members`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation_id__gte</span><span class="o">=</span><span class="mi">2000000</span><span class="p">):</span>
         <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_corporation_members</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,))</span></div>
 
 
@@ -291,7 +291,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates corporations properties. (yes)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">corporation</span> <span class="ow">in</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">corporation_id__gte</span><span class="o">=</span><span class="mi">2000000</span><span class="p">):</span>
         <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_corporation_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">corporation</span><span class="p">,))</span></div>
 
 
