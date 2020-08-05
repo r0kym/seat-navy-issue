@@ -310,7 +310,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterated through all users and updates their field from ESI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id__gt</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">character_id__gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clearance_level__gte</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">update_user_from_esi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 </pre></div>
 

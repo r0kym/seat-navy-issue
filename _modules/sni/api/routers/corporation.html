@@ -249,6 +249,32 @@
     <span class="k">return</span> <span class="n">GetCorporationOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">corporation</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="delete_corporation_guest"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.delete_corporation_guest">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+    <span class="s2">&quot;/</span><span class="si">{corporation_id}</span><span class="s2">/guest/</span><span class="si">{character_id}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Deletes a corporation guest&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">delete_corporation_guest</span><span class="p">(</span>
+    <span class="n">corporation_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">from_authotization_header_nondyn</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes a corporation guest</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corporation</span><span class="p">:</span> <span class="n">Corporation</span> <span class="o">=</span> <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">assert_has_clearance</span><span class="p">(</span>
+        <span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.delete_corporation_guest&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">ceo</span>
+    <span class="p">)</span>
+    <span class="n">guest</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+        <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+        <span class="n">clearance_level__lt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">corporation</span><span class="o">=</span><span class="n">corporation</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">guest</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="get_corporation_guests"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.corporation.get_corporation_guests">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="s2">&quot;/</span><span class="si">{corporation_id}</span><span class="s2">/guest&quot;</span><span class="p">,</span>
     <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">GetUserShortOut</span><span class="p">],</span>
