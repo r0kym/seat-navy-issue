@@ -202,7 +202,6 @@
         <span class="s2">&quot;Ensuring members of corporation </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span>
     <span class="p">)</span>
     <span class="n">scope</span> <span class="o">=</span> <span class="s2">&quot;esi-corporations.read_corporation_membership.v1&quot;</span>
-    <span class="c1"># pylint: disable=protected-access</span>
     <span class="n">query</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="p">{</span>
@@ -213,25 +212,49 @@
                     <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
                 <span class="p">},</span>
             <span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$owner_data&quot;</span><span class="p">},</span>
             <span class="p">{</span>
                 <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
                     <span class="s2">&quot;owner_data.corporation&quot;</span><span class="p">:</span> <span class="n">corporation</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
                     <span class="s2">&quot;scopes&quot;</span><span class="p">:</span> <span class="n">scope</span><span class="p">,</span>
                     <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                <span class="p">},</span>
+                <span class="p">}</span>
             <span class="p">},</span>
-            <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;owner_data.character_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,},},</span>
+            <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;owner_data.character_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
         <span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">esi_access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
-        <span class="n">query</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="s2">&quot;owner_data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;character_id&quot;</span><span class="p">],</span> <span class="n">scope</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s2">/members/&quot;</span><span class="p">,</span>
-        <span class="n">token</span><span class="o">=</span><span class="n">esi_access_token</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">for</span> <span class="n">character_id</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_user</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">character_id</span><span class="p">,))</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">esi_access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="s2">&quot;owner_data&quot;</span><span class="p">][</span><span class="s2">&quot;character_id&quot;</span><span class="p">],</span> <span class="n">scope</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;latest/corporations/</span><span class="si">{corporation.corporation_id}</span><span class="s2">/members/&quot;</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">esi_access_token</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">character_id</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">character_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">ensure_user</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">character_id</span><span class="p">,))</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;Could not list members of corporation </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%d</span><span class="s2">): &quot;</span>
+                <span class="s2">&quot;no refresh token with scope </span><span class="si">%s</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+            <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">,</span>
+            <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">,</span>
+            <span class="n">scope</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;Unexpected ESI reponse while iterating though &quot;</span>
+                <span class="s2">&quot;members of corporation </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%d</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+            <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">,</span>
+            <span class="n">corporation</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ensure_corporations_members"><a class="viewcode-back" href="../../../user.html#sni.user.jobs.ensure_corporations_members">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
