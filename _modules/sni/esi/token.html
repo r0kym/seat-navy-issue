@@ -193,7 +193,12 @@
                 <span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
                 <span class="n">scope</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">LookupError</span>
+            <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not find access token with scope </span><span class="si">{scope}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;for user </span><span class="si">{character_id}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="n">esi_access_token</span> <span class="o">=</span> <span class="n">save_esi_tokens</span><span class="p">(</span>
             <span class="n">refresh_access_token</span><span class="p">(</span><span class="n">esi_refresh_token</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">)</span>
         <span class="p">)</span>

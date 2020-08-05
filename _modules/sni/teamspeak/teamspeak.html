@@ -181,7 +181,12 @@
         <span class="ow">or</span> <span class="n">client</span><span class="o">.</span><span class="n">client_database_id</span> <span class="o">==</span> <span class="n">client_database_id</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clients</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Could not find client with nickname &quot;</span><span class="si">{nickname}</span><span class="s1">&quot; or &#39;</span>
+                <span class="sa">f</span><span class="s2">&quot;with database id </span><span class="si">{client_database_id}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">clients</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
@@ -201,7 +206,12 @@
         <span class="k">if</span> <span class="n">grp</span><span class="o">.</span><span class="n">sgid</span> <span class="o">==</span> <span class="n">group_id</span> <span class="ow">or</span> <span class="n">grp</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Could not find a group with name &quot;name&quot; &#39;</span>
+                <span class="sa">f</span><span class="s2">&quot;or with id </span><span class="si">{group_id}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
