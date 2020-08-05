@@ -61,9 +61,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;latest/alliances/</span><span class="si">{alliance_id}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="p">(</span>
             <span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance_id</span><span class="p">,</span>
-            <span class="n">alliance_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+            <span class="n">alliance_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]),</span>
             <span class="n">executor_corporation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;executor_corporation_id&quot;</span><span class="p">]),</span>
-            <span class="n">ticker</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ticker&quot;</span><span class="p">],</span>
+            <span class="n">ticker</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ticker&quot;</span><span class="p">]),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="n">ensure_corporation</span><span class="p">(</span><span class="n">alliance</span><span class="o">.</span><span class="n">executor_corporation_id</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">alliance</span></div>
@@ -91,7 +91,7 @@
     <span class="k">if</span> <span class="n">corporation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;latest/corporations/</span><span class="si">{corporation_id}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">alliance</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ensure_alliance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;alliance_id&quot;</span><span class="p">])</span>
+            <span class="n">ensure_alliance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;alliance_id&quot;</span><span class="p">]))</span>
             <span class="k">if</span> <span class="s2">&quot;alliance_id&quot;</span> <span class="ow">in</span> <span class="n">data</span>
             <span class="k">else</span> <span class="kc">None</span>
         <span class="p">)</span>
@@ -99,8 +99,8 @@
             <span class="n">alliance</span><span class="o">=</span><span class="n">alliance</span><span class="p">,</span>
             <span class="n">ceo_character_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ceo_id&quot;</span><span class="p">]),</span>
             <span class="n">corporation_id</span><span class="o">=</span><span class="n">corporation_id</span><span class="p">,</span>
-            <span class="n">corporation_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-            <span class="n">ticker</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ticker&quot;</span><span class="p">],</span>
+            <span class="n">corporation_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]),</span>
+            <span class="n">ticker</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ticker&quot;</span><span class="p">]),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="n">ensure_user</span><span class="p">(</span><span class="n">corporation</span><span class="o">.</span><span class="n">ceo_character_id</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">corporation</span></div>
@@ -117,8 +117,8 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">usr</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span>
             <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">character_name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-            <span class="n">corporation</span><span class="o">=</span><span class="n">ensure_corporation</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;corporation_id&quot;</span><span class="p">]),</span>
+            <span class="n">character_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]),</span>
+            <span class="n">corporation</span><span class="o">=</span><span class="n">ensure_corporation</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;corporation_id&quot;</span><span class="p">])),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">usr</span></div>
 </pre></div>
