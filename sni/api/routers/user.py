@@ -116,7 +116,7 @@ def get_user(tkn: Token = Depends(from_authotization_header_nondyn)):
     assert_has_clearance(tkn.owner, "sni.read_user")
     return [
         GetUserShortOut.from_record(usr)
-        for usr in User.objects().order_by("character_name")
+        for usr in User.objects(clearance_level__gte=0).order_by("character_name")
     ]
 
 

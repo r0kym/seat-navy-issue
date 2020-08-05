@@ -271,5 +271,5 @@ def update_users_from_esi():
     """
     Iterated through all users and updates their field from ESI.
     """
-    for usr in User.objects(character_id__gt=0):
+    for usr in User.objects(character_id__gt=0, clearance_level__gte=0):
         scheduler.add_job(update_user_from_esi, args=(usr,))
