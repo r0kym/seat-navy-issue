@@ -2082,6 +2082,44 @@ paths:
       summary: Creates a state code for a new guest to this corporation
       tags:
       - Corporation management
+  /corporation/{corporation_id}/guest/{character_id}:
+    delete:
+      description: Deletes a corporation guest
+      operationId: delete_corporation_guest_corporation__corporation_id__guest__character_id__delete
+      parameters:
+      - in: path
+        name: corporation_id
+        required: true
+        schema:
+          title: Corporation Id
+          type: integer
+      - in: path
+        name: character_id
+        required: true
+        schema:
+          title: Character Id
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Deletes a corporation guest
+      tags:
+      - Corporation management
   /corporation/{corporation_id}/tracking:
     get:
       description: 'Reports which member (of a given corporation) have a valid refresh

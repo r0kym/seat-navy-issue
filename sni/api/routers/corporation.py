@@ -210,6 +210,32 @@ def put_corporation(
     return GetCorporationOut.from_record(corporation)
 
 
+@router.delete(
+    "/{corporation_id}/guest/{character_id}",
+    summary="Deletes a corporation guest",
+)
+def delete_corporation_guest(
+    corporation_id: int,
+    character_id: int,
+    tkn: Token = Depends(from_authotization_header_nondyn),
+):
+    """
+    Deletes a corporation guest
+    """
+    corporation: Corporation = Corporation.objects(
+        corporation_id=corporation_id
+    ).get()
+    assert_has_clearance(
+        tkn.owner, "sni.delete_corporation_guest", corporation.ceo
+    )
+    guest: User = User.objects(
+        character_id=character_id,
+        clearance_level__lt=0,
+        corporation=corporation,
+    ).get()
+    guest.delete()
+
+
 @router.get(
     "/{corporation_id}/guest",
     response_model=List[GetUserShortOut],

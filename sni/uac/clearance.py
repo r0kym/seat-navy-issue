@@ -264,6 +264,7 @@ SCOPES: Dict[str, AbstractScope] = {
     "sni.fetch_corporation": AbsoluteScope(8),
     "sni.track_corporation": ESIScope(0),
     "sni.create_corporation_guest": ESIScope(0),
+    "sni.delete_corporation_guest": ESIScope(1),
     "sni.read_corporation_guests": ESIScope(0),
     "sni.read_corporation": AbsoluteScope(0),
     "sni.update_corporation": ESIScope(1),
