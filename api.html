@@ -611,7 +611,7 @@ more.</p>
 <dt id="sni.api.routers.coalition.get_coalition_tracking">
 <code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">get_coalition_tracking</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#get_coalition_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.get_coalition_tracking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reports which member (of a given coalition) have a valid refresh token
-attacked to them, and which do not. Requires a clearance level of 9 or
+attacked to them, and which do not. Requires a clearance level of 5 or
 more.</p>
 </dd></dl>
 
@@ -627,7 +627,7 @@ more.</p>
 <dd><p>Updates a coalition. All fields in the request body are optional. The
 <cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
 <cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
-<cite>remove_members</cite>. Requires a clearance level of 9 or more.</p>
+<cite>remove_members</cite>. Requires a clearance level of 6 or more.</p>
 </dd></dl>
 
 </div>
@@ -837,7 +837,7 @@ to login with this state code to be considered a guest.</p>
 <dt id="sni.api.routers.corporation.put_corporation">
 <code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">put_corporation</code><span class="sig-paren">(</span><em class="sig-param">corporation_id: int</em>, <em class="sig-param">data: sni.api.routers.corporation.PutCorporationIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/corporation.html#put_corporation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.put_corporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Modify a corporation registered on SNI. Note that it does not modify it on
-an ESI level. Requires a clearance level of 4 or more.</p>
+an ESI level. Requires a clearance level of 2 or more.</p>
 </dd></dl>
 
 </div>
