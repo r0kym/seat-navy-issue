@@ -234,7 +234,7 @@ def id_to_name(id_field_value: int, id_field_name: str) -> str:
         result = raw.data.get(annotator[1])
     else:
         result = sde_get_name(id_field_value, id_field_name)
-    return result if result is not None else ""
+    return str(result) if result is not None else ""
 
 
 def load_esi_openapi() -> None:

@@ -65,7 +65,7 @@ def ensure_alliance_members(alliance: Alliance):
         f"latest/alliances/{alliance.alliance_id}/corporations/"
     )
     for corporation_id in response.data:
-        ensure_corporation(corporation_id)
+        ensure_corporation(int(corporation_id))
 
 
 @scheduler.scheduled_job("interval", hours=1)
@@ -193,9 +193,7 @@ def ensure_corporation_members(corporation: Corporation):
             token=esi_access_token.access_token,
         )
         for character_id in response.data:
-            if not isinstance(character_id, int):
-                raise ValueError
-            scheduler.add_job(ensure_user, args=(character_id,))
+            scheduler.add_job(ensure_user, args=(int(character_id),))
     except StopIteration:
         logging.info(
             (
@@ -238,7 +236,9 @@ def update_corporation_from_esi(corporation: Corporation):
     )
     data = esi_get(f"latest/corporations/{corporation.corporation_id}").data
     corporation.alliance = (
-        ensure_alliance(data["alliance_id"]) if "alliance_id" in data else None
+        ensure_alliance(int(data["alliance_id"]))
+        if "alliance_id" in data
+        else None
     )
     old_ceo = corporation.ceo
     corporation.ceo_character_id = int(data["ceo_id"])
@@ -281,7 +281,7 @@ def update_user_from_esi(usr: User):
     """
     data = esi_get(f"latest/characters/{usr.character_id}").data
     old_corporation = usr.corporation
-    usr.corporation = ensure_corporation(data["corporation_id"])
+    usr.corporation = ensure_corporation(int(data["corporation_id"]))
     usr.updated_on = utils.now()
     if usr.corporation != old_corporation:
         logging.debug("Corporation of user %s changed", usr.character_name)

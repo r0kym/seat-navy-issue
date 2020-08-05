@@ -22,9 +22,9 @@ def ensure_alliance(alliance_id: int) -> Alliance:
         data = esi_get(f"latest/alliances/{alliance_id}").data
         alliance = Alliance(
             alliance_id=alliance_id,
-            alliance_name=data["name"],
+            alliance_name=str(data["name"]),
             executor_corporation_id=int(data["executor_corporation_id"]),
-            ticker=data["ticker"],
+            ticker=str(data["ticker"]),
         ).save()
         ensure_corporation(alliance.executor_corporation_id)
     return alliance
@@ -52,7 +52,7 @@ def ensure_corporation(corporation_id: int) -> Corporation:
     if corporation is None:
         data = esi_get(f"latest/corporations/{corporation_id}").data
         alliance = (
-            ensure_alliance(data["alliance_id"])
+            ensure_alliance(int(data["alliance_id"]))
             if "alliance_id" in data
             else None
         )
@@ -60,8 +60,8 @@ def ensure_corporation(corporation_id: int) -> Corporation:
             alliance=alliance,
             ceo_character_id=int(data["ceo_id"]),
             corporation_id=corporation_id,
-            corporation_name=data["name"],
-            ticker=data["ticker"],
+            corporation_name=str(data["name"]),
+            ticker=str(data["ticker"]),
         ).save()
         ensure_user(corporation.ceo_character_id)
     return corporation
@@ -78,7 +78,7 @@ def ensure_user(character_id: int) -> User:
         data = esi_get(f"latest/characters/{character_id}").data
         usr = User(
             character_id=character_id,
-            character_name=data["name"],
-            corporation=ensure_corporation(data["corporation_id"]),
+            character_name=str(data["name"]),
+            corporation=ensure_corporation(int(data["corporation_id"])),
         ).save()
     return usr
