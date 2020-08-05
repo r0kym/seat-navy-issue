@@ -15,7 +15,7 @@ def fix_ceo_clearance():
     Raises CEOs of corporations to clearance level 2, and CEOs of alliances to
     level 4. If their clearance level was higher, doesn't modify it.
     """
-    for corporation in Corporation.objects():
+    for corporation in Corporation.objects(corporation_id__gte=2000000):
         ceo = ensure_user(corporation.ceo_character_id)
         if ceo.clearance_level < 2:
             logging.info(

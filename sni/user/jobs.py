@@ -151,7 +151,7 @@ def update_corporation_autogroups():
     """
     Resets the corporations autogroups.
     """
-    for corporation in Corporation.objects():
+    for corporation in Corporation.objects(corporation_id__gte=2000000):
         scheduler.add_job(update_corporation_autogroup, args=(corporation,))
 
 
@@ -225,7 +225,7 @@ def ensure_corporations_members():
     members exist in the database. See
     :meth:`sni.user.jobs.ensure_corporation_members`.
     """
-    for corporation in Corporation.objects:
+    for corporation in Corporation.objects(corporation_id__gte=2000000):
         scheduler.add_job(ensure_corporation_members, args=(corporation,))
 
 
@@ -252,7 +252,7 @@ def update_corporations_from_esi():
     """
     Updates corporations properties. (yes)
     """
-    for corporation in Corporation.objects:
+    for corporation in Corporation.objects(corporation_id__gte=2000000):
         scheduler.add_job(update_corporation_from_esi, args=(corporation,))
 
 
