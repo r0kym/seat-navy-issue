@@ -154,7 +154,12 @@ def get_access_token(
                 owner.character_name,
                 scope,
             )
-            raise LookupError
+            raise LookupError(
+                (
+                    f"Could not find access token with scope {scope} "
+                    f"for user {character_id}"
+                )
+            )
         esi_access_token = save_esi_tokens(
             refresh_access_token(esi_refresh_token.refresh_token)
         )

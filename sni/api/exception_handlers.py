@@ -49,6 +49,7 @@ def crash_report(request: Request, error: Exception) -> CrashReport:
     )
 
 
+@app.exception_handler(LookupError)
 @app.exception_handler(me.DoesNotExist)
 def does_not_exist_exception_handler(_request: Request, error: Exception):
     """

@@ -142,7 +142,12 @@ def find_client(
         or client.client_database_id == client_database_id
     ]
     if len(clients) != 1:
-        raise LookupError
+        raise LookupError(
+            (
+                f'Could not find client with nickname "{nickname}" or '
+                f"with database id {client_database_id}"
+            )
+        )
     return clients[0]
 
 
@@ -162,7 +167,12 @@ def find_group(
         if grp.sgid == group_id or grp.name == name
     ]
     if len(groups) != 1:
-        raise LookupError
+        raise LookupError(
+            (
+                f'Could not find a group with name "name" '
+                f"or with id {group_id}"
+            )
+        )
     return groups[0]
 
 
