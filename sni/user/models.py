@@ -441,7 +441,7 @@ class Corporation(me.Document):
                 {"$unwind": "$corporation_data"},
                 {
                     "$match": {
-                        "clearance_level": {"$gt": -1},
+                        "clearance_level": {"$lt": 0},
                         "corporation_data.corporation_id": self.corporation_id,
                     }
                 },
