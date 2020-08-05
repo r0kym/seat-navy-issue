@@ -192,7 +192,7 @@ def put_coalition(
     Updates a coalition. All fields in the request body are optional. The
     `add_members` and `remove_members` fields can be used together, but the
     `members` cannot be used in conjunction with `add_members` and
-    `remove_members`. Requires a clearance level of 9 or more.
+    `remove_members`. Requires a clearance level of 6 or more.
     """
     assert_has_clearance(tkn.owner, "sni.update_coalition")
     coalition: Coalition = Coalition.objects.get(pk=coalition_id)
@@ -238,7 +238,7 @@ def get_coalition_tracking(
 ):
     """
     Reports which member (of a given coalition) have a valid refresh token
-    attacked to them, and which do not. Requires a clearance level of 9 or
+    attacked to them, and which do not. Requires a clearance level of 5 or
     more.
     """
     coalition: Coalition = Coalition.objects(pk=coalition_id).get()

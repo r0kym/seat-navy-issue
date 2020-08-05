@@ -197,7 +197,7 @@ def put_corporation(
 ):
     """
     Modify a corporation registered on SNI. Note that it does not modify it on
-    an ESI level. Requires a clearance level of 4 or more.
+    an ESI level. Requires a clearance level of 2 or more.
     """
     corporation: Corporation = Corporation.objects(
         corporation_id=corporation_id
