@@ -122,6 +122,11 @@ async def get_callback_esi(code: str, state: str):
         return token_manipulation_error_response()
 
     usr: User = User.objects.get(character_id=access_token.character_id)
+    if state_code.inviting_corporation is not None:
+        usr.corporation = state_code.inviting_corporation
+        usr.clearance_level = -1
+        usr.save()
+
     if not is_authorized_to_login(usr):
         return not_authorized_to_login_response(
             usr.character_name, usr.character_id
