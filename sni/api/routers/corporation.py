@@ -8,7 +8,7 @@ from typing import Dict, Iterator, List, Optional
 from fastapi import APIRouter, Depends
 import pydantic as pdt
 
-from sni.esi.models import EsiScope
+from sni.esi.scope import EsiScope, esi_scope_set_to_hex
 from sni.esi.token import tracking_status, TrackingStatus
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
@@ -281,7 +281,13 @@ def post_corporation_guest(
     assert_has_clearance(
         tkn.owner, "sni.create_corporation_guest", corporation.ceo
     )
-    state_code = create_state_code(tkn.parent, corporation)
+    state_code = create_state_code(
+        tkn.parent,
+        inviting_corporation=corporation,
+        code_prefix=esi_scope_set_to_hex(
+            corporation.cumulated_mandatory_esi_scopes()
+        ),
+    )
     return PostCorporationGuestOut(state_code=str(state_code.uuid))
 
 

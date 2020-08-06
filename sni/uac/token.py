@@ -71,7 +71,9 @@ def create_permanent_app_token(
 
 def create_state_code(
     app_token: Optional[Token],
+    *,
     inviting_corporation: Optional[Corporation] = None,
+    code_prefix: Optional[str] = None,
 ) -> StateCode:
     """
     Creates a new state code.
@@ -79,11 +81,14 @@ def create_state_code(
     See also:
         :class:`sni.uac.token.StateCode`
     """
+    code = str(uuid4())
+    if code_prefix is not None:
+        code = code_prefix + ":" + code
     state_code = StateCode(
         app_token=app_token,
         created_on=utils.now(),
         inviting_corporation=inviting_corporation,
-        uuid=str(uuid4()),
+        uuid=code,
     )
     state_code.save()
     logging.info(

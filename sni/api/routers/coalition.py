@@ -16,7 +16,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.esi.esi import EsiScope
+from sni.esi.scope import EsiScope
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (
     from_authotization_header_nondyn,

@@ -72,13 +72,13 @@ class StateCode(me.Document):
     end user logs in to EVE SSO.
     """
 
-    SCHEMA_VERSION = 2
+    SCHEMA_VERSION = 3
     """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
     """Schema version of this document"""
 
-    app_token = me.ReferenceField(Token, required=True)
+    app_token = me.ReferenceField(Token, null=True)
     """The app token that created this state code"""
 
     created_on = me.DateTimeField(default=utils.now, required=True)
@@ -89,13 +89,9 @@ class StateCode(me.Document):
     )
     """Corporation inviting the user of that state code, if any"""
 
-    uuid = me.UUIDField(binary=False, unique=True)
-    """
-    The state code
-
-    Todo:
-        Use the document's ``_id`` field instead.
-    """
+    uuid = me.StringField(null=False, required=True)
+    """The state code. It's not really an UUID4 but i'm too lazy to change the
+    field name and write migration code..."""
 
     meta = {
         "indexes": [

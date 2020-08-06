@@ -15,7 +15,7 @@ import requests
 
 from sni.conf import CONFIGURATION as conf
 
-from .models import EsiScope
+from .scope import EsiScope
 
 
 class AuthorizationCodeResponse(pdt.BaseModel):

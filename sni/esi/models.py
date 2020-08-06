@@ -4,7 +4,8 @@ ESI related database models
 
 import mongoengine as me
 
-from sni.user.models import EsiScope, User
+from sni.esi.scope import EsiScope
+from sni.user.models import User
 import sni.utils as utils
 
 

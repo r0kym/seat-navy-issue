@@ -13,7 +13,7 @@ from fastapi import (
 )
 import pydantic as pdt
 
-from sni.esi.models import EsiScope
+from sni.esi.scope import EsiScope
 from sni.esi.token import available_esi_scopes
 from sni.uac.clearance import assert_has_clearance
 from sni.uac.token import (

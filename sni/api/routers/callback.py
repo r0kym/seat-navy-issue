@@ -20,7 +20,7 @@ from sni.esi.sso import (
     EsiTokenError,
     get_access_token_from_callback_code,
 )
-from sni.esi.models import EsiScope
+from sni.esi.scope import EsiScope
 from sni.esi.token import save_esi_tokens, token_has_enough_scopes
 from sni.uac.token import create_user_token, StateCode, to_jwt
 from sni.uac.uac import is_authorized_to_login
