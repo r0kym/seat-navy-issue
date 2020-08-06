@@ -111,13 +111,13 @@
 <span class="sd">    end user logs in to EVE SSO.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="sd">&quot;&quot;&quot;Latest schema version for this collection&quot;&quot;&quot;</span>
 
     <span class="n">_version</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SCHEMA_VERSION</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Schema version of this document&quot;&quot;&quot;</span>
 
-    <span class="n">app_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">app_token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The app token that created this state code&quot;&quot;&quot;</span>
 
     <span class="n">created_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -128,13 +128,9 @@
     <span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Corporation inviting the user of that state code, if any&quot;&quot;&quot;</span>
 
-    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The state code</span>
-
-<span class="sd">    Todo:</span>
-<span class="sd">        Use the document&#39;s ``_id`` field instead.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uuid</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The state code. It&#39;s not really an UUID4 but i&#39;m too lazy to change the</span>
+<span class="sd">    field name and write migration code...&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span>

@@ -120,7 +120,7 @@
 
 <dl class="function">
 <dt id="sni.esi.esi.get_esi_path_scope">
-<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">get_esi_path_scope</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; Optional[sni.user.models.EsiScope]<a class="reference internal" href="_modules/sni/esi/esi.html#get_esi_path_scope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.get_esi_path_scope" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">get_esi_path_scope</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; Optional[sni.esi.scope.EsiScope]<a class="reference internal" href="_modules/sni/esi/esi.html#get_esi_path_scope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.get_esi_path_scope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the ESI scope that is required for a given ESI path.</p>
 <p>Raises <code class="xref py py-class docutils literal notranslate"><span class="pre">mongoengine.DoesNotExist</span></code> if no suitable path is found.</p>
 <p class="rubric">Examples</p>
@@ -314,7 +314,7 @@ authorization code.</p>
 
 <dl class="function">
 <dt id="sni.esi.sso.get_auth_url">
-<code class="sig-prename descclassname">sni.esi.sso.</code><code class="sig-name descname">get_auth_url</code><span class="sig-paren">(</span><em class="sig-param">esi_scopes: List[sni.user.models.EsiScope], state: str = '00000000-0000-0000-0000-000000000000'</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/esi/sso.html#get_auth_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.sso.get_auth_url" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.sso.</code><code class="sig-name descname">get_auth_url</code><span class="sig-paren">(</span><em class="sig-param">esi_scopes: List[sni.esi.scope.EsiScope], state: str = '00000000-0000-0000-0000-000000000000'</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sni/esi/sso.html#get_auth_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.sso.get_auth_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an EVE SSO login url based on the scopes passed in argument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -384,7 +384,7 @@ attached to it, or not.</p>
 
 <dl class="function">
 <dt id="sni.esi.token.available_esi_scopes">
-<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">available_esi_scopes</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; Set[sni.user.models.EsiScope]<a class="reference internal" href="_modules/sni/esi/token.html#available_esi_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.available_esi_scopes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.esi.token.</code><code class="sig-name descname">available_esi_scopes</code><span class="sig-paren">(</span><em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span> &#x2192; Set[sni.esi.scope.EsiScope]<a class="reference internal" href="_modules/sni/esi/token.html#available_esi_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.token.available_esi_scopes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a user, returns all the scopes for which SNI has a valid refresh
 token.</p>
 </dd></dl>

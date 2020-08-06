@@ -432,7 +432,7 @@ this instance.</p>
 
 <dl class="function">
 <dt id="sni.api.routers.callback.not_enough_scopes_response">
-<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">not_enough_scopes_response</code><span class="sig-paren">(</span><em class="sig-param">character_name: str, character_id: int, required_scopes: List[sni.user.models.EsiScope], provided_scopes: List[sni.user.models.EsiScope]</em><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#not_enough_scopes_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.not_enough_scopes_response" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.api.routers.callback.</code><code class="sig-name descname">not_enough_scopes_response</code><span class="sig-paren">(</span><em class="sig-param">character_name: str, character_id: int, required_scopes: List[sni.esi.scope.EsiScope], provided_scopes: List[sni.esi.scope.EsiScope]</em><span class="sig-paren">)</span> &#x2192; starlette.responses.HTMLResponse<a class="reference internal" href="_modules/sni/api/routers/callback.html#not_enough_scopes_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.callback.not_enough_scopes_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an HTML response explaing that the user did not provide enough ESI
 scopes.</p>
 </dd></dl>
