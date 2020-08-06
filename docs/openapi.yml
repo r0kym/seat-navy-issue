@@ -1792,7 +1792,7 @@ paths:
 
         `members` cannot be used in conjunction with `add_members` and
 
-        `remove_members`. Requires a clearance level of 9 or more.'
+        `remove_members`. Requires a clearance level of 6 or more.'
       operationId: put_coalition_coalition__coalition_id__put
       parameters:
       - in: path
@@ -1833,7 +1833,7 @@ paths:
       description: 'Reports which member (of a given coalition) have a valid refresh
         token
 
-        attacked to them, and which do not. Requires a clearance level of 9 or
+        attacked to them, and which do not. Requires a clearance level of 5 or
 
         more.'
       operationId: get_coalition_tracking_coalition__coalition_id__tracking_get
@@ -1973,7 +1973,7 @@ paths:
       description: 'Modify a corporation registered on SNI. Note that it does not
         modify it on
 
-        an ESI level. Requires a clearance level of 4 or more.'
+        an ESI level. Requires a clearance level of 2 or more.'
       operationId: put_corporation_corporation__corporation_id__put
       parameters:
       - in: path
