@@ -13,11 +13,15 @@ from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
-from sni.user.models import User
 
-from sni.api.models import CrashReport, CrashReportRequest, CrashReportToken
+from sni.api.models import (
+    CrashReport,
+    CrashReportRequest,
+    CrashReportToken,
+)
 
 from .common import BSONObjectId
+from .user import GetUserOut, GetUserShortOut
 
 router = APIRouter()
 
@@ -46,33 +50,6 @@ class GetCrashReportRequestOut(pdt.BaseModel):
         )
 
 
-class GetCrashReportTokenUserOut(pdt.BaseModel):
-    """
-    Embedded model for reponses for ``GET /crash/{crash_report_id}``.
-    """
-
-    authorized_to_login: bool
-    character_id: int
-    character_name: str
-    clearance_level: int
-    created_on: datetime
-    updated_on: datetime
-
-    @staticmethod
-    def from_record(usr: User) -> "GetCrashReportTokenUserOut":
-        """
-        Converts a :class:`sni.user.models.User` to a :class:`sni.api.routers.crash.GetCrashReportTokenUserOut`
-        """
-        return GetCrashReportTokenUserOut(
-            authorized_to_login=usr.authorized_to_login,
-            character_id=usr.character_id,
-            character_name=usr.character_name,
-            clearance_level=usr.clearance_level,
-            created_on=usr.created_on,
-            updated_on=usr.updated_on,
-        )
-
-
 class GetCrashReportTokenOut(pdt.BaseModel):
     """
     Embedded model for reponses for ``GET /crash/{crash_report_id}``.
@@ -80,7 +57,7 @@ class GetCrashReportTokenOut(pdt.BaseModel):
 
     created_on: datetime
     expires_on: Optional[datetime]
-    owner: GetCrashReportTokenUserOut
+    owner: GetUserOut
     token_type: str
     uuid: str
 
@@ -92,7 +69,7 @@ class GetCrashReportTokenOut(pdt.BaseModel):
         return GetCrashReportTokenOut(
             created_on=token.created_on,
             expires_on=token.expires_on,
-            owner=GetCrashReportTokenUserOut.from_record(token.owner),
+            owner=GetUserOut.from_record(token.owner),
             token_type=token.token_type,
             uuid=str(token.uuid),
         )
@@ -130,7 +107,7 @@ class GetCrashReportShortOut(pdt.BaseModel):
     Model for an element of a ``GET /crash`` response
     """
 
-    character_id: Optional[int]
+    user: Optional[GetUserShortOut]
     id: str
     timestamp: datetime
     url: str
@@ -142,7 +119,7 @@ class GetCrashReportShortOut(pdt.BaseModel):
         model.
         """
         return GetCrashReportShortOut(
-            character_id=crash.token.owner.character_id
+            user=GetUserShortOut.from_record(crash.token.owner)
             if crash.token is not None
             else None,
             id=str(crash.pk),

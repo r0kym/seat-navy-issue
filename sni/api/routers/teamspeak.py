@@ -26,6 +26,8 @@ from sni.uac.token import (
     Token,
 )
 
+from .user import GetUserShortOut
+
 router = APIRouter()
 
 
@@ -36,7 +38,7 @@ class PostAuthStartOut(pdt.BaseModel):
 
     expiration_datetime: datetime
     challenge_nickname: str
-    user: str
+    user: GetUserShortOut
 
 
 @router.post(
@@ -53,9 +55,9 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, "sni.teamspeak.auth")
     return PostAuthStartOut(
-        expiration_datetime=utils.now_plus(seconds=60),
+        expiration_datetime=utils.now_plus(seconds=120),
         challenge_nickname=new_authentication_challenge(tkn.owner),
-        user=tkn.owner.character_name,
+        user=GetUserShortOut.from_record(tkn.owner),
     )
 
 

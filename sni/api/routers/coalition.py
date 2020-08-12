@@ -24,11 +24,30 @@ from sni.uac.token import (
 )
 from sni.user.models import Alliance, Coalition, Corporation
 
-from .alliance import GetAllianceShortOut
 from .common import BSONObjectId
 from .corporation import GetTrackingOut, GetCorporationShortOut
 
 router = APIRouter()
+
+
+class GetAllianceShortOut(pdt.BaseModel):
+    """
+    Short alliance description
+    """
+
+    alliance_id: int
+    alliance_name: str
+
+    @staticmethod
+    def from_record(alliance: Alliance) -> "GetAllianceShortOut":
+        """
+        Converts an instance of :class:`sni.user.models.Alliance` to
+        :class:`sni.api.routers.alliance.GetAllianceShortOut`
+        """
+        return GetAllianceShortOut(
+            alliance_id=alliance.alliance_id,
+            alliance_name=alliance.alliance_name,
+        )
 
 
 class GetCoalitionShortOut(pdt.BaseModel):

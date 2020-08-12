@@ -41,6 +41,7 @@ from sni.uac.token import (
 )
 
 from .common import paginate
+from .user import GetUserShortOut
 
 router = APIRouter()
 
@@ -61,8 +62,7 @@ class GetCharacterLocationOut(pdt.BaseModel):
     Describes a character location
     """
 
-    character_id: int
-    character_name: str
+    user: GetUserShortOut
     online: bool
     ship_name: str
     ship_type_id: int
@@ -93,8 +93,7 @@ class GetCharacterLocationOut(pdt.BaseModel):
             else None
         )
         return GetCharacterLocationOut(
-            character_id=location.user.character_id,
-            character_name=location.user.character_name,
+            user=GetUserShortOut.from_record(location.user),
             online=location.online,
             ship_name=location.ship_name,
             ship_type_id=location.ship_type_id,
@@ -175,8 +174,7 @@ class GetCharacterMailShortOut(pdt.BaseModel):
     Represents a short description (header) of an email
     """
 
-    from_id: int
-    from_name: str
+    from_character: GetUserShortOut
     mail_id: int
     recipients: List[GetCharacterMailOut.MailRecipient]
     subject: str
@@ -193,8 +191,10 @@ class GetCharacterMailShortOut(pdt.BaseModel):
             for recipient in mail.recipients
         ]
         return GetCharacterMailShortOut(
-            from_id=mail.from_id,
-            from_name=id_to_name(mail.from_id, "character_id"),
+            from_character=GetUserShortOut(
+                character_id=mail.from_id,
+                character_name=id_to_name(mail.from_id, "character_id"),
+            ),
             mail_id=mail.mail_id,
             recipients=recipients,
             subject=mail.subject,

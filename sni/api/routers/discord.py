@@ -18,6 +18,8 @@ from sni.uac.token import (
     Token,
 )
 
+from .user import GetUserShortOut
+
 router = APIRouter()
 
 
@@ -28,7 +30,7 @@ class PostAuthStartOut(pdt.BaseModel):
 
     code: str
     expiration_datetime: datetime
-    user: str
+    user: GetUserShortOut
 
 
 @router.post(
@@ -47,5 +49,5 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     return PostAuthStartOut(
         expiration_datetime=utils.now_plus(seconds=60),
         code=new_authentication_challenge(tkn.owner),
-        user=tkn.owner.character_name,
+        user=GetUserShortOut.from_record(tkn.owner),
     )

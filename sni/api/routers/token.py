@@ -29,6 +29,8 @@ from sni.uac.token import (
 )
 from sni.user.models import User
 
+from .user import GetUserOut
+
 router = APIRouter()
 
 
@@ -41,11 +43,27 @@ class GetTokenOut(pdt.BaseModel):
     comments: Optional[str]
     created_on: datetime
     expires_on: Optional[datetime]
-    owner_character_id: int
-    owner_character_name: str
+    owner: GetUserOut
     parent: Optional[str]
     token_type: Token.TokenType
     uuid: str
+
+    @staticmethod
+    def from_record(tkn: Token) -> "GetTokenOut":
+        """
+        Converts a :class:`sni.uac.models.Token` to a
+        :class:`sni.api.routers.token.GetTokenOut`
+        """
+        return GetTokenOut(
+            callback=tkn.callback,
+            comments=tkn.comments,
+            created_on=tkn.created_on,
+            expires_on=tkn.expires_on,
+            owner=GetUserOut.from_record(tkn.owner),
+            parent=str(tkn.parent.uuid) if tkn.parent is not None else None,
+            token_type=tkn.token_type,
+            uuid=str(tkn.uuid),
+        )
 
 
 class PostTokenUseFromDynIn(pdt.BaseModel):
@@ -142,17 +160,7 @@ async def get_token(tkn: Token = Depends(from_authotization_header_nondyn)):
     clearance level of 0 or more.
     """
     assert_has_clearance(tkn.owner, "sni.read_own_token")
-    return GetTokenOut(
-        callback=tkn.callback,
-        comments=tkn.comments,
-        created_on=tkn.created_on,
-        expires_on=tkn.expires_on,
-        owner_character_id=tkn.owner.character_id,
-        owner_character_name=tkn.owner.character_name,
-        parent=str(tkn.parent.uuid) if tkn.parent is not None else None,
-        token_type=tkn.token_type,
-        uuid=str(tkn.uuid),
-    )
+    return GetTokenOut.from_record(tkn)
 
 
 @router.post(

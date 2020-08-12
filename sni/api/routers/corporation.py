@@ -16,7 +16,7 @@ from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
-from sni.user.models import Corporation, User
+from sni.user.models import Alliance, Corporation, User
 from sni.user.user import ensure_corporation
 
 from .user import GetUserShortOut
@@ -24,16 +24,34 @@ from .user import GetUserShortOut
 router = APIRouter()
 
 
+class GetAllianceShortOut(pdt.BaseModel):
+    """
+    Short alliance description
+    """
+
+    alliance_id: int
+    alliance_name: str
+
+    @staticmethod
+    def from_record(alliance: Alliance) -> "GetAllianceShortOut":
+        """
+        Converts an instance of :class:`sni.user.models.Alliance` to
+        :class:`sni.api.routers.alliance.GetAllianceShortOut`
+        """
+        return GetAllianceShortOut(
+            alliance_id=alliance.alliance_id,
+            alliance_name=alliance.alliance_name,
+        )
+
+
 class GetCorporationOut(pdt.BaseModel):
     """
     Corporation data
     """
 
-    alliance_id: Optional[int]
-    alliance_name: Optional[str]
+    alliance: Optional[GetAllianceShortOut]
     authorized_to_login: Optional[bool]
-    ceo_character_id: int
-    ceo_character_name: str
+    ceo: GetUserShortOut
     corporation_id: int
     corporation_name: str
     cumulated_mandatory_esi_scopes: List[EsiScope]
@@ -48,15 +66,11 @@ class GetCorporationOut(pdt.BaseModel):
         :class:`sni.api.routers.corporation.GetCorporationOut`
         """
         return GetCorporationOut(
-            alliance_id=corporation.alliance.alliance_id
-            if corporation.alliance is not None
-            else None,
-            alliance_name=corporation.alliance.alliance_name
+            alliance=GetAllianceShortOut.from_record(corporation.alliance)
             if corporation.alliance is not None
             else None,
             authorized_to_login=corporation.authorized_to_login,
-            ceo_character_id=corporation.ceo.character_id,
-            ceo_character_name=corporation.ceo.character_name,
+            ceo=GetUserShortOut.from_record(corporation.ceo),
             corporation_id=corporation.corporation_id,
             corporation_name=corporation.corporation_name,
             cumulated_mandatory_esi_scopes=list(

@@ -19,7 +19,12 @@ from sni.user.models import Alliance
 from sni.user.user import ensure_alliance
 from sni.user.jobs import ensure_alliance_members
 
-from .corporation import GetTrackingOut
+from .corporation import (
+    GetAllianceShortOut,
+    GetTrackingOut,
+    GetCorporationShortOut,
+)
+from .user import GetUserShortOut
 
 router = APIRouter()
 
@@ -32,11 +37,9 @@ class GetAllianceOut(pdt.BaseModel):
     alliance_id: int
     alliance_name: str
     authorized_to_login: Optional[bool]
-    ceo_character_id: int
-    ceo_character_name: str
+    ceo: GetUserShortOut
     cumulated_mandatory_esi_scopes: List[EsiScope]
-    executor_corporation_id: int
-    executor_corporation_name: str
+    executor_corporation: GetCorporationShortOut
     mandatory_esi_scopes: List[EsiScope]
     ticker: str
     updated_on: datetime
@@ -51,36 +54,16 @@ class GetAllianceOut(pdt.BaseModel):
             alliance_id=alliance.alliance_id,
             alliance_name=alliance.alliance_name,
             authorized_to_login=alliance.authorized_to_login,
-            ceo_character_id=alliance.ceo.character_id,
-            ceo_character_name=alliance.ceo.character_name,
-            executor_corporation_id=alliance.executor.corporation_id,
-            executor_corporation_name=alliance.executor.corporation_name,
+            ceo=GetUserShortOut.from_record(alliance.ceo),
+            executor_corporation=GetCorporationShortOut.from_record(
+                alliance.executor
+            ),
             mandatory_esi_scopes=alliance.mandatory_esi_scopes,
             cumulated_mandatory_esi_scopes=list(
                 alliance.cumulated_mandatory_esi_scopes()
             ),
             ticker=alliance.ticker,
             updated_on=alliance.updated_on,
-        )
-
-
-class GetAllianceShortOut(pdt.BaseModel):
-    """
-    Short alliance description
-    """
-
-    alliance_id: int
-    alliance_name: str
-
-    @staticmethod
-    def from_record(alliance: Alliance) -> "GetAllianceShortOut":
-        """
-        Converts an instance of :class:`sni.user.models.Alliance` to
-        :class:`sni.api.routers.alliance.GetAllianceShortOut`
-        """
-        return GetAllianceShortOut(
-            alliance_id=alliance.alliance_id,
-            alliance_name=alliance.alliance_name,
         )
 
 
