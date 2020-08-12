@@ -28,7 +28,10 @@ class Alliance(me.Document):
     """Self explanatory"""
 
     authorized_to_login = me.BooleanField(default=None, null=True)
-    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+    """
+    Wether the members of this alliance are allowed to login to SNI. See
+    :meth:`sni.uac.uac.is_authorized_to_login`.
+    """
 
     executor_corporation_id = me.IntField(required=True)
     """Id of the executor of this alliance"""
@@ -60,7 +63,7 @@ class Alliance(me.Document):
         Todo:
             Paginate the results
         """
-        return list(Coalition.objects(members=self))
+        return list(Coalition.objects(member_alliances=self))
 
     def cumulated_mandatory_esi_scopes(self) -> Set[EsiScope]:
         """
@@ -146,7 +149,10 @@ class Corporation(me.Document):
     """Schema version of this document"""
 
     authorized_to_login = me.BooleanField(default=None, null=True)
-    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+    """
+    Wether the members of this corporation are allowed to login to SNI. See
+    :meth:`sni.uac.uac.is_authorized_to_login`.
+    """
 
     alliance = me.ReferenceField(
         Alliance, default=None, null=True, required=False
@@ -300,14 +306,17 @@ class Coalition(me.Document):
     to be created manually. An alliance can be part of multiple coalitions.
     """
 
-    SCHEMA_VERSION = 5
+    SCHEMA_VERSION = 6
     """Latest schema version for this collection"""
 
     _version = me.IntField(default=SCHEMA_VERSION)
     """Schema version of this document"""
 
     authorized_to_login = me.BooleanField(default=True, null=True)
-    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+    """
+    Wether the members of this coalition are allowed to login to SNI. See
+    :meth:`sni.uac.uac.is_authorized_to_login`.
+    """
 
     created_on = me.DateTimeField(default=utils.now, required=True)
     """Timestamp of the creation of this document"""
@@ -317,19 +326,19 @@ class Coalition(me.Document):
     )
     """Mandatory ESI scopes for the members of this coalition"""
 
+    member_alliances = me.ListField(me.ReferenceField(Alliance), default=list)
+    """
+    List of references to the member alliances (NOT users, for that, see
+    :meth:`sni.user.models.Coalition.users` and
+    :meth:`sni.user.models.Coalition.user_iterator`.
+    """
+
     member_corporations = me.ListField(
         me.ReferenceField(Corporation), default=list
     )
     """
     Corporations that are direct members of this coalition (i.e. not through an
     alliance)
-    """
-
-    members = me.ListField(me.ReferenceField(Alliance), default=list)
-    """
-    List of references to the member alliances (NOT users, for that, see
-    :meth:`sni.user.models.Coalition.users` and
-    :meth:`sni.user.models.Coalition.user_iterator`.
     """
 
     coalition_name = me.StringField(required=True, unique=True)
@@ -353,7 +362,10 @@ class Coalition(me.Document):
         """
         Returns an iterator over all the members of this coalition.
         """
-        members_ids = [alliance.pk for alliance in self.members]
+        alliance_ids = [alliance.pk for alliance in self.member_alliances]
+        corporation_ids = [
+            corporation.pk for corporation in self.member_corporations
+        ]
         result = User.objects.aggregate(
             [
                 {
@@ -376,8 +388,11 @@ class Coalition(me.Document):
                 {"$unwind": "$alliance_data"},
                 {
                     "$match": {
+                        "$or": [
+                            {"alliance_data._id": {"$in": alliance_ids}},
+                            {"corporation_data._id": {"$in": corporation_ids}},
+                        ],
                         "clearance_level": {"$gte": 0},
-                        "alliance_data._id": {"$in": members_ids},
                     }
                 },
                 {

@@ -298,8 +298,10 @@ def are_in_same_coalition(user1: User, user2: User) -> bool:
         return False
     if user2.corporation is None or user2.corporation.alliance is None:
         return False
-    for coa in Coalition.objects(members=user1.corporation.alliance):
-        if user2.corporation.alliance in coa.members:
+    for coalition in Coalition.objects(
+        member_alliances=user1.corporation.alliance
+    ):
+        if user2.corporation.alliance in coalition.member_alliances:
             return True
     return False
 

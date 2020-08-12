@@ -544,15 +544,15 @@ components:
             $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
+        member_alliances:
+          items:
+            type: integer
+          title: Member Alliances
+          type: array
         member_corporations:
           items:
             type: integer
           title: Member Corporations
-          type: array
-        members:
-          items:
-            type: integer
-          title: Members
           type: array
         ticker:
           title: Ticker
@@ -565,8 +565,8 @@ components:
       - coalition_id
       - created_on
       - mandatory_esi_scopes
+      - member_alliances
       - member_corporations
-      - members
       - coalition_name
       - ticker
       - updated_on
@@ -1219,15 +1219,15 @@ components:
     PutCoalitionIn:
       description: Model for `PUT /coalition/{coalition_id}` responses.
       properties:
+        add_member_alliances:
+          items:
+            type: integer
+          title: Add Member Alliances
+          type: array
         add_member_corporations:
           items:
             type: integer
           title: Add Member Corporations
-          type: array
-        add_members:
-          items:
-            type: integer
-          title: Add Members
           type: array
         authorized_to_login:
           title: Authorized To Login
@@ -1237,25 +1237,25 @@ components:
             $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
+        member_alliances:
+          items:
+            type: integer
+          title: Member Alliances
+          type: array
         member_corporations:
           items:
             type: integer
           title: Member Corporations
           type: array
-        members:
+        remove_member_alliances:
           items:
             type: integer
-          title: Members
+          title: Remove Member Alliances
           type: array
         remove_member_corporations:
           items:
             type: integer
           title: Remove Member Corporations
-          type: array
-        remove_members:
-          items:
-            type: integer
-          title: Remove Members
           type: array
         ticker:
           title: Ticker
@@ -1809,11 +1809,13 @@ paths:
       description: 'Updates a coalition. All fields in the request body are optional.
         The
 
-        `add_members` and `remove_members` fields can be used together, but the
+        `add_member_alliances` and `remove_member_alliances` fields can be used together,
+        but the
 
-        `members` cannot be used in conjunction with `add_members` and
+        `member_alliances` cannot be used in conjunction with `add_member_alliances`
+        and
 
-        `remove_members`. Similarly for `add_member_corporations`,
+        `remove_member_alliances`. Similarly for `add_member_corporations`,
 
         `remove_member_corporations`, and `member_corporations`. Requires a
 

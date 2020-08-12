@@ -126,6 +126,13 @@ def migrate_coalition():
     set_if_not_exist(collection, "member_corporations", [], version=4)
     ensure_minimum_version(collection, 5)
 
+    # v5 to v6
+    # Rename `members` field to `member_alliances`
+    collection.update_many(
+        {"_version": 5},
+        {"$rename": {"members": "member_alliances"}, "$set": {"_version": 6},},
+    )
+
     # Finally
     finalize_migration(Coalition)
 
