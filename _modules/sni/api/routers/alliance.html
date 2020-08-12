@@ -58,7 +58,12 @@
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_alliance</span>
 <span class="kn">from</span> <span class="nn">sni.user.jobs</span> <span class="kn">import</span> <span class="n">ensure_alliance_members</span>
 
-<span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="n">GetTrackingOut</span>
+<span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GetAllianceShortOut</span><span class="p">,</span>
+    <span class="n">GetTrackingOut</span><span class="p">,</span>
+    <span class="n">GetCorporationShortOut</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">GetUserShortOut</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
@@ -71,11 +76,9 @@
     <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">alliance_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="n">ceo_character_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">ceo_character_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ceo</span><span class="p">:</span> <span class="n">GetUserShortOut</span>
     <span class="n">cumulated_mandatory_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span>
-    <span class="n">executor_corporation_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">executor_corporation_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">executor_corporation</span><span class="p">:</span> <span class="n">GetCorporationShortOut</span>
     <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span>
     <span class="n">ticker</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span>
@@ -90,36 +93,16 @@
             <span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span><span class="p">,</span>
             <span class="n">alliance_name</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">,</span>
             <span class="n">authorized_to_login</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">authorized_to_login</span><span class="p">,</span>
-            <span class="n">ceo_character_id</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">ceo</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">ceo_character_name</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">ceo</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-            <span class="n">executor_corporation_id</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">corporation_id</span><span class="p">,</span>
-            <span class="n">executor_corporation_name</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">corporation_name</span><span class="p">,</span>
+            <span class="n">ceo</span><span class="o">=</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">alliance</span><span class="o">.</span><span class="n">ceo</span><span class="p">),</span>
+            <span class="n">executor_corporation</span><span class="o">=</span><span class="n">GetCorporationShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span>
+                <span class="n">alliance</span><span class="o">.</span><span class="n">executor</span>
+            <span class="p">),</span>
             <span class="n">mandatory_esi_scopes</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span><span class="p">,</span>
             <span class="n">cumulated_mandatory_esi_scopes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span>
                 <span class="n">alliance</span><span class="o">.</span><span class="n">cumulated_mandatory_esi_scopes</span><span class="p">()</span>
             <span class="p">),</span>
             <span class="n">ticker</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">ticker</span><span class="p">,</span>
             <span class="n">updated_on</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">updated_on</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="GetAllianceShortOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.GetAllianceShortOut">[docs]</a><span class="k">class</span> <span class="nc">GetAllianceShortOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Short alliance description</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">alliance_name</span><span class="p">:</span> <span class="nb">str</span>
-
-<div class="viewcode-block" id="GetAllianceShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.alliance.GetAllianceShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetAllianceShortOut&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Converts an instance of :class:`sni.user.models.Alliance` to</span>
-<span class="sd">        :class:`sni.api.routers.alliance.GetAllianceShortOut`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">GetAllianceShortOut</span><span class="p">(</span>
-            <span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span><span class="p">,</span>
-            <span class="n">alliance_name</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 
 

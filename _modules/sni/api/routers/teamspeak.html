@@ -65,6 +65,8 @@
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">GetUserShortOut</span>
+
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
 
@@ -75,7 +77,7 @@
 
     <span class="n">expiration_datetime</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">challenge_nickname</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">user</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">user</span><span class="p">:</span> <span class="n">GetUserShortOut</span></div>
 
 
 <div class="viewcode-block" id="port_auth_start"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.teamspeak.port_auth_start">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
@@ -92,9 +94,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.teamspeak.auth&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">PostAuthStartOut</span><span class="p">(</span>
-        <span class="n">expiration_datetime</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span>
+        <span class="n">expiration_datetime</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">120</span><span class="p">),</span>
         <span class="n">challenge_nickname</span><span class="o">=</span><span class="n">new_authentication_challenge</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">),</span>
-        <span class="n">user</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 

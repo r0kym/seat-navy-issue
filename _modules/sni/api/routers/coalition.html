@@ -61,12 +61,32 @@
     <span class="n">from_authotization_header_nondyn</span><span class="p">,</span>
     <span class="n">Token</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Alliance</span><span class="p">,</span> <span class="n">Coalition</span>
+<span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">Alliance</span><span class="p">,</span> <span class="n">Coalition</span><span class="p">,</span> <span class="n">Corporation</span>
 
 <span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">BSONObjectId</span>
-<span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="n">GetTrackingOut</span>
+<span class="kn">from</span> <span class="nn">.corporation</span> <span class="kn">import</span> <span class="n">GetTrackingOut</span><span class="p">,</span> <span class="n">GetCorporationShortOut</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="GetAllianceShortOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.GetAllianceShortOut">[docs]</a><span class="k">class</span> <span class="nc">GetAllianceShortOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Short alliance description</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">alliance_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">alliance_name</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="GetAllianceShortOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.GetAllianceShortOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">alliance</span><span class="p">:</span> <span class="n">Alliance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetAllianceShortOut&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts an instance of :class:`sni.user.models.Alliance` to</span>
+<span class="sd">        :class:`sni.api.routers.alliance.GetAllianceShortOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetAllianceShortOut</span><span class="p">(</span>
+            <span class="n">alliance_id</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_id</span><span class="p">,</span>
+            <span class="n">alliance_name</span><span class="o">=</span><span class="n">alliance</span><span class="o">.</span><span class="n">alliance_name</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="GetCoalitionShortOut"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.coalition.GetCoalitionShortOut">[docs]</a><span class="k">class</span> <span class="nc">GetCoalitionShortOut</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -97,7 +117,8 @@
     <span class="n">coalition_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]</span>
-    <span class="n">members</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">member_alliances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetAllianceShortOut</span><span class="p">]</span>
+    <span class="n">member_corporations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetCorporationShortOut</span><span class="p">]</span>
     <span class="n">coalition_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ticker</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">updated_on</span><span class="p">:</span> <span class="n">datetime</span>
@@ -112,7 +133,14 @@
             <span class="n">coalition_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">pk</span><span class="p">),</span>
             <span class="n">created_on</span><span class="o">=</span><span class="n">coalition</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
             <span class="n">mandatory_esi_scopes</span><span class="o">=</span><span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span><span class="p">,</span>
-            <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">alliance_id</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">members</span><span class="p">],</span>
+            <span class="n">member_alliances</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">GetAllianceShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span>
+            <span class="p">],</span>
+            <span class="n">member_corporations</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">GetCorporationShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span>
+            <span class="p">],</span>
             <span class="n">coalition_name</span><span class="o">=</span><span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span>
             <span class="n">ticker</span><span class="o">=</span><span class="n">coalition</span><span class="o">.</span><span class="n">ticker</span><span class="p">,</span>
             <span class="n">updated_on</span><span class="o">=</span><span class="n">coalition</span><span class="o">.</span><span class="n">updated_on</span><span class="p">,</span>
@@ -133,11 +161,14 @@
 <span class="sd">    Model for `PUT /coalition/{coalition_id}` responses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">add_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">add_member_alliances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">add_member_corporations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">authorized_to_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">mandatory_esi_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">remove_members</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">member_alliances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">member_corporations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">remove_member_alliances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">remove_member_corporations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">ticker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
@@ -229,39 +260,58 @@
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates a coalition. All fields in the request body are optional. The</span>
-<span class="sd">    `add_members` and `remove_members` fields can be used together, but the</span>
-<span class="sd">    `members` cannot be used in conjunction with `add_members` and</span>
-<span class="sd">    `remove_members`. Requires a clearance level of 6 or more.</span>
+<span class="sd">    `add_member_alliances` and `remove_member_alliances` fields can be used together, but the</span>
+<span class="sd">    `member_alliances` cannot be used in conjunction with `add_member_alliances` and</span>
+<span class="sd">    `remove_member_alliances`. Similarly for `add_member_corporations`,</span>
+<span class="sd">    `remove_member_corporations`, and `member_corporations`. Requires a</span>
+<span class="sd">    clearance level of 6 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.update_coalition&quot;</span><span class="p">)</span>
     <span class="n">coalition</span><span class="p">:</span> <span class="n">Coalition</span> <span class="o">=</span> <span class="n">Coalition</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">coalition_id</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s2">&quot;Updating coalition </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">coalition</span><span class="o">.</span><span class="n">coalition_name</span><span class="p">,</span> <span class="n">coalition_id</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">add_members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">add_member_alliances</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span> <span class="o">+=</span> <span class="p">[</span>
             <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">member_id</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">add_members</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">add_member_alliances</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">add_member_corporations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">corporation_id</span><span class="o">=</span><span class="n">member_id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">add_member_corporations</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.set_authorized_to_login&quot;</span><span class="p">)</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">authorized_to_login</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">authorized_to_login</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mandatory_esi_scopes</span>
-    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">member_alliances</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">Alliance</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">alliance_id</span><span class="o">=</span><span class="n">member_id</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">members</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">member_alliances</span><span class="p">)</span>
         <span class="p">]</span>
-    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_members</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">member_corporations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Corporation</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">corporation_id</span><span class="o">=</span><span class="n">member_id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">member_corporations</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_member_alliances</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">member</span>
-            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">members</span>
-            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">alliance_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_members</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">alliance_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_member_alliances</span>
+        <span class="p">]</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_member_corporations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">member</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">corporation_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">remove_member_corporations</span>
         <span class="p">]</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ticker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">coalition</span><span class="o">.</span><span class="n">ticker</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ticker</span>
-    <span class="n">coalition</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">members</span><span class="p">))</span>
+    <span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">member_corporations</span><span class="p">))</span>
+    <span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">coalition</span><span class="o">.</span><span class="n">member_alliances</span><span class="p">))</span>
     <span class="n">coalition</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">GetCoalitionOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">coalition</span><span class="p">)</span></div>
 

@@ -118,12 +118,12 @@
       </ul></li>
       <li><a href="api.html#sni.api.server.add_included_routers">add_included_routers() (in module sni.api.server)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.add_members">add_members (sni.api.routers.coalition.PutCoalitionIn attribute)</a>
-
-      <ul>
-        <li><a href="api.html#sni.api.routers.group.PutGroupIn.add_members">(sni.api.routers.group.PutGroupIn attribute)</a>
+      <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.add_member_alliances">add_member_alliances (sni.api.routers.coalition.PutCoalitionIn attribute)</a>
 </li>
-      </ul></li>
+      <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.add_member_corporations">add_member_corporations (sni.api.routers.coalition.PutCoalitionIn attribute)</a>
+</li>
+      <li><a href="api.html#sni.api.routers.group.PutGroupIn.add_members">add_members (sni.api.routers.group.PutGroupIn attribute)</a>
+</li>
       <li><a href="api.html#sni.api.server.RouterConfig.add_to_application">add_to_application() (sni.api.server.RouterConfig method)</a>
 </li>
       <li><a href="sni.html#sni.conf.JWTConfig.algorithm">algorithm (sni.conf.JWTConfig attribute)</a>
@@ -132,9 +132,11 @@
 </li>
       <li><a href="user.html#sni.user.models.Alliance">Alliance (class in sni.user.models)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.user.GetUserOut.alliance">alliance (sni.api.routers.user.GetUserOut attribute)</a>
+      <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.alliance">alliance (sni.api.routers.corporation.GetCorporationOut attribute)</a>
 
       <ul>
+        <li><a href="api.html#sni.api.routers.user.GetUserOut.alliance">(sni.api.routers.user.GetUserOut attribute)</a>
+</li>
         <li><a href="user.html#sni.user.models.Corporation.alliance">(sni.user.models.Corporation attribute)</a>
 </li>
       </ul></li>
@@ -143,9 +145,9 @@
       <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.alliance_id">alliance_id (sni.api.routers.alliance.GetAllianceOut attribute)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.alliance.GetAllianceShortOut.alliance_id">(sni.api.routers.alliance.GetAllianceShortOut attribute)</a>
+        <li><a href="api.html#sni.api.routers.coalition.GetAllianceShortOut.alliance_id">(sni.api.routers.coalition.GetAllianceShortOut attribute)</a>
 </li>
-        <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.alliance_id">(sni.api.routers.corporation.GetCorporationOut attribute)</a>
+        <li><a href="api.html#sni.api.routers.corporation.GetAllianceShortOut.alliance_id">(sni.api.routers.corporation.GetAllianceShortOut attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.Alliance.alliance_id">(sni.user.models.Alliance attribute)</a>
 </li>
@@ -153,19 +155,19 @@
       <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.alliance_name">alliance_name (sni.api.routers.alliance.GetAllianceOut attribute)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.alliance.GetAllianceShortOut.alliance_name">(sni.api.routers.alliance.GetAllianceShortOut attribute)</a>
+        <li><a href="api.html#sni.api.routers.coalition.GetAllianceShortOut.alliance_name">(sni.api.routers.coalition.GetAllianceShortOut attribute)</a>
 </li>
-        <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.alliance_name">(sni.api.routers.corporation.GetCorporationOut attribute)</a>
+        <li><a href="api.html#sni.api.routers.corporation.GetAllianceShortOut.alliance_name">(sni.api.routers.corporation.GetAllianceShortOut attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.Alliance.alliance_name">(sni.user.models.Alliance attribute)</a>
 </li>
       </ul></li>
       <li><a href="uac.html#sni.uac.models.StateCode.app_token">app_token (sni.uac.models.StateCode attribute)</a>
 </li>
-      <li><a href="uac.html#sni.uac.clearance.are_in_same_alliance">are_in_same_alliance() (in module sni.uac.clearance)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="uac.html#sni.uac.clearance.are_in_same_alliance">are_in_same_alliance() (in module sni.uac.clearance)</a>
+</li>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_coalition">are_in_same_coalition() (in module sni.uac.clearance)</a>
 </li>
       <li><a href="uac.html#sni.uac.clearance.are_in_same_corporation">are_in_same_corporation() (in module sni.uac.clearance)</a>
@@ -264,37 +266,29 @@
 </li>
       <li><a href="sni.html#sni.utils.catches_all">catches_all() (in module sni.utils)</a>
 </li>
+      <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.ceo">ceo (sni.api.routers.alliance.GetAllianceOut attribute)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.ceo">(sni.api.routers.corporation.GetCorporationOut attribute)</a>
+</li>
+      </ul></li>
       <li><a href="user.html#sni.user.models.Alliance.ceo">ceo() (sni.user.models.Alliance property)</a>
 
       <ul>
         <li><a href="user.html#sni.user.models.Corporation.ceo">(sni.user.models.Corporation property)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.ceo_character_id">ceo_character_id (sni.api.routers.alliance.GetAllianceOut attribute)</a>
-
-      <ul>
-        <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.ceo_character_id">(sni.api.routers.corporation.GetCorporationOut attribute)</a>
+      <li><a href="user.html#sni.user.models.Corporation.ceo_character_id">ceo_character_id (sni.user.models.Corporation attribute)</a>
 </li>
-        <li><a href="user.html#sni.user.models.Corporation.ceo_character_id">(sni.user.models.Corporation attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.ceo_character_name">ceo_character_name (sni.api.routers.alliance.GetAllianceOut attribute)</a>
-
-      <ul>
-        <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.ceo_character_name">(sni.api.routers.corporation.GetCorporationOut attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api.html#sni.api.routers.teamspeak.PostAuthStartOut.challenge_nickname">challenge_nickname (sni.api.routers.teamspeak.PostAuthStartOut attribute)</a>
 
       <ul>
         <li><a href="teamspeak.html#sni.teamspeak.models.TeamspeakAuthenticationChallenge.challenge_nickname">(sni.teamspeak.models.TeamspeakAuthenticationChallenge attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#sni.api.routers.esi.GetCharacterLocationOut.character_id">character_id (sni.api.routers.esi.GetCharacterLocationOut attribute)</a>
+      <li><a href="api.html#sni.api.routers.user.GetUserOut.character_id">character_id (sni.api.routers.user.GetUserOut attribute)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.user.GetUserOut.character_id">(sni.api.routers.user.GetUserOut attribute)</a>
-</li>
         <li><a href="api.html#sni.api.routers.user.GetUserShortOut.character_id">(sni.api.routers.user.GetUserShortOut attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.User.character_id">(sni.user.models.User attribute)</a>
@@ -302,11 +296,9 @@
       </ul></li>
       <li><a href="esi.html#sni.esi.sso.DecodedAccessToken.character_id">character_id() (sni.esi.sso.DecodedAccessToken property)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.esi.GetCharacterLocationOut.character_name">character_name (sni.api.routers.esi.GetCharacterLocationOut attribute)</a>
+      <li><a href="api.html#sni.api.routers.user.GetUserOut.character_name">character_name (sni.api.routers.user.GetUserOut attribute)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.user.GetUserOut.character_name">(sni.api.routers.user.GetUserOut attribute)</a>
-</li>
         <li><a href="api.html#sni.api.routers.user.GetUserShortOut.character_name">(sni.api.routers.user.GetUserShortOut attribute)</a>
 </li>
         <li><a href="user.html#sni.user.models.User.character_name">(sni.user.models.User attribute)</a>
@@ -646,13 +638,9 @@
 </li>
       <li><a href="user.html#sni.user.models.Alliance.executor">executor() (sni.user.models.Alliance property)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.executor_corporation_id">executor_corporation_id (sni.api.routers.alliance.GetAllianceOut attribute)</a>
-
-      <ul>
-        <li><a href="user.html#sni.user.models.Alliance.executor_corporation_id">(sni.user.models.Alliance attribute)</a>
+      <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.executor_corporation">executor_corporation (sni.api.routers.alliance.GetAllianceOut attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.executor_corporation_name">executor_corporation_name (sni.api.routers.alliance.GetAllianceOut attribute)</a>
+      <li><a href="user.html#sni.user.models.Alliance.executor_corporation_id">executor_corporation_id (sni.user.models.Alliance attribute)</a>
 </li>
       <li><a href="esi.html#sni.esi.sso.DecodedAccessToken.exp">exp (sni.esi.sso.DecodedAccessToken attribute)</a>
 </li>
@@ -694,30 +682,28 @@
 </li>
       <li><a href="uac.html#sni.uac.token.from_authotization_header_nondyn">from_authotization_header_nondyn() (in module sni.uac.token)</a>
 </li>
+      <li><a href="api.html#sni.api.routers.esi.GetCharacterMailShortOut.from_character">from_character (sni.api.routers.esi.GetCharacterMailShortOut attribute)</a>
+</li>
       <li><a href="api.html#sni.api.routers.esi.GetCharacterMailOut.from_id">from_id (sni.api.routers.esi.GetCharacterMailOut attribute)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.esi.GetCharacterMailShortOut.from_id">(sni.api.routers.esi.GetCharacterMailShortOut attribute)</a>
-</li>
         <li><a href="indexation.html#sni.index.models.EsiMail.from_id">(sni.index.models.EsiMail attribute)</a>
 </li>
       </ul></li>
       <li><a href="api.html#sni.api.routers.system.GetJobOut.from_job">from_job() (sni.api.routers.system.GetJobOut static method)</a>
 </li>
       <li><a href="api.html#sni.api.routers.esi.GetCharacterMailOut.from_name">from_name (sni.api.routers.esi.GetCharacterMailOut attribute)</a>
-
-      <ul>
-        <li><a href="api.html#sni.api.routers.esi.GetCharacterMailShortOut.from_name">(sni.api.routers.esi.GetCharacterMailShortOut attribute)</a>
 </li>
-      </ul></li>
       <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut.from_record">from_record() (sni.api.routers.alliance.GetAllianceOut static method)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.alliance.GetAllianceShortOut.from_record">(sni.api.routers.alliance.GetAllianceShortOut static method)</a>
+        <li><a href="api.html#sni.api.routers.coalition.GetAllianceShortOut.from_record">(sni.api.routers.coalition.GetAllianceShortOut static method)</a>
 </li>
         <li><a href="api.html#sni.api.routers.coalition.GetCoalitionOut.from_record">(sni.api.routers.coalition.GetCoalitionOut static method)</a>
 </li>
         <li><a href="api.html#sni.api.routers.coalition.GetCoalitionShortOut.from_record">(sni.api.routers.coalition.GetCoalitionShortOut static method)</a>
+</li>
+        <li><a href="api.html#sni.api.routers.corporation.GetAllianceShortOut.from_record">(sni.api.routers.corporation.GetAllianceShortOut static method)</a>
 </li>
         <li><a href="api.html#sni.api.routers.corporation.GetCorporationOut.from_record">(sni.api.routers.corporation.GetCorporationOut static method)</a>
 </li>
@@ -736,6 +722,8 @@
         <li><a href="api.html#sni.api.routers.esi.GetCharacterWalletBalanceOut.from_record">(sni.api.routers.esi.GetCharacterWalletBalanceOut static method)</a>
 </li>
         <li><a href="api.html#sni.api.routers.group.GetGroupOut.from_record">(sni.api.routers.group.GetGroupOut static method)</a>
+</li>
+        <li><a href="api.html#sni.api.routers.token.GetTokenOut.from_record">(sni.api.routers.token.GetTokenOut static method)</a>
 </li>
         <li><a href="api.html#sni.api.routers.user.GetUserOut.from_record">(sni.api.routers.user.GetUserOut static method)</a>
 </li>
@@ -822,10 +810,10 @@
 </li>
       <li><a href="db.html#sni.db.mongodb.get_pymongo_collection">get_pymongo_collection() (in module sni.db.mongodb)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#sni.api.routers.token.get_token">get_token() (in module sni.api.routers.token)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="uac.html#sni.uac.token.get_token_from_jwt">get_token_from_jwt() (in module sni.uac.token)</a>
 </li>
       <li><a href="api.html#sni.api.routers.user.get_user">get_user() (in module sni.api.routers.user)</a>
@@ -834,8 +822,12 @@
 </li>
       <li><a href="api.html#sni.api.routers.alliance.GetAllianceOut">GetAllianceOut (class in sni.api.routers.alliance)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.alliance.GetAllianceShortOut">GetAllianceShortOut (class in sni.api.routers.alliance)</a>
+      <li><a href="api.html#sni.api.routers.coalition.GetAllianceShortOut">GetAllianceShortOut (class in sni.api.routers.coalition)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.routers.corporation.GetAllianceShortOut">(class in sni.api.routers.corporation)</a>
 </li>
+      </ul></li>
       <li><a href="api.html#sni.api.routers.esi.GetCharacterLocationOut">GetCharacterLocationOut (class in sni.api.routers.esi)</a>
 </li>
       <li><a href="api.html#sni.api.routers.esi.GetCharacterMailOut">GetCharacterMailOut (class in sni.api.routers.esi)</a>
@@ -1134,22 +1126,32 @@
 </li>
       <li><a href="api.html#sni.api.routers.system.GetJobOut.max_instances">max_instances (sni.api.routers.system.GetJobOut attribute)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.coalition.GetCoalitionOut.members">members (sni.api.routers.coalition.GetCoalitionOut attribute)</a>
+      <li><a href="api.html#sni.api.routers.coalition.GetCoalitionOut.member_alliances">member_alliances (sni.api.routers.coalition.GetCoalitionOut attribute)</a>
 
       <ul>
-        <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.members">(sni.api.routers.coalition.PutCoalitionIn attribute)</a>
+        <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.member_alliances">(sni.api.routers.coalition.PutCoalitionIn attribute)</a>
 </li>
-        <li><a href="api.html#sni.api.routers.group.GetGroupOut.members">(sni.api.routers.group.GetGroupOut attribute)</a>
+        <li><a href="user.html#sni.user.models.Coalition.member_alliances">(sni.user.models.Coalition attribute)</a>
 </li>
-        <li><a href="api.html#sni.api.routers.group.PutGroupIn.members">(sni.api.routers.group.PutGroupIn attribute)</a>
+      </ul></li>
+      <li><a href="api.html#sni.api.routers.coalition.GetCoalitionOut.member_corporations">member_corporations (sni.api.routers.coalition.GetCoalitionOut attribute)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.member_corporations">(sni.api.routers.coalition.PutCoalitionIn attribute)</a>
 </li>
-        <li><a href="user.html#sni.user.models.Coalition.members">(sni.user.models.Coalition attribute)</a>
-</li>
-        <li><a href="user.html#sni.user.models.Group.members">(sni.user.models.Group attribute)</a>
+        <li><a href="user.html#sni.user.models.Coalition.member_corporations">(sni.user.models.Coalition attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#sni.api.routers.group.GetGroupOut.members">members (sni.api.routers.group.GetGroupOut attribute)</a>
+
+      <ul>
+        <li><a href="api.html#sni.api.routers.group.PutGroupIn.members">(sni.api.routers.group.PutGroupIn attribute)</a>
+</li>
+        <li><a href="user.html#sni.user.models.Group.members">(sni.user.models.Group attribute)</a>
+</li>
+      </ul></li>
       <li><a href="teamspeak.html#sni.teamspeak.jobs.message_registered_clients_with_wrong_name">message_registered_clients_with_wrong_name() (in module sni.teamspeak.jobs)</a>
 </li>
       <li><a href="api.html#sni.api.models.CrashReportRequest.method">method (sni.api.models.CrashReportRequest attribute)</a>
@@ -1262,16 +1264,18 @@
         <li><a href="indexation.html#sni.index.models.EsiCharacterLocation.online">(sni.index.models.EsiCharacterLocation attribute)</a>
 </li>
       </ul></li>
-      <li><a href="esi.html#sni.esi.token.TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN">ONLY_HAS_INVALID_REFRESH_TOKEN (sni.esi.token.TrackingStatus attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="esi.html#sni.esi.token.TrackingStatus.ONLY_HAS_INVALID_REFRESH_TOKEN">ONLY_HAS_INVALID_REFRESH_TOKEN (sni.esi.token.TrackingStatus attribute)</a>
+</li>
       <li><a href="api.html#sni.api.models.CrashReportToken.owner">owner (sni.api.models.CrashReportToken attribute)</a>
 
       <ul>
         <li><a href="api.html#sni.api.routers.group.GetGroupOut.owner">(sni.api.routers.group.GetGroupOut attribute)</a>
 </li>
         <li><a href="api.html#sni.api.routers.group.PutGroupIn.owner">(sni.api.routers.group.PutGroupIn attribute)</a>
+</li>
+        <li><a href="api.html#sni.api.routers.token.GetTokenOut.owner">(sni.api.routers.token.GetTokenOut attribute)</a>
 </li>
         <li><a href="esi.html#sni.esi.models.EsiAccessToken.owner">(sni.esi.models.EsiAccessToken attribute)</a>
 </li>
@@ -1284,10 +1288,6 @@
         <li><a href="user.html#sni.user.models.Group.owner">(sni.user.models.Group attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#sni.api.routers.token.GetTokenOut.owner_character_id">owner_character_id (sni.api.routers.token.GetTokenOut attribute)</a>
-</li>
-      <li><a href="api.html#sni.api.routers.token.GetTokenOut.owner_character_name">owner_character_name (sni.api.routers.token.GetTokenOut attribute)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -1450,12 +1450,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="esi.html#sni.esi.jobs.refresh_tokens">refresh_tokens() (in module sni.esi.jobs)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.remove_members">remove_members (sni.api.routers.coalition.PutCoalitionIn attribute)</a>
-
-      <ul>
-        <li><a href="api.html#sni.api.routers.group.PutGroupIn.remove_members">(sni.api.routers.group.PutGroupIn attribute)</a>
+      <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.remove_member_alliances">remove_member_alliances (sni.api.routers.coalition.PutCoalitionIn attribute)</a>
 </li>
-      </ul></li>
+      <li><a href="api.html#sni.api.routers.coalition.PutCoalitionIn.remove_member_corporations">remove_member_corporations (sni.api.routers.coalition.PutCoalitionIn attribute)</a>
+</li>
+      <li><a href="api.html#sni.api.routers.group.PutGroupIn.remove_members">remove_members (sni.api.routers.group.PutGroupIn attribute)</a>
+</li>
       <li><a href="api.html#sni.api.models.CrashReport.request">request (sni.api.models.CrashReport attribute)</a>
 </li>
       <li><a href="uac.html#sni.uac.clearance.reset_clearance">reset_clearance() (in module sni.uac.clearance)</a>
@@ -1962,9 +1962,11 @@
 </li>
       <li><a href="user.html#sni.user.models.User">User (class in sni.user.models)</a>
 </li>
-      <li><a href="api.html#sni.api.routers.teamspeak.PostAuthStartOut.user">user (sni.api.routers.teamspeak.PostAuthStartOut attribute)</a>
+      <li><a href="api.html#sni.api.routers.esi.GetCharacterLocationOut.user">user (sni.api.routers.esi.GetCharacterLocationOut attribute)</a>
 
       <ul>
+        <li><a href="api.html#sni.api.routers.teamspeak.PostAuthStartOut.user">(sni.api.routers.teamspeak.PostAuthStartOut attribute)</a>
+</li>
         <li><a href="discord.html#sni.discord.models.DiscordAuthenticationChallenge.user">(sni.discord.models.DiscordAuthenticationChallenge attribute)</a>
 </li>
         <li><a href="indexation.html#sni.index.models.EsiCharacterLocation.user">(sni.index.models.EsiCharacterLocation attribute)</a>

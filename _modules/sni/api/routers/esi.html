@@ -80,6 +80,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">paginate</span>
+<span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">GetUserShortOut</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
@@ -100,8 +101,7 @@
 <span class="sd">    Describes a character location</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">character_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">GetUserShortOut</span>
     <span class="n">online</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">ship_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ship_type_id</span><span class="p">:</span> <span class="nb">int</span>
@@ -132,8 +132,7 @@
             <span class="k">else</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">GetCharacterLocationOut</span><span class="p">(</span>
-            <span class="n">character_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">character_name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">user</span><span class="p">),</span>
             <span class="n">online</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">online</span><span class="p">,</span>
             <span class="n">ship_name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">ship_name</span><span class="p">,</span>
             <span class="n">ship_type_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">ship_type_id</span><span class="p">,</span>
@@ -214,8 +213,7 @@
 <span class="sd">    Represents a short description (header) of an email</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">from_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">from_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">from_character</span><span class="p">:</span> <span class="n">GetUserShortOut</span>
     <span class="n">mail_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">recipients</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetCharacterMailOut</span><span class="o">.</span><span class="n">MailRecipient</span><span class="p">]</span>
     <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span>
@@ -232,8 +230,10 @@
             <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">recipients</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="n">GetCharacterMailShortOut</span><span class="p">(</span>
-            <span class="n">from_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span>
-            <span class="n">from_name</span><span class="o">=</span><span class="n">id_to_name</span><span class="p">(</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span> <span class="s2">&quot;character_id&quot;</span><span class="p">),</span>
+            <span class="n">from_character</span><span class="o">=</span><span class="n">GetUserShortOut</span><span class="p">(</span>
+                <span class="n">character_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span>
+                <span class="n">character_name</span><span class="o">=</span><span class="n">id_to_name</span><span class="p">(</span><span class="n">mail</span><span class="o">.</span><span class="n">from_id</span><span class="p">,</span> <span class="s2">&quot;character_id&quot;</span><span class="p">),</span>
+            <span class="p">),</span>
             <span class="n">mail_id</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">mail_id</span><span class="p">,</span>
             <span class="n">recipients</span><span class="o">=</span><span class="n">recipients</span><span class="p">,</span>
             <span class="n">subject</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span>

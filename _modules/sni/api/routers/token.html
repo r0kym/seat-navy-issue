@@ -68,6 +68,8 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 
+<span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">GetUserOut</span>
+
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
 
 
@@ -80,11 +82,27 @@
     <span class="n">comments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">created_on</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">expires_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
-    <span class="n">owner_character_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">owner_character_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="n">GetUserOut</span>
     <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">token_type</span><span class="p">:</span> <span class="n">Token</span><span class="o">.</span><span class="n">TokenType</span>
-    <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="GetTokenOut.from_record"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.GetTokenOut.from_record">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_record</span><span class="p">(</span><span class="n">tkn</span><span class="p">:</span> <span class="n">Token</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GetTokenOut&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :class:`sni.uac.models.Token` to a</span>
+<span class="sd">        :class:`sni.api.routers.token.GetTokenOut`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GetTokenOut</span><span class="p">(</span>
+            <span class="n">callback</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+            <span class="n">comments</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
+            <span class="n">created_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
+            <span class="n">expires_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">expires_on</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">GetUserOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">),</span>
+            <span class="n">parent</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span> <span class="k">if</span> <span class="n">tkn</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">token_type</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="PostTokenUseFromDynIn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.PostTokenUseFromDynIn">[docs]</a><span class="k">class</span> <span class="nc">PostTokenUseFromDynIn</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -181,17 +199,7 @@
 <span class="sd">    clearance level of 0 or more.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.read_own_token&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">GetTokenOut</span><span class="p">(</span>
-        <span class="n">callback</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
-        <span class="n">comments</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
-        <span class="n">created_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">created_on</span><span class="p">,</span>
-        <span class="n">expires_on</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">expires_on</span><span class="p">,</span>
-        <span class="n">owner_character_id</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-        <span class="n">owner_character_name</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-        <span class="n">parent</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span> <span class="k">if</span> <span class="n">tkn</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">token_type</span><span class="o">=</span><span class="n">tkn</span><span class="o">.</span><span class="n">token_type</span><span class="p">,</span>
-        <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">GetTokenOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">tkn</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="post_token_dyn"><a class="viewcode-back" href="../../../../api.html#sni.api.routers.token.post_token_dyn">[docs]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>

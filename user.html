@@ -114,7 +114,8 @@ creates the character’s corporation and alliance (if applicable).</p>
 <dl class="attribute">
 <dt id="sni.user.models.Alliance.authorized_to_login">
 <code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Alliance.authorized_to_login" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wether the members of this alliance are allowed to login to SNI. See <a class="reference internal" href="uac.html#sni.uac.uac.is_authorized_to_login" title="sni.uac.uac.is_authorized_to_login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.uac.is_authorized_to_login()</span></code></a>.</p>
+<dd><p>Wether the members of this alliance are allowed to login to SNI. See
+<a class="reference internal" href="uac.html#sni.uac.uac.is_authorized_to_login" title="sni.uac.uac.is_authorized_to_login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.uac.is_authorized_to_login()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -196,7 +197,7 @@ This may not be up to date with the ESI.</p>
 to be created manually. An alliance can be part of multiple coalitions.</p>
 <dl class="attribute">
 <dt id="sni.user.models.Coalition.SCHEMA_VERSION">
-<code class="sig-name descname">SCHEMA_VERSION</code><em class="property"> = 4</em><a class="headerlink" href="#sni.user.models.Coalition.SCHEMA_VERSION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SCHEMA_VERSION</code><em class="property"> = 6</em><a class="headerlink" href="#sni.user.models.Coalition.SCHEMA_VERSION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Latest schema version for this collection</p>
 </dd></dl>
 
@@ -209,7 +210,8 @@ to be created manually. An alliance can be part of multiple coalitions.</p>
 <dl class="attribute">
 <dt id="sni.user.models.Coalition.authorized_to_login">
 <code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Coalition.authorized_to_login" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wether the members of this alliance are allowed to login to SNI. See <a class="reference internal" href="uac.html#sni.uac.uac.is_authorized_to_login" title="sni.uac.uac.is_authorized_to_login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.uac.is_authorized_to_login()</span></code></a>.</p>
+<dd><p>Wether the members of this coalition are allowed to login to SNI. See
+<a class="reference internal" href="uac.html#sni.uac.uac.is_authorized_to_login" title="sni.uac.uac.is_authorized_to_login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.uac.is_authorized_to_login()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -231,9 +233,18 @@ to be created manually. An alliance can be part of multiple coalitions.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="sni.user.models.Coalition.members">
-<code class="sig-name descname">members</code><a class="headerlink" href="#sni.user.models.Coalition.members" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of references to the member alliances (NOT users, for that, see <a class="reference internal" href="#sni.user.models.Coalition.users" title="sni.user.models.Coalition.users"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.models.Coalition.users()</span></code></a> and <a class="reference internal" href="#sni.user.models.Coalition.user_iterator" title="sni.user.models.Coalition.user_iterator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.models.Coalition.user_iterator()</span></code></a>.</p>
+<dt id="sni.user.models.Coalition.member_alliances">
+<code class="sig-name descname">member_alliances</code><a class="headerlink" href="#sni.user.models.Coalition.member_alliances" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of references to the member alliances (NOT users, for that, see
+<a class="reference internal" href="#sni.user.models.Coalition.users" title="sni.user.models.Coalition.users"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.models.Coalition.users()</span></code></a> and
+<a class="reference internal" href="#sni.user.models.Coalition.user_iterator" title="sni.user.models.Coalition.user_iterator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.user.models.Coalition.user_iterator()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sni.user.models.Coalition.member_corporations">
+<code class="sig-name descname">member_corporations</code><a class="headerlink" href="#sni.user.models.Coalition.member_corporations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Corporations that are direct members of this coalition (i.e. not through an
+alliance)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -288,7 +299,8 @@ to be created manually. An alliance can be part of multiple coalitions.</p>
 <dl class="attribute">
 <dt id="sni.user.models.Corporation.authorized_to_login">
 <code class="sig-name descname">authorized_to_login</code><a class="headerlink" href="#sni.user.models.Corporation.authorized_to_login" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wether the members of this alliance are allowed to login to SNI. See <a class="reference internal" href="uac.html#sni.uac.uac.is_authorized_to_login" title="sni.uac.uac.is_authorized_to_login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.uac.is_authorized_to_login()</span></code></a>.</p>
+<dd><p>Wether the members of this corporation are allowed to login to SNI. See
+<a class="reference internal" href="uac.html#sni.uac.uac.is_authorized_to_login" title="sni.uac.uac.is_authorized_to_login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.uac.uac.is_authorized_to_login()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">

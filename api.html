@@ -282,13 +282,8 @@ sure all users are in the good corp, etc.)</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.alliance.GetAllianceOut.ceo_character_id">
-<code class="sig-name descname">ceo_character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.ceo_character_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.alliance.GetAllianceOut.ceo_character_name">
-<code class="sig-name descname">ceo_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.ceo_character_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.alliance.GetAllianceOut.ceo">
+<code class="sig-name descname">ceo</code><em class="property">: GetUserShortOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.ceo" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -297,13 +292,8 @@ sure all users are in the good corp, etc.)</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.alliance.GetAllianceOut.executor_corporation_id">
-<code class="sig-name descname">executor_corporation_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.executor_corporation_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.alliance.GetAllianceOut.executor_corporation_name">
-<code class="sig-name descname">executor_corporation_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.executor_corporation_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.alliance.GetAllianceOut.executor_corporation">
+<code class="sig-name descname">executor_corporation</code><em class="property">: GetCorporationShortOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.executor_corporation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -327,30 +317,6 @@ sure all users are in the good corp, etc.)</p>
 <dt id="sni.api.routers.alliance.GetAllianceOut.updated_on">
 <code class="sig-name descname">updated_on</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceOut.updated_on" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sni.api.routers.alliance.GetAllianceShortOut">
-<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.alliance.</code><code class="sig-name descname">GetAllianceShortOut</code><a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>Short alliance description</p>
-<dl class="attribute">
-<dt id="sni.api.routers.alliance.GetAllianceShortOut.alliance_id">
-<code class="sig-name descname">alliance_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut.alliance_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.alliance.GetAllianceShortOut.alliance_name">
-<code class="sig-name descname">alliance_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut.alliance_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="sni.api.routers.alliance.GetAllianceShortOut.from_record">
-<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.alliance.GetAllianceShortOut<a class="reference internal" href="_modules/sni/api/routers/alliance.html#GetAllianceShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.alliance.GetAllianceShortOut.from_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Alliance" title="sni.user.models.Alliance"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Alliance</span></code></a> to
-<a class="reference internal" href="#sni.api.routers.alliance.GetAllianceShortOut" title="sni.api.routers.alliance.GetAllianceShortOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.alliance.GetAllianceShortOut</span></code></a></p>
-</dd></dl>
 
 </dd></dl>
 
@@ -459,6 +425,30 @@ manipulation error.</p>
 <p>Code is too similar to <code class="xref py py-mod docutils literal notranslate"><span class="pre">sni.routers.group</span></code></p>
 </div>
 <dl class="class">
+<dt id="sni.api.routers.coalition.GetAllianceShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">GetAllianceShortOut</code><a class="reference internal" href="_modules/sni/api/routers/coalition.html#GetAllianceShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.GetAllianceShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Short alliance description</p>
+<dl class="attribute">
+<dt id="sni.api.routers.coalition.GetAllianceShortOut.alliance_id">
+<code class="sig-name descname">alliance_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetAllianceShortOut.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.coalition.GetAllianceShortOut.alliance_name">
+<code class="sig-name descname">alliance_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetAllianceShortOut.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.coalition.GetAllianceShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.coalition.GetAllianceShortOut<a class="reference internal" href="_modules/sni/api/routers/coalition.html#GetAllianceShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.GetAllianceShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Alliance" title="sni.user.models.Alliance"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Alliance</span></code></a> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.alliance.GetAllianceShortOut</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.api.routers.coalition.GetCoalitionOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">GetCoalitionOut</code><a class="reference internal" href="_modules/sni/api/routers/coalition.html#GetCoalitionOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -495,8 +485,13 @@ manipulation error.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.coalition.GetCoalitionOut.members">
-<code class="sig-name descname">members</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionOut.members" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.coalition.GetCoalitionOut.member_alliances">
+<code class="sig-name descname">member_alliances</code><em class="property">: List[GetAllianceShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionOut.member_alliances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.coalition.GetCoalitionOut.member_corporations">
+<code class="sig-name descname">member_corporations</code><em class="property">: List[GetCorporationShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.GetCoalitionOut.member_corporations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -557,8 +552,13 @@ manipulation error.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Model for <cite>PUT /coalition/{coalition_id}</cite> responses.</p>
 <dl class="attribute">
-<dt id="sni.api.routers.coalition.PutCoalitionIn.add_members">
-<code class="sig-name descname">add_members</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.add_members" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.coalition.PutCoalitionIn.add_member_alliances">
+<code class="sig-name descname">add_member_alliances</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.add_member_alliances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.coalition.PutCoalitionIn.add_member_corporations">
+<code class="sig-name descname">add_member_corporations</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.add_member_corporations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -572,13 +572,23 @@ manipulation error.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.coalition.PutCoalitionIn.members">
-<code class="sig-name descname">members</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.members" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.coalition.PutCoalitionIn.member_alliances">
+<code class="sig-name descname">member_alliances</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.member_alliances" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.coalition.PutCoalitionIn.remove_members">
-<code class="sig-name descname">remove_members</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.remove_members" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.coalition.PutCoalitionIn.member_corporations">
+<code class="sig-name descname">member_corporations</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.member_corporations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.coalition.PutCoalitionIn.remove_member_alliances">
+<code class="sig-name descname">remove_member_alliances</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.remove_member_alliances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.coalition.PutCoalitionIn.remove_member_corporations">
+<code class="sig-name descname">remove_member_corporations</code><em class="property">: Optional[List[int]]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.coalition.PutCoalitionIn.remove_member_corporations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -625,9 +635,11 @@ more.</p>
 <dt id="sni.api.routers.coalition.put_coalition">
 <code class="sig-prename descclassname">sni.api.routers.coalition.</code><code class="sig-name descname">put_coalition</code><span class="sig-paren">(</span><em class="sig-param">coalition_id: sni.api.routers.common.BSONObjectId</em>, <em class="sig-param">data: sni.api.routers.coalition.PutCoalitionIn</em>, <em class="sig-param">tkn: sni.uac.models.Token = Depends(from_authotization_header_nondyn)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/api/routers/coalition.html#put_coalition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.coalition.put_coalition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates a coalition. All fields in the request body are optional. The
-<cite>add_members</cite> and <cite>remove_members</cite> fields can be used together, but the
-<cite>members</cite> cannot be used in conjunction with <cite>add_members</cite> and
-<cite>remove_members</cite>. Requires a clearance level of 6 or more.</p>
+<cite>add_member_alliances</cite> and <cite>remove_member_alliances</cite> fields can be used together, but the
+<cite>member_alliances</cite> cannot be used in conjunction with <cite>add_member_alliances</cite> and
+<cite>remove_member_alliances</cite>. Similarly for <cite>add_member_corporations</cite>,
+<cite>remove_member_corporations</cite>, and <cite>member_corporations</cite>. Requires a
+clearance level of 6 or more.</p>
 </dd></dl>
 
 </div>
@@ -635,18 +647,37 @@ more.</p>
 <span id="sni-api-routers-corporation"></span><h3><code class="docutils literal notranslate"><span class="pre">sni.api.routers.corporation</span></code><a class="headerlink" href="#module-sni.api.routers.corporation" title="Permalink to this headline">¶</a></h3>
 <p>Corporation management paths</p>
 <dl class="class">
+<dt id="sni.api.routers.corporation.GetAllianceShortOut">
+<em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetAllianceShortOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetAllianceShortOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetAllianceShortOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Short alliance description</p>
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetAllianceShortOut.alliance_id">
+<code class="sig-name descname">alliance_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetAllianceShortOut.alliance_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.corporation.GetAllianceShortOut.alliance_name">
+<code class="sig-name descname">alliance_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetAllianceShortOut.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sni.api.routers.corporation.GetAllianceShortOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">alliance: sni.user.models.Alliance</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.corporation.GetAllianceShortOut<a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetAllianceShortOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetAllianceShortOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an instance of <a class="reference internal" href="user.html#sni.user.models.Alliance" title="sni.user.models.Alliance"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.user.models.Alliance</span></code></a> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.alliance.GetAllianceShortOut</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sni.api.routers.corporation.GetCorporationOut">
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.corporation.</code><code class="sig-name descname">GetCorporationOut</code><a class="reference internal" href="_modules/sni/api/routers/corporation.html#GetCorporationOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Corporation data</p>
 <dl class="attribute">
-<dt id="sni.api.routers.corporation.GetCorporationOut.alliance_id">
-<code class="sig-name descname">alliance_id</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.alliance_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.corporation.GetCorporationOut.alliance_name">
-<code class="sig-name descname">alliance_name</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.alliance_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.corporation.GetCorporationOut.alliance">
+<code class="sig-name descname">alliance</code><em class="property">: Optional[GetAllianceShortOut]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.alliance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -655,13 +686,8 @@ more.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.corporation.GetCorporationOut.ceo_character_id">
-<code class="sig-name descname">ceo_character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.ceo_character_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.corporation.GetCorporationOut.ceo_character_name">
-<code class="sig-name descname">ceo_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.ceo_character_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.corporation.GetCorporationOut.ceo">
+<code class="sig-name descname">ceo</code><em class="property">: GetUserShortOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.corporation.GetCorporationOut.ceo" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -876,16 +902,6 @@ an ESI level. Requires a clearance level of 2 or more.</p>
 <em class="property">class </em><code class="sig-prename descclassname">sni.api.routers.esi.</code><code class="sig-name descname">GetCharacterLocationOut</code><a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterLocationOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Describes a character location</p>
-<dl class="attribute">
-<dt id="sni.api.routers.esi.GetCharacterLocationOut.character_id">
-<code class="sig-name descname">character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.character_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.esi.GetCharacterLocationOut.character_name">
-<code class="sig-name descname">character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.character_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="sni.api.routers.esi.GetCharacterLocationOut.from_record">
 <em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">location: sni.index.models.EsiCharacterLocation</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.esi.GetCharacterLocationOut<a class="reference internal" href="_modules/sni/api/routers/esi.html#GetCharacterLocationOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.from_record" title="Permalink to this definition">¶</a></dt>
@@ -946,6 +962,11 @@ an ESI level. Requires a clearance level of 2 or more.</p>
 <dl class="attribute">
 <dt id="sni.api.routers.esi.GetCharacterLocationOut.timestamp">
 <code class="sig-name descname">timestamp</code><em class="property">: datetime</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.api.routers.esi.GetCharacterLocationOut.user">
+<code class="sig-name descname">user</code><em class="property">: GetUserShortOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterLocationOut.user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1029,13 +1050,8 @@ an ESI level. Requires a clearance level of 2 or more.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>Represents a short description (header) of an email</p>
 <dl class="attribute">
-<dt id="sni.api.routers.esi.GetCharacterMailShortOut.from_id">
-<code class="sig-name descname">from_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.from_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="sni.api.routers.esi.GetCharacterMailShortOut.from_name">
-<code class="sig-name descname">from_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.from_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.esi.GetCharacterMailShortOut.from_character">
+<code class="sig-name descname">from_character</code><em class="property">: GetUserShortOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.esi.GetCharacterMailShortOut.from_character" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1450,7 +1466,7 @@ a clearance of 10.</p>
 
 <dl class="attribute">
 <dt id="sni.api.routers.teamspeak.PostAuthStartOut.user">
-<code class="sig-name descname">user</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.teamspeak.PostAuthStartOut.user" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">user</code><em class="property">: GetUserShortOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.teamspeak.PostAuthStartOut.user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1500,14 +1516,16 @@ user has 1 minute to update its teamspeak nickname to it, and then call
 <code class="sig-name descname">expires_on</code><em class="property">: Optional[datetime]</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.token.GetTokenOut.expires_on" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="sni.api.routers.token.GetTokenOut.owner_character_id">
-<code class="sig-name descname">owner_character_id</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.token.GetTokenOut.owner_character_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="method">
+<dt id="sni.api.routers.token.GetTokenOut.from_record">
+<em class="property">static </em><code class="sig-name descname">from_record</code><span class="sig-paren">(</span><em class="sig-param">tkn: sni.uac.models.Token</em><span class="sig-paren">)</span> &#x2192; sni.api.routers.token.GetTokenOut<a class="reference internal" href="_modules/sni/api/routers/token.html#GetTokenOut.from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.api.routers.token.GetTokenOut.from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a <a class="reference internal" href="uac.html#sni.uac.models.Token" title="sni.uac.models.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.uac.models.Token</span></code></a> to a
+<a class="reference internal" href="#sni.api.routers.token.GetTokenOut" title="sni.api.routers.token.GetTokenOut"><code class="xref py py-class docutils literal notranslate"><span class="pre">sni.api.routers.token.GetTokenOut</span></code></a></p>
+</dd></dl>
 
 <dl class="attribute">
-<dt id="sni.api.routers.token.GetTokenOut.owner_character_name">
-<code class="sig-name descname">owner_character_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.token.GetTokenOut.owner_character_name" title="Permalink to this definition">¶</a></dt>
+<dt id="sni.api.routers.token.GetTokenOut.owner">
+<code class="sig-name descname">owner</code><em class="property">: GetUserOut</em><em class="property"> = None</em><a class="headerlink" href="#sni.api.routers.token.GetTokenOut.owner" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

@@ -160,6 +160,18 @@
     <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;mandatory_esi_scopes&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
+    <span class="c1"># v4 to v5</span>
+    <span class="c1"># Set mandatory_esi_scopes to []</span>
+    <span class="n">set_if_not_exist</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s2">&quot;member_corporations&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">ensure_minimum_version</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># v5 to v6</span>
+    <span class="c1"># Rename `members` field to `member_alliances`</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$rename&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;members&quot;</span><span class="p">:</span> <span class="s2">&quot;member_alliances&quot;</span><span class="p">},</span> <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},},</span>
+    <span class="p">)</span>
+
     <span class="c1"># Finally</span>
     <span class="n">finalize_migration</span><span class="p">(</span><span class="n">Coalition</span><span class="p">)</span></div>
 
