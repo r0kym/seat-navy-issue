@@ -121,6 +121,11 @@ def migrate_coalition():
     set_if_not_exist(collection, "mandatory_esi_scopes", [], version=3)
     ensure_minimum_version(collection, 4)
 
+    # v4 to v5
+    # Set mandatory_esi_scopes to []
+    set_if_not_exist(collection, "member_corporations", [], version=4)
+    ensure_minimum_version(collection, 5)
+
     # Finally
     finalize_migration(Coalition)
 

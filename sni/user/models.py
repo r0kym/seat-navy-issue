@@ -134,93 +134,6 @@ class Alliance(me.Document):
             yield User.objects(pk=item["_id"]).get()
 
 
-class Coalition(me.Document):
-    """
-    EVE coalition. Coalitions are not formally represented in EVE, so they have
-    to be created manually. An alliance can be part of multiple coalitions.
-    """
-
-    SCHEMA_VERSION = 4
-    """Latest schema version for this collection"""
-
-    _version = me.IntField(default=SCHEMA_VERSION)
-    """Schema version of this document"""
-
-    authorized_to_login = me.BooleanField(default=True, null=True)
-    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
-
-    created_on = me.DateTimeField(default=utils.now, required=True)
-    """Timestamp of the creation of this document"""
-
-    mandatory_esi_scopes = me.ListField(
-        me.StringField(choices=EsiScope), default=list
-    )
-    """Mandatory ESI scopes for the members of this coalition"""
-
-    members = me.ListField(me.ReferenceField(Alliance), default=list)
-    """List of references to the member alliances (NOT users, for that, see :meth:`sni.user.models.Coalition.users` and :meth:`sni.user.models.Coalition.user_iterator`."""
-
-    coalition_name = me.StringField(required=True, unique=True)
-    """Name of the coalition"""
-
-    ticker = me.StringField(default=str)
-    """Ticker of the coalition"""
-
-    updated_on = me.DateTimeField(default=utils.now, required=True)
-    """Timestamp of the last update of this document"""
-
-    meta = {"indexes": ["coalition_name",]}
-
-    def users(self) -> List["User"]:
-        """
-        Return the member list of this coalition.
-        """
-        return list(self.user_iterator())
-
-    def user_iterator(self) -> Iterator["User"]:
-        """
-        Returns an iterator over all the members of this coalition.
-        """
-        members_ids = [alliance.pk for alliance in self.members]
-        result = User.objects.aggregate(
-            [
-                {
-                    "$lookup": {
-                        "as": "corporation_data",
-                        "foreignField": "_id",
-                        "from": "corporation",
-                        "localField": "corporation",
-                    },
-                },
-                {"$unwind": "$corporation_data"},
-                {
-                    "$lookup": {
-                        "as": "alliance_data",
-                        "foreignField": "_id",
-                        "from": "alliance",
-                        "localField": "corporation_data.alliance",
-                    },
-                },
-                {"$unwind": "$alliance_data"},
-                {
-                    "$match": {
-                        "clearance_level": {"$gte": 0},
-                        "alliance_data._id": {"$in": members_ids},
-                    }
-                },
-                {
-                    "$set": {
-                        "character_name_lower": {"$toLower": "$character_name"}
-                    }
-                },
-                {"$sort": {"character_name_lower": 1}},
-                {"$project": {"_id": True}},
-            ]
-        )
-        for item in result:
-            yield User.objects(pk=item["_id"]).get()
-
-
 class Corporation(me.Document):
     """
     EVE corporation database model.
@@ -269,13 +182,16 @@ class Corporation(me.Document):
         """
         return User.objects.get(character_id=self.ceo_character_id)
 
-    def coalitions(self) -> List[Coalition]:
+    def coalitions(self) -> List["Coalition"]:
         """
         Returns the list of coalition this user is part of.
         """
+        result: Set[Coalition] = set(
+            Coalition.objects(member_corporations=self)
+        )
         if self.alliance is not None:
-            return self.alliance.coalitions()
-        return []
+            result.update(self.alliance.coalitions())
+        return list(result)
 
     def cumulated_mandatory_esi_scopes(self) -> Set[EsiScope]:
         """
@@ -363,6 +279,105 @@ class Corporation(me.Document):
                     "$match": {
                         "clearance_level": {"$gte": 0},
                         "corporation_data.corporation_id": self.corporation_id,
+                    }
+                },
+                {
+                    "$set": {
+                        "character_name_lower": {"$toLower": "$character_name"}
+                    }
+                },
+                {"$sort": {"character_name_lower": 1}},
+                {"$project": {"_id": True}},
+            ]
+        )
+        for item in result:
+            yield User.objects(pk=item["_id"]).get()
+
+
+class Coalition(me.Document):
+    """
+    EVE coalition. Coalitions are not formally represented in EVE, so they have
+    to be created manually. An alliance can be part of multiple coalitions.
+    """
+
+    SCHEMA_VERSION = 5
+    """Latest schema version for this collection"""
+
+    _version = me.IntField(default=SCHEMA_VERSION)
+    """Schema version of this document"""
+
+    authorized_to_login = me.BooleanField(default=True, null=True)
+    """Wether the members of this alliance are allowed to login to SNI. See :meth:`sni.uac.uac.is_authorized_to_login`."""
+
+    created_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the creation of this document"""
+
+    mandatory_esi_scopes = me.ListField(
+        me.StringField(choices=EsiScope), default=list
+    )
+    """Mandatory ESI scopes for the members of this coalition"""
+
+    member_corporations = me.ListField(
+        me.ReferenceField(Corporation), default=list
+    )
+    """
+    Corporations that are direct members of this coalition (i.e. not through an
+    alliance)
+    """
+
+    members = me.ListField(me.ReferenceField(Alliance), default=list)
+    """
+    List of references to the member alliances (NOT users, for that, see
+    :meth:`sni.user.models.Coalition.users` and
+    :meth:`sni.user.models.Coalition.user_iterator`.
+    """
+
+    coalition_name = me.StringField(required=True, unique=True)
+    """Name of the coalition"""
+
+    ticker = me.StringField(default=str)
+    """Ticker of the coalition"""
+
+    updated_on = me.DateTimeField(default=utils.now, required=True)
+    """Timestamp of the last update of this document"""
+
+    meta = {"indexes": ["coalition_name",]}
+
+    def users(self) -> List["User"]:
+        """
+        Return the member list of this coalition.
+        """
+        return list(self.user_iterator())
+
+    def user_iterator(self) -> Iterator["User"]:
+        """
+        Returns an iterator over all the members of this coalition.
+        """
+        members_ids = [alliance.pk for alliance in self.members]
+        result = User.objects.aggregate(
+            [
+                {
+                    "$lookup": {
+                        "as": "corporation_data",
+                        "foreignField": "_id",
+                        "from": "corporation",
+                        "localField": "corporation",
+                    },
+                },
+                {"$unwind": "$corporation_data"},
+                {
+                    "$lookup": {
+                        "as": "alliance_data",
+                        "foreignField": "_id",
+                        "from": "alliance",
+                        "localField": "corporation_data.alliance",
+                    },
+                },
+                {"$unwind": "$alliance_data"},
+                {
+                    "$match": {
+                        "clearance_level": {"$gte": 0},
+                        "alliance_data._id": {"$in": members_ids},
                     }
                 },
                 {

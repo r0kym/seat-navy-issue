@@ -22,7 +22,7 @@ from sni.uac.token import (
     from_authotization_header_nondyn,
     Token,
 )
-from sni.user.models import Alliance, Coalition
+from sni.user.models import Alliance, Coalition, Corporation
 
 from .common import BSONObjectId
 from .corporation import GetTrackingOut
@@ -58,7 +58,8 @@ class GetCoalitionOut(pdt.BaseModel):
     coalition_id: str
     created_on: datetime
     mandatory_esi_scopes: List[EsiScope]
-    members: List[str]
+    member_corporations: List[int]
+    members: List[int]
     coalition_name: str
     ticker: str
     updated_on: datetime
@@ -73,6 +74,10 @@ class GetCoalitionOut(pdt.BaseModel):
             coalition_id=str(coalition.pk),
             created_on=coalition.created_on,
             mandatory_esi_scopes=coalition.mandatory_esi_scopes,
+            member_corporations=[
+                member.corporation_id
+                for member in coalition.member_corporations
+            ],
             members=[member.alliance_id for member in coalition.members],
             coalition_name=coalition.coalition_name,
             ticker=coalition.ticker,
@@ -94,10 +99,13 @@ class PutCoalitionIn(pdt.BaseModel):
     Model for `PUT /coalition/{coalition_id}` responses.
     """
 
+    add_member_corporations: Optional[List[int]] = None
     add_members: Optional[List[int]] = None
     authorized_to_login: Optional[bool] = None
     mandatory_esi_scopes: Optional[List[EsiScope]] = None
+    member_corporations: Optional[List[int]] = None
     members: Optional[List[int]] = None
+    remove_member_corporations: Optional[List[int]] = None
     remove_members: Optional[List[int]] = None
     ticker: Optional[str] = None
 
@@ -192,13 +200,20 @@ def put_coalition(
     Updates a coalition. All fields in the request body are optional. The
     `add_members` and `remove_members` fields can be used together, but the
     `members` cannot be used in conjunction with `add_members` and
-    `remove_members`. Requires a clearance level of 6 or more.
+    `remove_members`. Similarly for `add_member_corporations`,
+    `remove_member_corporations`, and `member_corporations`. Requires a
+    clearance level of 6 or more.
     """
     assert_has_clearance(tkn.owner, "sni.update_coalition")
     coalition: Coalition = Coalition.objects.get(pk=coalition_id)
     logging.debug(
         "Updating coalition %s (%s)", coalition.coalition_name, coalition_id
     )
+    if data.add_member_corporations is not None:
+        coalition.member_corporations += [
+            Corporation.objects.get(corporation_id=member_id)
+            for member_id in set(data.add_member_corporations)
+        ]
     if data.add_members is not None:
         coalition.members += [
             Alliance.objects.get(alliance_id=member_id)
@@ -209,10 +224,21 @@ def put_coalition(
         coalition.authorized_to_login = data.authorized_to_login
     if data.mandatory_esi_scopes is not None:
         coalition.mandatory_esi_scopes = data.mandatory_esi_scopes
+    if data.member_corporations is not None:
+        coalition.member_corporations = [
+            Corporation.objects.get(corporation_id=member_id)
+            for member_id in set(data.member_corporations)
+        ]
     if data.members is not None:
         coalition.members = [
             Alliance.objects.get(alliance_id=member_id)
             for member_id in set(data.members)
+        ]
+    if data.remove_member_corporations is not None:
+        coalition.member_corporations = [
+            member
+            for member in coalition.member_corporations
+            if member.corporation_id not in data.remove_member_corporations
         ]
     if data.remove_members is not None:
         coalition.members = [
@@ -222,6 +248,7 @@ def put_coalition(
         ]
     if data.ticker is not None:
         coalition.ticker = data.ticker
+    coalition.member_corporations = list(set(coalition.member_corporations))
     coalition.members = list(set(coalition.members))
     coalition.save()
     return GetCoalitionOut.from_record(coalition)

@@ -544,9 +544,14 @@ components:
             $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
+        member_corporations:
+          items:
+            type: integer
+          title: Member Corporations
+          type: array
         members:
           items:
-            type: string
+            type: integer
           title: Members
           type: array
         ticker:
@@ -560,6 +565,7 @@ components:
       - coalition_id
       - created_on
       - mandatory_esi_scopes
+      - member_corporations
       - members
       - coalition_name
       - ticker
@@ -1213,6 +1219,11 @@ components:
     PutCoalitionIn:
       description: Model for `PUT /coalition/{coalition_id}` responses.
       properties:
+        add_member_corporations:
+          items:
+            type: integer
+          title: Add Member Corporations
+          type: array
         add_members:
           items:
             type: integer
@@ -1226,10 +1237,20 @@ components:
             $ref: '#/components/schemas/EsiScope'
           title: Mandatory Esi Scopes
           type: array
+        member_corporations:
+          items:
+            type: integer
+          title: Member Corporations
+          type: array
         members:
           items:
             type: integer
           title: Members
+          type: array
+        remove_member_corporations:
+          items:
+            type: integer
+          title: Remove Member Corporations
           type: array
         remove_members:
           items:
@@ -1792,7 +1813,11 @@ paths:
 
         `members` cannot be used in conjunction with `add_members` and
 
-        `remove_members`. Requires a clearance level of 6 or more.'
+        `remove_members`. Similarly for `add_member_corporations`,
+
+        `remove_member_corporations`, and `member_corporations`. Requires a
+
+        clearance level of 6 or more.'
       operationId: put_coalition_coalition__coalition_id__put
       parameters:
       - in: path
