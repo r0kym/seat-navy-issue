@@ -24,8 +24,9 @@ from sni.uac.token import (
 )
 from sni.user.models import Alliance, Coalition, Corporation
 
+from .alliance import GetAllianceShortOut
 from .common import BSONObjectId
-from .corporation import GetTrackingOut
+from .corporation import GetTrackingOut, GetCorporationShortOut
 
 router = APIRouter()
 
@@ -58,8 +59,8 @@ class GetCoalitionOut(pdt.BaseModel):
     coalition_id: str
     created_on: datetime
     mandatory_esi_scopes: List[EsiScope]
-    member_alliances: List[int]
-    member_corporations: List[int]
+    member_alliances: List[GetAllianceShortOut]
+    member_corporations: List[GetCorporationShortOut]
     coalition_name: str
     ticker: str
     updated_on: datetime
@@ -75,10 +76,11 @@ class GetCoalitionOut(pdt.BaseModel):
             created_on=coalition.created_on,
             mandatory_esi_scopes=coalition.mandatory_esi_scopes,
             member_alliances=[
-                member.alliance_id for member in coalition.member_alliances
+                GetAllianceShortOut.from_record(member)
+                for member in coalition.member_alliances
             ],
             member_corporations=[
-                member.corporation_id
+                GetCorporationShortOut.from_record(member)
                 for member in coalition.member_corporations
             ],
             coalition_name=coalition.coalition_name,

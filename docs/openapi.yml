@@ -546,12 +546,12 @@ components:
           type: array
         member_alliances:
           items:
-            type: integer
+            $ref: '#/components/schemas/GetAllianceShortOut'
           title: Member Alliances
           type: array
         member_corporations:
           items:
-            type: integer
+            $ref: '#/components/schemas/GetCorporationShortOut'
           title: Member Corporations
           type: array
         ticker:
