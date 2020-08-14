@@ -2,6 +2,7 @@
 EVE ESI (public API) layer
 """
 
+from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, Dict, Optional
 import logging
 import re
@@ -20,6 +21,10 @@ from .models import EsiPath, EsiScope
 
 ESI_BASE = "https://esi.evetech.net/"
 ESI_SWAGGER = ESI_BASE + "latest/swagger.json"
+
+
+executor = ThreadPoolExecutor(max_workers=20)
+"""Executor for :meth:`sni.esi.esi._id_annotations`"""
 
 
 class EsiResponse(pdt.BaseModel):
@@ -196,18 +201,31 @@ def id_annotations(data: Any) -> Dict[int, str]:
     This method recursively searches for these ID fields and returns a dict
     mapping these IDs to a name.
     """
-    annotations: Dict[int, str] = {}
+    result_future: Dict[int, Future] = _id_annotations(data)
+    return {
+        key: future.result()
+        for key, future in result_future.items()
+        if future.result()
+    }
+
+
+def _id_annotations(data: Any) -> Dict[int, Future]:
+    """
+    Actual recursive concurrent implementation of
+    :meth:`sni.esi.esi.id_annotations`. Basically, calls to
+    :meth`sni.esi.esi.id_to_name` are sumitted to an thread pool executor for
+    better performances.
+    """
+    annotations: Dict[int, Future] = {}
     if isinstance(data, dict):
         for key, val in data.items():
             if key.endswith("_id") and isinstance(val, int):
-                name = id_to_name(val, key)
-                if name:
-                    annotations[val] = name
+                annotations[val] = executor.submit(id_to_name, val, key)
             else:
-                annotations.update(id_annotations(val))
+                annotations.update(_id_annotations(val))
     elif isinstance(data, list):
         for element in data:
-            annotations.update(id_annotations(element))
+            annotations.update(_id_annotations(element))
     return annotations
 
 
