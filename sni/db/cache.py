@@ -45,12 +45,13 @@ def hash_key(key: Tuple[Optional[str], Any]) -> str:
     prefix.
     """
     prefix, document = key
-    result = ""
-    if document is not None:
-        result = xxh64_hexdigest(pickle.dumps(document))
-    if prefix is not None:
-        result = prefix + ":" + result
-    return result
+    raw = [
+        prefix,
+        xxh64_hexdigest(pickle.dumps(document))
+        if document is not None
+        else None,
+    ]
+    return ":".join(filter(None, raw))
 
 
 def invalidate_cache(key: Tuple[Optional[str], Any]):

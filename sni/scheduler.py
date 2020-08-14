@@ -18,10 +18,10 @@ from sni.db.redis import new_redis_connection
 from sni.conf import CONFIGURATION as conf
 import sni.utils as utils
 
-JOBS_KEY: str = "scheduler.default.jobs"
+JOBS_KEY: str = "scheduler:default:jobs"
 """The redis key for the job list"""
 
-RUN_TIMES_KEY: str = "scheduler.default.run_times"
+RUN_TIMES_KEY: str = "scheduler:default:run_times"
 """The redis key for the job run times"""
 
 scheduler = BackgroundScheduler(
