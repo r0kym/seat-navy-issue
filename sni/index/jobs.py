@@ -77,6 +77,7 @@ def index_user_mails(usr: User):
             usr.character_name,
             str(error),
         )
+        return
     for header in headers:
         mail_id = header["mail_id"]
         if EsiMail.objects(mail_id=mail_id).first() is not None:
