@@ -71,10 +71,18 @@ def index_user_mails(usr: User):
             invalidate_token_on_error=True,
             raise_for_status=True,
         ).data
-        for header in headers:
-            mail_id = header["mail_id"]
-            if EsiMail.objects(mail_id=mail_id).first() is not None:
-                break
+    except Exception as error:
+        logging.error(
+            "Could not list recent emails of character %d (%s): %s",
+            usr.character_id,
+            usr.character_name,
+            str(error),
+        )
+    for header in headers:
+        mail_id = header["mail_id"]
+        if EsiMail.objects(mail_id=mail_id).first() is not None:
+            break
+        try:
             mail = esi_get_on_befalf_of(
                 f"latest/characters/{character_id}/mail/{mail_id}",
                 character_id,
@@ -91,13 +99,14 @@ def index_user_mails(usr: User):
                 subject=mail["subject"],
                 timestamp=mail["timestamp"],
             ).save()
-    except Exception as error:
-        logging.error(
-            "Could not index mail of character %d (%s): %s",
-            usr.character_id,
-            usr.character_name,
-            str(error),
-        )
+        except Exception as error:
+            logging.error(
+                "Could not index mail %d from character %d (%s): %s",
+                mail_id,
+                usr.character_id,
+                usr.character_name,
+                str(error),
+            )
 
 
 @scheduler.scheduled_job("interval", hours=1)
