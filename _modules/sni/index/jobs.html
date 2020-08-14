@@ -108,7 +108,6 @@
             <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail&quot;</span><span class="p">,</span>
             <span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
@@ -126,7 +125,6 @@
                 <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail/</span><span class="si">{mail_id}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">character_id</span><span class="p">,</span>
                 <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="n">EsiMail</span><span class="p">(</span>
                 <span class="n">body</span><span class="o">=</span><span class="n">format_mail_body</span><span class="p">(</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;body&quot;</span><span class="p">]),</span>
@@ -168,7 +166,6 @@
             <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/skills/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiSkillPoints</span><span class="p">(</span>
             <span class="n">total_sp</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;total_sp&quot;</span><span class="p">],</span>
@@ -203,7 +200,6 @@
             <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/wallet/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiWalletBalance</span><span class="p">(</span><span class="n">balance</span><span class="o">=</span><span class="n">balance</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
