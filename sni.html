@@ -136,6 +136,11 @@ corrects the Discord command and event handlers.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="sni.conf.Config.sentry">
+<code class="sig-name descname">sentry</code><em class="property">: SentryConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.sentry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="sni.conf.Config.teamspeak">
 <code class="sig-name descname">teamspeak</code><em class="property">: TeamspeakConfig</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.Config.teamspeak" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -301,11 +306,6 @@ corrects the Discord command and event handlers.</p>
 <code class="sig-name descname">scheduler_thread_count</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.scheduler_thread_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="sni.conf.GeneralConfig.sentry_dsn">
-<code class="sig-name descname">sentry_dsn</code><em class="property">: Optional[pdt.HttpUrl]</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.GeneralConfig.sentry_dsn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -368,6 +368,33 @@ corrects the Discord command and event handlers.</p>
 <dl class="attribute">
 <dt id="sni.conf.RedisConfig.port">
 <code class="sig-name descname">port</code><em class="property">: int</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.RedisConfig.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sni.conf.SentryConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sni.conf.</code><code class="sig-name descname">SentryConfig</code><a class="reference internal" href="_modules/sni/conf.html#SentryConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.conf.SentryConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Sentry configuration model.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><cite>Sentry homepage &lt;https://sentry.io/welcome/&gt;</cite>
+<a class="reference external" href="https://docs.sentry.io/platforms/python/asgi/">Sentry documentation for Python ASGI</a></p>
+</div>
+<dl class="attribute">
+<dt id="sni.conf.SentryConfig.dsn">
+<code class="sig-name descname">dsn</code><em class="property">: pdt.HttpUrl</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.SentryConfig.dsn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.SentryConfig.enabled">
+<code class="sig-name descname">enabled</code><em class="property">: bool</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.SentryConfig.enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sni.conf.SentryConfig.traces_sample_rate">
+<code class="sig-name descname">traces_sample_rate</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#sni.conf.SentryConfig.traces_sample_rate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -442,13 +469,13 @@ corrects the Discord command and event handlers.</p>
 </div>
 <dl class="data">
 <dt id="sni.scheduler.JOBS_KEY">
-<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">JOBS_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.default.jobs'</em><a class="headerlink" href="#sni.scheduler.JOBS_KEY" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">JOBS_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler:default:jobs'</em><a class="headerlink" href="#sni.scheduler.JOBS_KEY" title="Permalink to this definition">¶</a></dt>
 <dd><p>The redis key for the job list</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sni.scheduler.RUN_TIMES_KEY">
-<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">RUN_TIMES_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler.default.run_times'</em><a class="headerlink" href="#sni.scheduler.RUN_TIMES_KEY" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sni.scheduler.</code><code class="sig-name descname">RUN_TIMES_KEY</code><em class="property">: str</em><em class="property"> = 'scheduler:default:run_times'</em><a class="headerlink" href="#sni.scheduler.RUN_TIMES_KEY" title="Permalink to this definition">¶</a></dt>
 <dd><p>The redis key for the job run times</p>
 </dd></dl>
 

@@ -225,8 +225,8 @@
 <span class="sd">    Fetches a document from the ``esi_object_name`` collection. See</span>
 <span class="sd">    :class:`sni.sde.models.EsiObjectName`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cache_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sde&quot;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">]</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">cache_key</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;sde:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">field_id</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">query_set</span> <span class="o">=</span> <span class="n">EsiObjectName</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
@@ -236,7 +236,7 @@
             <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">query_set</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-            <span class="n">cache_set</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">DAY</span><span class="p">)</span>
+            <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">DAY</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">me</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">name</span></div>

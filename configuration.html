@@ -131,7 +131,7 @@
 <tr class="row-odd"><td colspan="5"><p>General configuration document.</p></td>
 </tr>
 <tr class="row-even"><td><p>default</p></td>
-<td colspan="4"><p>OrderedDict([(‘debug’, False), (‘host’, ‘0.0.0.0’), (‘logging_level’, ‘info’), (‘port’, 80), (‘root_url’, ‘<a class="reference external" href="https://foo.bar">https://foo.bar</a>’), (‘scheduler_thread_count’, 5), (‘sentry_dsn’, None)])</p></td>
+<td colspan="4"><p>OrderedDict([(‘debug’, False), (‘host’, ‘0.0.0.0’), (‘logging_level’, ‘info’), (‘port’, 80), (‘root_url’, ‘<a class="reference external" href="https://foo.bar">https://foo.bar</a>’), (‘scheduler_thread_count’, 5)])</p></td>
 </tr>
 <tr class="row-odd"><td><p>allOf</p></td>
 <td><ul class="simple">
@@ -175,6 +175,24 @@
 </ul>
 </td>
 <td colspan="3"><p><span class="xref std std-ref">#/definitions/RedisConfig</span></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>sentry</p></li>
+</ul>
+</td>
+<td colspan="5"><p><em>Sentry</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>Sentry configuration document.</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="4"><p>OrderedDict([(‘dsn’, ‘<a class="reference external" href="https://examplePublicKey&#64;o0.ingest.sentry.io/0">https://examplePublicKey&#64;o0.ingest.sentry.io/0</a>’), (‘enabled’, False), (‘traces_sample_rate’, 0)])</p></td>
+</tr>
+<tr class="row-odd"><td><p>allOf</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td colspan="3"><p><span class="xref std std-ref">#/definitions/SentryConfig</span></p></td>
 </tr>
 <tr class="row-even"><td rowspan="4"><ul class="simple">
 <li><p>teamspeak</p></li>
@@ -452,7 +470,7 @@
 <tr class="row-odd"><td><p>enum</p></td>
 <td colspan="4"><p>critical, debug, error, info, warning</p></td>
 </tr>
-<tr class="row-even"><td rowspan="40"><ul class="simple">
+<tr class="row-even"><td rowspan="34"><ul class="simple">
 <li><p>GeneralConfig</p></li>
 </ul>
 </td>
@@ -577,26 +595,6 @@
 <tr class="row-odd"><td><p>default</p></td>
 <td colspan="3"><p>5</p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><ul class="simple">
-<li><p>sentry_dsn</p></li>
-</ul>
-</td>
-<td colspan="4"><p><em>Sentry Dsn</em></p></td>
-</tr>
-<tr class="row-odd"><td colspan="4"><p>Optional Sentry DSN (<a class="reference external" href="https://sentry.io/welcome/">https://sentry.io/welcome/</a>).</p></td>
-</tr>
-<tr class="row-even"><td><p>type</p></td>
-<td colspan="3"><p><em>string</em></p></td>
-</tr>
-<tr class="row-odd"><td><p>maxLength</p></td>
-<td colspan="3"><p>2083</p></td>
-</tr>
-<tr class="row-even"><td><p>minLength</p></td>
-<td colspan="3"><p>1</p></td>
-</tr>
-<tr class="row-odd"><td><p>format</p></td>
-<td colspan="3"><p>uri</p></td>
-</tr>
 <tr class="row-even"><td rowspan="4"><ul class="simple">
 <li><p>JWTAlgorithm</p></li>
 </ul>
@@ -708,138 +706,214 @@
 <tr class="row-odd"><td><p>default</p></td>
 <td colspan="3"><p>6379</p></td>
 </tr>
-<tr class="row-even"><td rowspan="39"><ul class="simple">
-<li><p>TeamspeakConfig</p></li>
+<tr class="row-even"><td rowspan="21"><ul class="simple">
+<li><p>SentryConfig</p></li>
 </ul>
 </td>
-<td colspan="5"><p><em>TeamspeakConfig</em></p></td>
+<td colspan="5"><p><em>SentryConfig</em></p></td>
 </tr>
-<tr class="row-odd"><td colspan="5"><p>Teamspeak configuration model</p></td>
+<tr class="row-odd"><td colspan="5"><p>Sentry configuration model.</p>
+<dl class="simple">
+<dt>See also:</dt><dd><p><cite>Sentry homepage &lt;https://sentry.io/welcome/&gt;</cite>
+<a class="reference external" href="https://docs.sentry.io/platforms/python/asgi/">Sentry documentation for Python ASGI</a></p>
+</dd>
+</dl>
+</td>
 </tr>
 <tr class="row-even"><td><p>type</p></td>
 <td colspan="4"><p><em>object</em></p></td>
 </tr>
 <tr class="row-odd"><td colspan="5"><p>properties</p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><ul class="simple">
-<li><p>auth_group_name</p></li>
+<tr class="row-even"><td rowspan="7"><ul class="simple">
+<li><p>dsn</p></li>
 </ul>
 </td>
-<td colspan="4"><p><em>Auth Group Name</em></p></td>
+<td colspan="4"><p><em>Dsn</em></p></td>
 </tr>
-<tr class="row-odd"><td colspan="4"><p>Name of the auth group. Authenticated Teamspeak users are automatically added to this group. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+<tr class="row-odd"><td colspan="4"><p>Optional Sentry DSN (<a class="reference external" href="https://sentry.io/welcome/">https://sentry.io/welcome/</a>).</p></td>
 </tr>
 <tr class="row-even"><td><p>type</p></td>
 <td colspan="3"><p><em>string</em></p></td>
 </tr>
-<tr class="row-odd"><td><p>default</p></td>
-<td colspan="3"><p>SNI TS AUTH</p></td>
+<tr class="row-odd"><td><p>maxLength</p></td>
+<td colspan="3"><p>2083</p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><ul class="simple">
-<li><p>bot_name</p></li>
-</ul>
-</td>
-<td colspan="4"><p><em>Bot Name</em></p></td>
-</tr>
-<tr class="row-odd"><td colspan="4"><p>Name of the Teamspeak bot. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p>type</p></td>
-<td colspan="3"><p><em>string</em></p></td>
+<tr class="row-even"><td><p>minLength</p></td>
+<td colspan="3"><p>1</p></td>
 </tr>
 <tr class="row-odd"><td><p>default</p></td>
-<td colspan="3"><p>SeAT Navy Issue</p></td>
+<td colspan="3"><p><a class="reference external" href="https://examplePublicKey&#64;o0.ingest.sentry.io/0">https://examplePublicKey&#64;o0.ingest.sentry.io/0</a></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><ul class="simple">
+<tr class="row-even"><td><p>format</p></td>
+<td colspan="3"><p>uri</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
 <li><p>enabled</p></li>
 </ul>
 </td>
 <td colspan="4"><p><em>Enabled</em></p></td>
 </tr>
-<tr class="row-odd"><td colspan="4"><p>Wether to activate the Teamspeak connector.</p></td>
-</tr>
-<tr class="row-even"><td><p>type</p></td>
-<td colspan="3"><p><em>boolean</em></p></td>
-</tr>
-<tr class="row-odd"><td><p>default</p></td>
-<td colspan="3"><p>False</p></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><ul class="simple">
-<li><p>host</p></li>
-</ul>
-</td>
-<td colspan="4"><p><em>Host</em></p></td>
-</tr>
-<tr class="row-odd"><td colspan="4"><p>Name, hostname, or IP address of the Teamspeak server. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p>type</p></td>
-<td colspan="3"><p><em>string</em></p></td>
-</tr>
-<tr class="row-odd"><td><p>default</p></td>
-<td colspan="3"></td>
-</tr>
-<tr class="row-even"><td rowspan="5"><ul class="simple">
-<li><p>password</p></li>
-</ul>
-</td>
-<td colspan="4"><p><em>Password</em></p></td>
-</tr>
-<tr class="row-odd"><td colspan="4"><p>Query server password. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p>type</p></td>
-<td colspan="3"><p><em>string</em></p></td>
-</tr>
-<tr class="row-odd"><td><p>default</p></td>
-<td colspan="3"></td>
-</tr>
-<tr class="row-even"><td><p>format</p></td>
-<td colspan="3"><p>password</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="6"><ul class="simple">
-<li><p>port</p></li>
-</ul>
-</td>
-<td colspan="4"><p><em>Port</em></p></td>
-</tr>
-<tr class="row-even"><td colspan="4"><p>Port of the query server associated to the Teamspeak server. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+<tr class="row-even"><td colspan="4"><p>Wether to activate the Sentry middleware.</p></td>
 </tr>
 <tr class="row-odd"><td><p>type</p></td>
-<td colspan="3"><p><em>integer</em></p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><ul class="simple">
+<li><p>traces_sample_rate</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Traces Sample Rate</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Trace sample rate.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>number</em></p></td>
 </tr>
 <tr class="row-even"><td><p>maximum</p></td>
-<td colspan="3"><p>65535</p></td>
+<td colspan="3"><p>1</p></td>
 </tr>
 <tr class="row-odd"><td><p>minimum</p></td>
 <td colspan="3"><p>0</p></td>
 </tr>
 <tr class="row-even"><td><p>default</p></td>
-<td colspan="3"><p>10011</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><ul class="simple">
-<li><p>server_id</p></li>
-</ul>
-</td>
-<td colspan="4"><p><em>Server Id</em></p></td>
-</tr>
-<tr class="row-even"><td colspan="4"><p>Teamspeak server ID. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p>type</p></td>
-<td colspan="3"><p><em>integer</em></p></td>
-</tr>
-<tr class="row-even"><td><p>default</p></td>
 <td colspan="3"><p>0</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><ul class="simple">
-<li><p>username</p></li>
+<tr class="row-odd"><td rowspan="39"><ul class="simple">
+<li><p>TeamspeakConfig</p></li>
 </ul>
 </td>
-<td colspan="4"><p><em>Username</em></p></td>
+<td colspan="5"><p><em>TeamspeakConfig</em></p></td>
 </tr>
-<tr class="row-even"><td colspan="4"><p>Query server username. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+<tr class="row-even"><td colspan="5"><p>Teamspeak configuration model</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>auth_group_name</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Auth Group Name</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Name of the auth group. Authenticated Teamspeak users are automatically added to this group. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p>type</p></td>
 <td colspan="3"><p><em>string</em></p></td>
 </tr>
 <tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>SNI TS AUTH</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>bot_name</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Bot Name</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Name of the Teamspeak bot. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>SeAT Navy Issue</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>enabled</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Enabled</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Wether to activate the Teamspeak connector.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><ul class="simple">
+<li><p>host</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Host</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Name, hostname, or IP address of the Teamspeak server. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>password</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Password</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Query server password. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-odd"><td><p>format</p></td>
+<td colspan="3"><p>password</p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><ul class="simple">
+<li><p>port</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Port</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Port of the query server associated to the Teamspeak server. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>maximum</p></td>
+<td colspan="3"><p>65535</p></td>
+</tr>
+<tr class="row-even"><td><p>minimum</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>10011</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>server_id</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Server Id</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Teamspeak server ID. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>username</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Username</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Query server username. Only required if <code class="docutils literal notranslate"><span class="pre">teamspeak.enable</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
 <td colspan="3"><p>sni</p></td>
 </tr>
 </tbody>

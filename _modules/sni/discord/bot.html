@@ -64,10 +64,10 @@
 <span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
-<span class="n">JOBS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scheduler.discord.jobs&quot;</span>
+<span class="n">JOBS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scheduler:discord:jobs&quot;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job list&quot;&quot;&quot;</span>
 
-<span class="n">RUN_TIMES_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scheduler.discord.run_times&quot;</span>
+<span class="n">RUN_TIMES_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scheduler:discord:run_times&quot;</span>
 <span class="sd">&quot;&quot;&quot;The redis key for the job run times&quot;&quot;&quot;</span>
 
 <span class="n">bot</span> <span class="o">=</span> <span class="n">Bot</span><span class="p">(</span><span class="n">command_prefix</span><span class="o">=</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SeAT Navy Issue Discord Bot&quot;</span><span class="p">)</span>

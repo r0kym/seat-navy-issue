@@ -187,11 +187,6 @@
         <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">sentry_dsn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pdt</span><span class="o">.</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional Sentry DSN (https://sentry.io/welcome/).&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">logging_level_int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -281,6 +276,29 @@
 
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Redis port.&quot;</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SentryConfig"><a class="viewcode-back" href="../../sni.html#sni.conf.SentryConfig">[docs]</a><span class="k">class</span> <span class="nc">SentryConfig</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sentry configuration model.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        `Sentry homepage &lt;https://sentry.io/welcome/&gt;`</span>
+<span class="sd">        `Sentry documentation for Python ASGI &lt;https://docs.sentry.io/platforms/python/asgi/&gt;`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dsn</span><span class="p">:</span> <span class="n">pdt</span><span class="o">.</span><span class="n">HttpUrl</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;https://examplePublicKey@o0.ingest.sentry.io/0&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional Sentry DSN (https://sentry.io/welcome/).&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Wether to activate the Sentry middleware.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">traces_sample_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Trace sample rate.&quot;</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -382,6 +400,10 @@
 
     <span class="n">redis</span><span class="p">:</span> <span class="n">RedisConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">RedisConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Redis configuration document.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">sentry</span><span class="p">:</span> <span class="n">SentryConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SentryConfig</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sentry configuration document.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">teamspeak</span><span class="p">:</span> <span class="n">TeamspeakConfig</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
