@@ -131,6 +131,28 @@ def print_openapi_spec() -> None:
     print(yaml.dump(app.openapi()))
 
 
+# pylint: disable=import-outside-toplevel
+def setup_sentry() -> None:
+    """
+    Setup the Sentry middleware.
+
+    See also:
+        `Sentry homepage <https://sentry.io/welcome/>`
+        `Sentry documentation for Python ASGI <https://docs.sentry.io/platforms/python/asgi/>`_
+    """
+    import sentry_sdk
+    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+    from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+    from sentry_sdk.integrations.redis import RedisIntegration
+
+    sentry_sdk.init(
+        dsn=conf.general.sentry_dsn,
+        integrations=[AioHttpIntegration(), RedisIntegration()],
+    )
+    app.add_middleware(SentryAsgiMiddleware)
+    logging.info("Added Sentry middleware")
+
+
 def start_api_server():
     """
     Starts the API server for real. See
@@ -194,3 +216,5 @@ def start_api_server():
 
 
 add_included_routers()
+if conf.general.sentry_dsn is not None:
+    setup_sentry()

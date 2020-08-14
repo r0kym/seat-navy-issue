@@ -8,15 +8,17 @@ import logging
 
 from fastapi import status
 from fastapi.responses import JSONResponse
-import mongoengine as me
 from requests import Request
 from requests.exceptions import HTTPError
+import mongoengine as me
+import sentry_sdk
 
 from sni.uac.token import from_authotization_header
 from sni.conf import CONFIGURATION as conf
 
 from .models import CrashReport, CrashReportRequest, CrashReportToken
 from .server import app
+
 
 
 def crash_report(request: Request, error: Exception) -> CrashReport:
@@ -49,6 +51,15 @@ def crash_report(request: Request, error: Exception) -> CrashReport:
     )
 
 
+def send_exception_to_sentry(error: Exception, *args, **kwargs):
+    """
+    If the configuration field `general.sentry_dsn`, dispatches the exception
+    to Sentry
+    """
+    if conf.general.sentry_dsn is not None:
+        sentry_sdk.capture_exception(error, *args, **kwargs)
+
+
 @app.exception_handler(LookupError)
 @app.exception_handler(me.DoesNotExist)
 def does_not_exist_exception_handler(_request: Request, error: Exception):
@@ -56,6 +67,7 @@ def does_not_exist_exception_handler(_request: Request, error: Exception):
     Catches :class:`me.DoesNotExist` exceptions and forwards them as
     ``404``'s.
     """
+    send_exception_to_sentry(error)
     return JSONResponse(
         content={"details": str(error)} if conf.general.debug else None,
         status_code=status.HTTP_404_NOT_FOUND,
@@ -68,6 +80,7 @@ def permission_error_handler(_request: Request, error: PermissionError):
     Catches :class:`PermissionError` exceptions and forwards them as
     ``403``'s.
     """
+    send_exception_to_sentry(error)
     content = {"details": "Insufficient clearance level"}
     if conf.general.debug:
         content["details"] += ": " + str(error)
@@ -82,6 +95,7 @@ def requests_httperror_handler(_request: Request, error: HTTPError):
     Catches :class:`requests.exceptions.HTTPError` exceptions and forwards them
     as ``500``'s.
     """
+    send_exception_to_sentry(error)
     content = None
     if conf.general.debug and error.request is not None:
         req: Request = error.request
@@ -101,6 +115,7 @@ def exception_handler(request: Request, error: Exception):
     be crashes. A crash report is generated, and returned if SNI runs in debug
     mode.
     """
+    send_exception_to_sentry(error)
     crash = crash_report(request, error)
     crash.save()
     logging.error(

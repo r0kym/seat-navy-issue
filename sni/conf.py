@@ -148,6 +148,11 @@ class GeneralConfig(pdt.BaseModel):
         ge=1,
     )
 
+    sentry_dsn: Optional[pdt.HttpUrl] = pdt.Field(
+        default=None,
+        description="Optional Sentry DSN (https://sentry.io/welcome/).",
+    )
+
     @property
     def logging_level_int(self) -> int:
         """
