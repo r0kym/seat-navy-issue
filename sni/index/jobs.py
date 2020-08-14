@@ -69,7 +69,6 @@ def index_user_mails(usr: User):
             f"latest/characters/{character_id}/mail",
             character_id,
             invalidate_token_on_error=True,
-            raise_for_status=True,
         ).data
     except Exception as error:
         logging.error(
@@ -87,7 +86,6 @@ def index_user_mails(usr: User):
                 f"latest/characters/{character_id}/mail/{mail_id}",
                 character_id,
                 invalidate_token_on_error=True,
-                raise_for_status=True,
             ).data
             EsiMail(
                 body=format_mail_body(mail["body"]),
@@ -129,7 +127,6 @@ def index_user_skillpoints(usr: User):
             f"latest/characters/{usr.character_id}/skills/",
             usr.character_id,
             invalidate_token_on_error=True,
-            raise_for_status=True,
         ).data
         EsiSkillPoints(
             total_sp=data["total_sp"],
@@ -164,7 +161,6 @@ def index_user_wallets(usr: User):
             f"latest/characters/{usr.character_id}/wallet/",
             usr.character_id,
             invalidate_token_on_error=True,
-            raise_for_status=True,
         ).data
         EsiWalletBalance(balance=balance, user=usr).save()
     except Exception as error:
