@@ -146,8 +146,9 @@ def setup_sentry() -> None:
     from sentry_sdk.integrations.redis import RedisIntegration
 
     sentry_sdk.init(
-        dsn=conf.general.sentry_dsn,
+        dsn=conf.sentry.dsn,
         integrations=[AioHttpIntegration(), RedisIntegration()],
+        traces_sample_rate=conf.sentry.traces_sample_rate,
     )
     app.add_middleware(SentryAsgiMiddleware)
     logging.info("Added Sentry middleware")
@@ -216,5 +217,5 @@ def start_api_server():
 
 
 add_included_routers()
-if conf.general.sentry_dsn is not None:
+if conf.sentry.enabled is not None:
     setup_sentry()

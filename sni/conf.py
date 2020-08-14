@@ -148,11 +148,6 @@ class GeneralConfig(pdt.BaseModel):
         ge=1,
     )
 
-    sentry_dsn: Optional[pdt.HttpUrl] = pdt.Field(
-        default=None,
-        description="Optional Sentry DSN (https://sentry.io/welcome/).",
-    )
-
     @property
     def logging_level_int(self) -> int:
         """
@@ -242,6 +237,33 @@ class RedisConfig(pdt.BaseModel):
 
     port: int = pdt.Field(
         default=6379, description="Redis port.", ge=0, le=65535,
+    )
+
+
+class SentryConfig(pdt.BaseModel):
+    """
+    Sentry configuration model.
+
+    See also:
+        `Sentry homepage <https://sentry.io/welcome/>`
+        `Sentry documentation for Python ASGI <https://docs.sentry.io/platforms/python/asgi/>`_
+    """
+
+    dsn: pdt.HttpUrl = pdt.Field(
+        default="https://examplePublicKey@o0.ingest.sentry.io/0",
+        description="Optional Sentry DSN (https://sentry.io/welcome/).",
+    )
+
+    enabled: bool = pdt.Field(
+        default=False,
+        description="Wether to activate the Sentry middleware.",
+    )
+
+    traces_sample_rate: float = pdt.Field(
+        default=0,
+        description="Trace sample rate.",
+        ge=0,
+        le=1,
     )
 
 
@@ -343,6 +365,10 @@ class Config(pdt.BaseSettings):
 
     redis: RedisConfig = pdt.Field(
         default=RedisConfig(), description="Redis configuration document.",
+    )
+
+    sentry: SentryConfig = pdt.Field(
+        default=SentryConfig(), description="Sentry configuration document.",
     )
 
     teamspeak: TeamspeakConfig = pdt.Field(

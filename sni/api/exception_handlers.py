@@ -55,7 +55,7 @@ def send_exception_to_sentry(error: Exception, *args, **kwargs):
     If the configuration field `general.sentry_dsn`, dispatches the exception
     to Sentry
     """
-    if conf.general.sentry_dsn is not None:
+    if conf.sentry.enabled:
         sentry_sdk.capture_exception(error, *args, **kwargs)
 
 
