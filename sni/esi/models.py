@@ -33,6 +33,9 @@ class EsiPath(me.Document):
     version = me.StringField(required=True)
     """ESI version (NOT schema version)"""
 
+    def __repr__(self) -> str:
+        return f"<EsiPath: {self.http_method} {self.path}>"
+
 
 class EsiRefreshToken(me.Document):
     """
@@ -71,6 +74,9 @@ class EsiRefreshToken(me.Document):
     meta = {
         "indexes": ["valid", ("owner", "scopes", "valid"),],
     }
+
+    def __repr__(self) -> str:
+        return f"<EsiRefreshToken: {repr(self.owner)}>"
 
 
 class EsiAccessToken(me.Document):
@@ -112,3 +118,6 @@ class EsiAccessToken(me.Document):
     meta = {
         "indexes": [{"fields": ["expires_on"], "expireAfterSeconds": 0,},],
     }
+
+    def __repr__(self) -> str:
+        return f"<EsiAccessToken: {repr(self.owner)}>"

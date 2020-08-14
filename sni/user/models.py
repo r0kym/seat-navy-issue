@@ -49,6 +49,9 @@ class Alliance(me.Document):
 
     meta = {"indexes": ["alliance_id", "alliance_name",]}
 
+    def __repr__(self) -> str:
+        return f"<Alliance: {self.alliance_id} {self.alliance_name}>"
+
     @property
     def ceo(self) -> "User":
         """
@@ -180,6 +183,9 @@ class Corporation(me.Document):
     """Timestamp of the last update of this document"""
 
     meta = {"indexes": ["corporation_id", "corporation_name",]}
+
+    def __repr__(self) -> str:
+        return f"<Corporation: {self.corporation_id} {self.corporation_name}>"
 
     @property
     def ceo(self) -> "User":
@@ -352,6 +358,9 @@ class Coalition(me.Document):
 
     meta = {"indexes": ["coalition_name",]}
 
+    def __repr__(self) -> str:
+        return f"<Coalition: {self.coalition_name}>"
+
     def users(self) -> List["User"]:
         """
         Return the member list of this coalition.
@@ -457,6 +466,9 @@ class Group(me.Document):
 
     meta = {"indexes": ["group_name",]}
 
+    def __repr__(self) -> str:
+        return f"<Group: {self.group_name}>"
+
 
 class User(me.Document):
     """
@@ -499,6 +511,9 @@ class User(me.Document):
     """Timestamp of the last update of this document"""
 
     meta = {"indexes": ["character_id", "character_name",]}
+
+    def __repr__(self) -> str:
+        return f"<User: {self.character_id} {self.character_name}>"
 
     @property
     def alliance(self) -> Optional[Alliance]:

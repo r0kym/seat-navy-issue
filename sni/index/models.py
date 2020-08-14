@@ -64,6 +64,9 @@ class EsiCharacterLocation(me.Document):
         ],
     }
 
+    def __repr__(self) -> str:
+        return f"<EsiCharacterLocation: {repr(self.user)} {self.timestamp}>"
+
 
 class EsiMailRecipient(me.EmbeddedDocument):
     """
@@ -116,6 +119,9 @@ class EsiMail(me.Document):
         ]
     }
 
+    def __repr__(self) -> str:
+        return f"<EsiMail: {self.mail_id}>"
+
 
 class EsiSkillPoints(me.Document):
     """
@@ -147,6 +153,9 @@ class EsiSkillPoints(me.Document):
         ],
     }
 
+    def __repr__(self) -> str:
+        return f"<EsiSkillPoints: {repr(self.user)} {self.timestamp}>"
+
 
 class EsiWalletBalance(me.Document):
     """
@@ -168,3 +177,6 @@ class EsiWalletBalance(me.Document):
             {"fields": ["timestamp"], "expireAfterSeconds": 90 * DAY,},
         ],
     }
+
+    def __repr__(self) -> str:
+        return f"<EsiWalletBalance: {repr(self.user)} {self.timestamp}>"

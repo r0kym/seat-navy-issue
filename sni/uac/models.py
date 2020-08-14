@@ -63,6 +63,9 @@ class Token(me.Document):
         "indexes": [{"fields": ["expires_on"], "expireAfterSeconds": 0,},],
     }
 
+    def __repr__(self) -> str:
+        return f"<Token: {repr(self.owner)} {self.token_type}>"
+
 
 class StateCode(me.Document):
     """
@@ -91,11 +94,16 @@ class StateCode(me.Document):
     """Corporation inviting the user of that state code, if any"""
 
     uuid = me.StringField(null=False, required=True)
-    """The state code. It's not really an UUID4 but i'm too lazy to change the
-    field name and write migration code..."""
+    """
+    The state code. It's not really an UUID4 but i'm too lazy to change the
+    field name and write migration code...
+    """
 
     meta = {
         "indexes": [
             {"fields": ["created_on"], "expireAfterSeconds": 1 * DAY,},
         ],
     }
+
+    def __repr__(self) -> str:
+        return f"<StateCode: {self.uuid} {self.created_on}>"

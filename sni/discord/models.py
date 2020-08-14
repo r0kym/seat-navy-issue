@@ -28,3 +28,9 @@ class DiscordAuthenticationChallenge(me.Document):
             {"fields": ["created_on"], "expireAfterSeconds": 2 * MINUTE},
         ],
     }
+
+    def __repr__(self) -> str:
+        return (
+            f"<DiscordAuthenticationChallenge: {repr(self.user)} "
+            f"{self.created_on}>"
+        )

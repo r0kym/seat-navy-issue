@@ -118,6 +118,9 @@ class CrashReport(me.Document):
         ]
     }
 
+    def __repr__(self) -> str:
+        return f"<CrashReport: {self.pk} {self.timestamp}>"
+
     def to_dict(self) -> dict:
         """
         Returns a dict representation

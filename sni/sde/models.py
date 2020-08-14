@@ -36,3 +36,6 @@ class EsiObjectName(me.Document):
             {"fields": ["expires_on"], "expireAfterSeconds": 0},
         ],
     }
+
+    def __repr__(self) -> str:
+        return f"<EsiObjectName: {self.field_id} {self.name}>"
