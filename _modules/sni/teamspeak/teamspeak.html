@@ -50,10 +50,11 @@
 <span class="kn">import</span> <span class="nn">pydantic</span> <span class="k">as</span> <span class="nn">pdt</span>
 <span class="kn">from</span> <span class="nn">ts3.query</span> <span class="kn">import</span> <span class="n">TS3Connection</span><span class="p">,</span> <span class="n">TS3QueryError</span>
 
+<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
 <span class="kn">from</span> <span class="nn">sni.db.cache</span> <span class="kn">import</span> <span class="n">cache_get</span><span class="p">,</span> <span class="n">cache_set</span><span class="p">,</span> <span class="n">invalidate_cache</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_autogroup</span>
-<span class="kn">from</span> <span class="nn">sni.conf</span> <span class="kn">import</span> <span class="n">CONFIGURATION</span> <span class="k">as</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">HOUR</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">TeamspeakAuthenticationChallenge</span>
@@ -106,7 +107,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a parsed query result, and caches the result.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">query</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">parsed</span>
@@ -225,7 +226,7 @@
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">TeamspeakGroup</span><span class="p">(</span><span class="o">**</span><span class="n">raw</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">cached_teamspeak_query</span><span class="p">(</span>
-            <span class="n">connection</span><span class="p">,</span> <span class="n">TS3Connection</span><span class="o">.</span><span class="n">servergrouplist</span><span class="p">,</span> <span class="mi">3600</span><span class="p">,</span>
+            <span class="n">connection</span><span class="p">,</span> <span class="n">TS3Connection</span><span class="o">.</span><span class="n">servergrouplist</span><span class="p">,</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">HOUR</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="p">]</span></div>
 

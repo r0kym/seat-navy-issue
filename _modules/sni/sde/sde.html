@@ -54,6 +54,7 @@
 <span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="kn">from</span> <span class="nn">sni.db.cache</span> <span class="kn">import</span> <span class="n">cache_get</span><span class="p">,</span> <span class="n">cache_set</span>
+<span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">DAY</span>
 
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">EsiObjectName</span>
 
@@ -235,7 +236,7 @@
             <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">query_set</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-            <span class="n">cache_set</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span><span class="p">)</span>
+            <span class="n">cache_set</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">DAY</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">me</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">name</span></div>

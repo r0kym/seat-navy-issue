@@ -94,7 +94,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">assert_has_clearance</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="s2">&quot;sni.teamspeak.auth&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">PostAuthStartOut</span><span class="p">(</span>
-        <span class="n">expiration_datetime</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">120</span><span class="p">),</span>
+        <span class="n">expiration_datetime</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now_plus</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
         <span class="n">challenge_nickname</span><span class="o">=</span><span class="n">new_authentication_challenge</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">),</span>
         <span class="n">user</span><span class="o">=</span><span class="n">GetUserShortOut</span><span class="o">.</span><span class="n">from_record</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">owner</span><span class="p">),</span>
     <span class="p">)</span></div>

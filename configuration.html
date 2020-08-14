@@ -131,7 +131,7 @@
 <tr class="row-odd"><td colspan="5"><p>General configuration document.</p></td>
 </tr>
 <tr class="row-even"><td><p>default</p></td>
-<td colspan="4"><p>OrderedDict([(‘debug’, False), (‘host’, ‘0.0.0.0’), (‘logging_level’, ‘info’), (‘port’, 80), (‘root_url’, ‘<a class="reference external" href="https://foo.bar">https://foo.bar</a>’), (‘scheduler_thread_count’, 5)])</p></td>
+<td colspan="4"><p>OrderedDict([(‘debug’, False), (‘host’, ‘0.0.0.0’), (‘logging_level’, ‘info’), (‘port’, 80), (‘root_url’, ‘<a class="reference external" href="https://foo.bar">https://foo.bar</a>’), (‘scheduler_thread_count’, 5), (‘sentry_dsn’, None)])</p></td>
 </tr>
 <tr class="row-odd"><td><p>allOf</p></td>
 <td><ul class="simple">
@@ -452,7 +452,7 @@
 <tr class="row-odd"><td><p>enum</p></td>
 <td colspan="4"><p>critical, debug, error, info, warning</p></td>
 </tr>
-<tr class="row-even"><td rowspan="34"><ul class="simple">
+<tr class="row-even"><td rowspan="40"><ul class="simple">
 <li><p>GeneralConfig</p></li>
 </ul>
 </td>
@@ -576,6 +576,26 @@
 </tr>
 <tr class="row-odd"><td><p>default</p></td>
 <td colspan="3"><p>5</p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><ul class="simple">
+<li><p>sentry_dsn</p></li>
+</ul>
+</td>
+<td colspan="4"><p><em>Sentry Dsn</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="4"><p>Optional Sentry DSN (<a class="reference external" href="https://sentry.io/welcome/">https://sentry.io/welcome/</a>).</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>maxLength</p></td>
+<td colspan="3"><p>2083</p></td>
+</tr>
+<tr class="row-even"><td><p>minLength</p></td>
+<td colspan="3"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>format</p></td>
+<td colspan="3"><p>uri</p></td>
 </tr>
 <tr class="row-even"><td rowspan="4"><ul class="simple">
 <li><p>JWTAlgorithm</p></li>

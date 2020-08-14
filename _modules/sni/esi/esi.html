@@ -41,6 +41,7 @@
 <span class="sd">EVE ESI (public API) layer</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">Future</span><span class="p">,</span> <span class="n">ThreadPoolExecutor</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -59,6 +60,10 @@
 
 <span class="n">ESI_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://esi.evetech.net/&quot;</span>
 <span class="n">ESI_SWAGGER</span> <span class="o">=</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="s2">&quot;latest/swagger.json&quot;</span>
+
+
+<span class="n">executor</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Executor for :meth:`sni.esi.esi._id_annotations`&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="EsiResponse"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.EsiResponse">[docs]</a><span class="k">class</span> <span class="nc">EsiResponse</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -180,7 +185,7 @@
             <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">EsiResponse</span><span class="o">.</span><span class="n">from_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
 
-    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;params&quot;</span><span class="p">)]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">EsiResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
@@ -235,18 +240,31 @@
 <span class="sd">    This method recursively searches for these ID fields and returns a dict</span>
 <span class="sd">    mapping these IDs to a name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">result_future</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="n">_id_annotations</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">result_future</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="_id_annotations"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi._id_annotations">[docs]</a><span class="k">def</span> <span class="nf">_id_annotations</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Future</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Actual recursive concurrent implementation of</span>
+<span class="sd">    :meth:`sni.esi.esi.id_annotations`. Basically, calls to</span>
+<span class="sd">    :meth`sni.esi.esi.id_to_name` are sumitted to an thread pool executor for</span>
+<span class="sd">    better performances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-                    <span class="n">annotations</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+                <span class="n">annotations</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">id_to_name</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">id_annotations</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_id_annotations</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">id_annotations</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+            <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_id_annotations</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">annotations</span></div>
 
 

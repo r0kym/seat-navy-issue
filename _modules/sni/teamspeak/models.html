@@ -44,6 +44,7 @@
 <span class="kn">import</span> <span class="nn">mongoengine</span> <span class="k">as</span> <span class="nn">me</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sni.utils</span> <span class="kn">import</span> <span class="n">MINUTE</span>
 <span class="kn">import</span> <span class="nn">sni.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 
@@ -66,7 +67,9 @@
     <span class="sd">&quot;&quot;&quot;See :meth:`sni.teamspeak.teamspeak.new_authentication_challenge`&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;created_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">},],</span>
+        <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;created_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">MINUTE</span><span class="p">},</span>
+        <span class="p">],</span>
     <span class="p">}</span></div>
 </pre></div>
 

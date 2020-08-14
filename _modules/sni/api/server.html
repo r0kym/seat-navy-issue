@@ -170,6 +170,28 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">openapi</span><span class="p">()))</span></div>
 
 
+<span class="c1"># pylint: disable=import-outside-toplevel</span>
+<div class="viewcode-block" id="setup_sentry"><a class="viewcode-back" href="../../../api.html#sni.api.server.setup_sentry">[docs]</a><span class="k">def</span> <span class="nf">setup_sentry</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Setup the Sentry middleware.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        `Sentry homepage &lt;https://sentry.io/welcome/&gt;`</span>
+<span class="sd">        `Sentry documentation for Python ASGI &lt;https://docs.sentry.io/platforms/python/asgi/&gt;`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">sentry_sdk</span>
+    <span class="kn">from</span> <span class="nn">sentry_sdk.integrations.asgi</span> <span class="kn">import</span> <span class="n">SentryAsgiMiddleware</span>
+    <span class="kn">from</span> <span class="nn">sentry_sdk.integrations.aiohttp</span> <span class="kn">import</span> <span class="n">AioHttpIntegration</span>
+    <span class="kn">from</span> <span class="nn">sentry_sdk.integrations.redis</span> <span class="kn">import</span> <span class="n">RedisIntegration</span>
+
+    <span class="n">sentry_sdk</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+        <span class="n">dsn</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">sentry_dsn</span><span class="p">,</span>
+        <span class="n">integrations</span><span class="o">=</span><span class="p">[</span><span class="n">AioHttpIntegration</span><span class="p">(),</span> <span class="n">RedisIntegration</span><span class="p">()],</span>
+    <span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">SentryAsgiMiddleware</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Added Sentry middleware&quot;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="start_api_server"><a class="viewcode-back" href="../../../api.html#sni.api.server.start_api_server">[docs]</a><span class="k">def</span> <span class="nf">start_api_server</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Starts the API server for real. See</span>
@@ -233,6 +255,8 @@
 
 
 <span class="n">add_included_routers</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">sentry_dsn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">setup_sentry</span><span class="p">()</span>
 </pre></div>
 
           </div>

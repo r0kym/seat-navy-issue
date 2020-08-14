@@ -83,6 +83,15 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.esi.esi._id_annotations">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">_id_annotations</code><span class="sig-paren">(</span><em class="sig-param">data: Any</em><span class="sig-paren">)</span> &#x2192; Dict[int, concurrent.futures._base.Future]<a class="reference internal" href="_modules/sni/esi/esi.html#_id_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi._id_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual recursive concurrent implementation of
+<a class="reference internal" href="#sni.esi.esi.id_annotations" title="sni.esi.esi.id_annotations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.id_annotations()</span></code></a>. Basically, calls to
+:meth`sni.esi.esi.id_to_name` are sumitted to an thread pool executor for
+better performances.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.esi.esi.esi_delete">
 <code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_delete</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">*</em>, <em class="sig-param">kwargs: dict = {}</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#sni.esi.esi.esi_request" title="sni.esi.esi.esi_request"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi.esi_request()</span></code></a> for DELETE requests.</p>
@@ -116,6 +125,12 @@
 <dt id="sni.esi.esi.esi_request">
 <code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">esi_request</code><span class="sig-paren">(</span><em class="sig-param">http_method: str</em>, <em class="sig-param">path: str</em>, <em class="sig-param">*</em>, <em class="sig-param">kwargs: dict = {}</em>, <em class="sig-param">raise_for_status: bool = False</em>, <em class="sig-param">token: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; sni.esi.esi.EsiResponse<a class="reference internal" href="_modules/sni/esi/esi.html#esi_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.esi.esi.esi_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes an HTTP request to the ESI, and returns the response object.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sni.esi.esi.executor">
+<code class="sig-prename descclassname">sni.esi.esi.</code><code class="sig-name descname">executor</code><em class="property"> = &lt;concurrent.futures.thread.ThreadPoolExecutor object&gt;</em><a class="headerlink" href="#sni.esi.esi.executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executor for <a class="reference internal" href="#sni.esi.esi._id_annotations" title="sni.esi.esi._id_annotations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sni.esi.esi._id_annotations()</span></code></a></p>
 </dd></dl>
 
 <dl class="function">
