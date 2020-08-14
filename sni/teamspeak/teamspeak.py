@@ -170,7 +170,7 @@ def find_group(
     if len(groups) != 1:
         raise LookupError(
             (
-                f'Could not find a group with name "name" '
+                f'Could not find a group with name "{name}" '
                 f"or with id {group_id}"
             )
         )
