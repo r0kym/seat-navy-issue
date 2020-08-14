@@ -125,7 +125,6 @@ def esi_request(
     path: str,
     *,
     kwargs: dict = {},
-    raise_for_status: bool = False,
     token: Optional[str] = None,
 ) -> EsiResponse:
     """
@@ -142,8 +141,7 @@ def esi_request(
 
     if http_method.upper() != "GET":
         raw = request(http_method, ESI_BASE + path, **kwargs)
-        if raise_for_status:
-            raw.raise_for_status()
+        raw.raise_for_status()
         return EsiResponse.from_response(raw)
 
     key = [path, token, sorted(kwargs.get("params", {}).items())]
@@ -152,23 +150,21 @@ def esi_request(
         return EsiResponse(**response)
 
     raw = request(http_method, ESI_BASE + path, **kwargs)
-    if raise_for_status:
-        raw.raise_for_status()
+    raw.raise_for_status()
     response = EsiResponse.from_response(raw)
 
-    if not 400 <= response.status_code <= 599:
-        ttl = 60
-        if "Expires" in response.headers:
-            try:
-                ttl = int(
-                    (
-                        parser.parse(response.headers["Expires"]) - utils.now()
-                    ).total_seconds()
-                )
-            except ValueError as error:
-                logging.warning("Could not determine ESI TTL: %s", str(error))
-        if ttl > 0:
-            cache_set(key, response.dict(), ttl)
+    ttl = 60
+    if "Expires" in response.headers:
+        try:
+            ttl = int(
+                (
+                    parser.parse(response.headers["Expires"]) - utils.now()
+                ).total_seconds()
+            )
+        except ValueError as error:
+            logging.warning("Could not determine ESI TTL: %s", str(error))
+    if ttl > 0:
+        cache_set(key, response.dict(), ttl)
 
     return response
 

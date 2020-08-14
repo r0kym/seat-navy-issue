@@ -168,10 +168,12 @@ def find_group(
         if grp.sgid == group_id or grp.name == name
     ]
     if len(groups) != 1:
+        display_name = f'"{name}"' if name is not None else "N/A"
+        display_group_id = group_id if group_id is not None else "N/A"
         raise LookupError(
             (
-                f'Could not find a group with name "{name}" '
-                f"or with id {group_id}"
+                f"Could not find a group with name {display_name} "
+                f"or with id {display_group_id}"
             )
         )
     return groups[0]

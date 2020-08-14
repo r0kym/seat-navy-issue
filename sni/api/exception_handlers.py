@@ -20,7 +20,6 @@ from .models import CrashReport, CrashReportRequest, CrashReportToken
 from .server import app
 
 
-
 def crash_report(request: Request, error: Exception) -> CrashReport:
     """
     Constructs a crash report
