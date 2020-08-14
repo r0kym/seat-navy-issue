@@ -157,6 +157,9 @@
         <span class="p">]</span>
     <span class="p">}</span>
 
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;CrashReport: </span><span class="si">{self.pk}</span><span class="s2"> </span><span class="si">{self.timestamp}</span><span class="s2">&gt;&quot;</span>
+
 <div class="viewcode-block" id="CrashReport.to_dict"><a class="viewcode-back" href="../../../api.html#sni.api.models.CrashReport.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dict representation</span>

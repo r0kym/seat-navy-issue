@@ -110,10 +110,18 @@
             <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
-        <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
-            <span class="n">mail_id</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;mail_id&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">EsiMail</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mail_id</span><span class="o">=</span><span class="n">mail_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">break</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s2">&quot;Could not list recent emails of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+        <span class="n">mail_id</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;mail_id&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">EsiMail</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mail_id</span><span class="o">=</span><span class="n">mail_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">mail</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail/</span><span class="si">{mail_id}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">character_id</span><span class="p">,</span>
@@ -130,13 +138,14 @@
                 <span class="n">subject</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">],</span>
                 <span class="n">timestamp</span><span class="o">=</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
             <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s2">&quot;Could not index mail of character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
-        <span class="p">)</span></div>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Could not index mail </span><span class="si">%d</span><span class="s2"> from character </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">mail_id</span><span class="p">,</span>
+                <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
+                <span class="n">usr</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="index_users_mails"><a class="viewcode-back" href="../../../indexation.html#sni.index.jobs.index_users_mails">[docs]</a><span class="nd">@scheduler</span><span class="o">.</span><span class="n">scheduled_job</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>

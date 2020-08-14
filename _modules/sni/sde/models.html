@@ -74,7 +74,10 @@
             <span class="p">(</span><span class="s2">&quot;field_names&quot;</span><span class="p">,</span> <span class="s2">&quot;field_id&quot;</span><span class="p">),</span>
             <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;expires_on&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
         <span class="p">],</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;EsiObjectName: </span><span class="si">{self.field_id}</span><span class="s2"> </span><span class="si">{self.name}</span><span class="s2">&gt;&quot;</span></div>
 </pre></div>
 
           </div>

@@ -164,7 +164,6 @@
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
-    <span class="n">raise_for_status</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -181,8 +180,7 @@
 
     <span class="k">if</span> <span class="n">http_method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
         <span class="n">raw</span> <span class="o">=</span> <span class="n">request</span><span class="p">(</span><span class="n">http_method</span><span class="p">,</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">raise_for_status</span><span class="p">:</span>
-            <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">EsiResponse</span><span class="o">.</span><span class="n">from_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
 
     <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
@@ -191,23 +189,21 @@
         <span class="k">return</span> <span class="n">EsiResponse</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
 
     <span class="n">raw</span> <span class="o">=</span> <span class="n">request</span><span class="p">(</span><span class="n">http_method</span><span class="p">,</span> <span class="n">ESI_BASE</span> <span class="o">+</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">raise_for_status</span><span class="p">:</span>
-        <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="n">raw</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">EsiResponse</span><span class="o">.</span><span class="n">from_response</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="mi">400</span> <span class="o">&lt;=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&lt;=</span> <span class="mi">599</span><span class="p">:</span>
-        <span class="n">ttl</span> <span class="o">=</span> <span class="mi">60</span>
-        <span class="k">if</span> <span class="s2">&quot;Expires&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-                    <span class="p">(</span>
-                        <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Expires&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-                <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not determine ESI TTL: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">ttl</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">ttl</span><span class="p">)</span>
+    <span class="n">ttl</span> <span class="o">=</span> <span class="mi">60</span>
+    <span class="k">if</span> <span class="s2">&quot;Expires&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Expires&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not determine ESI TTL: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ttl</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">ttl</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">response</span></div>
 

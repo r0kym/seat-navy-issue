@@ -101,7 +101,10 @@
             <span class="p">(</span><span class="s2">&quot;solar_system_id&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
             <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">DAY</span><span class="p">,},</span>
         <span class="p">],</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;EsiCharacterLocation: {repr(self.user)} </span><span class="si">{self.timestamp}</span><span class="s2">&gt;&quot;</span></div>
 
 
 <div class="viewcode-block" id="EsiMailRecipient"><a class="viewcode-back" href="../../../indexation.html#sni.index.models.EsiMailRecipient">[docs]</a><span class="k">class</span> <span class="nc">EsiMailRecipient</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">EmbeddedDocument</span><span class="p">):</span>
@@ -153,7 +156,10 @@
                 <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
             <span class="p">},</span>
         <span class="p">]</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;EsiMail: </span><span class="si">{self.mail_id}</span><span class="s2">&gt;&quot;</span></div>
 
 
 <div class="viewcode-block" id="EsiSkillPoints"><a class="viewcode-back" href="../../../indexation.html#sni.index.models.EsiSkillPoints">[docs]</a><span class="k">class</span> <span class="nc">EsiSkillPoints</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -184,7 +190,10 @@
             <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
             <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">DAY</span><span class="p">,},</span>
         <span class="p">],</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;EsiSkillPoints: {repr(self.user)} </span><span class="si">{self.timestamp}</span><span class="s2">&gt;&quot;</span></div>
 
 
 <div class="viewcode-block" id="EsiWalletBalance"><a class="viewcode-back" href="../../../indexation.html#sni.index.models.EsiWalletBalance">[docs]</a><span class="k">class</span> <span class="nc">EsiWalletBalance</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -206,7 +215,10 @@
             <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;-timestamp&quot;</span><span class="p">),</span>
             <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="p">:</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">DAY</span><span class="p">,},</span>
         <span class="p">],</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;EsiWalletBalance: {repr(self.user)} </span><span class="si">{self.timestamp}</span><span class="s2">&gt;&quot;</span></div>
 </pre></div>
 
           </div>

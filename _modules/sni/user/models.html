@@ -88,6 +88,9 @@
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alliance_id&quot;</span><span class="p">,</span> <span class="s2">&quot;alliance_name&quot;</span><span class="p">,]}</span>
 
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Alliance: </span><span class="si">{self.alliance_id}</span><span class="s2"> </span><span class="si">{self.alliance_name}</span><span class="s2">&gt;&quot;</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -219,6 +222,9 @@
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;corporation_id&quot;</span><span class="p">,</span> <span class="s2">&quot;corporation_name&quot;</span><span class="p">,]}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Corporation: </span><span class="si">{self.corporation_id}</span><span class="s2"> </span><span class="si">{self.corporation_name}</span><span class="s2">&gt;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ceo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
@@ -391,6 +397,9 @@
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;coalition_name&quot;</span><span class="p">,]}</span>
 
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Coalition: </span><span class="si">{self.coalition_name}</span><span class="s2">&gt;&quot;</span>
+
 <div class="viewcode-block" id="Coalition.users"><a class="viewcode-back" href="../../../user.html#sni.user.models.Coalition.users">[docs]</a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the member list of this coalition.</span>
@@ -494,7 +503,10 @@
     <span class="n">updated_on</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
 
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;group_name&quot;</span><span class="p">,]}</span></div>
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;group_name&quot;</span><span class="p">,]}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Group: </span><span class="si">{self.group_name}</span><span class="s2">&gt;&quot;</span></div>
 
 
 <div class="viewcode-block" id="User"><a class="viewcode-back" href="../../../user.html#sni.user.models.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
@@ -538,6 +550,9 @@
     <span class="sd">&quot;&quot;&quot;Timestamp of the last update of this document&quot;&quot;&quot;</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;character_id&quot;</span><span class="p">,</span> <span class="s2">&quot;character_name&quot;</span><span class="p">,]}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;User: </span><span class="si">{self.character_id}</span><span class="s2"> </span><span class="si">{self.character_name}</span><span class="s2">&gt;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">alliance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Alliance</span><span class="p">]:</span>
