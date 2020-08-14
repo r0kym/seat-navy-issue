@@ -255,15 +255,11 @@ class SentryConfig(pdt.BaseModel):
     )
 
     enabled: bool = pdt.Field(
-        default=False,
-        description="Wether to activate the Sentry middleware.",
+        default=False, description="Wether to activate the Sentry middleware.",
     )
 
     traces_sample_rate: float = pdt.Field(
-        default=0,
-        description="Trace sample rate.",
-        ge=0,
-        le=1,
+        default=0, description="Trace sample rate.", ge=0, le=1,
     )
 
 

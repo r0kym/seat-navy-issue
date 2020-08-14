@@ -186,8 +186,8 @@ def sde_get_name(field_id: int, field_name: Optional[str]) -> Optional[str]:
     Fetches a document from the ``esi_object_name`` collection. See
     :class:`sni.sde.models.EsiObjectName`.
     """
-    cache_key = ["sde", field_id]
-    name = cache_get(cache_key)
+    key = ("sde:" + str(field_id), None)
+    name = cache_get(key)
     if name is None:
         if field_name is None:
             query_set = EsiObjectName.objects(field_id=field_id)
@@ -197,7 +197,7 @@ def sde_get_name(field_id: int, field_name: Optional[str]) -> Optional[str]:
             )
         try:
             name = query_set.get().name
-            cache_set(cache_key, name, 1 * DAY)
+            cache_set(key, name, 1 * DAY)
         except me.DoesNotExist:
             name = None
     return name

@@ -2,7 +2,7 @@
 Redis based TTL cache
 """
 
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 import logging
 import pickle  # nosec
 
@@ -14,7 +14,7 @@ from .redis import new_redis_connection
 connection = new_redis_connection()
 
 
-def cache_get(key: Any) -> Optional[Any]:
+def cache_get(key: Tuple[Optional[str], Any]) -> Optional[Any]:
     """
     Retrieves a value from the cache, or returns None if the key is unknown.
     The key must be a picklable object.
@@ -22,12 +22,14 @@ def cache_get(key: Any) -> Optional[Any]:
     hashed_key = hash_key(key)
     result = connection.get(hashed_key)
     if result is not None:
-        logging.debug("Cache hit %s %s", hashed_key, str(key)[:20])
+        logging.debug("Cache hit %s %s", hashed_key, str(key)[:30])
         return pickle.loads(result)  # nosec
     return None
 
 
-def cache_set(key: Any, value: Any, ttl: int = 60) -> None:
+def cache_set(
+    key: Tuple[Optional[str], Any], value: Any, ttl: int = 60
+) -> None:
     """
     Sets a value in the cache. The key and value must be picklable.
     """
@@ -37,14 +39,21 @@ def cache_set(key: Any, value: Any, ttl: int = 60) -> None:
         logging.error("Redis error: %s", str(error))
 
 
-def hash_key(document: Any) -> str:
+def hash_key(key: Tuple[Optional[str], Any]) -> str:
     """
-    Hashes a picklable object
+    Creates a key from a picklable document and an optional humann readable
+    prefix.
     """
-    return xxh64_hexdigest(pickle.dumps(document))
+    prefix, document = key
+    result = ""
+    if document is not None:
+        result = xxh64_hexdigest(pickle.dumps(document))
+    if prefix is not None:
+        result = prefix + ":" + result
+    return result
 
 
-def invalidate_cache(key: Any):
+def invalidate_cache(key: Tuple[Optional[str], Any]):
     """
     Invalidates a cache value
     """

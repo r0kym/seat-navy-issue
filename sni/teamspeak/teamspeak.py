@@ -68,7 +68,10 @@ def cached_teamspeak_query(
     """
     Returns a parsed query result, and caches the result.
     """
-    key = [query.__name__, args, sorted(kwargs.items())]
+    key = (
+        "ts:" + query.__name__,
+        [args, sorted(kwargs.items())],
+    )
     result = cache_get(key)
     if result is None:
         result = query(connection, *args, **kwargs).parsed
@@ -119,7 +122,9 @@ def ensure_group(connection: TS3Connection, name: str) -> TeamspeakGroup:
     try:
         return find_group(connection, name=name)
     except LookupError:
-        invalidate_cache([TS3Connection.servergrouplist.__name__, [], {}])
+        invalidate_cache(
+            ("ts:" + TS3Connection.servergrouplist.__name__, [[], []])
+        )
         connection.servergroupadd(name=name)
         logging.debug("Created Teamspeak group %s", name)
         return find_group(connection, name=name)
