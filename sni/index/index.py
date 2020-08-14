@@ -19,19 +19,16 @@ def get_user_location(
         f"latest/characters/{usr.character_id}/location/",
         usr.character_id,
         invalidate_token_on_error=invalidate_token_on_error,
-        raise_for_status=True,
     ).data
     online_data = esi_get_on_befalf_of(
         f"latest/characters/{usr.character_id}/online/",
         usr.character_id,
         invalidate_token_on_error=invalidate_token_on_error,
-        raise_for_status=True,
     ).data
     ship_data = esi_get_on_befalf_of(
         f"latest/characters/{usr.character_id}/ship/",
         usr.character_id,
         invalidate_token_on_error=invalidate_token_on_error,
-        raise_for_status=True,
     ).data
 
     structure_id = location_data.get("structure_id")
