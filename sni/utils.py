@@ -13,6 +13,11 @@ from datetime import datetime, timedelta
 from pytz import utc
 
 
+MINUTE = 60
+HOUR = 60 * MINUTE
+DAY = 24 * HOUR
+
+
 # pylint: disable=dangerous-default-value
 def catch_all(
     function: Callable,

@@ -55,7 +55,7 @@ def port_auth_start(tkn: Token = Depends(from_authotization_header_nondyn)):
     """
     assert_has_clearance(tkn.owner, "sni.teamspeak.auth")
     return PostAuthStartOut(
-        expiration_datetime=utils.now_plus(seconds=120),
+        expiration_datetime=utils.now_plus(minutes=2),
         challenge_nickname=new_authentication_challenge(tkn.owner),
         user=GetUserShortOut.from_record(tkn.owner),
     )

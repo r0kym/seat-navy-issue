@@ -7,6 +7,7 @@ from enum import Enum
 import mongoengine as me
 
 from sni.user.models import Corporation, User
+from sni.utils import DAY
 import sni.utils as utils
 
 
@@ -95,6 +96,6 @@ class StateCode(me.Document):
 
     meta = {
         "indexes": [
-            {"fields": ["created_on"], "expireAfterSeconds": 3600 * 24,},
+            {"fields": ["created_on"], "expireAfterSeconds": 1 * DAY,},
         ],
     }

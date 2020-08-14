@@ -15,6 +15,7 @@ import mongoengine as me
 import requests
 
 from sni.db.cache import cache_get, cache_set
+from sni.utils import DAY
 
 from .models import EsiObjectName
 
@@ -196,7 +197,7 @@ def sde_get_name(field_id: int, field_name: Optional[str]) -> Optional[str]:
             )
         try:
             name = query_set.get().name
-            cache_set(cache_key, name, 3600 * 24)
+            cache_set(cache_key, name, 1 * DAY)
         except me.DoesNotExist:
             name = None
     return name

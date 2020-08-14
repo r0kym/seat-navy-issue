@@ -11,10 +11,11 @@ from typing import Any, Callable, List, Optional
 import pydantic as pdt
 from ts3.query import TS3Connection, TS3QueryError
 
+from sni.conf import CONFIGURATION as conf
 from sni.db.cache import cache_get, cache_set, invalidate_cache
 from sni.user.models import User
 from sni.user.user import ensure_autogroup
-from sni.conf import CONFIGURATION as conf
+from sni.utils import HOUR
 import sni.utils as utils
 
 from .models import TeamspeakAuthenticationChallenge
@@ -186,7 +187,7 @@ def group_list(connection: TS3Connection) -> List[TeamspeakGroup]:
     return [
         TeamspeakGroup(**raw)
         for raw in cached_teamspeak_query(
-            connection, TS3Connection.servergrouplist, 3600,
+            connection, TS3Connection.servergrouplist, 1 * HOUR,
         )
     ]
 

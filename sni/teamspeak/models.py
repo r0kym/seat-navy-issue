@@ -5,6 +5,7 @@ Teamspeak database models
 import mongoengine as me
 
 from sni.user.models import User
+from sni.utils import MINUTE
 import sni.utils as utils
 
 
@@ -27,5 +28,7 @@ class TeamspeakAuthenticationChallenge(me.Document):
     """See :meth:`sni.teamspeak.teamspeak.new_authentication_challenge`"""
 
     meta = {
-        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 120},],
+        "indexes": [
+            {"fields": ["created_on"], "expireAfterSeconds": 2 * MINUTE},
+        ],
     }

@@ -5,6 +5,7 @@ Database models
 import mongoengine as me
 
 from sni.user.models import User
+from sni.utils import MINUTE
 import sni.utils as utils
 
 
@@ -23,5 +24,7 @@ class DiscordAuthenticationChallenge(me.Document):
     """User that stated this authentication challenge"""
 
     meta = {
-        "indexes": [{"fields": ["created_on"], "expireAfterSeconds": 120},],
+        "indexes": [
+            {"fields": ["created_on"], "expireAfterSeconds": 2 * MINUTE},
+        ],
     }

@@ -5,6 +5,7 @@ Database models
 import mongoengine as me
 
 from sni.user.models import User
+from sni.utils import DAY
 import sni.utils as utils
 
 
@@ -59,10 +60,7 @@ class EsiCharacterLocation(me.Document):
             "online",
             ("user", "-timestamp"),
             ("solar_system_id", "-timestamp"),
-            {
-                "fields": ["timestamp"],
-                "expireAfterSeconds": 3600 * 24 * 90,
-            },  # 90 days
+            {"fields": ["timestamp"], "expireAfterSeconds": 90 * DAY,},
         ],
     }
 
@@ -145,10 +143,7 @@ class EsiSkillPoints(me.Document):
     meta = {
         "index": [
             ("user", "-timestamp"),
-            {
-                "fields": ["timestamp"],
-                "expireAfterSeconds": 3600 * 24 * 90,
-            },  # 90 days
+            {"fields": ["timestamp"], "expireAfterSeconds": 90 * DAY,},
         ],
     }
 
@@ -170,9 +165,6 @@ class EsiWalletBalance(me.Document):
     meta = {
         "index": [
             ("user", "-timestamp"),
-            {
-                "fields": ["timestamp"],
-                "expireAfterSeconds": 3600 * 24 * 90,
-            },  # 90 days
+            {"fields": ["timestamp"], "expireAfterSeconds": 90 * DAY,},
         ],
     }

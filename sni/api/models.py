@@ -4,8 +4,9 @@ ESI related database models
 
 import mongoengine as me
 
-import sni.utils as utils
 from sni.user.models import User
+from sni.utils import DAY
+import sni.utils as utils
 
 
 class CrashReportRequest(me.EmbeddedDocument):
@@ -113,10 +114,7 @@ class CrashReport(me.Document):
     meta = {
         "indexes": [
             "-timestamp",
-            {
-                "fields": ["timestamp"],
-                "expireAfterSeconds": 3600 * 24 * 90,
-            },  # 90 days
+            {"fields": ["timestamp"], "expireAfterSeconds": 90 * DAY,},
         ]
     }
 
