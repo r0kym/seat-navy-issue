@@ -64,6 +64,15 @@ components:
             port: 6379
           description: Redis configuration document.
           title: Redis
+        sentry:
+          allOf:
+          - $ref: '#/components/schemas/SentryConfig'
+          default:
+            dsn: https://examplePublicKey@o0.ingest.sentry.io/0
+            enabled: false
+            traces_sample_rate: 0
+          description: Sentry configuration document.
+          title: Sentry
         teamspeak:
           allOf:
           - $ref: '#/components/schemas/TeamspeakConfig'
@@ -1255,6 +1264,33 @@ components:
           title: Port
           type: integer
       title: RedisConfig
+      type: object
+    SentryConfig:
+      description: "Sentry configuration model.\n\nSee also:\n    `Sentry homepage\
+        \ <https://sentry.io/welcome/>`\n    `Sentry documentation for Python ASGI\
+        \ <https://docs.sentry.io/platforms/python/asgi/>`_"
+      properties:
+        dsn:
+          default: https://examplePublicKey@o0.ingest.sentry.io/0
+          description: Optional Sentry DSN (https://sentry.io/welcome/).
+          format: uri
+          maxLength: 2083
+          minLength: 1
+          title: Dsn
+          type: string
+        enabled:
+          default: false
+          description: Wether to activate the Sentry middleware.
+          title: Enabled
+          type: boolean
+        traces_sample_rate:
+          default: 0
+          description: Trace sample rate.
+          maximum: 1.0
+          minimum: 0.0
+          title: Traces Sample Rate
+          type: number
+      title: SentryConfig
       type: object
     TeamspeakConfig:
       description: Teamspeak configuration model
