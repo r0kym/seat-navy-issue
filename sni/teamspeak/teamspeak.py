@@ -68,7 +68,7 @@ def cached_teamspeak_query(
     """
     Returns a parsed query result, and caches the result.
     """
-    key = [query.__name__, args, kwargs]
+    key = [query.__name__, args, sorted(kwargs.items())]
     result = cache_get(key)
     if result is None:
         result = query(connection, *args, **kwargs).parsed

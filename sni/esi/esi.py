@@ -141,7 +141,7 @@ def esi_request(
             raw.raise_for_status()
         return EsiResponse.from_response(raw)
 
-    key = [path, token, kwargs.get("params")]
+    key = [path, token, sorted(kwargs.get("params", {}).items())]
     response = cache_get(key)
     if response is not None:
         return EsiResponse(**response)
