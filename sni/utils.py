@@ -96,9 +96,12 @@ def object_from_name(name: str) -> Any:
     """
     Returns a callable from its name, e.g. ``sni.esi.jobs:refresh_tokens``.
     """
-    module_name, function_name = name.split(":")
-    module = import_module(module_name)
-    return getattr(module, function_name)
+    try:
+        module_name, function_name = name.split(":")
+        module = import_module(module_name)
+        return getattr(module, function_name)
+    except Exception as error:
+        raise ValueError(f'Could not load object "{name}": {str(error)}')
 
 
 def random_code(length: int) -> str:
