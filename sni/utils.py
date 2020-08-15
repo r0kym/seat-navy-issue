@@ -105,6 +105,9 @@ def random_code(length: int) -> str:
     """
     Returns a random string made of digits, lowercase letters, and uppercase
     letters, of a given length.
+
+    Warning:
+        Not cryptographically secure.
     """
     return "".join(
         [
