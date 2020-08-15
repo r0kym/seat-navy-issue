@@ -15,6 +15,7 @@ import mongoengine as me
 import pydantic as pdt
 
 from sni.teamspeak.teamspeak import (
+    close_teamspeak_connection,
     complete_authentication_challenge,
     new_authentication_challenge,
     new_teamspeak_connection,
@@ -86,6 +87,6 @@ def post_auth_complete(tkn: Token = Depends(from_authotization_header_nondyn)):
             status.HTTP_404_NOT_FOUND,
             detail="Could not find challenge for user",
         )
-    connection.close()
+    close_teamspeak_connection(connection)
     if exception is not None:
         raise exception

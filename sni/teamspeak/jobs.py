@@ -15,6 +15,7 @@ import sni.utils as utils
 from .teamspeak import (
     cached_teamspeak_query,
     client_list,
+    close_teamspeak_connection,
     ensure_group,
     new_teamspeak_connection,
 )
@@ -60,7 +61,7 @@ def message_registered_clients_with_wrong_name():
                     "msg": message,
                 },
             )
-    connection.close()
+    close_teamspeak_connection(connection)
 
 
 @scheduler.scheduled_job("interval", minutes=10)
@@ -74,7 +75,7 @@ def map_teamspeak_groups():
         tsgrp = ensure_group(connection, grp.group_name)
         grp.teamspeak_sgid = tsgrp.sgid
         grp.save()
-    connection.close()
+    close_teamspeak_connection(connection)
 
 
 @scheduler.scheduled_job("interval", minutes=10)
@@ -127,4 +128,4 @@ def update_teamspeak_groups():
                     grp.group_name,
                     str(error),
                 )
-    connection.close()
+    close_teamspeak_connection(connection)

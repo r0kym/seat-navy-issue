@@ -94,6 +94,24 @@ def client_list(connection: TS3Connection) -> List[TeamspeakClient]:
     ]
 
 
+def close_teamspeak_connection(connection: TS3Connection) -> None:
+    """
+    Closes a Teamspeak connection. Wraps :meth:`ts3.query.TS3Connection.close`
+    in a `try... except` block to catch spurious connection reset exceptions.
+    """
+    try:
+        connection.close()
+    except Exception as error:
+        logging.warning(
+            (
+                "Closing Teamspeak connection raised a potentially spurious "
+                "exception: (%s) %s"
+            ),
+            str(type(error)),
+            str(error),
+        )
+
+
 def complete_authentication_challenge(connection: TS3Connection, usr: User):
     """
     Complete an authentication challenge, see
