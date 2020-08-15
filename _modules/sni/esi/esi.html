@@ -208,7 +208,7 @@
     <span class="k">return</span> <span class="n">response</span></div>
 
 
-<div class="viewcode-block" id="get_esi_path_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.get_esi_path_scope">[docs]</a><span class="k">def</span> <span class="nf">get_esi_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EsiScope</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_esi_path_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.esi.get_esi_path_scope">[docs]</a><span class="k">def</span> <span class="nf">get_esi_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiScope</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the ESI scope that is required for a given ESI path.</span>
 
@@ -217,10 +217,10 @@
 <span class="sd">    Examples:</span>
 
 <span class="sd">        &gt;&gt;&gt; get_esi_path_scope(&#39;latest/characters/0000000000/assets&#39;)</span>
-<span class="sd">        &#39;esi-assets.read_assets.v1&#39;</span>
+<span class="sd">        EsiScope.ESI_ASSETS_READ_ASSETS_V1</span>
 
 <span class="sd">        &gt;&gt;&gt; get_esi_path_scope(&#39;latest/alliances&#39;)</span>
-<span class="sd">        None</span>
+<span class="sd">        EsiScope.PUBLICDATA</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">esi_path</span><span class="p">:</span> <span class="n">EsiPath</span>
     <span class="k">for</span> <span class="n">esi_path</span> <span class="ow">in</span> <span class="n">EsiPath</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>

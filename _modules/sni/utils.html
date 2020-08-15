@@ -135,15 +135,21 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a callable from its name, e.g. ``sni.esi.jobs:refresh_tokens``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">module_name</span><span class="p">,</span> <span class="n">function_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-    <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">function_name</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">module_name</span><span class="p">,</span> <span class="n">function_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">function_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not load object &quot;</span><span class="si">{name}</span><span class="s1">&quot;: {str(error)}&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="random_code"><a class="viewcode-back" href="../../sni.html#sni.utils.random_code">[docs]</a><span class="k">def</span> <span class="nf">random_code</span><span class="p">(</span><span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a random string made of digits, lowercase letters, and uppercase</span>
 <span class="sd">    letters, of a given length.</span>
+
+<span class="sd">    Warning:</span>
+<span class="sd">        Not cryptographically secure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
         <span class="p">[</span>

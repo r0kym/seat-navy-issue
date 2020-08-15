@@ -133,6 +133,24 @@
     <span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="close_teamspeak_connection"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.close_teamspeak_connection">[docs]</a><span class="k">def</span> <span class="nf">close_teamspeak_connection</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">TS3Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Closes a Teamspeak connection. Wraps :meth:`ts3.query.TS3Connection.close`</span>
+<span class="sd">    in a `try... except` block to catch spurious connection reset exceptions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;Closing Teamspeak connection raised a potentially spurious &quot;</span>
+                <span class="s2">&quot;exception: (</span><span class="si">%s</span><span class="s2">) </span><span class="si">%s</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="complete_authentication_challenge"><a class="viewcode-back" href="../../../teamspeak.html#sni.teamspeak.teamspeak.complete_authentication_challenge">[docs]</a><span class="k">def</span> <span class="nf">complete_authentication_challenge</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">TS3Connection</span><span class="p">,</span> <span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Complete an authentication challenge, see</span>
@@ -275,10 +293,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Configuration key conf.teamspeak.password is None&quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">TS3Connection</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">port</span><span class="p">,)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">TS3Connection</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">sid</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">server_id</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{conf.teamspeak.username}</span><span class="s2"> ({utils.random_code(5)})&quot;</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">login</span><span class="p">(</span>
-        <span class="n">client_login_name</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+        <span class="n">client_login_name</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
         <span class="n">client_login_password</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(),</span>
     <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -286,10 +305,10 @@
     <span class="k">except</span> <span class="n">TS3QueryError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s2">&quot;Connected to teamspeak server </span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2"> as </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;Connected to teamspeak server </span><span class="si">%s</span><span class="s1">:</span><span class="si">%d</span><span class="s1"> as &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">teamspeak</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+        <span class="n">username</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">connection</span></div>
 </pre></div>

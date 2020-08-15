@@ -45,6 +45,7 @@
 <span class="kn">import</span> <span class="nn">html</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
+<span class="kn">from</span> <span class="nn">sni.esi.scope</span> <span class="kn">import</span> <span class="n">EsiScope</span>
 <span class="kn">from</span> <span class="nn">sni.esi.token</span> <span class="kn">import</span> <span class="n">esi_get_on_befalf_of</span><span class="p">,</span> <span class="n">has_esi_scope</span>
 <span class="kn">from</span> <span class="nn">sni.scheduler</span> <span class="kn">import</span> <span class="n">scheduler</span>
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
@@ -73,7 +74,7 @@
 <span class="sd">    Indexes a user&#39;s location, online status, and ship</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">location</span> <span class="o">=</span> <span class="n">get_user_location</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">get_user_location</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">location</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
@@ -91,9 +92,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_location.v1&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_online.v1&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-location.read_ship_type.v1&quot;</span><span class="p">)</span>
+            <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">ESI_LOCATION_READ_LOCATION_V1</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">ESI_LOCATION_READ_ONLINE_V1</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">ESI_LOCATION_READ_SHIP_TYPE_V1</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_location</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 
@@ -107,7 +108,7 @@
         <span class="n">headers</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail&quot;</span><span class="p">,</span>
             <span class="n">character_id</span><span class="p">,</span>
-            <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
@@ -125,7 +126,7 @@
             <span class="n">mail</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{character_id}</span><span class="s2">/mail/</span><span class="si">{mail_id}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">character_id</span><span class="p">,</span>
-                <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="n">EsiMail</span><span class="p">(</span>
                 <span class="n">body</span><span class="o">=</span><span class="n">format_mail_body</span><span class="p">(</span><span class="n">mail</span><span class="p">[</span><span class="s2">&quot;body&quot;</span><span class="p">]),</span>
@@ -153,7 +154,7 @@
 <span class="sd">    Index all user emails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-mail.read_mail.v1&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">ESI_MAIL_READ_MAIL_V1</span><span class="p">):</span>
             <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_mails</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 
 
@@ -166,7 +167,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/skills/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiSkillPoints</span><span class="p">(</span>
             <span class="n">total_sp</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;total_sp&quot;</span><span class="p">],</span>
@@ -188,7 +189,7 @@
 <span class="sd">    Measures all users skillpoints</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-skills.read_skills.v1&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">ESI_SKILLS_READ_SKILLS_V1</span><span class="p">):</span>
             <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_skillpoints</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 
 
@@ -200,7 +201,7 @@
         <span class="n">balance</span> <span class="o">=</span> <span class="n">esi_get_on_befalf_of</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;latest/characters/</span><span class="si">{usr.character_id}</span><span class="s2">/wallet/&quot;</span><span class="p">,</span>
             <span class="n">usr</span><span class="o">.</span><span class="n">character_id</span><span class="p">,</span>
-            <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">data</span>
         <span class="n">EsiWalletBalance</span><span class="p">(</span><span class="n">balance</span><span class="o">=</span><span class="n">balance</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
@@ -218,7 +219,7 @@
 <span class="sd">    Indexes user wallet balance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="s2">&quot;esi-wallet.read_character_wallet.v1&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">ESI_WALLET_READ_CHARACTER_WALLET_V1</span><span class="p">):</span>
             <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">index_user_wallets</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">usr</span><span class="p">,))</span></div>
 </pre></div>
 

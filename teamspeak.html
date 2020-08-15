@@ -133,6 +133,13 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sni.teamspeak.teamspeak.close_teamspeak_connection">
+<code class="sig-prename descclassname">sni.teamspeak.teamspeak.</code><code class="sig-name descname">close_teamspeak_connection</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sni/teamspeak/teamspeak.html#close_teamspeak_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.teamspeak.close_teamspeak_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes a Teamspeak connection. Wraps <code class="xref py py-meth docutils literal notranslate"><span class="pre">ts3.query.TS3Connection.close()</span></code>
+in a <cite>try… except</cite> block to catch spurious connection reset exceptions.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sni.teamspeak.teamspeak.complete_authentication_challenge">
 <code class="sig-prename descclassname">sni.teamspeak.teamspeak.</code><code class="sig-name descname">complete_authentication_challenge</code><span class="sig-paren">(</span><em class="sig-param">connection: ts3.query.TS3Connection</em>, <em class="sig-param">usr: sni.user.models.User</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sni/teamspeak/teamspeak.html#complete_authentication_challenge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sni.teamspeak.teamspeak.complete_authentication_challenge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Complete an authentication challenge, see

@@ -43,7 +43,7 @@
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">from</span> <span class="nn">sni.user.models</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">sni.user.user</span> <span class="kn">import</span> <span class="n">ensure_user</span>
@@ -86,7 +86,7 @@
 
 
 <div class="viewcode-block" id="esi_delete_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_delete_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_delete_on_befalf_of</span><span class="p">(</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE</span>
@@ -96,13 +96,13 @@
         <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">,</span>
-        <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="n">invalidate_token_on_error</span><span class="p">,</span>
+        <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="n">invalidate_token_on_4xx</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="esi_get_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_get_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_get_on_befalf_of</span><span class="p">(</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.</span>
@@ -111,13 +111,13 @@
         <span class="s2">&quot;get&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">,</span>
-        <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="n">invalidate_token_on_error</span><span class="p">,</span>
+        <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="n">invalidate_token_on_4xx</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="esi_post_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_post_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_post_on_befalf_of</span><span class="p">(</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.</span>
@@ -126,13 +126,13 @@
         <span class="s2">&quot;post&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">,</span>
-        <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="n">invalidate_token_on_error</span><span class="p">,</span>
+        <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="n">invalidate_token_on_4xx</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="esi_put_on_befalf_of"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.esi_put_on_befalf_of">[docs]</a><span class="k">def</span> <span class="nf">esi_put_on_befalf_of</span><span class="p">(</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.</span>
@@ -141,7 +141,7 @@
         <span class="s2">&quot;put&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">,</span>
-        <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="n">invalidate_token_on_error</span><span class="p">,</span>
+        <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="n">invalidate_token_on_4xx</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span></div>
 
@@ -151,12 +151,12 @@
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">invalidate_token_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">invalidate_token_on_4xx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiResponse</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.</span>
-<span class="sd">    If the argument ``invalidate_token_on_error`` is set to ``True``, then the</span>
+<span class="sd">    If the argument ``invalidate_token_on_4xx`` is set to ``True``, then the</span>
 <span class="sd">    user token is invalidated if the ESI request results in a 403.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">esi_scope</span> <span class="o">=</span> <span class="n">get_esi_path_scope</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -164,14 +164,14 @@
     <span class="n">response</span> <span class="o">=</span> <span class="n">esi_request</span><span class="p">(</span>
         <span class="n">http_method</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">403</span> <span class="ow">and</span> <span class="n">invalidate_token_on_error</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">403</span> <span class="ow">and</span> <span class="n">invalidate_token_on_4xx</span><span class="p">:</span>
         <span class="n">token</span><span class="o">.</span><span class="n">refresh_token</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">set__valid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">token</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">response</span></div>
 
 
 <div class="viewcode-block" id="get_access_token"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.get_access_token">[docs]</a><span class="k">def</span> <span class="nf">get_access_token</span><span class="p">(</span>
-    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="n">EsiScope</span> <span class="o">=</span> <span class="n">EsiScope</span><span class="o">.</span><span class="n">PUBLICDATA</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EsiAccessToken</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an access token, refreshes if needed</span>
@@ -179,23 +179,24 @@
 <span class="sd">    Todo:</span>
 <span class="sd">        Support multiple scopes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scope_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">value</span>
     <span class="n">owner</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">)</span>
     <span class="n">esi_access_token</span><span class="p">:</span> <span class="n">EsiAccessToken</span> <span class="o">=</span> <span class="n">EsiAccessToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span> <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scope_str</span><span class="p">,</span> <span class="n">expires_on__gt</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
     <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_access_token</span><span class="p">:</span>
         <span class="n">esi_refresh_token</span><span class="p">:</span> <span class="n">EsiRefreshToken</span> <span class="o">=</span> <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
-            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span> <span class="n">valid</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scope_str</span><span class="p">,</span> <span class="n">valid</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">esi_refresh_token</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s2">&quot;Could not find refresh token for user </span><span class="si">%s</span><span class="s2"> with scope </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">owner</span><span class="o">.</span><span class="n">character_name</span><span class="p">,</span>
-                <span class="n">scope</span><span class="p">,</span>
+                <span class="n">scope_str</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
                 <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Could not find access token with scope </span><span class="si">{scope}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not find access token with scope </span><span class="si">{scope_str}</span><span class="s2"> &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;for user </span><span class="si">{character_id}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -205,12 +206,14 @@
     <span class="k">return</span> <span class="n">esi_access_token</span></div>
 
 
-<div class="viewcode-block" id="has_esi_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.has_esi_scope">[docs]</a><span class="k">def</span> <span class="nf">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="has_esi_scope"><a class="viewcode-back" href="../../../esi.html#sni.esi.token.has_esi_scope">[docs]</a><span class="k">def</span> <span class="nf">has_esi_scope</span><span class="p">(</span><span class="n">usr</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="n">EsiScope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tells wether the user has a refresh token with the given scope.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span> <span class="n">valid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">EsiRefreshToken</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">usr</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scope</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">valid</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
         <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="p">)</span></div>
 
