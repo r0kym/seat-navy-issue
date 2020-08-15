@@ -34,7 +34,7 @@ def index_user_location(usr: User):
     Indexes a user's location, online status, and ship
     """
     try:
-        location = get_user_location(usr, invalidate_token_on_error=True)
+        location = get_user_location(usr, invalidate_token_on_4xx=True)
         location.save()
     except Exception as error:
         logging.error(
@@ -68,7 +68,7 @@ def index_user_mails(usr: User):
         headers = esi_get_on_befalf_of(
             f"latest/characters/{character_id}/mail",
             character_id,
-            invalidate_token_on_error=True,
+            invalidate_token_on_4xx=True,
         ).data
     except Exception as error:
         logging.error(
@@ -86,7 +86,7 @@ def index_user_mails(usr: User):
             mail = esi_get_on_befalf_of(
                 f"latest/characters/{character_id}/mail/{mail_id}",
                 character_id,
-                invalidate_token_on_error=True,
+                invalidate_token_on_4xx=True,
             ).data
             EsiMail(
                 body=format_mail_body(mail["body"]),
@@ -127,7 +127,7 @@ def index_user_skillpoints(usr: User):
         data = esi_get_on_befalf_of(
             f"latest/characters/{usr.character_id}/skills/",
             usr.character_id,
-            invalidate_token_on_error=True,
+            invalidate_token_on_4xx=True,
         ).data
         EsiSkillPoints(
             total_sp=data["total_sp"],
@@ -161,7 +161,7 @@ def index_user_wallets(usr: User):
         balance = esi_get_on_befalf_of(
             f"latest/characters/{usr.character_id}/wallet/",
             usr.character_id,
-            invalidate_token_on_error=True,
+            invalidate_token_on_4xx=True,
         ).data
         EsiWalletBalance(balance=balance, user=usr).save()
     except Exception as error:

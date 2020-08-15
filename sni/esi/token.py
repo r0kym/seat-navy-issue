@@ -47,7 +47,7 @@ def available_esi_scopes(usr: User) -> Set[EsiScope]:
 
 
 def esi_delete_on_befalf_of(
-    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_4xx=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for DELETE
@@ -57,13 +57,13 @@ def esi_delete_on_befalf_of(
         "delete",
         path,
         character_id,
-        invalidate_token_on_error=invalidate_token_on_error,
+        invalidate_token_on_4xx=invalidate_token_on_4xx,
         **kwargs,
     )
 
 
 def esi_get_on_befalf_of(
-    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_4xx=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
@@ -72,13 +72,13 @@ def esi_get_on_befalf_of(
         "get",
         path,
         character_id,
-        invalidate_token_on_error=invalidate_token_on_error,
+        invalidate_token_on_4xx=invalidate_token_on_4xx,
         **kwargs,
     )
 
 
 def esi_post_on_befalf_of(
-    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_4xx=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for POST requests.
@@ -87,13 +87,13 @@ def esi_post_on_befalf_of(
         "post",
         path,
         character_id,
-        invalidate_token_on_error=invalidate_token_on_error,
+        invalidate_token_on_4xx=invalidate_token_on_4xx,
         **kwargs,
     )
 
 
 def esi_put_on_befalf_of(
-    path: str, character_id: int, *, invalidate_token_on_error=False, **kwargs,
+    path: str, character_id: int, *, invalidate_token_on_4xx=False, **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for PUT requests.
@@ -102,7 +102,7 @@ def esi_put_on_befalf_of(
         "put",
         path,
         character_id,
-        invalidate_token_on_error=invalidate_token_on_error,
+        invalidate_token_on_4xx=invalidate_token_on_4xx,
         **kwargs,
     )
 
@@ -112,12 +112,12 @@ def esi_request_on_behalf_of(
     path: str,
     character_id: int,
     *,
-    invalidate_token_on_error=False,
+    invalidate_token_on_4xx=False,
     **kwargs,
 ) -> EsiResponse:
     """
     Wrapper for :meth:`sni.esi.esi.esi_request_on_behalf_of` for GET requests.
-    If the argument ``invalidate_token_on_error`` is set to ``True``, then the
+    If the argument ``invalidate_token_on_4xx`` is set to ``True``, then the
     user token is invalidated if the ESI request results in a 403.
     """
     esi_scope = get_esi_path_scope(path)
@@ -125,7 +125,7 @@ def esi_request_on_behalf_of(
     response = esi_request(
         http_method, path, token=token.access_token, **kwargs,
     )
-    if response.status_code == 403 and invalidate_token_on_error:
+    if response.status_code == 403 and invalidate_token_on_4xx:
         token.refresh_token.update(set__valid=False)
         token.delete()
     return response
