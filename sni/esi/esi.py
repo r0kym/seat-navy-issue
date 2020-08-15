@@ -169,7 +169,7 @@ def esi_request(
     return response
 
 
-def get_esi_path_scope(path: str) -> Optional[EsiScope]:
+def get_esi_path_scope(path: str) -> EsiScope:
     """
     Returns the ESI scope that is required for a given ESI path.
 
@@ -178,10 +178,10 @@ def get_esi_path_scope(path: str) -> Optional[EsiScope]:
     Examples:
 
         >>> get_esi_path_scope('latest/characters/0000000000/assets')
-        'esi-assets.read_assets.v1'
+        EsiScope.ESI_ASSETS_READ_ASSETS_V1
 
         >>> get_esi_path_scope('latest/alliances')
-        None
+        EsiScope.PUBLICDATA
     """
     esi_path: EsiPath
     for esi_path in EsiPath.objects:

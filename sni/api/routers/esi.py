@@ -18,6 +18,7 @@ import pydantic as pdt
 from sni.user.models import User
 
 from sni.index.index import get_user_location
+from sni.esi.scope import EsiScope
 from sni.esi.token import get_access_token
 from sni.esi.esi import (
     esi_get_all_pages,
@@ -398,7 +399,7 @@ async def get_esi(
     esi_token: Optional[str] = None
     if data.on_behalf_of:
         esi_scope = get_esi_path_scope(esi_path)
-        if esi_scope is not None:
+        if esi_scope != EsiScope.PUBLICDATA:
             target = User.objects.get(character_id=data.on_behalf_of)
             assert_has_clearance(tkn.owner, esi_scope, target)
             try:

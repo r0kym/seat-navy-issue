@@ -163,7 +163,7 @@ def ensure_corporation_members(corporation: Corporation):
     logging.debug(
         "Ensuring members of corporation %s", corporation.corporation_name
     )
-    scope = EsiScope.ESI_CORPORATIONS_READ_CORPORATION_MEMBERSHIP_V1.value
+    scope = EsiScope.ESI_CORPORATIONS_READ_CORPORATION_MEMBERSHIP_V1
     result = EsiRefreshToken.objects.aggregate(
         [
             {
@@ -177,7 +177,7 @@ def ensure_corporation_members(corporation: Corporation):
             {
                 "$match": {
                     "owner_data.corporation": corporation.pk,
-                    "scopes": scope,
+                    "scopes": scope.value,
                     "valid": True,
                 }
             },
@@ -207,7 +207,7 @@ def ensure_corporation_members(corporation: Corporation):
             ),
             corporation.corporation_name,
             corporation.corporation_id,
-            scope,
+            scope.value,
         )
         return
 

@@ -4,7 +4,7 @@ EVE token (access and refresh) management
 
 from enum import Enum
 import logging
-from typing import List, Optional, Set
+from typing import List, Set
 
 from sni.user.models import User
 from sni.user.user import ensure_user
@@ -132,7 +132,7 @@ def esi_request_on_behalf_of(
 
 
 def get_access_token(
-    character_id: int, scope: Optional[str] = None
+    character_id: int, scope: EsiScope = EsiScope.PUBLICDATA
 ) -> EsiAccessToken:
     """
     Returns an access token, refreshes if needed
@@ -140,23 +140,24 @@ def get_access_token(
     Todo:
         Support multiple scopes.
     """
+    scope_str: str = scope.value
     owner: User = User.objects.get(character_id=character_id)
     esi_access_token: EsiAccessToken = EsiAccessToken.objects(
-        owner=owner, scopes=scope, expires_on__gt=utils.now(),
+        owner=owner, scopes=scope_str, expires_on__gt=utils.now(),
     ).first()
     if not esi_access_token:
         esi_refresh_token: EsiRefreshToken = EsiRefreshToken.objects(
-            owner=owner, scopes=scope, valid=True
+            owner=owner, scopes=scope_str, valid=True
         ).first()
         if not esi_refresh_token:
             logging.error(
                 "Could not find refresh token for user %s with scope %s",
                 owner.character_name,
-                scope,
+                scope_str,
             )
             raise LookupError(
                 (
-                    f"Could not find access token with scope {scope} "
+                    f"Could not find access token with scope {scope_str} "
                     f"for user {character_id}"
                 )
             )
@@ -166,12 +167,14 @@ def get_access_token(
     return esi_access_token
 
 
-def has_esi_scope(usr: User, scope: str) -> bool:
+def has_esi_scope(usr: User, scope: EsiScope) -> bool:
     """
     Tells wether the user has a refresh token with the given scope.
     """
     return (
-        EsiRefreshToken.objects(owner=usr, scopes=scope, valid=True).first()
+        EsiRefreshToken.objects(
+            owner=usr, scopes=scope.value, valid=True
+        ).first()
         is not None
     )
 

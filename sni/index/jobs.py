@@ -6,6 +6,7 @@ import logging
 import html
 import re
 
+from sni.esi.scope import EsiScope
 from sni.esi.token import esi_get_on_befalf_of, has_esi_scope
 from sni.scheduler import scheduler
 from sni.user.models import User
@@ -52,9 +53,9 @@ def index_users_location():
     """
     for usr in User.objects():
         if (
-            has_esi_scope(usr, "esi-location.read_location.v1")
-            and has_esi_scope(usr, "esi-location.read_online.v1")
-            and has_esi_scope(usr, "esi-location.read_ship_type.v1")
+            has_esi_scope(usr, EsiScope.ESI_LOCATION_READ_LOCATION_V1)
+            and has_esi_scope(usr, EsiScope.ESI_LOCATION_READ_ONLINE_V1)
+            and has_esi_scope(usr, EsiScope.ESI_LOCATION_READ_SHIP_TYPE_V1)
         ):
             scheduler.add_job(index_user_location, args=(usr,))
 
@@ -114,7 +115,7 @@ def index_users_mails():
     Index all user emails.
     """
     for usr in User.objects():
-        if has_esi_scope(usr, "esi-mail.read_mail.v1"):
+        if has_esi_scope(usr, EsiScope.ESI_MAIL_READ_MAIL_V1):
             scheduler.add_job(index_user_mails, args=(usr,))
 
 
@@ -149,7 +150,7 @@ def index_users_skillpoints():
     Measures all users skillpoints
     """
     for usr in User.objects():
-        if has_esi_scope(usr, "esi-skills.read_skills.v1"):
+        if has_esi_scope(usr, EsiScope.ESI_SKILLS_READ_SKILLS_V1):
             scheduler.add_job(index_user_skillpoints, args=(usr,))
 
 
@@ -179,5 +180,5 @@ def index_users_wallets():
     Indexes user wallet balance
     """
     for usr in User.objects():
-        if has_esi_scope(usr, "esi-wallet.read_character_wallet.v1"):
+        if has_esi_scope(usr, EsiScope.ESI_WALLET_READ_CHARACTER_WALLET_V1):
             scheduler.add_job(index_user_wallets, args=(usr,))
