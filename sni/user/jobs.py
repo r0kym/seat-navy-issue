@@ -7,6 +7,7 @@ import logging
 import mongoengine as me
 
 from sni.esi.esi import esi_get
+from sni.esi.scope import EsiScope
 from sni.esi.token import (
     EsiRefreshToken,
     get_access_token,
@@ -162,8 +163,8 @@ def ensure_corporation_members(corporation: Corporation):
     logging.debug(
         "Ensuring members of corporation %s", corporation.corporation_name
     )
-    scope = "esi-corporations.read_corporation_membership.v1"
-    query = EsiRefreshToken.objects.aggregate(
+    scope = EsiScope.ESI_CORPORATIONS_READ_CORPORATION_MEMBERSHIP_V1.value
+    result = EsiRefreshToken.objects.aggregate(
         [
             {
                 "$lookup": {
@@ -173,7 +174,6 @@ def ensure_corporation_members(corporation: Corporation):
                     "localField": "owner",
                 },
             },
-            {"$unwind": "$owner_data"},
             {
                 "$match": {
                     "owner_data.corporation": corporation.pk,
@@ -184,36 +184,35 @@ def ensure_corporation_members(corporation: Corporation):
             {"$project": {"owner_data.character_id": 1}},
         ]
     )
-    try:
-        esi_access_token = get_access_token(
-            query.next()["owner_data"]["character_id"], scope,
-        )
-        response = esi_get(
-            f"latest/corporations/{corporation.corporation_id}/members/",
-            token=esi_access_token.access_token,
-        )
-        for character_id in response.data:
-            scheduler.add_job(ensure_user, args=(int(character_id),))
-    except StopIteration:
-        logging.info(
+
+    response = None
+    for document in result:
+        try:
+            character_id = document["owner_data"][0]["character_id"]
+            esi_access_token = get_access_token(character_id, scope)
+            response = esi_get(
+                f"latest/corporations/{corporation.corporation_id}/members/",
+                token=esi_access_token.access_token,
+            )
+        except Exception:
+            response = None
+        else:
+            break
+
+    if response is None:
+        logging.debug(
             (
                 "Could not list members of corporation %s (%d): "
-                "no refresh token with scope %s"
+                'no refresh token with scope "%s"'
             ),
             corporation.corporation_name,
             corporation.corporation_id,
             scope,
         )
-    except ValueError:
-        logging.warning(
-            (
-                "Unexpected ESI reponse while iterating though "
-                "members of corporation %s (%d): %s"
-            ),
-            corporation.corporation_name,
-            corporation.corporation_id,
-            str(response.data),
-        )
+        return
+
+    for character_id in response.data:
+        scheduler.add_job(ensure_user, args=(int(character_id),))
 
 
 @scheduler.scheduled_job("interval", hours=1)
