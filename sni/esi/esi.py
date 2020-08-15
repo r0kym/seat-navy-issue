@@ -12,9 +12,10 @@ import mongoengine as me
 import pydantic as pdt
 from requests import request, Response
 
-from sni.db.cache import cache_get, cache_set
-from sni.sde.sde import sde_get_name
 from sni.conf import CONFIGURATION as conf
+from sni.db.cache import cache_get, cache_set
+from sni.esi.scope import EsiScope
+from sni.sde.sde import sde_get_name
 import sni.utils as utils
 
 from .models import EsiPath, EsiScope
@@ -186,7 +187,7 @@ def get_esi_path_scope(path: str) -> EsiScope:
     esi_path: EsiPath
     for esi_path in EsiPath.objects:
         if re.search(esi_path.path_re, path):
-            return esi_path.scope
+            return EsiScope(esi_path.scope)
     raise me.DoesNotExist
 
 
