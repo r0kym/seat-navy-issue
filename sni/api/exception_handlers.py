@@ -66,7 +66,7 @@ def does_not_exist_exception_handler(_request: Request, error: Exception):
     Catches :class:`me.DoesNotExist` exceptions and forwards them as
     ``404``'s.
     """
-    send_exception_to_sentry(error)
+    # send_exception_to_sentry(error)
     return JSONResponse(
         content={"details": str(error)} if conf.general.debug else None,
         status_code=status.HTTP_404_NOT_FOUND,
@@ -79,7 +79,7 @@ def permission_error_handler(_request: Request, error: PermissionError):
     Catches :class:`PermissionError` exceptions and forwards them as
     ``403``'s.
     """
-    send_exception_to_sentry(error)
+    # send_exception_to_sentry(error)
     content = {"details": "Insufficient clearance level"}
     if conf.general.debug:
         content["details"] += ": " + str(error)
@@ -94,7 +94,7 @@ def requests_httperror_handler(_request: Request, error: HTTPError):
     Catches :class:`requests.exceptions.HTTPError` exceptions and forwards them
     as ``500``'s.
     """
-    send_exception_to_sentry(error)
+    # send_exception_to_sentry(error)
     content = None
     if conf.general.debug and error.request is not None:
         req: Request = error.request
