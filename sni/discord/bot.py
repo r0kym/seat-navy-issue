@@ -10,6 +10,11 @@ which corresponds to the the permission integer ``469772288``. Therefore, the
 invitation link for the bot should look like this: ``https://discord.com/api/oauth2/authorize?client_id=<bot_id>&permissions=469772288&scope=bot``.
 See also:
     `Discord developer portal <https://discord.com/developers/applications>`_, `Creating a Bot Account <https://discordpy.readthedocs.io/en/latest/discord.html#discord-intro>`_
+
+Since the 1.5 version it's required to give a serie of Intents to the bot when launching it.
+The ``server members`` intent has to be give manually in its configuration. As shown here: `Give priviledged intent <https://discordpy.readthedocs.io/en/latest/intents.html#privileged-intents>`_
+See also:
+    https://discordpy.readthedocs.io/en/latest/intents.html#
 """
 
 import asyncio
@@ -31,7 +36,15 @@ JOBS_KEY: str = "scheduler:discord:jobs"
 RUN_TIMES_KEY: str = "scheduler:discord:run_times"
 """The redis key for the job run times"""
 
-bot = Bot(command_prefix="!", description="SeAT Navy Issue Discord Bot")
+intents = discord.Intents.default()
+intents.members = True
+"""Basic discord intents + the priviledged `members` intent"""
+
+bot = Bot(
+    command_prefix="!",
+    intents=intents,
+    description="SeAT Navy Issue Discord Bot",
+)
 
 scheduler = AsyncIOScheduler(
     event_loop=bot.loop,
